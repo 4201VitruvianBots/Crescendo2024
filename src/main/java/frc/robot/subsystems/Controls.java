@@ -1,23 +1,16 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.BASE;
+import org.littletonrobotics.junction.Logger;
 
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
-  private StringPublisher allianceString;
-  private BooleanPublisher allianceBoolean;
-
   private boolean isInit;
   private static DriverStation.Alliance allianceColor = DriverStation.Alliance.Red;
 
   public Controls() {
-    initSmartDashboard();
     isInit = false;
   }
 
@@ -28,15 +21,6 @@ public class Controls extends SubsystemBase implements AutoCloseable {
    */
   public static DriverStation.Alliance getAllianceColor() {
     return allianceColor;
-  }
-
-  /**
-   * Returns true when the alliance color is not Blue`
-   *
-   * @return Returns the current alliance color.
-   */
-  public static boolean getAllianceColorBoolean() {
-    return allianceColor == DriverStation.Alliance.Red;
   }
 
   public void setPDHChannel(boolean on) {
@@ -51,35 +35,24 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     isInit = init;
   }
 
-  /** Initializes values on SmartDashboard */
-  private void initSmartDashboard() {
-    var controlsTab =
-        NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Controls");
-    allianceString = controlsTab.getStringTopic("alliance_string").publish();
-    allianceBoolean = controlsTab.getBooleanTopic("Alliance").publish();
-    try {
-      controlsTab.getStringTopic("Robot Name").publish().set(BASE.robotName);
-    } catch (Exception m_ignored) {
-
-    }
-  }
-
   /**
    * Periodically check the DriverStation to get the Alliance color. This mainly runs when the robot
    * is disabled to avoid a bug where the robot tries to get the alliance color before it is
    * connected to a driver station.
    */
   private void updateAllianceColor() {
-    allianceColor =
-        DriverStation.getAlliance().isPresent()
-            ? DriverStation.getAlliance().get()
-            : DriverStation.Alliance.Red;
+    var pollFms = DriverStation.getAlliance();
+
+    if (pollFms.isPresent()) {
+      allianceColor = pollFms.get();
+    } else {
+      System.out.println("WARN: Could not get Alliance Color from FMS");
+    }
   }
 
   /** Sends values to SmartDashboard */
-  private void updateSmartDashboard() {
-    allianceString.set(getAllianceColor().toString());
-    allianceBoolean.set(getAllianceColorBoolean());
+  private void updateLogger() {
+    Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
   }
 
   @Override
@@ -88,7 +61,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
       updateAllianceColor();
     }
     // This method will be called once per scheduler run
-    updateSmartDashboard();
+    updateLogger();
   }
 
   @Override
