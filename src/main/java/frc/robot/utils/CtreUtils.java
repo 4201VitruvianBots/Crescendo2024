@@ -6,114 +6,70 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.SWERVE;
 
 public final class CtreUtils {
   public static TalonFXConfiguration generateTurnMotorConfig() {
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    TalonFXConfiguration turnMotorConfig = new TalonFXConfiguration();
 
-    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    motorConfig.Slot0.kV = 0.0;
-    motorConfig.Slot0.kP = 5.0;
-    motorConfig.Slot0.kI = 0.0000;
-    //    motorConfig.Slot0.integralZone = 121.904762;
-    motorConfig.Slot0.kD = 0.000; // 0.0;
-    //    motorConfig.Slot0.allowableClosedloopError = 0.0;
+    turnMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    turnMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    motorConfig.Voltage.PeakForwardVoltage = 12;
-    motorConfig.Voltage.PeakReverseVoltage = -12;
+    turnMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnMotorConfig.CurrentLimits.SupplyCurrentLimit = 25;
+    turnMotorConfig.CurrentLimits.SupplyCurrentThreshold = 40;
+    turnMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
 
-    motorConfig.CurrentLimits.SupplyCurrentLimit = 25;
-    motorConfig.CurrentLimits.SupplyCurrentThreshold = 40;
-    motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
-    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    //    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    //    turnMotorConfig.Slot0.kV = 0.0;
+    turnMotorConfig.Slot0.kP = 100.0;
+    turnMotorConfig.Slot0.kI = 0.0;
+    //    turnMotorConfig.Slot0.integralZone = 121.904762;
+    turnMotorConfig.Slot0.kD = 0.0; // 0.0;
+    //    turnMotorConfig.Slot0.allowableClosedloopError = 0.0;
 
-    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
-    return motorConfig;
+    return turnMotorConfig;
   }
 
   public static TalonFXConfiguration generateDriveMotorConfig() {
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    motorConfig.Slot0.kV = 0.1185;
-    motorConfig.Slot0.kP = 0.24;
-    motorConfig.Slot0.kI = 0.0;
-    motorConfig.Slot0.kD = 0.0;
+    driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    motorConfig.Voltage.PeakForwardVoltage = 12;
-    motorConfig.Voltage.PeakReverseVoltage = -12;
+    driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveMotorConfig.CurrentLimits.SupplyCurrentLimit = 35;
+    driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
+    driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
 
-    motorConfig.CurrentLimits.SupplyCurrentLimit = 35;
-    motorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
-    motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
-    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
+    //    driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    //    driveMotorConfig.Slot0.kV = 0.1185;
+    driveMotorConfig.Slot0.kP = 0.12;
+    driveMotorConfig.Slot0.kI = 0.0;
+    driveMotorConfig.Slot0.kD = 0.0;
 
-    motorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25; // TODO adjust this later
-    motorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1; // TODO Adjust this later
+    driveMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.25; // TODO adjust this later
+    driveMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25; // TODO adjust this later
 
-    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveMotorConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = 0.1; // TODO adjust this later
+    driveMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1; // TODO Adjust this later
 
-    return motorConfig;
+    return driveMotorConfig;
   }
 
   public static CANcoderConfiguration generateCanCoderConfig() {
     CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
 
+    sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     sensorConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
-    sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
     return sensorConfig;
-  }
-
-  public static SwerveModuleState optimize(
-      SwerveModuleState desiredState, Rotation2d currentAngle) {
-    double targetAngle =
-        placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
-    double targetSpeed = desiredState.speedMetersPerSecond;
-    double delta = targetAngle - currentAngle.getDegrees();
-    if (Math.abs(delta) > 90) {
-      targetSpeed = -targetSpeed;
-      targetAngle = delta > 90 ? targetAngle - 180 : targetAngle + 180;
-    }
-    return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
-  }
-
-  /**
-   * @param scopeReference Current Angle
-   * @param newAngle Target Angle
-   * @return Closest angle within scope
-   */
-  private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
-    double lowerBound;
-    double upperBound;
-    double lowerOffset = scopeReference % 360;
-    if (lowerOffset >= 0) {
-      lowerBound = scopeReference - lowerOffset;
-      upperBound = scopeReference + (360 - lowerOffset);
-    } else {
-      upperBound = scopeReference - lowerOffset;
-      lowerBound = scopeReference - (360 + lowerOffset);
-    }
-    while (newAngle < lowerBound) {
-      newAngle += 360;
-    }
-    while (newAngle > upperBound) {
-      newAngle -= 360;
-    }
-    if (newAngle - scopeReference > 180) {
-      newAngle -= 360;
-    } else if (newAngle - scopeReference < -180) {
-      newAngle += 360;
-    }
-    return newAngle;
   }
 
   public static boolean configureTalonFx(TalonFX motor, TalonFXConfiguration config) {

@@ -49,7 +49,7 @@ public class TestCtreUtils implements AutoCloseable {
     Timer.delay(WAIT_TIME);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    var expectedRotation = -1.0 / MODULE.kTurnMotorGearRatio;
+    var expectedRotation = 1.0 / MODULE.kTurnMotorGearRatio;
     var testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);
@@ -58,7 +58,7 @@ public class TestCtreUtils implements AutoCloseable {
     Timer.delay(WAIT_TIME);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    expectedRotation = 1.0 / MODULE.kTurnMotorGearRatio;
+    expectedRotation = -1.0 / MODULE.kTurnMotorGearRatio;
     testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);

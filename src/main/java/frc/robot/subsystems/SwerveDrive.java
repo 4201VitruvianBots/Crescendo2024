@@ -27,7 +27,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -117,19 +116,17 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_turnController.enableContinuousInput(-Math.PI, Math.PI);
 
     if (RobotBase.isReal()) {
-      Timer.delay(1);
       resetModulesToAbsolute();
     } else {
       m_pigeonSim = m_pigeon.getSimState();
     }
 
     initSmartDashboard();
-    setNeutral();
+    setTurnMotorCoast();
   }
 
   private void resetModulesToAbsolute() {
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.resetAngleToAbsolute();
+    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) module.setTurnAngle(0);
   }
 
   public void setJoystickLimit(boolean limit) {
@@ -176,7 +173,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   /** Set robot heading to a clear target */
-  public void setRobotHeadingRadians(double radians) {
+  public void setHeadingTargetRadians(double radians) {
     m_desiredHeadingRadians = MathUtil.inputModulus(radians, -Math.PI, Math.PI);
   }
 
@@ -221,7 +218,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       var transform =
           new Transform2d(DRIVE.kModuleTranslations.get(position), Rotation2d.fromDegrees(0));
       var modulePose = pose.plus(transform);
-      getSwerveModule(position).resetTurnAngle(pose.getRotation().getDegrees());
+      getSwerveModule(position).setTurnAngle(pose.getRotation().getDegrees());
       getSwerveModule(position).setModulePose(modulePose);
     }
   }
@@ -310,14 +307,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return true;
   }
 
-  public MechanismLigament2d getLigament() {
-    return m_swerveChassis2d;
-  }
-
-  public void setLigament(MechanismLigament2d ligament) {
-    m_swerveChassis2d = ligament;
-  }
-
   public PIDController getXPidController() {
     return m_xController;
   }
@@ -330,13 +319,13 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_turnController;
   }
 
-  public void setNeutral() {
+  public void setTurnMotorCoast() {
     for (SwerveModule module : m_swerveModules.values()) {
-      module.setTurnNeutral();
+      module.setTurnCoast();
     }
   }
 
-  public void setBrake() {
+  public void setTurnBrake() {
     for (SwerveModule module : m_swerveModules.values()) {
       module.setTurnBrake();
     }
@@ -365,7 +354,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       Transform2d moduleTransform =
           new Transform2d(
               DRIVE.kModuleTranslations.get(module.getModulePosition()),
-              module.getHeadingRotation2d());
+              module.getTurnHeadingR2d());
       module.setModulePose(getPoseMeters().transformBy(moduleTransform));
     }
   }
