@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.autos.DriveStraight;
+import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -61,7 +61,7 @@ public class RobotContainer {
   private void configureBindings() {}
 
   public void initializeAutoChooser() {
-    m_autoChooser.setDefaultOption("DriveStraight", new DriveStraight(m_swerveDrive, m_fieldSim));
+    m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));
 
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }

@@ -29,7 +29,11 @@ public class BASE {
     }
 
     public String getName() {
+<<<<<<< Updated upstream
       return name();
+=======
+      return this.name();
+>>>>>>> Stashed changes
     }
   }
 

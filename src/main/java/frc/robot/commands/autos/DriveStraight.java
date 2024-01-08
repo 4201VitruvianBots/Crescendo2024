@@ -39,8 +39,8 @@ public class DriveStraight extends Command {
 
   @Override
   public void initialize() {
-    double maxVel = Units.feetToMeters(16);
-    double maxAccel = Units.feetToMeters(16);
+    double maxVel = Units.feetToMeters(2);
+    double maxAccel = Units.feetToMeters(2);
     double maxAngularVel = Math.PI * 2;
     double maxAngularAccel = Math.PI * 2;
 
