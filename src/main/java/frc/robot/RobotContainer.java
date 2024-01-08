@@ -15,11 +15,13 @@ import frc.robot.commands.autos.DriveStraight;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
 
