@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.BASE;
 import java.io.File;
 import java.util.NoSuchElementException;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -76,6 +77,8 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    // Update robot constants based off of robot used
+    BASE.initConstants();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
+import java.util.Objects;
 
 public class BASE {
   public static String robotName = "";
@@ -12,7 +14,9 @@ public class BASE {
 
   public enum ROBOT {
     // Robot Serial Numbers
-    GRIDLOCK("0306ce62");
+    GRIDLOCK("0306ce62"),
+    BOBOT(""),
+    SIM("");
 
     private final String value;
 
@@ -25,7 +29,7 @@ public class BASE {
     }
 
     public String getName() {
-      return this.ordinal();
+      return name();
     }
   }
 
@@ -41,6 +45,26 @@ public class BASE {
 
     public double get() {
       return value;
+    }
+  }
+
+  public static void initGridlock() {}
+
+  public static void initBobot() {}
+
+  public static void initSim() {}
+
+  public static void initConstants() {
+    if (Objects.equals(RobotController.getSerialNumber(), ROBOT.GRIDLOCK.getSerial())) {
+      initGridlock();
+    } else if (Objects.equals(RobotController.getSerialNumber(), ROBOT.BOBOT.getSerial())) {
+      initBobot();
+    } else if (Objects.equals(RobotController.getSerialNumber(), ROBOT.SIM.getSerial())) {
+      initSim();
+    } else {
+      System.out.printf(
+          "WARN: Robot Serial Not Recognized! Current roboRIO Serial: %s\n",
+          RobotController.getSerialNumber());
     }
   }
 }
