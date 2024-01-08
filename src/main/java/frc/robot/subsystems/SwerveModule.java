@@ -92,7 +92,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_angleEncoder = angleEncoder;
     m_angleOffset = RobotBase.isReal() ? angleOffset : 0;
 
-    if(RobotBase.isSimulation()) {
+    if (RobotBase.isSimulation()) {
       m_angleEncoder.setPosition(0);
     }
     configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
