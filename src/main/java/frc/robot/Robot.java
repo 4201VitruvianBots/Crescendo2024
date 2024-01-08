@@ -32,7 +32,7 @@ public class Robot extends LoggedRobot {
 
   public Robot() {
     LiveWindow.disableAllTelemetry();
-    Logger.recordMetadata("ProjectName", "FrcDebuggingExamples2024"); // Set a metadata value
+    Logger.recordMetadata("ProjectName", "Crescendo2024"); // Set a metadata value
 
     if (isReal()) {
       try {
