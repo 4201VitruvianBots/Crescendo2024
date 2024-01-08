@@ -2,7 +2,6 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import java.util.Objects;
 
 public class BASE {
   public static String robotName = "";
@@ -29,11 +28,7 @@ public class BASE {
     }
 
     public String getName() {
-<<<<<<< Updated upstream
       return name();
-=======
-      return this.name();
->>>>>>> Stashed changes
     }
   }
 

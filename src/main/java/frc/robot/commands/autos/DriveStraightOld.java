@@ -44,7 +44,8 @@ public class DriveStraightOld extends SequentialCommandGroup {
             new PathConstraints(maxVel, maxAccel, maxAngularVel, maxAngularAccel),
             new GoalEndState(0, Rotation2d.fromDegrees(0)));
 
-    var swerveCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, maxVel);
+    var swerveCommand =
+        TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, maxVel, false);
 
     addCommands(
         new SetSwerveOdometry(swerveDrive, new Pose2d(3, 3, Rotation2d.fromDegrees(0)), fieldSim),

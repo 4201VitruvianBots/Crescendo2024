@@ -18,7 +18,7 @@ public class DriveStriaghtTest extends SequentialCommandGroup {
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("Drivefowardtest");
 
-    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1);
+    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1, false);
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
