@@ -55,11 +55,11 @@ public class BASE {
   public static void initSim() {}
 
   public static void initConstants() {
-    if (Objects.equals(RobotController.getSerialNumber(), ROBOT.GRIDLOCK.getSerial())) {
+    if (RobotController.getSerialNumber().equals(ROBOT.GRIDLOCK.getSerial())) {
       initGridlock();
-    } else if (Objects.equals(RobotController.getSerialNumber(), ROBOT.BOBOT.getSerial())) {
+    } else if (RobotController.getSerialNumber().equals(ROBOT.BOBOT.getSerial())) {
       initBobot();
-    } else if (Objects.equals(RobotController.getSerialNumber(), ROBOT.SIM.getSerial())) {
+    } else if (RobotController.getSerialNumber().equals(ROBOT.SIM.getSerial())) {
       initSim();
     } else {
       System.out.printf(
