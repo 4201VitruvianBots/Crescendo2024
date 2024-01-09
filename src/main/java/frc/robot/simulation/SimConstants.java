@@ -21,6 +21,9 @@ import frc.robot.subsystems.Controls;
  * methods to flip these values based on the current alliance color.
  */
 public final class SimConstants {
+  public static final double kMotorResistance =
+          0.002; // Assume 2mOhm resistance for voltage drop calculation
+
   public static final double fieldLength = Units.inchesToMeters(651.25);
   public static final double fieldWidth = Units.inchesToMeters(315.5);
   public static final double tapeWidth = Units.inchesToMeters(2.0);

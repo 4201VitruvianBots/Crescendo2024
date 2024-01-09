@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
-import static frc.robot.utils.TestUtils.refreshAkitData;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
@@ -18,6 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
+
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
+import static frc.robot.utils.TestUtils.refreshAkitData;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSwerveModule implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
@@ -63,7 +63,7 @@ public class TestSwerveModule implements AutoCloseable {
     m_testModule.setTurnAngle(testAngle);
     Timer.delay(WAIT_TIME);
 
-    assertEquals(testAngle, m_testModule.getTurnHeadingR2d().getDegrees(), DELTA);
+    assertEquals(testAngle, m_testModule.getTurnHeadingDeg(), DELTA);
   }
 
   @Disabled("Results are off due to SimpleMotorFeedForward - Need to update constants")

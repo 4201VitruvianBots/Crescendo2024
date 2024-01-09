@@ -128,12 +128,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     return m_modulePosition;
   }
 
-  public Rotation2d getTurnEncoderHeading() {
+  public Rotation2d getTurnEncoderAbsHeading() {
     return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
   public void setTurnAngle(double angle) {
-    var newAngle = getTurnEncoderHeading().getDegrees() - m_angleOffset + angle;
+    var newAngle = getTurnEncoderAbsHeading().getDegrees() - m_angleOffset + angle;
 
     StatusCode turnMotorStatus = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
@@ -148,6 +148,19 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
               + m_turnMotor.getDeviceID()
               + ". Error code: "
               + turnMotorStatus);
+    } else {
+      System.out.printf(
+              """
+                      Updated Turn Motor %2d Angle:
+                      Desired Angle: %.2f
+                      Turn Motor Angle: %.2f
+                      CANCoder Absolute Angle: %.2f
+                      CANCoder Offset: %.2f""",
+          m_turnMotor.getDeviceID(),
+          angle,
+          getTurnHeadingDeg(),
+          getTurnEncoderAbsHeading().getDegrees(),
+          m_angleOffset);
     }
   }
 
