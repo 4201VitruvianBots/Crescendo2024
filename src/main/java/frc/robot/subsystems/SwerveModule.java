@@ -34,6 +34,7 @@ import frc.robot.constants.SWERVE.MODULE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import frc.robot.visualizers.SwerveModuleVisualizer;
+import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final ModuleMap.MODULE_POSITION m_modulePosition;
@@ -240,7 +241,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   private void updateSmartDashboard() {}
 
-  public void updateLog() {}
+  public void updateLog() {
+    Logger.recordOutput(String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()), getTurnEncoderAbsHeading());
+    Logger.recordOutput(String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()), getTurnHeadingDeg());
+  }
 
   @Override
   public void periodic() {
