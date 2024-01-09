@@ -16,6 +16,7 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -24,6 +25,7 @@ public class RobotContainer {
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
+  private final LED m_led = new LED();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
