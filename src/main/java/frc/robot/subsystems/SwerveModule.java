@@ -150,12 +150,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
               + turnMotorStatus);
     } else {
       System.out.printf(
-              """
+          """
                       Updated Turn Motor %2d Angle:
                       Desired Angle: %.2f
                       Turn Motor Angle: %.2f
                       CANCoder Absolute Angle: %.2f
-                      CANCoder Offset: %.2f""",
+                      CANCoder Offset: %.2f\n""",
           m_turnMotor.getDeviceID(),
           angle,
           getTurnHeadingDeg(),

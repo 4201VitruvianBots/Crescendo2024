@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
+import static frc.robot.utils.TestUtils.refreshAkitData;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
@@ -14,10 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
-import static frc.robot.utils.TestUtils.refreshAkitData;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSwerveModule implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
