@@ -16,12 +16,16 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Uptake;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Controls m_controls = new Controls();
+  private final Intake m_intake = new Intake();
+  private final Uptake m_uptake = new Uptake();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
 
