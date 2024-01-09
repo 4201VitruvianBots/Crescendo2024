@@ -12,31 +12,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 
 public class Flywheel extends SubsystemBase {
-  private final TalonFX intakemotor1 = new TalonFX(CAN.intakemotor1);
-  private final TalonFX intakemotor2 = new TalonFX(CAN.intakemotor2);
+  private final TalonFX flywheelmotor1 = new TalonFX(FLYWHEEL.flywheelmotor1);
+  private final TalonFX iflywheelmotor2 = new TalonFX(FLYWHEEL.flywheelmotor2);
   private final StaticBrake brakeControl = new StaticBrake();
   private final NeutralOut neutralControl = new NeutralOut();
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /** Creates a new Intkae. */
   public Intake() {
-    // intake motor 1
-    intakemotor1.setControl(brakeControl);
-    intakemotor1.getConfigurator().apply(new TalonFXConfiguration());
-    intakemotor1.setInverted(true);
+    // flywheel motor 1
+    flywheelmotor1.setControl(neutralControl);
+    flywheelmotor1.getConfigurator().apply(new TalonFXConfiguration());
+    flywheelmotor1.setInverted(false);
 
-    // intake motor 2
-    intakemotor2.setControl(brakeControl);
-    intakemotor2.getConfigurator().apply(new TalonFXConfiguration());
-    intakemotor2.setInverted(true);
+    // flywheel motor 2
+    flywheelmotor2.setControl(neutralControl);
+    flywheelmotor2.getConfigurator().apply(new TalonFXConfiguration());
+    flywheelmotor2.setInverted(true);
   }
 
   public void setMotorOutput1(double percentOutput) {
-    intakemotor1.set(percentOutput);
+    flywheelmotor1.set(percentOutput);
   }
 
   public void setMotorOutput2(double percentOutput) {
-    intakemotor1.set(percentOutput);
+    flywheelmotor2.set(percentOutput);
   }
 
   @Override
