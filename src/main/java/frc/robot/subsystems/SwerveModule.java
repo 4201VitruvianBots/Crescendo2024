@@ -51,8 +51,6 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0);
   private final PositionVoltage turnPositionControl = new PositionVoltage(0);
-  private final StaticBrake brakeControl = new StaticBrake();
-  private final NeutralOut neutralControl = new NeutralOut();
 
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
@@ -60,18 +58,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
           MODULE.kvDriveVoltSecondsSquaredPerMeter,
           MODULE.kaDriveVoltSecondsSquaredPerMeter);
 
+  private SwerveModuleVisualizer m_moduleVisualizer;
+
   private TalonFXSimState m_turnMotorSimState;
   private TalonFXSimState m_driveMotorSimState;
   private CANcoderSimState m_angleEncoderSimState;
-
-  private SwerveModuleVisualizer m_moduleVisualizer;
-  //  private DCMotorSim m_turnMotorModel =
-  //      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, .001);
-  //
-  //  private DCMotorSim m_driveMotorModel =
-  //      new DCMotorSim(
-  //          // Sim Values
-  //          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, 0.2);
 
   private DCMotorSim m_turnMotorSim =
       new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, 0.5);
@@ -222,19 +213,19 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void setDriveBrake() {
-    m_driveMotor.setControl(brakeControl);
+    m_driveMotor.setControl(new StaticBrake());
   }
 
   public void setDriveNeutral() {
-    m_driveMotor.setControl(neutralControl);
+    m_driveMotor.setControl(new NeutralOut());
   }
 
   public void setTurnBrake() {
-    m_turnMotor.setControl(brakeControl);
+    m_turnMotor.setControl(new StaticBrake());
   }
 
   public void setTurnCoast() {
-    m_turnMotor.setControl(neutralControl);
+    m_turnMotor.setControl(new NeutralOut());
   }
 
   private void initSmartDashboard() {}
