@@ -88,7 +88,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       m_angleEncoder.setPosition(0);
     }
     configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
-    m_angleEncoder.optimizeBusUtilization(255);
+    // m_angleEncoder.optimizeBusUtilization(255);
     configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
     configureTalonFx(m_driveMotor, CtreUtils.generateDriveMotorConfig());
     setTurnAngle(0);
@@ -121,6 +121,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public Rotation2d getTurnEncoderAbsHeading() {
+    m_angleEncoder.getAbsolutePosition().refresh();
     return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
@@ -233,7 +234,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private void updateSmartDashboard() {}
 
   public void updateLog() {
-    Logger.recordOutput(String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()), getTurnEncoderAbsHeading());
+    Logger.recordOutput(String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()), getTurnEncoderAbsHeading().getDegrees());
     Logger.recordOutput(String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()), getTurnHeadingDeg());
   }
 
