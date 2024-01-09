@@ -21,9 +21,14 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  
+  private final Shooter m_shooter = new Shooter();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
+  
+  private final CommandXboxController xboxController =
+  new CommandXboxController(USB.xBoxController);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
@@ -58,7 +63,10 @@ public class RobotContainer {
     }
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    xBoxController.a().whileHeld(new SetAndHoldRPMSetpoint(m_shooter, 600));
+    xBoxController.b().whileHeld(new SetAndHoldRPMSetpoint(m_shooter, 1200));
+  }
 
   public void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));
