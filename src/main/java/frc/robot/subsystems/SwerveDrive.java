@@ -161,9 +161,10 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                   throttle, strafe, rotation, getHeadingRotation2d())
               : new ChassisSpeeds(throttle, strafe, rotation);
     }
+    var newChassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, RobotTime.getTimeDelta());
 
     Map<MODULE_POSITION, SwerveModuleState> moduleStates =
-        ModuleMap.of(DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+        ModuleMap.of(DRIVE.kSwerveKinematics.toSwerveModuleStates(newChassisSpeeds));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);

@@ -39,8 +39,8 @@ public class DriveStraight extends Command {
 
   @Override
   public void initialize() {
-    double maxVel = Units.feetToMeters(16);
-    double maxAccel = Units.feetToMeters(16);
+    double maxVel = Units.feetToMeters(2);
+    double maxAccel = Units.feetToMeters(2);
     double maxAngularVel = Math.PI * 2;
     double maxAngularAccel = Math.PI * 2;
 
@@ -78,7 +78,7 @@ public class DriveStraight extends Command {
     m_fieldSim.setPath(pathPoints);
     m_swerveDrive.setOdometry(startPoint);
 
-    m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(m_swerveDrive, path, maxVel);
+    m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(m_swerveDrive, path, maxVel, false);
     m_ppCommand.initialize();
   }
 

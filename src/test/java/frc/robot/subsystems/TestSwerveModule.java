@@ -63,7 +63,7 @@ public class TestSwerveModule implements AutoCloseable {
     m_testModule.setTurnAngle(testAngle);
     Timer.delay(WAIT_TIME);
 
-    assertEquals(testAngle, m_testModule.getTurnHeadingR2d().getDegrees(), DELTA);
+    assertEquals(testAngle, m_testModule.getTurnHeadingDeg(), DELTA);
   }
 
   @Disabled("Results are off due to SimpleMotorFeedForward - Need to update constants")

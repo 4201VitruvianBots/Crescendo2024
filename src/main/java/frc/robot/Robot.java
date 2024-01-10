@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.BASE;
 import java.io.File;
 import java.util.NoSuchElementException;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -31,7 +34,7 @@ public class Robot extends LoggedRobot {
 
   public Robot() {
     LiveWindow.disableAllTelemetry();
-    Logger.recordMetadata("ProjectName", "FrcDebuggingExamples2024"); // Set a metadata value
+    Logger.recordMetadata("ProjectName", "Crescendo2024"); // Set a metadata value
 
     if (isReal()) {
       try {
@@ -76,6 +79,10 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    // Update robot constants based off of robot used
+    BASE.initConstants();
+    TalonFX dummy = new TalonFX(0);
+    Timer.delay(5);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

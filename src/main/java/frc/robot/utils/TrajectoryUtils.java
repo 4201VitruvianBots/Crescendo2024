@@ -14,14 +14,14 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class TrajectoryUtils {
   public static FollowPathHolonomic generatePPHolonomicCommand(
-      SwerveDrive swerveDrive, String pathName, double maxSpeed) {
+      SwerveDrive swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed);
+    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, flipPath);
   }
 
   public static FollowPathHolonomic generatePPHolonomicCommand(
-      SwerveDrive swerveDrive, PathPlannerPath path, double maxSpeed) {
+      SwerveDrive swerveDrive, PathPlannerPath path, double maxSpeed, boolean flipPath) {
     return new FollowPathHolonomic(
         path,
         swerveDrive::getPoseMeters,
@@ -33,6 +33,7 @@ public class TrajectoryUtils {
             maxSpeed,
             0.86210458762,
             new ReplanningConfig(false, false, 1.0, 0.25)),
+        () -> flipPath,
         swerveDrive);
   }
 }

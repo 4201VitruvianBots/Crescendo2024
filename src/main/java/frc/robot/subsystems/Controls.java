@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,6 +13,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public Controls() {
     isInit = false;
+    Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
   /**
