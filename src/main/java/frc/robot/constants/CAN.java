@@ -2,7 +2,9 @@ package frc.robot.constants;
 
 public final class CAN {
   public static final int pigeon = 9;
-
+  
+  public static final int intakeMotor = 1;
+  
   public static final int frontLeftCanCoder = 10;
   public static final int frontRightCanCoder = 11;
   public static final int backLeftCanCoder = 12;
