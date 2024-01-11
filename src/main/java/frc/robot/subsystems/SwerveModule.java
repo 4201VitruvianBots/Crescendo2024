@@ -234,8 +234,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private void updateSmartDashboard() {}
 
   public void updateLog() {
-    Logger.recordOutput(String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()), getTurnEncoderAbsHeading().getDegrees());
-    Logger.recordOutput(String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()), getTurnHeadingDeg());
+    Logger.recordOutput(
+        String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()),
+        getTurnEncoderAbsHeading().getDegrees());
+    Logger.recordOutput(
+        String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()),
+        getTurnHeadingDeg());
   }
 
   @Override
