@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -62,7 +63,9 @@ public class RobotContainer {
     }
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake));
+  }
 
   public void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Uptake extends SubsystemBase {
   /** Creates a new Uptake. */
+  
   public Uptake() {}
 
   @Override
