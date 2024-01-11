@@ -34,8 +34,6 @@ public class Intake extends SubsystemBase {
   }
   
   public void updateSmartDashboard() {
-    SmartDashboard.putNumber("Intake Motor Output", intakeMotor.get());
-    System.out.println("Hello World!");
     intakeSpeed.set(intakeMotor.get());
   }
   
