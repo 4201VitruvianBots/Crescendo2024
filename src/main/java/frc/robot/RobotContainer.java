@@ -12,30 +12,30 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  
+
   private final Shooter m_shooter = new Shooter();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
-  
+
   private final CommandXboxController xboxController =
-  new CommandXboxController(USB.xBoxController);
+      new CommandXboxController(USB.xBoxController);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
-  private final CommandXboxController xboxController =
-      new CommandXboxController(USB.xBoxController);
 
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
@@ -64,8 +64,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    xBoxController.a().whileHeld(new SHOOT(m_shooter, 600));
-    xBoxController.b().whileHeld(new SHOOT(m_shooter, 1200));
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
   }
 
   public void initializeAutoChooser() {

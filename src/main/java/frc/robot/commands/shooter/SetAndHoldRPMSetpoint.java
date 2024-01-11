@@ -3,38 +3,28 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.shooter;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldRPMSetpoint extends Command {
   /** Creates a new ResetGyro. */
-  private final Shooter m_shooter;
-  private double m_RPM;
+  private final Shooter m_Shooter;
 
-
-  public SetAndHoldRPMSetpoint() {
-    m_shooter = new Shooter();
+  public SetAndHoldRPMSetpoint(Shooter m_shooter) {
+    m_Shooter = m_shooter;
     m_shooter.maxRPM();
-    m_RPM2 = RPM2;
 
     addRequirements(m_shooter);
   }
 
- 
-
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute(Shooter shooter, double RPM) {
 
-
-    m_shooter.setRPM1(RPM);
-    m_shooter.setRPM2(RPM*0.9);
-  }
+  public void execute(Shooter shooter, double RPM) {}
 
   // Called once the command ends or is interrupted.
   @Override
