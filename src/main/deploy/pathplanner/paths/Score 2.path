@@ -20,12 +20,12 @@
         "y": 6.990384785778517
       },
       "prevControl": {
-        "x": 2.532311842551198,
-        "y": 7.0050704681015805
+        "x": 2.5321713886859714,
+        "y": 6.990384785778517
       },
       "nextControl": {
-        "x": 4.067688157448801,
-        "y": 6.975699103455453
+        "x": 4.067828611314029,
+        "y": 6.990384785778517
       },
       "isLocked": false,
       "linkedName": null
@@ -100,7 +100,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Two Peice ",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
