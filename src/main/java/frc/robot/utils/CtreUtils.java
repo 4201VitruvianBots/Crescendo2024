@@ -49,7 +49,7 @@ public final class CtreUtils {
     driveMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
     //    driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     //    driveMotorConfig.Slot0.kV = 0.1185;
-    driveMotorConfig.Slot0.kP = 0.12;
+    driveMotorConfig.Slot0.kP = 0.2402346041055719;
     driveMotorConfig.Slot0.kI = 0.0;
     driveMotorConfig.Slot0.kD = 0.0;
 

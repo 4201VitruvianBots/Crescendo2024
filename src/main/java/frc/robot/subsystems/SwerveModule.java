@@ -46,7 +46,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private Rotation2d m_lastHeadingR2d;
   private Pose2d m_pose;
   private boolean m_initSuccess = false;
-  private SwerveModuleState m_desiredState;
+  private SwerveModuleState m_desiredState = new SwerveModuleState();
 
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0);
@@ -240,6 +240,17 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     Logger.recordOutput(
         String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()),
         getTurnHeadingDeg());
+    Logger.recordOutput(
+            String.format("Swerve/Module %d/Drive Motor Velocity", m_modulePosition.ordinal()),
+            getDriveMps());
+
+    // Debug
+    Logger.recordOutput(
+            String.format("Swerve/Module %d/Drive Motor Desired Velocity", m_modulePosition.ordinal()),
+            m_desiredState.speedMetersPerSecond);
+    Logger.recordOutput(
+            String.format("Swerve/Module %d/Drive Motor Setpoint", m_modulePosition.ordinal()),
+            Double.valueOf(m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity", "0")));
   }
 
   @Override
