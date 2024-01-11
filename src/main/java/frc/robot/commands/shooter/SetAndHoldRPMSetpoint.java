@@ -8,13 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldRPMSetpoint extends Command {
-  /** Creates a new ResetGyro. */
-  private final Shooter m_Shooter;
 
   public SetAndHoldRPMSetpoint(Shooter m_shooter) {
-    m_Shooter = m_shooter;
-    m_shooter.maxRPM();
-
+    if(m_shooter.getRPM() == 0) {
+      m_shooter.maxRPM();
+    }
+    else {
+      m_shooter.minRPM();
+    }
     addRequirements(m_shooter);
   }
 
@@ -23,8 +24,6 @@ public class SetAndHoldRPMSetpoint extends Command {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-
-  public void execute(Shooter shooter, double RPM) {}
 
   // Called once the command ends or is interrupted.
   @Override

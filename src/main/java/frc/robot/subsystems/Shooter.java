@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,13 +13,7 @@ import frc.robot.constants.FLYWHEEL;
 public class Shooter extends SubsystemBase {
   private final PWMTalonFX flywheelmotor1 = new PWMTalonFX(FLYWHEEL.flywheel1);
   private final TalonFX flywheelmotor2 = new TalonFX(FLYWHEEL.flywheel2);
-  private final StaticBrake brakeControl = new StaticBrake();
-  private final NeutralOut neutralControl = new NeutralOut();
-
-  private final TalonFXConfiguration flywheelmotorconfig = new TalonFXConfiguration();
-
   private double flywheelmaxRPM = 1;
-  private double gearRatio = 1.0 / 1.0;
   private double flywheelRPM;
 
   private double flywheelRPMratio = 1.0;
@@ -44,21 +35,19 @@ public class Shooter extends SubsystemBase {
     flywheelRPM = flywheelmaxRPM;
   }
 
-  public void minRPM2(double flywheelRPM2) {
+  public void minRPM() {
     flywheelmotor1.set(0);
     flywheelmotor2.set(0);
     flywheelRPM = 0;
   }
 
   // values that we are pulling
-  public double getRPM1() {
+  public double getRPM() {
     return flywheelRPM;
   }
 
-  private void initShuffleboard() {}
-
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("RPM1", this.getRPM1());
+    SmartDashboard.putNumber("RPM1", this.getRPM());
   }
 
   @Override
