@@ -64,8 +64,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    xBoxController.a().whileHeld(new SetAndHoldRPMSetpoint(m_shooter, 600));
-    xBoxController.b().whileHeld(new SetAndHoldRPMSetpoint(m_shooter, 1200));
+    xBoxController.a().whileHeld(new SHOOT(m_shooter, 600));
+    xBoxController.b().whileHeld(new SHOOT(m_shooter, 1200));
   }
 
   public void initializeAutoChooser() {

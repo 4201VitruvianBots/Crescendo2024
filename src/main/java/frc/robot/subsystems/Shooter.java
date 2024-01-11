@@ -8,66 +8,60 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.FLYWHEEL;artdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CAN;
+import frc.robot.constants.FLYWHEEL;artdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CAN;
+import frc.robot.constants.FLYWHEEL;
 
 public class Shooter extends SubsystemBase {
-  private final TalonFX flywheelmotor1 = new TalonFX(FLYWHEEL.flywheelmotor1);
-  private final TalonFX iflywheelmotor2 = new TalonFX(FLYWHEEL.flywheelmotor2);
+  private final PWMTalonFX flywheelmotor1 = new PWMTalonFX(FLYWHEEL.flywheel1);
+  private final TalonFX flywheelmotor2 = new TalonFX(FLYWHEEL.flywheel2);
   private final StaticBrake brakeControl = new StaticBrake();
   private final NeutralOut neutralControl = new NeutralOut();
-  
-  private double flywheelRPM1;
+
+  private final TalonFXConfiguration flywheelmotorconfig = new TalonFXConfiguration();
+
+
+  private double flywheelmaxRPM = 1;
   private double gearRatio = 1.0/1.0;
-  private double flywhee2RPM2;
+  private double flywheelRPM;
+
+  private double flywheelRPMratio = 1.0;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
-  /** Creates a new Intkae. */
+  /* Creates a new Intake. */
   public Shooter() {
-    //TO DO: change pid loop to effect rpm
     // flywheel motor 1
-    flywheelmotor1.setControl(neutralControl);
-    flywheelmotor1.getConfigurator().apply(new TalonFXConfiguration());
     flywheelmotor1.setInverted(true);
-    flywheelmotor1.config_kF(0, kF);
-    flywheelmotor1.config_kP(0, kP);
-    flywheelmotor1.config_kI(0, kI);
-    flywheelmotor1.config_kD(0, kD);
-    
     //TO DO: change pid loop to effect rpm
     // flywheel motor 2
-    flywheelmotor2.setControl(neutralControl);
-    flywheelmotor2.getConfigurator().apply(new TalonFXConfiguration());
-    flywheelmotor2.setInverted(true);
-    flywheelmotor2.config_kF(0, kF);
-    flywheelmotor2.config_kP(0, kP);
-    flywheelmotor2.config_kI(0, kI);
-    flywheelmotor12.config_kD(0, kD);
+    flywheelmotor2.setInverted(true)
   }
 
   //values that we set
-  public void setMotorOutput1(double percentOutput) {
-    flywheelmotor1.set(percentOutput);
+  public void maxRPM(){
+    flywheelmotor1.set(flywheelmaxRPM);
+    flywheelmotor2.set(flywheelmaxRPM * flywheelRPMratio);
+    flywheelRPM = flywheelmaxRPM;
   }
 
-  public void setMotorOutput2(double percentOutput) {
-    flywheelmotor2.set(percentOutput);
-  }
-  public void setRPM1(double flywheelRPM1){
-    this.flywheelRPM1 = flywheelRPM1;
-  }
-
-  public void setRPM2(doule flywhee2RPM2) {
-    this.flywheelRPM2 = flywheelRPM2;
+  public void minRPM2(double flywheelRPM2) {
+    flywheelmotor1.set(0);
+    flywheelmotor2.set(0)
+    flywheelRPM = 0;
   }
 
   //values that we are pulling
   public double getRPM1(){
-    return flywheelRPM1;
-  }
-
-  public double getRPM2(){
-    return flywheelRPM2;
+    return flywheelRPM;
   }
 
   
@@ -76,12 +70,12 @@ public class Shooter extends SubsystemBase {
   }
 
 private void updateShuffleboard(){
-    SmartDashboard.putNumber("RPM1", getRPM1);
+    SmartDashboard.putNumber("RPM1", this.getRPM1());
 
 }
 
   @Override
   public void periodic() {
-    updateShuffleboard;
+    this.updateShuffleboard();
   }
 }

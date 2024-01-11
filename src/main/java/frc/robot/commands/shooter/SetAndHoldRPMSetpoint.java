@@ -2,9 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.swerve;
-
+package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldRPMSetpoint extends Command {
   /** Creates a new ResetGyro. */
@@ -13,8 +13,8 @@ public class SetAndHoldRPMSetpoint extends Command {
 
 
   public SetAndHoldRPMSetpoint() {
-    m_shooter = shooter;
-    m_RPM1 = RPM1;
+    m_shooter = new Shooter();
+    m_shooter.maxRPM();
     m_RPM2 = RPM2;
 
     addRequirements(m_shooter);
