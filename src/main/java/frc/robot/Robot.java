@@ -49,10 +49,11 @@ public class Robot extends LoggedRobot {
     } else {
       setUseTiming(false); // Run as fast as possible
       try {
-        String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
-        //       AdvantageScope (or prompt the user)
-        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        // TODO fix AdvantageKit installation
+        // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
+        // //       AdvantageScope (or prompt the user)
+        // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
       } catch (NoSuchElementException e) {
         System.out.println("\nAdvantageKit - Failed to find Replay source!");
       } finally {
