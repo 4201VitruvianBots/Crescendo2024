@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
-@Disabled
+
 public class TestTalonFxMotorSim implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
   static final double WAIT_TIME = 0.02;
@@ -136,7 +136,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     close();
   }
 
-  @Test
+  @Disabled("Constants do not work without feedforward")
   public void testVelocityControl() {
     var testSpeedMps = 4;
     var testSpeedRps = testSpeedMps / (SWERVE.MODULE.kWheelDiameterMeters * Math.PI);
@@ -189,7 +189,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     idxPub.close();
   }
 
-  @Test
+  @Disabled("Constants do not work without feedforward")
   public void testPositionControl() {
     var testPositionDeg = 90.0;
     var testPositionRot = (testPositionDeg / 360.0) * SWERVE.MODULE.kTurnMotorGearRatio;
