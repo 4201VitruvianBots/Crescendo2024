@@ -10,8 +10,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.autos.DefAuto;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.autos.Minimalauto1;
+import frc.robot.commands.autos.Minimalauto2;
+import frc.robot.commands.autos.Minimalauto3;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -61,9 +66,13 @@ public class RobotContainer {
   private void configureBindings() {}
 
   public void initializeAutoChooser() {
-    m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));
-
+    m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
+    m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
+    m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
+    m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
   }
 
   public Command getAutonomousCommand() {
