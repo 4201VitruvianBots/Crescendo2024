@@ -10,7 +10,7 @@ import frc.robot.subsystems.Uptake;
 public class RunUptake extends Command {
   Uptake m_uptake;
   double m_speed;
-  
+
   /** Creates a new RunIntake. */
   public RunUptake(Uptake uptake, double speed) {
     m_uptake = uptake;
@@ -41,4 +41,3 @@ public class RunUptake extends Command {
     return false;
   }
 }
-
