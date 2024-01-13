@@ -17,6 +17,7 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RobotTime;
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
+  private final Climber m_climber = new Climber();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
