@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
+import java.sql.Driver;
+
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
   private boolean isInit;
@@ -45,10 +47,16 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private void updateAllianceColor() {
     var pollFms = DriverStation.getAlliance();
 
-    if (pollFms.isPresent()) {
-      allianceColor = pollFms.get();
+    if(RobotBase.isReal()) {
+      if (pollFms.isPresent()) {
+        allianceColor = pollFms.get();
+      } else {
+        System.out.println("WARN: Could not get Alliance Color from FMS");
+      }
     } else {
-      System.out.println("WARN: Could not get Alliance Color from FMS");
+      var checkDsAlliance = DriverStation.getAlliance();
+
+      checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
     }
   }
 

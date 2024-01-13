@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.BASE;
 import java.io.File;
 import java.util.NoSuchElementException;
+
+import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -81,8 +83,7 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     // Update robot constants based off of robot used
     BASE.initConstants();
-    TalonFX dummy = new TalonFX(0);
-    Timer.delay(5);
+    CtreUtils.initPhoenixServer();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
