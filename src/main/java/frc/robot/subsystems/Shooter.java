@@ -3,8 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +10,7 @@ import frc.robot.constants.FLYWHEEL;
 
 public class Shooter extends SubsystemBase {
   private final PWMTalonFX flywheelmotor1 = new PWMTalonFX(FLYWHEEL.flywheel1);
-  private final TalonFX flywheelmotor2 = new TalonFX(FLYWHEEL.flywheel2);
+  private final PWMTalonFX flywheelmotor2 = new PWMTalonFX(FLYWHEEL.flywheel2);
   private double flywheelmaxRPM = 1;
   private double flywheelRPM;
 
@@ -25,7 +23,7 @@ public class Shooter extends SubsystemBase {
     flywheelmotor1.setInverted(true);
     // TO DO: change pid loop to effect rpm
     // flywheel motor 2
-    flywheelmotor2.setInverted(true);
+    flywheelmotor2.setInverted(false);
   }
 
   // values that we set
