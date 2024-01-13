@@ -14,7 +14,7 @@ public class BASE {
   public enum ROBOT {
     // Robot Serial Numbers
     GRIDLOCK("0306ce62"),
-    BOBOT(""),
+    BOBOT("030e6a97"),
     SIM("");
 
     private final String value;
@@ -49,7 +49,12 @@ public class BASE {
 
   public static void initGridlock() {}
 
-  public static void initBobot() {}
+  public static void initBobot() {
+    SWERVE.DRIVE.frontLeftCANCoderOffset = 95.27328;
+     SWERVE.DRIVE.frontRightCANCoderOffset = 34.18956;
+      SWERVE.DRIVE.backLeftCANCoderOffset = 77.51952;
+       SWERVE.DRIVE.backRightCANCoderOffset = 330.55668;      
+  }
 
   public static void initSim() {}
 
