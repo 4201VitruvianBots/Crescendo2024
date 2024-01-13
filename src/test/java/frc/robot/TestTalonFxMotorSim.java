@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
-
 public class TestTalonFxMotorSim implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
   static final double WAIT_TIME = 0.02;
