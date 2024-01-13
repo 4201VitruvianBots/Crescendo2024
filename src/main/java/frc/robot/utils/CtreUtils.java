@@ -17,11 +17,11 @@ public final class CtreUtils {
    * set/applied properly.
    */
   public static void initPhoenixServer() {
-//    if (RobotBase.isReal()) {
+    if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null; // Mark the device as null so gc removes it
-//    }
+    }
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {

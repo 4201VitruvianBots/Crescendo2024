@@ -268,13 +268,14 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
         getDriveMps());
 
     // Debug
-//    Logger.recordOutput(
-//        String.format("Swerve/Module %d/Drive Motor Desired Velocity", m_modulePosition.ordinal()),
-//        m_desiredState.speedMetersPerSecond);
-//    Logger.recordOutput(
-//        String.format("Swerve/Module %d/Drive Motor Setpoint", m_modulePosition.ordinal()),
-//        Double.valueOf(
-//            m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity", "0")));
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Drive Motor Desired Velocity",
+    // m_modulePosition.ordinal()),
+    //        m_desiredState.speedMetersPerSecond);
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Drive Motor Setpoint", m_modulePosition.ordinal()),
+    //        Double.valueOf(
+    //            m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity", "0")));
   }
 
   @Override
