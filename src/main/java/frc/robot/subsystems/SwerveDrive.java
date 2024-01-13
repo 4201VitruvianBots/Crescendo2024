@@ -47,28 +47,32 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontLeftTurnMotor),
                       new TalonFX(CAN.frontLeftDriveMotor),
                       new CANcoder(CAN.frontLeftCanCoder),
-                      DRIVE.frontLeftCANCoderOffset),
+                      DRIVE.frontLeftCANCoderOffset,
+                      true),
               MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.FRONT_RIGHT,
                       new TalonFX(CAN.frontRightTurnMotor),
                       new TalonFX(CAN.frontRightDriveMotor),
                       new CANcoder(CAN.frontRightCanCoder),
-                      DRIVE.frontRightCANCoderOffset),
+                      DRIVE.frontRightCANCoderOffset,
+                      true),
               MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_LEFT,
                       new TalonFX(CAN.backLeftTurnMotor),
                       new TalonFX(CAN.backLeftDriveMotor),
                       new CANcoder(CAN.backLeftCanCoder),
-                      DRIVE.backLeftCANCoderOffset),
+                      DRIVE.backLeftCANCoderOffset,
+                      true),
               MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_RIGHT,
                       new TalonFX(CAN.backRightTurnMotor),
                       new TalonFX(CAN.backRightDriveMotor),
                       new CANcoder(CAN.backRightCanCoder),
-                      DRIVE.backRightCANCoderOffset)));
+                      DRIVE.backRightCANCoderOffset,
+                      true)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private Pigeon2SimState m_pigeonSim;

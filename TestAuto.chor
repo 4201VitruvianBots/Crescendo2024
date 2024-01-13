@@ -13,7 +13,7 @@
         "wheelRadius": 0.050799972568014815
     },
     "paths": {
-        "NewPath": {
+        "44r4r": {
             "waypoints": [
                 {
                     "x": 0.6567921042442322,
@@ -45,7 +45,7 @@
                 {
                     "x": 2.403862714767456,
                     "y": 4.0832905769348145,
-                    "heading": -3.6444353773204887,
+                    "heading": 2.6387499298590975,
                     "isInitialGuess": false,
                     "translationConstrained": true,
                     "headingConstrained": true,

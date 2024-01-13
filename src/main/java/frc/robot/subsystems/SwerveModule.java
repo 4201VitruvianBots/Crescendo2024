@@ -33,6 +33,7 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.SWERVE.MODULE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import frc.robot.visualizers.SwerveModuleVisualizer;
 import org.littletonrobotics.junction.Logger;
 
@@ -41,6 +42,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final TalonFX m_turnMotor;
   private final TalonFX m_driveMotor;
   private final CANcoder m_angleEncoder;
+  private boolean invertDirection = false;
 
   private final double m_angleOffset;
   private Rotation2d m_lastHeadingR2d;
@@ -77,12 +79,16 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       TalonFX turnMotor,
       TalonFX driveMotor,
       CANcoder angleEncoder,
-      double angleOffset) {
+      double angleOffset,
+      boolean invertDirection) {
     m_modulePosition = modulePosition;
     m_turnMotor = turnMotor;
     m_driveMotor = driveMotor;
     m_angleEncoder = angleEncoder;
     m_angleOffset = RobotBase.isReal() ? angleOffset : 0;
+    turnMotor.setInverted(invertDirection);
+    driveMotor.setInverted(invertDirection);
+    if (invertDirection) {}
 
     if (RobotBase.isSimulation()) {
       m_angleEncoder.setPosition(0);
@@ -94,7 +100,6 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     setTurnAngle(0);
 
     m_lastHeadingR2d = getTurnHeadingR2d();
-
     m_moduleVisualizer = new SwerveModuleVisualizer(this.getName(), DRIVE.kMaxSpeedMetersPerSecond);
 
     initSmartDashboard();
@@ -122,7 +127,9 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public Rotation2d getTurnEncoderAbsHeading() {
     m_angleEncoder.getAbsolutePosition().refresh();
-    return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
+    if (invertDirection)
+      return Rotation2d.fromRotations(-m_angleEncoder.getAbsolutePosition().getValue());
+    else return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
   public void setTurnAngle(double angle) {
