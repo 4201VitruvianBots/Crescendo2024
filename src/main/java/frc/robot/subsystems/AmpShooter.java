@@ -1,38 +1,54 @@
 package frc.robot.subsystems;
 
+import static frc.robot.constants.FLYWHEEL.maxRPM;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.AMP;
+import frc.robot.constants.CAN;
+import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
-  private final CANSparkMax ampMotor = new CANSparkMax(AMP.amp, MotorType.kBrushless);
-  private double ampMaxRPM = 1;
-  private double ampShooterRPM;
+  private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampMotor, MotorType.kBrushless);
+  private final SparkMaxPIDController pidController = ampMotor.getPIDController();
+  private final RelativeEncoder encoder = ampMotor.getEncoder();
 
-  public AmpShooter() {}
-
-  public void maxRPM() {
-    ampMotor.set(ampMaxRPM);
-    ampShooterRPM = ampMaxRPM;
+  public AmpShooter() {
+    ampMotor.restoreFactoryDefaults();
+    encoder.setVelocityConversionFactor(0);
+    pidController.setFeedbackDevice(encoder);
+    pidController.setP(0);
+    pidController.setI(0);
+    pidController.setD(0);
+    pidController.setFF(0);
+    pidController.setOutputRange(0, 0);
   }
 
-  public void minRPM() {
-    ampMotor.set(0);
-    ampShooterRPM = 0;
+  public void setMaxRPM() {
+    pidController.setReference(maxRPM, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setMinRPM() {
+    pidController.setReference(0, CANSparkMax.ControlType.kVelocity);
   }
 
   public double getRPM() {
-    return ampShooterRPM;
+    return encoder.getVelocity();
   }
 
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
+    //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
+  }
+
+  private void updateLog() {
+    Logger.recordOutput("AmpShooter/RPM", getRPM());
   }
 
   @Override
   public void periodic() {
-    this.updateShuffleboard();
+    updateShuffleboard();
+    updateLog();
   }
 }
