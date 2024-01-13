@@ -17,9 +17,11 @@ public final class CtreUtils {
    *  which causes issues with encoder offsets not being set/applied properly.
    */
   public static void initPhoenixServer() {
-    TalonFX dummy = new TalonFX(0);
-    Timer.delay(5);
-    dummy = null;
+    if(RobotBase.isReal()) {
+      TalonFX dummy = new TalonFX(0);
+      Timer.delay(5);
+      dummy = null;
+    }
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {

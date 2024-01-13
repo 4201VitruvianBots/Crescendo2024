@@ -70,4 +70,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return m_autoChooser.getSelected();
   }
+
+  public void periodic() {
+    m_fieldSim.periodic();
+  }
 }
