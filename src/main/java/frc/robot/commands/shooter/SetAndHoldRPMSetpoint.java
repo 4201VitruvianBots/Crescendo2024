@@ -10,11 +10,10 @@ import frc.robot.subsystems.Shooter;
 public class SetAndHoldRPMSetpoint extends Command {
 
   public SetAndHoldRPMSetpoint(Shooter m_shooter) {
-    if(m_shooter.getRPM() == 0) {
-      m_shooter.maxRPM();
-    }
-    else {
-      m_shooter.minRPM();
+    if (m_shooter.getRPM() == 0) {
+      m_shooter.setMaxRPM();
+    } else {
+      m_shooter.setMinRPM();
     }
     addRequirements(m_shooter);
   }

@@ -3,53 +3,68 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static frc.robot.constants.FLYWHEEL.gearRatio;
+import static frc.robot.constants.FLYWHEEL.maxRPM;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.FLYWHEEL;
+import frc.robot.constants.CAN;
+import frc.robot.utils.CtreUtils;
+import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  private final PWMTalonFX flywheelmotor1 = new PWMTalonFX(FLYWHEEL.flywheel1);
-  private final PWMTalonFX flywheelmotor2 = new PWMTalonFX(FLYWHEEL.flywheel2);
-  private double flywheelmaxRPM = 1;
-  private double flywheelRPM;
+  private final TalonFX motor1 = new TalonFX(CAN.flywheel1);
+  private final TalonFX motor2 = new TalonFX(CAN.flywheel2);
 
-  private double flywheelRPMratio = 1.0;
+  private final VelocityVoltage velocityControl = new VelocityVoltage(0);
+
+  private double flywheelRPM;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
     // flywheel motor 1
-    flywheelmotor1.setInverted(true);
+    var motorConfig = new TalonFXConfiguration();
+    motorConfig.Feedback.SensorToMechanismRatio = gearRatio;
+    CtreUtils.configureTalonFx(motor1, motorConfig);
+    motor1.setInverted(true);
+
     // TO DO: change pid loop to effect rpm
     // flywheel motor 2
-    flywheelmotor2.setInverted(false);
+    CtreUtils.configureTalonFx(motor2, motorConfig);
+    motor2.setInverted(false);
   }
 
   // values that we set
-  public void maxRPM() {
-    flywheelmotor1.set(flywheelmaxRPM);
-    flywheelmotor2.set(flywheelmaxRPM * flywheelRPMratio);
-    flywheelRPM = flywheelmaxRPM;
+  public void setMaxRPM() {
+    motor1.setControl(velocityControl.withVelocity(maxRPM));
+    motor2.setControl(velocityControl.withVelocity(maxRPM));
   }
 
-  public void minRPM() {
-    flywheelmotor1.set(0);
-    flywheelmotor2.set(0);
-    flywheelRPM = 0;
+  public void setMinRPM() {
+    motor1.setControl(velocityControl);
+    motor2.setControl(velocityControl);
   }
 
   // values that we are pulling
   public double getRPM() {
-    return flywheelRPM;
+    return motor1.getVelocity().getValue();
   }
 
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("RPM1", this.getRPM());
+    // SmartDashboard.putNumber("RPM1", this.getRPM());
+  }
+
+  private void updateLog() {
+    Logger.recordOutput("Flywheel/RPM1", getRPM());
   }
 
   @Override
   public void periodic() {
-    this.updateShuffleboard();
+    updateShuffleboard();
+    updateLog();
   }
 }
