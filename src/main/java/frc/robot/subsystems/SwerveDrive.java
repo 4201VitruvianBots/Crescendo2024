@@ -84,7 +84,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   @SuppressWarnings("CanBeFinal")
   private boolean m_simOverride = false; // DO NOT MAKE FINAL. WILL BREAK UNIT TESTS
 
-  private double m_simYaw;
+  private Rotation2d m_simYaw = new Rotation2d();
   private double m_simRoll;
   private DoublePublisher pitchPub, rollPub, yawPub, odometryXPub, odometryYPub, odometryYawPub;
 
@@ -110,7 +110,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
         new SwerveDrivePoseEstimator(
             DRIVE.kSwerveKinematics,
             getHeadingRotation2d(),
-            getSwerveDriveModulePositionsArray(),
+            getSwerveModulesPositionsArray(),
             new Pose2d());
 
     m_turnController.enableContinuousInput(-Math.PI, Math.PI);
@@ -161,7 +161,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                   throttle, strafe, rotation, getHeadingRotation2d())
               : new ChassisSpeeds(throttle, strafe, rotation);
     }
-    var newChassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, RobotTime.getTimeDelta());
+//    var newChassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, RobotTime.getTimeDelta());
+    var newChassisSpeeds = chassisSpeeds;
 
     Map<MODULE_POSITION, SwerveModuleState> moduleStates =
         ModuleMap.of(DRIVE.kSwerveKinematics.toSwerveModuleStates(newChassisSpeeds));
@@ -213,7 +214,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isSimulation()) {
       m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
     } else m_pigeon.setYaw(pose.getRotation().getDegrees());
-    m_odometry.resetPosition(getHeadingRotation2d(), getSwerveDriveModulePositionsArray(), pose);
+    m_odometry.resetPosition(getHeadingRotation2d(), getSwerveModulesPositionsArray(), pose);
 
     for (var position : MODULE_POSITION.values()) {
       var transform =
@@ -288,7 +289,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return map;
   }
 
-  public SwerveModulePosition[] getSwerveDriveModulePositionsArray() {
+  public SwerveModulePosition[] getSwerveModulesPositionsArray() {
     return ModuleMap.orderedValues(getModulePositions(), new SwerveModulePosition[0]);
   }
 
@@ -349,7 +350,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public void updateOdometry() {
-    m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
+    m_odometry.update(getHeadingRotation2d(), getSwerveModulesPositionsArray());
 
     for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
       Transform2d moduleTransform =
@@ -381,13 +382,11 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   @Override
   public void simulationPeriodic() {
-    ChassisSpeeds chassisSpeed =
-        DRIVE.kSwerveKinematics.toChassisSpeeds(
-            ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+    var twist = kSwerveKinematics.toTwist2d(getSwerveModulesPositionsArray());
 
-    m_simYaw += chassisSpeed.omegaRadiansPerSecond * RobotTime.getTimeDelta();
+    m_simYaw = m_simYaw.plus(Rotation2d.fromRadians(twist.dtheta));
 
-    m_pigeonSim.setRawYaw(-Units.radiansToDegrees(m_simYaw));
+    m_pigeonSim.setRawYaw(-m_simYaw.getDegrees());
   }
 
   @Override

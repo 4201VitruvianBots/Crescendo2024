@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-import java.sql.Driver;
-
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
   private boolean isInit;
@@ -47,7 +45,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private void updateAllianceColor() {
     var pollFms = DriverStation.getAlliance();
 
-    if(RobotBase.isReal()) {
+    if (RobotBase.isReal()) {
       if (pollFms.isPresent()) {
         allianceColor = pollFms.get();
       } else {

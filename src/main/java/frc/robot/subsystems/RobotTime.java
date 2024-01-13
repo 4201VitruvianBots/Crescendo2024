@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,15 +9,16 @@ public class RobotTime extends SubsystemBase {
   private static double m_time;
   private static double m_lastTime;
   private static double m_dt;
-  private static TIME_MODE m_timeMode = TIME_MODE.REAL_TIME;
+  private static TIME_MODE m_timeMode = TIME_MODE.FPGA_TIME;
 
   enum TIME_MODE {
-    REAL_TIME,
-    ROBORIO_TIMESTEP
+    FPGA_TIME,
+    CTRE_TIME,
+    TIMESTEP
   }
 
   public RobotTime() {
-    m_timeMode = TIME_MODE.ROBORIO_TIMESTEP;
+    m_timeMode = TIME_MODE.FPGA_TIME;
   }
 
   public static double getTime() {
@@ -42,12 +44,15 @@ public class RobotTime extends SubsystemBase {
   @Override
   public void periodic() {
     switch (m_timeMode) {
-      case ROBORIO_TIMESTEP:
+      case TIMESTEP:
         if (RobotBase.isSimulation()) {
           setTime(getTime() + 0.02);
           break;
         }
-      case REAL_TIME:
+      case CTRE_TIME:
+        setTime(Utils.getCurrentTimeSeconds());
+        break;
+      case FPGA_TIME:
       default:
         setTime(Timer.getFPGATimestamp());
     }

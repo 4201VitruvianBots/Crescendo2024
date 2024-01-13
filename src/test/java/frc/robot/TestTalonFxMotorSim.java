@@ -1,6 +1,6 @@
 package frc.robot;
 
-import static frc.robot.simulation.SimConstants.kMotorResistance;
+import static frc.robot.constants.SIM.kMotorResistance;
 import static frc.robot.utils.TestUtils.refreshAkitData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -27,7 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
-
 
 public class TestTalonFxMotorSim implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
