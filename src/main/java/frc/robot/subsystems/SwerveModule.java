@@ -69,8 +69,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, 0.5);
   private DCMotorSim m_driveMotorSim =
       new DCMotorSim(
-//          LinearSystemId.createDCMotorSystem(0.134648227, 0.002802309),
-              LinearSystemId.createDCMotorSystem(0.02, 0.001),
+          //          LinearSystemId.createDCMotorSystem(0.134648227, 0.002802309),
+          LinearSystemId.createDCMotorSystem(0.02, 0.001),
           MODULE.kDriveGearbox,
           MODULE.kDriveMotorGearRatio);
 
@@ -272,18 +272,18 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     m_turnMotorSim.setInputVoltage(MathUtil.clamp(m_turnMotorSimState.getMotorVoltage(), -12, 12));
     m_driveMotorSim.setInputVoltage(
-            MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
+        MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
 
     double dt = RobotTime.getTimeDelta();
     m_turnMotorSim.update(dt);
     m_driveMotorSim.update(dt);
 
     m_turnMotorSimState.setSupplyVoltage(
-            RobotController.getBatteryVoltage()
-                    - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
+        RobotController.getBatteryVoltage()
+            - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
     m_driveMotorSimState.setSupplyVoltage(
-            RobotController.getBatteryVoltage()
-                    - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
+        RobotController.getBatteryVoltage()
+            - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
 
     var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
     var driveVelocityRps =
