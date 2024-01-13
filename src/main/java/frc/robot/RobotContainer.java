@@ -15,7 +15,7 @@ import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptakeDownward;
-import frc.robot.commands.uptake.RunUptakeUpward;
+import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
@@ -66,9 +66,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake));
-    xboxController.povDown().whileTrue(new RunUptakeDownward(m_uptake));
-    xboxController.povUp().whileTrue(new RunUptakeUpward(m_uptake));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
   }
 
   public void initializeAutoChooser() {
