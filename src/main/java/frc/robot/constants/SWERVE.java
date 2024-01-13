@@ -29,10 +29,10 @@ public final class SWERVE {
         new SwerveDriveKinematics(
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
-    public static double frontLeftCANCoderOffset = 16.875;
-    public static double frontRightCANCoderOffset = 172.08972;
-    public static double backLeftCANCoderOffset = -169.98048;
-    public static double backRightCANCoderOffset = 31.55256;
+    public static double frontLeftCANCoderOffset = 197.75376;
+    public static double frontRightCANCoderOffset = 352.61712;
+    public static double backLeftCANCoderOffset = 10.1952;
+    public static double backRightCANCoderOffset = 211.55256;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5;
@@ -65,9 +65,13 @@ public final class SWERVE {
     public static final double kTurnInertia = 0.00001;
     public static final boolean kTurnInverted = true;
 
-    public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
-    public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
-    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.193 / 12;
+    //    public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
+    //    public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
+    //    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.193 / 12;
+
+    public static final double ksDriveVoltSecondsPerMeter = 0.32;
+    public static final double kvDriveVoltSecondsSquaredPerMeter = 1.51;
+    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.27;
 
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
