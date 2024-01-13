@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.commands.uptake.RunUptakeDownward;
 import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
