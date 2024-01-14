@@ -11,7 +11,7 @@ import frc.robot.constants.CAN;
 import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
-  private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampMotor, MotorType.kBrushless);
+  private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
   private final SparkMaxPIDController pidController = ampMotor.getPIDController();
   private final RelativeEncoder encoder = ampMotor.getEncoder();
 
