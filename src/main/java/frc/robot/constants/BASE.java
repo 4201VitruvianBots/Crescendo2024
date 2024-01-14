@@ -51,9 +51,9 @@ public class BASE {
 
   public static void initBobot() {
     SWERVE.DRIVE.frontLeftCANCoderOffset = 95.27328;
-     SWERVE.DRIVE.frontRightCANCoderOffset = 34.18956;
-      SWERVE.DRIVE.backLeftCANCoderOffset = 77.51952;
-       SWERVE.DRIVE.backRightCANCoderOffset = 330.55668;      
+    SWERVE.DRIVE.frontRightCANCoderOffset = 34.18956;
+    SWERVE.DRIVE.backLeftCANCoderOffset = 77.51952;
+    SWERVE.DRIVE.backRightCANCoderOffset = 330.55668;
   }
 
   public static void initSim() {}

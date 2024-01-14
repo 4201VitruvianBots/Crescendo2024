@@ -8,16 +8,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.BASE;
 import frc.robot.constants.SWERVE;
 
 public final class CtreUtils {
-  /** Initialize Phoenix Server by creating a dummy device.
-   *  We do this so that the CANCoders don't get configured before Phoenix Server is up,
-   *  which causes issues with encoder offsets not being set/applied properly.
+  /**
+   * Initialize Phoenix Server by creating a dummy device. We do this so that the CANCoders don't
+   * get configured before Phoenix Server is up, which causes issues with encoder offsets not being
+   * set/applied properly.
    */
   public static void initPhoenixServer() {
-    if(RobotBase.isReal()) {
+    if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null;

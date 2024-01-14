@@ -64,7 +64,11 @@ public class RobotContainer {
         new SetPercentOutput(m_intake, xboxController.getLeftY(), xboxController.getRightY()));
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    xboxController.b().whileTrue(new SetPercentOutput(m_intake, -0.85, -0.85));
+    xboxController.a().whileTrue(new SetPercentOutput(m_intake, -0.75, -0.75));
+    xboxController.y().whileTrue(new SetPercentOutput(m_intake, -1.0, -1.0));
+  }
 
   public void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));
