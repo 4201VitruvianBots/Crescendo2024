@@ -8,7 +8,10 @@ import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
 import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -49,7 +52,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private Pose2d m_pose;
   private boolean m_initSuccess = false;
   private SwerveModuleState m_desiredState;
-
+  private final VoltageOut m_driVoltageOut = new VoltageOut(0);
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0);
   private final PositionVoltage turnPositionControl = new PositionVoltage(0);
@@ -202,6 +205,27 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     // Jittering.
     m_turnMotor.setControl(turnPositionControl.withPosition(heading.getRotations()));
     m_lastHeadingR2d = heading;
+  }
+
+  public void setcharacterizationvoltage(double volts) {
+    m_driveMotor.setControl(m_driVoltageOut.withOutput(volts));
+    m_turnMotor.setControl(turnPositionControl.withPosition(0));
+  }
+
+  public TalonFX getdrivemotor() {
+    return m_driveMotor;
+  }
+
+  public void InitalizeDrivecharacterization() {
+    SignalLogger.setPath("/home/lvuser/logger/");
+    CtreUtils.configureTalonFx(m_driveMotor, new TalonFXConfiguration());
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        250,
+        m_driveMotor.getPosition(),
+        m_driveMotor.getVelocity(),
+        m_driveMotor.getMotorVoltage());
+    m_driveMotor.optimizeBusUtilization();
+    SignalLogger.start();
   }
 
   public SwerveModuleState getState() {

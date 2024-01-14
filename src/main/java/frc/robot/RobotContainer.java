@@ -12,17 +12,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.autos.DefAuto;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.autos.DriveStriaghtTest;
-import frc.robot.commands.autos.Minimalauto1;
-import frc.robot.commands.autos.Minimalauto2;
-import frc.robot.commands.autos.Minimalauto3;
+import frc.robot.commands.characterization.CharacterizeSwerveDriveDynamic;
+import frc.robot.commands.characterization.CharacterizeSwerveDriveQuasistiatic;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.utils.SysidUtils;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -31,7 +31,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-
+  private final SendableChooser<Command> m_charariterzationChooser = new SendableChooser<>();
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
   private final CommandXboxController xboxController =
@@ -43,6 +43,7 @@ public class RobotContainer {
     initializeSubsystems();
     configureBindings();
     initializeAutoChooser();
+    charariterzationChooser();
   }
 
   private void initializeSubsystems() {
@@ -67,12 +68,30 @@ public class RobotContainer {
 
   public void initializeAutoChooser() {
     m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
-    m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
-    SmartDashboard.putData("AutoChooser", m_autoChooser);
+    // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
-    m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
-    m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
-    m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
+    // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
+    // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
+    // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
+    SmartDashboard.putData("AutoChooser", m_autoChooser);
+  }
+
+  public void charariterzationChooser() {
+    SysidUtils.createSwerveModuledrivecharacterization(m_swerveDrive);
+
+    m_charariterzationChooser.addOption(
+        "driveQuasistiaticfoward",
+        new CharacterizeSwerveDriveQuasistiatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_charariterzationChooser.addOption(
+        "driveQuasistiaticbackward",
+        new CharacterizeSwerveDriveQuasistiatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    m_charariterzationChooser.addOption(
+        "driveDynamicfoward",
+        new CharacterizeSwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_charariterzationChooser.addOption(
+        "driveDynamicbackward",
+        new CharacterizeSwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("charariterzationChooser", m_charariterzationChooser);
   }
 
   public Command getAutonomousCommand() {

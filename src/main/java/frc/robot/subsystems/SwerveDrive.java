@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -272,6 +273,11 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);
 
     setSwerveModuleStatesAuto(moduleStates.values().toArray(new SwerveModuleState[0]));
+  }
+
+  public void setVoltage(double volts) {
+    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.setcharacterizationvoltage(volts);
   }
 
   public SwerveModule getSwerveModule(MODULE_POSITION modulePosition) {
