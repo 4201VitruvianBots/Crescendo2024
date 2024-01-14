@@ -22,18 +22,13 @@ public class SwerveTurnQuasistatic extends SequentialCommandGroup {
     MODULE_POSITION position = MODULE_POSITION.FRONT_LEFT;
     var module = swerveDrive.getSwerveModule(position);
 
-    Command initCommand = new InstantCommand((module::initTurnSysid));
     Command sysidCommand = routine.quasistatic(direction);
 
     addCommands(
         new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), module),
         new WaitCommand(1),
-        initCommand,
-        new WaitCommand(1),
-        new InstantCommand(SignalLogger::start),
         sysidCommand
-            .withTimeout(10)
-            .andThen(SignalLogger::stop)
+            .withTimeout(8)
             .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), module));
   }
 }

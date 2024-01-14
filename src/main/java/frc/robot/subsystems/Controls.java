@@ -15,7 +15,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   public Controls() {
     isInit = false;
 
-    if(!BASE.disableLogging)
+    if (!BASE.disableLogging)
       Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
@@ -66,8 +66,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
       updateAllianceColor();
     }
     // This method will be called once per scheduler run
-    if(!BASE.disableLogging)
-      updateLogger();
+    if (!BASE.disableLogging) updateLogger();
   }
 
   @Override

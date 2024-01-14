@@ -35,11 +35,7 @@ import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
-
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -353,12 +349,13 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     }
 
     var signalLoggerDir = new File("/home/lvuser/logger/sysid/");
-    if(!signalLoggerDir.exists()) {
+    if (!signalLoggerDir.exists()) {
       var result = signalLoggerDir.mkdirs();
       System.out.println("mkdirs() result: " + result);
     }
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
+    System.out.println("Finished Initializing Drive Settings");
   }
 
   public SwerveDrivePoseEstimator getOdometry() {
@@ -376,7 +373,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void updateOdometry() {
     m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
 
-    if(!BASE.disableVisualization)
+    if (!BASE.disableVisualization)
       for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
         Transform2d moduleTransform =
             new Transform2d(
@@ -403,8 +400,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
     updateOdometry();
     updateSmartDashboard();
-    if(!BASE.disableLogging)
-      updateLog();
+    if (!BASE.disableLogging) updateLog();
   }
 
   @Override

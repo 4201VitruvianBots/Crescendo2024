@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -25,6 +27,7 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
 
 public class RobotContainer {
@@ -83,6 +86,10 @@ public class RobotContainer {
     SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
 
+    SmartDashboard.putData("Start Logging", new InstantCommand(SignalLogger::start));
+    SmartDashboard.putData("Stop Logging", new InstantCommand(SignalLogger::stop));
+
+    m_sysidChooser.addOption("initDriveSettings", new InstantCommand(m_swerveDrive::initDriveSysid));
     m_sysidChooser.addOption(
         "driveQuasistaticForward",
         new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
@@ -96,6 +103,7 @@ public class RobotContainer {
         "driveDynamicBackward",
         new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
 
+    m_sysidChooser.addOption("initTurnSettings", new InstantCommand(()-> m_swerveDrive.getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT).initTurnSysid());
     m_sysidChooser.addOption(
         "turnQuasistaticForward",
         new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
@@ -114,9 +122,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if(BASE.useSysID)
-      return m_sysidChooser.getSelected();
-    else
-      return m_autoChooser.getSelected();
+    if (BASE.useSysID) return m_sysidChooser.getSelected();
+    else return m_autoChooser.getSelected();
   }
 }

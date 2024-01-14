@@ -17,7 +17,6 @@ public class SwerveDriveQuasistatic extends SequentialCommandGroup {
   public SwerveDriveQuasistatic(SwerveDrive swerveDrive, SysIdRoutine.Direction direction) {
     var routine = SysidUtils.getSwerveDriveRoutine();
 
-    Command initCommand = new InstantCommand((swerveDrive::initDriveSysid));
     Command sysidCommand = routine.quasistatic(direction);
 
     SwerveModuleState[] states = {
@@ -30,12 +29,8 @@ public class SwerveDriveQuasistatic extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false)),
         new WaitCommand(1),
-        initCommand,
-        new WaitCommand(1),
-        new InstantCommand(SignalLogger::start),
         sysidCommand
-            .withTimeout(10)
-            .andThen(SignalLogger::stop)
+            .withTimeout(8)
             .andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds())));
   }
 }
