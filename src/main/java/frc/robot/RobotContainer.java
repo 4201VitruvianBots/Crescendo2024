@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.amp.AmpFlipperForward;
+import frc.robot.commands.amp.AmpFlipperJoystick;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
@@ -18,6 +20,7 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.AmpFlipper;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RobotTime;
@@ -34,6 +37,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
+  private final AmpFlipper m_flipper = new AmpFlipper();
 
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
@@ -70,11 +74,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    m_flipper.setDefaultCommand(new AmpFlipperJoystick(m_flipper, xboxController::getLeftY));
+    
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
   }
 
   public void initializeAutoChooser() {
