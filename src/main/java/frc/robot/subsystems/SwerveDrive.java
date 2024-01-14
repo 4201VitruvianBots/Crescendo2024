@@ -30,10 +30,16 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.BASE;
 import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -346,7 +352,13 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       module.initDriveSysid();
     }
 
-    SignalLogger.setPath("/home/lvuser/logger/sysid/");
+    var signalLoggerDir = new File("/home/lvuser/logger/sysid/");
+    if(!signalLoggerDir.exists()) {
+      var result = signalLoggerDir.mkdirs();
+      System.out.println("mkdirs() result: " + result);
+    }
+
+    SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
   }
 
   public SwerveDrivePoseEstimator getOdometry() {
@@ -364,13 +376,14 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void updateOdometry() {
     m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
 
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
-      Transform2d moduleTransform =
-          new Transform2d(
-              DRIVE.kModuleTranslations.get(module.getModulePosition()),
-              module.getTurnHeadingR2d());
-      module.setModulePose(getPoseMeters().transformBy(moduleTransform));
-    }
+    if(!BASE.disableVisualization)
+      for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
+        Transform2d moduleTransform =
+            new Transform2d(
+                DRIVE.kModuleTranslations.get(module.getModulePosition()),
+                module.getTurnHeadingR2d());
+        module.setModulePose(getPoseMeters().transformBy(moduleTransform));
+      }
   }
 
   private void initSmartDashboard() {
@@ -390,7 +403,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
     updateOdometry();
     updateSmartDashboard();
-    updateLog();
+    if(!BASE.disableLogging)
+      updateLog();
   }
 
   @Override

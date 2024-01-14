@@ -19,6 +19,7 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.swerve.SetSwerveDrive;
+import frc.robot.constants.BASE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
@@ -113,6 +114,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_autoChooser.getSelected();
+    if(BASE.useSysID)
+      return m_sysidChooser.getSelected();
+    else
+      return m_autoChooser.getSelected();
   }
 }

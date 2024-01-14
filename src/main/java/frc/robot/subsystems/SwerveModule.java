@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.BASE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.SWERVE.MODULE;
 import frc.robot.utils.CtreUtils;
@@ -38,6 +39,8 @@ import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import frc.robot.visualizers.SwerveModuleVisualizer;
 import org.littletonrobotics.junction.Logger;
+
+import java.io.File;
 
 public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final ModuleMap.MODULE_POSITION m_modulePosition;
@@ -231,7 +234,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     m_turnMotor.optimizeBusUtilization();
 
-    SignalLogger.setPath("/home/lvuser/logger/sysid/");
+    var signalLoggerDir = new File("/home/lvuser/logger/sysid/");
+    if(!signalLoggerDir.exists()) {
+      signalLoggerDir.mkdirs();
+    }
+
+    SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
   }
 
   public void setTurnSysidVoltage(double volts) {
@@ -288,9 +296,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     updateSmartDashboard();
-    updateLog();
+    if(!BASE.disableLogging)
+      updateLog();
 
-    m_moduleVisualizer.update(getState());
+    if(!BASE.disableVisualization)
+      m_moduleVisualizer.update(getState());
   }
 
   @Override

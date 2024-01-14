@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.RobotController;
 
 public class BASE {
   public static String robotName = "";
+  public static boolean disableLogging = false;
+  public static boolean disableVisualization = false;
+  public static boolean useSysID = true;
 
   public enum CONTROL_MODE {
     OPEN_LOOP,
