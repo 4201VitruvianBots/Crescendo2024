@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
+import frc.robot.commands.characterization.SwerveTurnDynamic;
+import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -77,7 +79,8 @@ public class RobotContainer {
   }
 
   public void initSysidChooser() {
-    SysidUtils.createSwerveModuleDriveCharacterization(m_swerveDrive);
+    SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
+    SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
 
     m_sysidChooser.addOption(
         "driveQuasistaticForward",
@@ -91,6 +94,20 @@ public class RobotContainer {
     m_sysidChooser.addOption(
         "driveDynamicBackward",
         new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "turnQuasistaticForward",
+        new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "turnQuasistaticBackwards",
+        new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    m_sysidChooser.addOption(
+        "turnDynamicForward",
+        new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "turnDynamicBackward",
+        new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+
     SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 

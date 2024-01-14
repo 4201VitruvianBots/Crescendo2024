@@ -17,15 +17,15 @@ public class SwerveDriveQuasistatic extends SequentialCommandGroup {
   public SwerveDriveQuasistatic(SwerveDrive swerveDrive, SysIdRoutine.Direction direction) {
     var routines = SysidUtils.getSwerveModuleDriveRoutines();
 
-    Command[] sysidCommand = new Command[routines.length];
-    for (int i = 0; i < routines.length; i++) {
-      sysidCommand[i] = routines[i].quasistatic(direction);
-    }
-
     Command[] initCommands = new Command[routines.length];
     for (var position : MODULE_POSITION.values()) {
       var module = swerveDrive.getSwerveModule(position);
-      initCommands[position.ordinal()] = new InstantCommand((module::initDriveCharacterization));
+      initCommands[position.ordinal()] = new InstantCommand((module::initDriveSysid));
+    }
+
+    Command[] sysidCommand = new Command[routines.length];
+    for (int i = 0; i < routines.length; i++) {
+      sysidCommand[i] = routines[i].quasistatic(direction);
     }
 
     SwerveModuleState[] states =

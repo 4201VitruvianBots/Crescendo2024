@@ -51,7 +51,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private Pose2d m_pose;
   private boolean m_initSuccess = false;
   private SwerveModuleState m_desiredState;
-  private final VoltageOut m_driVoltageOut = new VoltageOut(0);
+  private final VoltageOut m_voltageOut = new VoltageOut(0);
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0);
   private final PositionVoltage turnPositionControl = new PositionVoltage(0);
@@ -206,12 +206,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_lastHeadingR2d = heading;
   }
 
-  public void setCharacterizationVoltage(double volts) {
-    m_driveMotor.setControl(m_driVoltageOut.withOutput(volts));
-    m_turnMotor.setControl(turnPositionControl.withPosition(0));
-  }
-
-  public void initDriveCharacterization() {
+  public void initDriveSysid() {
     CtreUtils.configureTalonFx(m_driveMotor, new TalonFXConfiguration());
 
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -225,6 +220,28 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     SignalLogger.setPath("/home/lvuser/logger/sysid/swerveDrive");
 
     SignalLogger.start();
+  }
+
+  public void setDriveSysidVoltage(double volts) {
+    m_driveMotor.setControl(m_voltageOut.withOutput(volts));
+    m_turnMotor.setControl(turnPositionControl.withPosition(0));
+  }
+
+  public void initTurnSysid() {
+    CtreUtils.configureTalonFx(m_turnMotor, new TalonFXConfiguration());
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        250, m_turnMotor.getPosition(), m_turnMotor.getVelocity(), m_turnMotor.getMotorVoltage());
+
+    m_turnMotor.optimizeBusUtilization();
+
+    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveTurn");
+
+    SignalLogger.start();
+  }
+
+  public void setTurnSysidVoltage(double volts) {
+    m_turnMotor.setControl(m_voltageOut.withOutput(volts));
   }
 
   public SwerveModuleState getState() {
