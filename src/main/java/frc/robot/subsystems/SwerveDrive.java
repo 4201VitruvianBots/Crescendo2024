@@ -346,7 +346,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       module.initDriveSysid();
     }
 
-    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveDrive");
+    SignalLogger.setPath("/home/lvuser/logger/sysid/");
   }
 
   public SwerveDrivePoseEstimator getOdometry() {
@@ -374,6 +374,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   private void initSmartDashboard() {
+    setName("SwerveDrive");
     SmartDashboard.putData(this);
   }
 

@@ -231,7 +231,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     m_turnMotor.optimizeBusUtilization();
 
-    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveTurn");
+    SignalLogger.setPath("/home/lvuser/logger/sysid/");
   }
 
   public void setTurnSysidVoltage(double volts) {
@@ -271,7 +271,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   private void initSmartDashboard() {
-    setName("Swerve Module " + m_modulePosition.ordinal());
+    setName("SwerveModule" + m_modulePosition.ordinal());
   }
 
   private void updateSmartDashboard() {}
