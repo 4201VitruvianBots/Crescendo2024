@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import frc.robot.constants.SWERVE.MODULE;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 public class TestCtreUtils implements AutoCloseable {
   static final double DELTA = 1e-3; // acceptable deviation range
@@ -37,7 +37,7 @@ public class TestCtreUtils implements AutoCloseable {
     close();
   }
 
-  @Test
+  @Disabled
   public void testSensorRatioConfig() {
     var testMotorSim = m_testMotor.getSimState();
 

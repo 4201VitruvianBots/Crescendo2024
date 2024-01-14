@@ -6,38 +6,38 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.utils.CtreUtils;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final TalonFX intakeMotor = new TalonFX(CAN.intakeMotor);
+  private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
 
-  NetworkTable intakeNtTab =
-      NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Intake");
-
-  DoublePublisher intakeSpeed;
+  private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
 
   public Intake() {
-    intakeMotor.getConfigurator().apply(new TalonFXConfiguration());
-
-    intakeSpeed = intakeNtTab.getDoubleTopic("Intake Speed").publish();
+    CtreUtils.configureTalonFx(intakeMotor1, new TalonFXConfiguration());
+    CtreUtils.configureTalonFx(intakeMotor2, new TalonFXConfiguration());
   }
 
-  public void setSpeed(double speed) {
-    intakeMotor.set(speed);
+  public void setSpeed(double speed1, double speed2) {
+    intakeMotor1.set(speed1);
+    intakeMotor2.set(speed2);
   }
 
-  public void updateSmartDashboard() {
-    intakeSpeed.set(intakeMotor.get());
+  public void updateSmartDashboard() {}
+
+  public void updateLog() {
+    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
+    updateLog();
   }
 }
