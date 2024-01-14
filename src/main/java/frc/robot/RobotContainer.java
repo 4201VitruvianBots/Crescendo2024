@@ -11,29 +11,44 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.amp.AmpFlipperForward;
+import frc.robot.commands.amp.AmpFlipperJoystick;
 import frc.robot.commands.autos.DriveStriaghtTest;
-import frc.robot.commands.intake.SetPercentOutput;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetIntakePercentOutput;
+import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.swerve.SetSwerveDrive;
+import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.AmpFlipper;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RobotTime;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Uptake;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+
+  private final Shooter m_shooter = new Shooter();
   private final Controls m_controls = new Controls();
+  private final Intake m_intake = new Intake();
+  private final Uptake m_uptake = new Uptake();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
-  private final Intake m_intake = new Intake();
+  private final AmpFlipper m_flipper = new AmpFlipper();
+  private final Climber m_climber = new Climber();
+
+  private final CommandXboxController xboxController =
+      new CommandXboxController(USB.xBoxController);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
-  private final CommandXboxController xboxController =
-      new CommandXboxController(USB.xBoxController);
 
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
@@ -61,13 +76,22 @@ public class RobotContainer {
     }
 
     m_intake.setDefaultCommand(
-        new SetPercentOutput(m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+        new SetIntakePercentOutput(
+            m_intake, xboxController.getLeftY(), xboxController.getRightY()));
   }
 
   private void configureBindings() {
-    xboxController.b().whileTrue(new SetPercentOutput(m_intake, -0.85, -0.85));
-    xboxController.a().whileTrue(new SetPercentOutput(m_intake, -0.75, -0.75));
-    xboxController.y().whileTrue(new SetPercentOutput(m_intake, -1.0, -1.0));
+    m_flipper.setDefaultCommand(new AmpFlipperJoystick(m_flipper, xboxController::getLeftY));
+    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
+    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
+    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
+
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
   }
 
   public void initializeAutoChooser() {

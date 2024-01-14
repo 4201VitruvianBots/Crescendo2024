@@ -11,27 +11,22 @@ import frc.robot.constants.CAN;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends SubsystemBase {
+public class Uptake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
+  private final TalonFX uptakeMotor = new TalonFX(CAN.uptakeMotor);
 
-  private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
-
-  public Intake() {
-    CtreUtils.configureTalonFx(intakeMotor1, new TalonFXConfiguration());
-    CtreUtils.configureTalonFx(intakeMotor2, new TalonFXConfiguration());
+  public Uptake() {
+    CtreUtils.configureTalonFx(uptakeMotor, new TalonFXConfiguration());
   }
 
-  public void setSpeed(double speed1, double speed2) {
-    intakeMotor1.set(speed1);
-    intakeMotor2.set(speed2);
+  public void setSpeed(double speed) {
+    uptakeMotor.set(speed);
   }
 
   public void updateSmartDashboard() {}
 
   public void updateLog() {
-    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
+    Logger.recordOutput("Uptake/Motor Speed", uptakeMotor.get());
   }
 
   @Override

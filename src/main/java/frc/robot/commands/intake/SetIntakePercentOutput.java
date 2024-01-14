@@ -7,13 +7,13 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class SetPercentOutput extends Command {
+public class SetIntakePercentOutput extends Command {
   private final Intake m_intake;
   private final double m_percentOutput1;
   private final double m_percentOutput2;
 
   /** Creates a new idk. */
-  public SetPercentOutput(Intake intake, double percentOutput1, double percentOutput2) {
+  public SetIntakePercentOutput(Intake intake, double percentOutput1, double percentOutput2) {
     m_intake = intake;
     m_percentOutput1 = percentOutput1;
     m_percentOutput2 = percentOutput2;
@@ -28,15 +28,13 @@ public class SetPercentOutput extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setMotorOutput1(m_percentOutput1);
-    m_intake.setMotorOutput2(m_percentOutput2);
+    m_intake.setSpeed(m_percentOutput1, m_percentOutput2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setMotorOutput1(0);
-    m_intake.setMotorOutput2(0);
+    m_intake.setSpeed(0, 0);
   }
 
   // Returns true when the command should end.
