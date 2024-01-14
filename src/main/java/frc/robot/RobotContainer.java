@@ -37,9 +37,9 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final AmpFlipper m_flipper = new AmpFlipper();
   private final Climber m_climber = new Climber();
-  private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
+  private final LED m_led = new LED(m_controls);
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
 
   private final CommandXboxController xboxController =
