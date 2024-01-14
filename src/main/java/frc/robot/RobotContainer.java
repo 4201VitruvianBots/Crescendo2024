@@ -21,6 +21,7 @@ import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpFlipper;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RobotTime;
@@ -38,6 +39,7 @@ public class RobotContainer {
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
   private final AmpFlipper m_flipper = new AmpFlipper();
+  private final Climber m_climber = new Climber();
 
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
