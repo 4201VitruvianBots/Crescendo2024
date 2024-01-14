@@ -6,5 +6,5 @@ package frc.robot.constants;
 
 /** Add your docs here. */
 public final class CLIMBER {
-    public static final double kMaxHeightMeters = 1.0;
+  public static final double kMaxHeightMeters = 1.0;
 }

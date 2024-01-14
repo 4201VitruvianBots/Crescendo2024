@@ -15,6 +15,7 @@ import frc.robot.commands.amp.AmpFlipperForward;
 import frc.robot.commands.amp.AmpFlipperJoystick;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptake;
@@ -73,10 +74,17 @@ public class RobotContainer {
               () -> -m_testController.getRawAxis(0),
               () -> -m_testController.getRawAxis(2)));
     }
+
+    m_intake.setDefaultCommand(
+        new SetIntakePercentOutput(
+            m_intake, xboxController.getLeftY(), xboxController.getRightY()));
   }
 
   private void configureBindings() {
     m_flipper.setDefaultCommand(new AmpFlipperJoystick(m_flipper, xboxController::getLeftY));
+    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
+    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
+    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
