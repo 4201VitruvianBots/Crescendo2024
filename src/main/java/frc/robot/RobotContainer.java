@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.amp.AmpFlipperForward;
-import frc.robot.commands.amp.AmpFlipperJoystick;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
@@ -33,16 +32,15 @@ import frc.robot.subsystems.Uptake;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-
-  private final Shooter m_shooter = new Shooter();
-  private final Controls m_controls = new Controls();
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
-  private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
-  private final RobotTime m_robotTime = new RobotTime();
-  private final LED m_led = new LED();
+  private final Shooter m_shooter = new Shooter();
   private final AmpFlipper m_flipper = new AmpFlipper();
   private final Climber m_climber = new Climber();
+  private final LED m_led = new LED();
+  private final RobotTime m_robotTime = new RobotTime();
+  private final Controls m_controls = new Controls();
+  private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
 
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
@@ -83,10 +81,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    m_flipper.setDefaultCommand(new AmpFlipperJoystick(m_flipper, xboxController::getLeftY));
-    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
-    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
-    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
+    //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
+    //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
+    //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
@@ -97,7 +94,7 @@ public class RobotContainer {
   }
 
   public void initializeAutoChooser() {
-    m_autoChooser.setDefaultOption("DriveStriaghtTest", new DriveStriaghtTest(m_swerveDrive));
+    m_autoChooser.setDefaultOption("DriveStraightTest", new DriveStriaghtTest(m_swerveDrive));
 
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
