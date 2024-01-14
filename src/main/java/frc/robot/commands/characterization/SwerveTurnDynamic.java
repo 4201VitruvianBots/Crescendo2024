@@ -4,6 +4,7 @@
 
 package frc.robot.commands.characterization;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -14,19 +15,22 @@ import frc.robot.utils.SysidUtils;
 public class SwerveTurnDynamic extends SequentialCommandGroup {
   /** Creates a new SwerveTurnDynamic. */
   public SwerveTurnDynamic(SwerveDrive swerveDrive, SysIdRoutine.Direction direction) {
-    var routines = SysidUtils.getSwerveModuleDriveRoutines();
+    var routine = SysidUtils.getSwerveTurnRoutine();
     MODULE_POSITION position = MODULE_POSITION.FRONT_LEFT;
     var module = swerveDrive.getSwerveModule(position);
 
-    Command initCommand = new InstantCommand((module::initDriveSysid));
-    Command sysidCommand = routines[position.ordinal()].dynamic(direction);
+    Command initCommand = new InstantCommand((module::initTurnSysid));
+    Command sysidCommand = routine.dynamic(direction);
 
     addCommands(
         new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), module),
         new WaitCommand(1),
         initCommand,
+        new WaitCommand(1),
+        new InstantCommand(SignalLogger::start),
         sysidCommand
             .withTimeout(10)
+            .andThen(SignalLogger::stop)
             .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), module));
   }
 }

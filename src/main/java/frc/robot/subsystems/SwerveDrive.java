@@ -340,6 +340,12 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_currentMaxVelocity = mps;
   }
 
+  public void initDriveSysid() {
+    for (SwerveModule module : m_swerveModules.values()) {
+      module.initDriveSysid();
+    }
+  }
+
   public SwerveDrivePoseEstimator getOdometry() {
     return m_odometry;
   }

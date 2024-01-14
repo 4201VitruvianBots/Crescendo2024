@@ -4,47 +4,38 @@
 
 package frc.robot.commands.characterization;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.SwerveDrive;
-import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import frc.robot.utils.SysidUtils;
 
 public class SwerveDriveQuasistatic extends SequentialCommandGroup {
   /** Creates a new SwerveDriveQuasistatic. */
   public SwerveDriveQuasistatic(SwerveDrive swerveDrive, SysIdRoutine.Direction direction) {
-    var routines = SysidUtils.getSwerveModuleDriveRoutines();
+    var routine = SysidUtils.getSwerveDriveRoutine();
 
-    Command[] initCommands = new Command[routines.length];
-    for (var position : MODULE_POSITION.values()) {
-      var module = swerveDrive.getSwerveModule(position);
-      initCommands[position.ordinal()] = new InstantCommand((module::initDriveSysid));
-    }
+    Command initCommand = new InstantCommand((swerveDrive::initDriveSysid));
+    Command sysidCommand = routine.quasistatic(direction);
 
-    Command[] sysidCommand = new Command[routines.length];
-    for (int i = 0; i < routines.length; i++) {
-      sysidCommand[i] = routines[i].quasistatic(direction);
-    }
-
-    SwerveModuleState[] states =
-        new SwerveModuleState[] {
-          new SwerveModuleState(),
-          new SwerveModuleState(),
-          new SwerveModuleState(),
-          new SwerveModuleState(),
-        };
+    SwerveModuleState[] states = {
+      new SwerveModuleState(),
+      new SwerveModuleState(),
+      new SwerveModuleState(),
+      new SwerveModuleState(),
+    };
 
     addCommands(
         new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false)),
         new WaitCommand(1),
-        initCommands[0],
-        initCommands[1],
-        initCommands[2],
-        initCommands[3],
-        new ParallelCommandGroup(sysidCommand[0], sysidCommand[1], sysidCommand[2], sysidCommand[3])
+        initCommand,
+        new WaitCommand(1),
+        new InstantCommand(SignalLogger::start),
+        sysidCommand
             .withTimeout(10)
+            .andThen(SignalLogger::stop)
             .andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds())));
   }
 }

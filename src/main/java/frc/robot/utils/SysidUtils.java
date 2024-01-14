@@ -11,48 +11,41 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 public class SysidUtils {
-  private static SysIdRoutine[] swerveDriveRoutine = new SysIdRoutine[4];
-  private static SysIdRoutine[] swerveTurnRoutine = new SysIdRoutine[4];
+  private static SysIdRoutine swerveDriveRoutine;
+  private static SysIdRoutine swerveTurnRoutine;
 
   public static void createSwerveDriveRoutines(SwerveDrive swerveDrive) {
-    for (var position : MODULE_POSITION.values()) {
-      var module = swerveDrive.getSwerveModule(position);
-      swerveDriveRoutine[position.ordinal()] =
-          new SysIdRoutine(
-              new SysIdRoutine.Config(
-                  null,
-                  Volts.of(4),
-                  null,
-                  (state) -> SignalLogger.writeString("state", state.toString())),
-              new Mechanism(
-                  (Measure<Voltage> volts) -> {
-                    module.setDriveSysidVoltage(volts.in(Volts));
-                  },
-                  null,
-                  module));
-    }
+    swerveDriveRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, null, null, (state) -> SignalLogger.writeString("state", state.toString())),
+            new Mechanism(
+                (Measure<Voltage> volts) -> {
+                  for (var position : MODULE_POSITION.values()) {
+                    swerveDrive.getSwerveModule(position).setDriveSysidVoltage(volts.in(Volts));
+                  }
+                },
+                null,
+                swerveDrive));
   }
 
   public static void createSwerveTurnRoutines(SwerveDrive swerveDrive) {
-    for (var position : MODULE_POSITION.values()) {
-      var module = swerveDrive.getSwerveModule(position);
-      swerveDriveRoutine[position.ordinal()] =
-          new SysIdRoutine(
-              new SysIdRoutine.Config(
-                  null,
-                  Volts.of(4),
-                  null,
-                  (state) -> SignalLogger.writeString("state", state.toString())),
-              new Mechanism(
-                  (Measure<Voltage> volts) -> {
-                    module.setTurnSysidVoltage(volts.in(Volts));
-                  },
-                  null,
-                  module));
-    }
+    var module = swerveDrive.getSwerveModule(MODULE_POSITION.FRONT_LEFT);
+    swerveTurnRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, null, null, (state) -> SignalLogger.writeString("state", state.toString())),
+            new Mechanism(
+                (Measure<Voltage> volts) -> module.setTurnSysidVoltage(volts.in(Volts)),
+                null,
+                module));
   }
 
-  public static SysIdRoutine[] getSwerveModuleDriveRoutines() {
+  public static SysIdRoutine getSwerveDriveRoutine() {
     return swerveDriveRoutine;
+  }
+
+  public static SysIdRoutine getSwerveTurnRoutine() {
+    return swerveTurnRoutine;
   }
 }
