@@ -25,6 +25,7 @@ import frc.robot.subsystems.AmpFlipper;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
@@ -39,6 +40,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
+  private final LED m_led = new LED();
   private final AmpFlipper m_flipper = new AmpFlipper();
   private final Climber m_climber = new Climber();
 
