@@ -86,11 +86,22 @@ public class RobotContainer {
     SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
 
-    SmartDashboard.putData("Start Logging", new InstantCommand(SignalLogger::start));
-    SmartDashboard.putData("Stop Logging", new InstantCommand(SignalLogger::stop));
+    SmartDashboard.putData(
+        "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
+    SmartDashboard.putData(
+        "Stop Logging", new InstantCommand(SignalLogger::stop).ignoringDisable(true));
+    SmartDashboard.putData(
+        "initDriveSettings",
+        new InstantCommand(m_swerveDrive::initDriveSysid).ignoringDisable(true));
+    SmartDashboard.putData(
+        "initTurnSettings",
+        new InstantCommand(
+                () ->
+                    m_swerveDrive
+                        .getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT)
+                        .initTurnSysid())
+            .ignoringDisable(true));
 
-    m_sysidChooser.addOption(
-        "initDriveSettings", new InstantCommand(m_swerveDrive::initDriveSysid));
     m_sysidChooser.addOption(
         "driveQuasistaticForward",
         new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
@@ -104,13 +115,6 @@ public class RobotContainer {
         "driveDynamicBackward",
         new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
 
-    m_sysidChooser.addOption(
-        "initTurnSettings",
-        new InstantCommand(
-            () ->
-                m_swerveDrive
-                    .getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT)
-                    .initTurnSysid()));
     m_sysidChooser.addOption(
         "turnQuasistaticForward",
         new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
