@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -23,6 +25,10 @@ public class TestSwerveModule implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
   static final double WAIT_TIME = 0.02;
 
+  NetworkTableInstance m_nt;
+  NetworkTable m_table;
+
+  RobotTime m_robotTime;
   SwerveModule m_testModule;
 
   @BeforeEach
@@ -30,6 +36,8 @@ public class TestSwerveModule implements AutoCloseable {
     assert HAL.initialize(500, 0);
 
     Logger.start();
+
+    m_robotTime = new RobotTime();
 
     /* create the TalonFX */
     m_testModule =
@@ -43,9 +51,13 @@ public class TestSwerveModule implements AutoCloseable {
     /* enable the robot */
     DriverStationSim.setEnabled(true);
     DriverStationSim.notifyNewData();
+    RoboRioSim.resetData();
     refreshAkitData();
 
-    RoboRioSim.resetData();
+    m_nt = NetworkTableInstance.getDefault();
+    m_nt.setServer("localhost", NetworkTableInstance.kDefaultPort4 + 1);
+    m_nt.startClient4("unittest");
+    m_table = m_nt.getTable("unittest");
 
     /* delay ~100ms so the devices can start up and enable */
     Timer.delay(0.200);
@@ -66,7 +78,7 @@ public class TestSwerveModule implements AutoCloseable {
     assertEquals(testAngle, m_testModule.getTurnHeadingDeg(), DELTA);
   }
 
-  @Disabled("Results are off due to SimpleMotorFeedForward - Need to update constants")
+  @Disabled
   public void testModuleSpeed() {
     var testSpeed = 4.0;
 
@@ -74,6 +86,7 @@ public class TestSwerveModule implements AutoCloseable {
     Timer.delay(WAIT_TIME);
 
     for (int i = 0; i < 25; i++) {
+      m_robotTime.periodic();
       Timer.delay(WAIT_TIME);
       m_testModule.simulationPeriodic();
       refreshAkitData();

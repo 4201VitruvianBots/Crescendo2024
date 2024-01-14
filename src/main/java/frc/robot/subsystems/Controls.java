@@ -45,10 +45,16 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private void updateAllianceColor() {
     var pollFms = DriverStation.getAlliance();
 
-    if (pollFms.isPresent()) {
-      allianceColor = pollFms.get();
+    if (RobotBase.isReal()) {
+      if (pollFms.isPresent()) {
+        allianceColor = pollFms.get();
+      } else {
+        System.out.println("WARN: Could not get Alliance Color from FMS");
+      }
     } else {
-      System.out.println("WARN: Could not get Alliance Color from FMS");
+      var checkDsAlliance = DriverStation.getAlliance();
+
+      checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
     }
   }
 
