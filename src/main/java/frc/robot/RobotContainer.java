@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.autos.DriveStriaghtTest;
-import frc.robot.commands.characterization.CharacterizeSwerveDriveDynamic;
-import frc.robot.commands.characterization.CharacterizeSwerveDriveQuasistiatic;
+import frc.robot.commands.characterization.SwerveDriveDynamic;
+import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -31,19 +31,19 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-  private final SendableChooser<Command> m_charariterzationChooser = new SendableChooser<>();
+  private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
+
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
-
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
   public RobotContainer() {
     initializeSubsystems();
     configureBindings();
-    initializeAutoChooser();
-    charariterzationChooser();
+    initAutoChooser();
+    initSysidChooser();
   }
 
   private void initializeSubsystems() {
@@ -66,7 +66,7 @@ public class RobotContainer {
 
   private void configureBindings() {}
 
-  public void initializeAutoChooser() {
+  public void initAutoChooser() {
     m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
@@ -76,22 +76,22 @@ public class RobotContainer {
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
-  public void charariterzationChooser() {
-    SysidUtils.createSwerveModuledrivecharacterization(m_swerveDrive);
+  public void initSysidChooser() {
+    SysidUtils.createSwerveModuleDriveCharacterization(m_swerveDrive);
 
-    m_charariterzationChooser.addOption(
-        "driveQuasistiaticfoward",
-        new CharacterizeSwerveDriveQuasistiatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
-    m_charariterzationChooser.addOption(
-        "driveQuasistiaticbackward",
-        new CharacterizeSwerveDriveQuasistiatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
-    m_charariterzationChooser.addOption(
-        "driveDynamicfoward",
-        new CharacterizeSwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
-    m_charariterzationChooser.addOption(
-        "driveDynamicbackward",
-        new CharacterizeSwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("charariterzationChooser", m_charariterzationChooser);
+    m_sysidChooser.addOption(
+        "driveQuasistaticForward",
+        new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "driveQuasistaticBackwards",
+        new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    m_sysidChooser.addOption(
+        "driveDynamicForward",
+        new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "driveDynamicBackward",
+        new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 
   public Command getAutonomousCommand() {

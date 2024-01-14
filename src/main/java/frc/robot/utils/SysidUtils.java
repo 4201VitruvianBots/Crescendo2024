@@ -11,13 +11,13 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 public class SysidUtils {
-  private static SysIdRoutine[] SwerveModuledriverotine = new SysIdRoutine[4];
+  private static SysIdRoutine[] swerveModuleDriveRoutine = new SysIdRoutine[4];
 
-  public static void createSwerveModuledrivecharacterization(SwerveDrive swerveDrive) {
+  public static void createSwerveModuleDriveCharacterization(SwerveDrive swerveDrive) {
 
     for (var position : MODULE_POSITION.values()) {
       var module = swerveDrive.getSwerveModule(position);
-      SwerveModuledriverotine[position.ordinal()] =
+      swerveModuleDriveRoutine[position.ordinal()] =
           new SysIdRoutine(
               new SysIdRoutine.Config(
                   null,
@@ -26,14 +26,14 @@ public class SysidUtils {
                   (state) -> SignalLogger.writeString("state", state.toString())),
               new Mechanism(
                   (Measure<Voltage> volts) -> {
-                    module.setcharacterizationvoltage(volts.in(Volts));
+                    module.setCharacterizationVoltage(volts.in(Volts));
                   },
                   null,
                   module));
     }
   }
 
-  public static SysIdRoutine[] getswervemodueldrivRoutines() {
-    return SwerveModuledriverotine;
+  public static SysIdRoutine[] getSwerveModuleDriveRoutines() {
+    return swerveModuleDriveRoutine;
   }
 }

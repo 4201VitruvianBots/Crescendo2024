@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
@@ -207,24 +206,24 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_lastHeadingR2d = heading;
   }
 
-  public void setcharacterizationvoltage(double volts) {
+  public void setCharacterizationVoltage(double volts) {
     m_driveMotor.setControl(m_driVoltageOut.withOutput(volts));
     m_turnMotor.setControl(turnPositionControl.withPosition(0));
   }
 
-  public TalonFX getdrivemotor() {
-    return m_driveMotor;
-  }
-
-  public void InitalizeDrivecharacterization() {
-    SignalLogger.setPath("/home/lvuser/logger/");
+  public void initDriveCharacterization() {
     CtreUtils.configureTalonFx(m_driveMotor, new TalonFXConfiguration());
+
     BaseStatusSignal.setUpdateFrequencyForAll(
         250,
         m_driveMotor.getPosition(),
         m_driveMotor.getVelocity(),
         m_driveMotor.getMotorVoltage());
+
     m_driveMotor.optimizeBusUtilization();
+
+    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveDrive");
+
     SignalLogger.start();
   }
 

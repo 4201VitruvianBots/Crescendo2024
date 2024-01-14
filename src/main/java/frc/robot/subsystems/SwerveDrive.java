@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -273,11 +272,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);
 
     setSwerveModuleStatesAuto(moduleStates.values().toArray(new SwerveModuleState[0]));
-  }
-
-  public void setVoltage(double volts) {
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.setcharacterizationvoltage(volts);
   }
 
   public SwerveModule getSwerveModule(MODULE_POSITION modulePosition) {
