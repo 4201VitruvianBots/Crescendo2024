@@ -22,7 +22,7 @@ public final class CAN {
 
   public static final int flywheel1 = 41;
   public static final int flywheel2 = 42;
-  
-  public static final int ampShooter = 31;
-  public static final int ampFlipper = 32;
+
+  public static final int ampShooter = 51;
+  public static final int ampFlipper = 52;
 }

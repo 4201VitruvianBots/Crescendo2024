@@ -75,7 +75,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     m_flipper.setDefaultCommand(new AmpFlipperJoystick(m_flipper, xboxController::getLeftY));
-    
+
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));

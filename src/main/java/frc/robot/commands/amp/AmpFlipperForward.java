@@ -10,11 +10,11 @@ import frc.robot.subsystems.AmpFlipper;
 
 public class AmpFlipperForward extends Command {
   AmpFlipper m_flipper;
-  
+
   /** Creates a new AmpFlipperForward. */
   public AmpFlipperForward(AmpFlipper flipper) {
     m_flipper = flipper;
-    
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_flipper);
   }
