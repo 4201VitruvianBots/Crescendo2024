@@ -89,7 +89,8 @@ public class RobotContainer {
     SmartDashboard.putData("Start Logging", new InstantCommand(SignalLogger::start));
     SmartDashboard.putData("Stop Logging", new InstantCommand(SignalLogger::stop));
 
-    m_sysidChooser.addOption("initDriveSettings", new InstantCommand(m_swerveDrive::initDriveSysid));
+    m_sysidChooser.addOption(
+        "initDriveSettings", new InstantCommand(m_swerveDrive::initDriveSysid));
     m_sysidChooser.addOption(
         "driveQuasistaticForward",
         new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
@@ -103,7 +104,13 @@ public class RobotContainer {
         "driveDynamicBackward",
         new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
 
-    m_sysidChooser.addOption("initTurnSettings", new InstantCommand(()-> m_swerveDrive.getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT).initTurnSysid());
+    m_sysidChooser.addOption(
+        "initTurnSettings",
+        new InstantCommand(
+            () ->
+                m_swerveDrive
+                    .getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT)
+                    .initTurnSysid()));
     m_sysidChooser.addOption(
         "turnQuasistaticForward",
         new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
