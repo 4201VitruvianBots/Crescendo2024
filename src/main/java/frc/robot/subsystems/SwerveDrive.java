@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -344,6 +345,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     for (SwerveModule module : m_swerveModules.values()) {
       module.initDriveSysid();
     }
+
+    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveDrive");
   }
 
   public SwerveDrivePoseEstimator getOdometry() {

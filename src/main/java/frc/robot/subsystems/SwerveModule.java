@@ -216,8 +216,6 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
         m_driveMotor.getMotorVoltage());
 
     m_driveMotor.optimizeBusUtilization();
-
-    SignalLogger.setPath("/home/lvuser/logger/sysid/swerveDrive");
   }
 
   public void setDriveSysidVoltage(double volts) {
