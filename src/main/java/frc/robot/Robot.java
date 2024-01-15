@@ -13,6 +13,8 @@ import frc.robot.constants.BASE;
 import frc.robot.utils.CtreUtils;
 import java.io.File;
 import java.util.NoSuchElementException;
+
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -39,6 +41,11 @@ public class Robot extends LoggedRobot {
       } catch (Exception e) {
         System.out.println("\nAdvantageKit - Failed to log to USB Drive!");
         e.printStackTrace();
+      } finally {
+        var tempLogDir = new File("/tmp/logs");
+        if (!tempLogDir.exists())
+          tempLogDir.mkdirs();
+        Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));
       }
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       new PowerDistribution(
