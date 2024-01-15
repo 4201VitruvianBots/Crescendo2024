@@ -16,6 +16,22 @@ public final class AMP {
   public static final double kMaxFlipperVelocity = 10;
   public static final double kMaxFlipperAcceleration = 10;
 
+  public enum AMP_STATE {
+    NONE(0),
+    SCORE(0.8);
+    
+    private final double value;
+
+      AMP_STATE(final double value) {
+        this.value = value;
+      }
+
+      public double get() {
+        return value;
+    }
+  }
+
+
   public static enum FLIPPER_SETPOINT {
     STOWED(Units.degreesToRadians(0.0)),
     FORWARD(Units.degreesToRadians(120.0));

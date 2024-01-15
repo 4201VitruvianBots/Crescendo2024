@@ -5,33 +5,35 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.constants.AMP;
+import frc.robot.constants.AMP.FLIPPER_SETPOINT;
+import frc.robot.subsystems.AmpFlipper;
 
-public class SetAndHoldRPMSetpoint extends Command {
-     Shooter m_shooter;
-    Double m_RPM;
-
-  public SetAndHoldRPMSetpoint(Shooter shooter, Double RPM) {
-
-    addRequirements(m_shooter);
+public class AutoAmpFlipperSetpoints extends Command {
+  AmpFlipper m_flipper;
+  FLIPPER_SETPOINT m_state;
+  /** Creates a new AmpFlipperForward. */
+  public AutoAmpFlipperSetpoints(AmpFlipper flipper, FLIPPER_SETPOINT state) {
+    m_flipper = flipper;
+    m_state = state;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_flipper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  }
-
-  @Override
-  public void execute() {
-     m_shooter.setRPM(m_RPM);
-
+    m_flipper.setDesiredSetpointRadians(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

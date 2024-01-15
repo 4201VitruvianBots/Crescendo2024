@@ -2,10 +2,10 @@ package frc.robot.constants;
 
 public final class FLYWHEEL {
   public static double gearRatio = 1.0;
-  public static double maxRPM = 1;
 
   public enum WAIT {
-    WAIT_FOR_FLYWHEEL_SETPOINT(0.8);
+    WAIT_FOR_FLYWHEEL_SETPOINT(0.8),
+    WAIT_FOR_AMP_SCORE(0.8);
 
   private final double value;
 

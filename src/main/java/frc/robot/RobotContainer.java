@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.amp.AmpFlipperForward;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.autos.ScoreAmp;
+import frc.robot.commands.autos.ScoreSpeaker;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
@@ -21,6 +23,7 @@ import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpFlipper;
+import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
@@ -36,6 +39,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
   private final AmpFlipper m_flipper = new AmpFlipper();
+  private final AmpShooter m_ampshooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
@@ -94,6 +98,9 @@ public class RobotContainer {
   }
 
   public void initializeAutoChooser() {
+    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
+
     m_autoChooser.setDefaultOption("DriveStraightTest", new DriveStriaghtTest(m_swerveDrive));
 
     SmartDashboard.putData("AutoChooser", m_autoChooser);
