@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -210,7 +211,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public void initDriveSysid() {
     CtreUtils.configureTalonFx(m_driveMotor, new TalonFXConfiguration());
-
+    CtreUtils.configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
+    setDriveBrake();
     BaseStatusSignal.setUpdateFrequencyForAll(
         250,
         m_driveMotor.getPosition(),
@@ -263,19 +265,19 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void setDriveBrake() {
-    m_driveMotor.setControl(new StaticBrake());
+    m_driveMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setDriveNeutral() {
-    m_driveMotor.setControl(new NeutralOut());
+    m_driveMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   public void setTurnBrake() {
-    m_turnMotor.setControl(new StaticBrake());
+    m_turnMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setTurnCoast() {
-    m_turnMotor.setControl(new NeutralOut());
+    m_turnMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   private void initSmartDashboard() {
