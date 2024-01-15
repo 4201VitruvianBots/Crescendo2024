@@ -29,7 +29,7 @@ public class SwerveDriveDynamic extends SequentialCommandGroup {
         new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false)),
         new WaitCommand(1),
         sysidCommand
-            .withTimeout(8)
-            .andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds())));
+            .withTimeout(3)
+            .andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds()), swerveDrive));
   }
 }
