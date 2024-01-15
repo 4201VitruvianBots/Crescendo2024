@@ -5,25 +5,27 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
-public class SetAndHoldRPMSetpoint extends Command {
-     Shooter m_shooter;
-    Double m_RPM;
+public class AutoSetRPMSetpoint extends Command {
+    Shooter m_shooter;
+    FLYWHEEL_STATE m_state;
 
-  public SetAndHoldRPMSetpoint(Shooter shooter, Double RPM) {
-
-    addRequirements(m_shooter);
+  public AutoSetRPMSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
+ m_shooter = shooter;
+ m_state = state;
+ 
+ addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-     m_shooter.setRPM(m_RPM);
+     m_shooter.setRPM(m_state.get());
 
   }
 
