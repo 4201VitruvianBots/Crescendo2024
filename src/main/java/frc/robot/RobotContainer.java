@@ -29,6 +29,7 @@ import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Uptake;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -41,6 +42,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
+  private final Vision m_vision = new Vision();
 
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);

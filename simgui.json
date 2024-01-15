@@ -1,7 +1,16 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/AutoChooser": "String Chooser",
+      "/SmartDashboard/Climber Sim": "Mechanism2d",
+      "/SmartDashboard/Field2d": "Field2d",
+      "/SmartDashboard/SwerveDrive": "Subsystem",
+      "/SmartDashboard/SwerveModule": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_0": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_1": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_2": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_3": "Mechanism2d"
     }
   },
   "NetworkTables": {
