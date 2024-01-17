@@ -7,7 +7,7 @@ public class ROBOT {
   public static String robotName = "";
   public static boolean disableLogging = false;
   public static boolean disableVisualization = false;
-  public static boolean useSysID = true;
+  public static boolean useSysID = false;
 
   public enum CONTROL_MODE {
     OPEN_LOOP,
