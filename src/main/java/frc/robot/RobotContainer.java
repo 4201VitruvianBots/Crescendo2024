@@ -15,26 +15,35 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.amp.AmpFlipperForward;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetIntakePercentOutput;
+import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.constants.BASE;
+import frc.robot.commands.uptake.RunUptake;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.RobotTime;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.*;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Intake m_intake = new Intake();
+  private final Uptake m_uptake = new Uptake();
+  private final Shooter m_shooter = new Shooter();
+  private final AmpFlipper m_flipper = new AmpFlipper();
+  private final Climber m_climber = new Climber();
+  private final LED m_led = new LED();
+  private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
-  private final RobotTime m_robotTime = new RobotTime();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -49,7 +58,8 @@ public class RobotContainer {
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
-    initSysidChooser();
+
+    if (ROBOT.useSysID) initSysidChooser();
   }
 
   private void initializeSubsystems() {
@@ -68,9 +78,24 @@ public class RobotContainer {
               () -> -m_testController.getRawAxis(0),
               () -> -m_testController.getRawAxis(2)));
     }
+
+    m_intake.setDefaultCommand(
+        new SetIntakePercentOutput(
+            m_intake, xboxController.getLeftY(), xboxController.getRightY()));
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
+    //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
+    //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
+
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
+  }
 
   public void initAutoChooser() {
     m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
@@ -133,7 +158,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if (BASE.useSysID) return m_sysidChooser.getSelected();
+    if (ROBOT.useSysID) return m_sysidChooser.getSelected();
     else return m_autoChooser.getSelected();
+  }
+
+  public void periodic() {
+    m_fieldSim.periodic();
   }
 }

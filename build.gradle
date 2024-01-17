@@ -93,6 +93,13 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    exclude ''
+}
+
+task testAll(type:Test) {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -117,6 +124,7 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+wpi.java.configureTestTasks(testAll)
 
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {

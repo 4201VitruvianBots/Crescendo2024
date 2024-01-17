@@ -4,21 +4,18 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.BASE;
+import frc.robot.constants.ROBOT;
+import frc.robot.utils.CtreUtils;
 import java.io.File;
 import java.util.NoSuchElementException;
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -42,6 +39,10 @@ public class Robot extends LoggedRobot {
       } catch (Exception e) {
         System.out.println("\nAdvantageKit - Failed to log to USB Drive!");
         e.printStackTrace();
+      } finally {
+        var tempLogDir = new File("/tmp/logs");
+        if (!tempLogDir.exists()) tempLogDir.mkdirs();
+        Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));
       }
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       new PowerDistribution(
@@ -49,10 +50,11 @@ public class Robot extends LoggedRobot {
     } else {
       setUseTiming(false); // Run as fast as possible
       try {
-        String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
-        //       AdvantageScope (or prompt the user)
-        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        // TODO fix AdvantageKit installation
+        // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
+        // //       AdvantageScope (or prompt the user)
+        // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
       } catch (NoSuchElementException e) {
         System.out.println("\nAdvantageKit - Failed to find Replay source!");
       } finally {
@@ -80,9 +82,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     // Update robot constants based off of robot used
-    BASE.initConstants();
-    TalonFX dummy = new TalonFX(0);
-    Timer.delay(5);
+    ROBOT.initConstants();
+    CtreUtils.initPhoenixServer();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -102,6 +103,7 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
