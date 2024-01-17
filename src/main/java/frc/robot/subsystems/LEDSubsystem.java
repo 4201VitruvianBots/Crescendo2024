@@ -4,24 +4,48 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.CTREJNIWrapper;
+import com.ctre.phoenix.led.CANdleStatusFrame;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.FireAnimation;
+import com.ctre.phoenix.led.LarsonAnimation;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.RgbFadeAnimation;
+import com.ctre.phoenix.led.SingleFadeAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
+import com.ctre.phoenix.led.TwinkleOffAnimation;
+import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import frc.robot.constants.CAN;
+import frc.robot.constants.LED.*;
+import frc.robot.constants.LED;
 
-public class LED extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LED. */
   
   private final CANdle m_candle = new CANdle(CAN.CANdle);
   private int red = 0;
   private int green = 0; // setting all LED colors to none: there is no color when robot activates
   private int blue = 0;
-  // TODO: Use enum for robot state
+  private SUBSYSTEM_STATES currentRobotState = SUBSYSTEM_STATES.DISABLED;
   private boolean setSolid;
   private Animation m_toAnimate = null;
 
-  public LED(Controls controls) {
+  public LEDSubsystem(Controls controls) {
     m_candle.configFactoryDefault(); 
     // sets up LED strip
     CANdleConfiguration configAll = new CANdleConfiguration();
@@ -94,27 +118,25 @@ public class LED extends SubsystemBase {
     }
   }
   // will set LEDs a coordinated color for an action
-  public void expressState(SUPERSTRUCTURE_STATE state) {
+
+  // Will need to figure out what colors and animations the drivers want for the states
+  public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case WRIST_IS_RESET:
-          setPattern(LED.pink, 0, 0, ANIMATION_TYPE.Solid); // Flashing Pink
-          break;
         case INTAKING:
-          setPattern(LED.yellow, 0, 0, ANIMATION_TYPE.Strobe); // Flashing Yellow
+          setPattern(null, 0, 0, null);
           break;
         case SCORE_SPEAKER:
-          setPattern(LED.turquoise, 0, 0, ANIMATION_TYPE.Solid); // Solid Turquoise
+          setPattern(null, 0, 0, null);
           break;
         case SCORE_AMP:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid); // Solid Blue
+          setPattern(null, 0, 0, null);
           break;
-        // dunno how many of these we'll use
         case CLIMBING:
-          setPattern(LED.white, 15, 0, ANIMATION_TYPE.Solid); // Solid White
+          setPattern(null, 0, 0, null);
           break;  
         case SCORE_TRAP:
-          setPattern(LED.pink, 0, 0, ANIMATION_TYPE.Solid); // Solid Pink
+          setPattern(null, 0, 0, null);
           break;
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
@@ -145,13 +167,13 @@ public class LED extends SubsystemBase {
     if (DriverStation.isDisabled()) {
       if (RobotController.getBatteryVoltage()
           < 10) { // calling battery to let driver know that it is low
-        expressState(SUPERSTRUCTURE_STATE.LOW_BATTERY);
+        expressState(SUBSYSTEM_STATES.LOW_BATTERY);
       }
     }
 
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
   }
-  @SuppressWarnings("RedundantThrows")
-  @Override
-  public void close() throws Exception {}
+  //@SuppressWarnings("RedundantThrows")
+  //@Override
+  //public void close() throws Exception {}
 }
