@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -91,17 +92,20 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_driveMotor = driveMotor;
     m_angleEncoder = angleEncoder;
     m_angleOffset = RobotBase.isReal() ? angleOffset : 0;
-    turnMotor.setInverted(invertDirection);
-    driveMotor.setInverted(invertDirection);
-    if (invertDirection) {}
 
     if (RobotBase.isSimulation()) {
       m_angleEncoder.setPosition(0);
     }
+
     configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
-    // m_angleEncoder.optimizeBusUtilization(255);
-    configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
-    configureTalonFx(m_driveMotor, CtreUtils.generateDriveMotorConfig());
+    var turnConfig = CtreUtils.generateTurnMotorConfig();
+    var driveConfig = CtreUtils.generateTurnMotorConfig();
+    if (invertDirection) {
+      turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    }
+    configureTalonFx(m_turnMotor, turnConfig);
+    configureTalonFx(m_driveMotor, driveConfig);
     setTurnAngle(0);
 
     m_lastHeadingR2d = getTurnHeadingR2d();
