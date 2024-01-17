@@ -9,12 +9,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.BASE;
+import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import java.io.File;
 import java.util.NoSuchElementException;
-
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -43,8 +41,7 @@ public class Robot extends LoggedRobot {
         e.printStackTrace();
       } finally {
         var tempLogDir = new File("/tmp/logs");
-        if (!tempLogDir.exists())
-          tempLogDir.mkdirs();
+        if (!tempLogDir.exists()) tempLogDir.mkdirs();
         Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));
       }
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
@@ -85,7 +82,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     // Update robot constants based off of robot used
-    BASE.initConstants();
+    ROBOT.initConstants();
     CtreUtils.initPhoenixServer();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

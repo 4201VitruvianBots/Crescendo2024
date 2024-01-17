@@ -4,31 +4,34 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.AmpFlipperForward;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.characterization.SwerveDriveDynamic;
+import frc.robot.commands.characterization.SwerveDriveQuasistatic;
+import frc.robot.commands.characterization.SwerveTurnDynamic;
+import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptake;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.AmpFlipper;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LED;
-import frc.robot.subsystems.RobotTime;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Uptake;
+import frc.robot.subsystems.*;
+import frc.robot.utils.ModuleMap;
+import frc.robot.utils.SysidUtils;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -42,20 +45,21 @@ public class RobotContainer {
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
 
-  private final CommandXboxController xboxController =
-      new CommandXboxController(USB.xBoxController);
-
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
-
+  private final CommandXboxController xboxController =
+      new CommandXboxController(USB.xBoxController);
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
   public RobotContainer() {
     initializeSubsystems();
     configureBindings();
-    initializeAutoChooser();
+    initAutoChooser();
+
+    if (ROBOT.useSysID) initSysidChooser();
   }
 
   private void initializeSubsystems() {
@@ -93,15 +97,69 @@ public class RobotContainer {
     xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
   }
 
-  public void initializeAutoChooser() {
-    m_autoChooser.setDefaultOption("DriveStraightTest", new DriveStriaghtTest(m_swerveDrive));
-
+  public void initAutoChooser() {
+    m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
+    // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
+    // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
+    // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
+  }
+
+  public void initSysidChooser() {
+    SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
+    SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
+
+    SmartDashboard.putData(
+        "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
+    SmartDashboard.putData(
+        "Stop Logging", new InstantCommand(SignalLogger::stop).ignoringDisable(true));
+    SmartDashboard.putData(
+        "initDriveSettings",
+        new InstantCommand(m_swerveDrive::initDriveSysid).ignoringDisable(true));
+    SmartDashboard.putData(
+        "initTurnSettings",
+        new InstantCommand(
+                () ->
+                    m_swerveDrive
+                        .getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT)
+                        .initTurnSysid())
+            .ignoringDisable(true));
+
+    m_sysidChooser.addOption(
+        "driveQuasistaticForward",
+        new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "driveQuasistaticBackwards",
+        new SwerveDriveQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    m_sysidChooser.addOption(
+        "driveDynamicForward",
+        new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "driveDynamicBackward",
+        new SwerveDriveDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "turnQuasistaticForward",
+        new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "turnQuasistaticBackwards",
+        new SwerveTurnQuasistatic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+    m_sysidChooser.addOption(
+        "turnDynamicForward",
+        new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kForward));
+    m_sysidChooser.addOption(
+        "turnDynamicBackward",
+        new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_autoChooser.getSelected();
+    if (ROBOT.useSysID) return m_sysidChooser.getSelected();
+    else return m_autoChooser.getSelected();
   }
 
   public void periodic() {
