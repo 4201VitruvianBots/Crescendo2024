@@ -24,7 +24,7 @@ import frc.robot.subsystems.AmpFlipper;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
@@ -39,7 +39,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LED m_led = new LED(m_controls);
+  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
 
   private final CommandXboxController xboxController =
