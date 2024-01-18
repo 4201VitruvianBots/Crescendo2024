@@ -7,13 +7,17 @@ package frc.robot.subsystems;
 import static frc.robot.constants.SIM.kMotorResistance;
 import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -31,11 +35,14 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.SWERVE.MODULE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import frc.robot.visualizers.SwerveModuleVisualizer;
+import java.io.File;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule extends SubsystemBase implements AutoCloseable {
@@ -43,6 +50,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final TalonFX m_turnMotor;
   private final TalonFX m_driveMotor;
   private final CANcoder m_angleEncoder;
+  private boolean invertDirection = false;
 
   private final double m_angleOffset;
   private Rotation2d m_lastHeadingR2d;
@@ -58,6 +66,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final StatusSignal<Double> m_drivePosition;
   private final StatusSignal<Double> m_driveVelocity;
 
+  private final VoltageOut m_voltageOut = new VoltageOut(0);
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityControl = new VelocityVoltage(0);
   private final PositionVoltage turnPositionControl = new PositionVoltage(0);
@@ -88,7 +97,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       TalonFX turnMotor,
       TalonFX driveMotor,
       CANcoder angleEncoder,
-      double angleOffset) {
+      double angleOffset,
+      boolean invertDirection) {
     m_modulePosition = modulePosition;
     m_turnMotor = turnMotor;
     m_driveMotor = driveMotor;
@@ -98,10 +108,16 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isSimulation()) {
       m_angleEncoder.setPosition(0);
     }
+
     configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
-    // m_angleEncoder.optimizeBusUtilization(255);
-    configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
-    configureTalonFx(m_driveMotor, CtreUtils.generateDriveMotorConfig());
+    var turnConfig = CtreUtils.generateTurnMotorConfig();
+    var driveConfig = CtreUtils.generateTurnMotorConfig();
+    if (invertDirection) {
+      turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    }
+    configureTalonFx(m_turnMotor, turnConfig);
+    configureTalonFx(m_driveMotor, driveConfig);
 
     m_encoderPosition = m_angleEncoder.getPosition().clone();
     m_encoderAbsPosition = m_angleEncoder.getAbsolutePosition().clone();
@@ -114,7 +130,6 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     setTurnAngle(0);
 
     m_lastHeadingR2d = getTurnHeadingR2d();
-
     m_moduleVisualizer = new SwerveModuleVisualizer(this.getName(), DRIVE.kMaxSpeedMetersPerSecond);
 
     initSmartDashboard();
@@ -141,8 +156,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public Rotation2d getTurnEncoderAbsHeading() {
-    m_encoderAbsPosition.refresh();
-    return Rotation2d.fromRotations(m_encoderAbsPosition.getValue());
+    m_angleEncoder.getAbsolutePosition().refresh();
+    if (invertDirection)
+      return Rotation2d.fromRotations(-m_angleEncoder.getAbsolutePosition().getValue());
+    else return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
   public void setTurnAngle(double angle) {
@@ -220,6 +237,45 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_lastHeadingR2d = heading;
   }
 
+  public void initDriveSysid() {
+    CtreUtils.configureTalonFx(m_driveMotor, new TalonFXConfiguration());
+    CtreUtils.configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
+    setDriveBrake();
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        250,
+        m_driveMotor.getPosition(),
+        m_driveMotor.getVelocity(),
+        m_driveMotor.getMotorVoltage());
+
+    m_driveMotor.optimizeBusUtilization();
+  }
+
+  public void setDriveSysidVoltage(double volts) {
+    m_driveMotor.setControl(m_voltageOut.withOutput(volts));
+    m_turnMotor.setControl(turnPositionControl.withPosition(0));
+  }
+
+  public void initTurnSysid() {
+    CtreUtils.configureTalonFx(m_turnMotor, new TalonFXConfiguration());
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        250, m_turnMotor.getPosition(), m_turnMotor.getVelocity(), m_turnMotor.getMotorVoltage());
+
+    m_turnMotor.optimizeBusUtilization();
+
+    var signalLoggerDir = new File("/home/lvuser/logger/sysid/");
+    if (!signalLoggerDir.exists()) {
+      signalLoggerDir.mkdirs();
+    }
+
+    SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
+    System.out.println("Finished Initializing Turn Settings");
+  }
+
+  public void setTurnSysidVoltage(double volts) {
+    m_turnMotor.setControl(m_voltageOut.withOutput(volts));
+  }
+
   public SwerveModuleState getState() {
     return new SwerveModuleState(getDriveMps(), getTurnHeadingR2d());
   }
@@ -237,22 +293,24 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void setDriveBrake() {
-    m_driveMotor.setControl(new StaticBrake());
+    m_driveMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setDriveNeutral() {
-    m_driveMotor.setControl(new NeutralOut());
+    m_driveMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   public void setTurnBrake() {
-    m_turnMotor.setControl(new StaticBrake());
+    m_turnMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setTurnCoast() {
-    m_turnMotor.setControl(new NeutralOut());
+    m_turnMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
-  private void initSmartDashboard() {}
+  private void initSmartDashboard() {
+    setName("SwerveModule" + m_modulePosition.ordinal());
+  }
 
   private void updateSmartDashboard() {}
 
@@ -281,9 +339,9 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     updateSmartDashboard();
-    updateLog();
+    if (!ROBOT.disableLogging) updateLog();
 
-    m_moduleVisualizer.update(getState());
+    if (!ROBOT.disableVisualization) m_moduleVisualizer.update(getState());
   }
 
   @Override

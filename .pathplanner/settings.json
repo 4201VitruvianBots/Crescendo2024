@@ -3,6 +3,7 @@
   "robotLength": 0.6096,
   "holonomicMode": true,
   "pathFolders": [
+    "Minimal autos",
     "Two Peice "
   ],
   "autoFolders": [],
