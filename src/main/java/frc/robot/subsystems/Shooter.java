@@ -4,14 +4,14 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 
 public class Shooter extends SubsystemBase {
-  private final PWMTalonFX flywheelmotor1 = new PWMTalonFX(CAN.flywheel1);
-  private final PWMTalonFX flywheelmotor2 = new PWMTalonFX(CAN.flywheel2);
+  private final TalonFX flywheelmotor1 = new TalonFX(CAN.flywheel1);
+  private final TalonFX flywheelmotor2 = new TalonFX(CAN.flywheel2);
   private double m_rpm;
   private double flywheelRPMRatio = 1.0;
 

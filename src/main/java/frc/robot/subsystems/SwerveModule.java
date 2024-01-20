@@ -107,7 +107,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
     var turnConfig = CtreUtils.generateTurnMotorConfig();
-    var driveConfig = CtreUtils.generateTurnMotorConfig();
+    var driveConfig = CtreUtils.generateDriveMotorConfig();
     if (invertDirection) {
       turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -144,9 +144,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public Rotation2d getTurnEncoderAbsHeading() {
     m_angleEncoder.getAbsolutePosition().refresh();
-    if (invertDirection)
-      return Rotation2d.fromRotations(-m_angleEncoder.getAbsolutePosition().getValue());
-    else return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
+    return Rotation2d.fromRotations(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
   public void setTurnAngle(double angle) {
@@ -214,7 +212,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       m_driveMotor.setControl(
           driveVelocityControl
               .withVelocity(velocityRPS)
-              .withFeedForward(m_driveFF.calculate(velocityRPS)));
+              .withFeedForward(m_driveFF.calculate(m_desiredState.speedMetersPerSecond)));
     }
 
     var heading =
@@ -311,20 +309,38 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
         String.format("Swerve/Module %d/Encoder Absolute Position", m_modulePosition.ordinal()),
         getTurnEncoderAbsHeading().getDegrees());
     Logger.recordOutput(
+        String.format("Swerve/Module %d/Turn Motor Desired Position", m_modulePosition.ordinal()),
+        m_desiredState.angle.getDegrees());
+    Logger.recordOutput(
         String.format("Swerve/Module %d/Turn Motor Position", m_modulePosition.ordinal()),
         getTurnHeadingDeg());
+    Logger.recordOutput(
+        String.format("Swerve/Module %d/Drive Motor Desired Velocity", m_modulePosition.ordinal()),
+        m_desiredState.speedMetersPerSecond);
     Logger.recordOutput(
         String.format("Swerve/Module %d/Drive Motor Velocity", m_modulePosition.ordinal()),
         getDriveMps());
 
     // Debug
-    Logger.recordOutput(
-        String.format("Swerve/Module %d/Drive Motor Desired Velocity", m_modulePosition.ordinal()),
-        m_desiredState.speedMetersPerSecond);
-    Logger.recordOutput(
-        String.format("Swerve/Module %d/Drive Motor Setpoint", m_modulePosition.ordinal()),
-        Double.valueOf(
-            m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity", "0")));
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Drive Motor Setpoint", m_modulePosition.ordinal()),
+    //        Double.valueOf(
+    //                m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity",
+    // "0"))
+    //            * (MODULE.kWheelDiameterMeters * Math.PI));
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Drive Motor Error", m_modulePosition.ordinal()),
+    //        m_driveMotor.getClosedLoopError().getValue() * (MODULE.kWheelDiameterMeters *
+    // Math.PI));
+
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Turn Motor Setpoint", m_modulePosition.ordinal()),
+    //        Double.valueOf(
+    //            m_turnMotor.getAppliedControl().getControlInfo().getOrDefault("Position", "0")) *
+    // 360.0);
+    //    Logger.recordOutput(
+    //        String.format("Swerve/Module %d/Turn Motor Error", m_modulePosition.ordinal()),
+    //        m_turnMotor.getClosedLoopError().getValue());
   }
 
   @Override

@@ -46,19 +46,9 @@ public class Controls extends SubsystemBase implements AutoCloseable {
    * connected to a driver station.
    */
   private void updateAllianceColor() {
-    var pollFms = DriverStation.getAlliance();
+    var checkDsAlliance = DriverStation.getAlliance();
 
-    if (RobotBase.isReal()) {
-      if (pollFms.isPresent()) {
-        allianceColor = pollFms.get();
-      } else {
-        System.out.println("WARN: Could not get Alliance Color from FMS");
-      }
-    } else {
-      var checkDsAlliance = DriverStation.getAlliance();
-
-      checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
-    }
+    checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
   }
 
   /** Sends values to SmartDashboard */

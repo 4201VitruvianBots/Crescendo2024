@@ -9,10 +9,11 @@ import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldRPMSetpoint extends Command {
   Shooter m_shooter;
-  Double m_RPM;
+  double m_RPM;
 
-  public SetAndHoldRPMSetpoint(Shooter shooter, Double RPM) {
-
+  public SetAndHoldRPMSetpoint(Shooter shooter, double RPM) {
+    m_shooter = shooter;
+    m_RPM = RPM;
     addRequirements(m_shooter);
   }
 
