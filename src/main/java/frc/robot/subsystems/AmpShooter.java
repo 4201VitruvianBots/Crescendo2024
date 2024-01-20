@@ -12,7 +12,6 @@ public class AmpShooter extends SubsystemBase {
   private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
   private final SparkMaxPIDController pidController = ampMotor.getPIDController();
   private final RelativeEncoder encoder = ampMotor.getEncoder();
-  private double m_speed;
 
   public AmpShooter() {
     ampMotor.restoreFactoryDefaults();
@@ -25,7 +24,7 @@ public class AmpShooter extends SubsystemBase {
     pidController.setOutputRange(0, 0);
   }
 
-  public void setPercentOutput(Double m_speed) {
+  public void setPercentOutput(double m_speed) {
     pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
   }
 

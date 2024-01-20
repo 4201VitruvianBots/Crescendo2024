@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 
 public class SetAndHoldAmpSpeed extends Command {
-  AmpShooter m_ampshooter;
-  Double m_Speed;
+  AmpShooter m_ampShooter;
+  double m_speed;
 
-  public SetAndHoldAmpSpeed(AmpShooter ampshooter, Double RPM) {
-    m_ampshooter = ampshooter;
-    addRequirements(m_ampshooter);
+  public SetAndHoldAmpSpeed(AmpShooter ampShooter, double RPM) {
+    m_ampShooter = ampShooter;
+    addRequirements(m_ampShooter);
+
+    m_speed = RPM;
   }
 
   // Called when the command is initially scheduled.
@@ -22,7 +24,7 @@ public class SetAndHoldAmpSpeed extends Command {
 
   @Override
   public void execute() {
-    m_ampshooter.setPercentOutput(m_Speed);
+    m_ampShooter.setPercentOutput(m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
