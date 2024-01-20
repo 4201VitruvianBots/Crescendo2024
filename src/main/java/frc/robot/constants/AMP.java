@@ -1,5 +1,9 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class AMP {
@@ -15,6 +19,22 @@ public final class AMP {
 
   public static final double kMaxFlipperVelocity = 10;
   public static final double kMaxFlipperAcceleration = 10;
+
+public static final LinearSystem<N2, N1, N1> gearBox = null;
+
+public static final DCMotor gearRatio = null;
+
+public static final double length = 0;
+
+public static final double mass = 0;
+
+public static final double minAngle = 0;
+
+public static final double maxAngle = 0;
+
+public static final double fourbarAngleDegrees = 0;
+
+public static final double rotationsToDegrees = 0;
 
   public enum AMP_STATE {
     NONE(0),
