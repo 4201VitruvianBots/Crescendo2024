@@ -27,6 +27,8 @@ public final class CtreUtils {
   public static TalonFXConfiguration generateTurnMotorConfig() {
     TalonFXConfiguration turnMotorConfig = new TalonFXConfiguration();
 
+    turnMotorConfig.CustomParams.CustomParam0 = 1; // Identify the config
+
     turnMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -39,10 +41,10 @@ public final class CtreUtils {
     turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
     //    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     //    turnMotorConfig.Slot0.kV = 0.0;
-    turnMotorConfig.Slot0.kP = 100.0;
+    turnMotorConfig.Slot0.kP = 65.74;
     turnMotorConfig.Slot0.kI = 0.0;
     //    turnMotorConfig.Slot0.integralZone = 121.904762;
-    turnMotorConfig.Slot0.kD = 0.0; // 0.0;
+    turnMotorConfig.Slot0.kD = 3.8803; // 0.0;
     //    turnMotorConfig.Slot0.allowableClosedloopError = 0.0;
 
     return turnMotorConfig;
@@ -50,6 +52,8 @@ public final class CtreUtils {
 
   public static TalonFXConfiguration generateDriveMotorConfig() {
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
+
+    driveMotorConfig.CustomParams.CustomParam0 = 2; // Identify the config
 
     driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -62,7 +66,7 @@ public final class CtreUtils {
     driveMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
     //    driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     //    driveMotorConfig.Slot0.kV = 0.1185;
-    driveMotorConfig.Slot0.kP = 0.2402346041055719;
+    driveMotorConfig.Slot0.kP = 0.59531;
     driveMotorConfig.Slot0.kI = 0.0;
     driveMotorConfig.Slot0.kD = 0.0;
 
@@ -86,6 +90,10 @@ public final class CtreUtils {
   }
 
   public static boolean configureTalonFx(TalonFX motor, TalonFXConfiguration config) {
+    if (20 <= motor.getDeviceID() || motor.getDeviceID() <= 27) {
+      checkSwerveConfigs(motor, config);
+    }
+
     StatusCode motorStatus = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
       motorStatus = motor.getConfigurator().apply(config);
@@ -99,7 +107,22 @@ public final class CtreUtils {
               + ". Error code: "
               + motorStatus);
     else System.out.println("TalonFX ID: " + motor.getDeviceID() + " - Successfully configured!");
+
     return motorStatus.isOK();
+  }
+
+  private static void checkSwerveConfigs(TalonFX motor, TalonFXConfiguration config) {
+    int deviceType = motor.getDeviceID() % 2; // 1 == Turn, 0 == Drive;
+
+    if (deviceType == 0) {
+      if (config.CustomParams.CustomParam0 != 2 && config.CustomParams.CustomParam0 != 0)
+        throw new IllegalArgumentException(
+            "Attempting to configure Drive Motor with Turn Configs!");
+    } else if (deviceType == 1) {
+      if (config.CustomParams.CustomParam0 != 1 && config.CustomParams.CustomParam0 != 0)
+        throw new IllegalArgumentException(
+            "Attempting to configure Turn Motor with Drive Configs!");
+    }
   }
 
   public static boolean configureCANCoder(CANcoder cancoder, CANcoderConfiguration config) {

@@ -4,6 +4,8 @@
       "/FMSInfo": "FMSInfo"
     }
   },
+<<<<<<< HEAD
+=======
   "NetworkTables": {
     "transitory": {
       "Shuffleboard": {
@@ -11,6 +13,7 @@
       }
     }
   },
+>>>>>>> main
   "NetworkTables Info": {
     "visible": true
   }
