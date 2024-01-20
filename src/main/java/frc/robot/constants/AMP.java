@@ -19,18 +19,17 @@ public final class AMP {
   public enum AMP_STATE {
     NONE(0),
     SCORE(0.8);
-    
+
     private final double value;
 
-      AMP_STATE(final double value) {
-        this.value = value;
-      }
+    AMP_STATE(final double value) {
+      this.value = value;
+    }
 
-      public double get() {
-        return value;
+    public double get() {
+      return value;
     }
   }
-
 
   public static enum FLIPPER_SETPOINT {
     STOWED(Units.degreesToRadians(0.0)),

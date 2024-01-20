@@ -9,14 +9,14 @@ import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
 public class AutoSetRPMSetpoint extends Command {
-    Shooter m_shooter;
-    FLYWHEEL_STATE m_state;
+  Shooter m_shooter;
+  FLYWHEEL_STATE m_state;
 
   public AutoSetRPMSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
- m_shooter = shooter;
- m_state = state;
- 
- addRequirements(m_shooter);
+    m_shooter = shooter;
+    m_state = state;
+
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -25,8 +25,7 @@ public class AutoSetRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-     m_shooter.setRPM(m_state.get());
-
+    m_shooter.setRPM(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

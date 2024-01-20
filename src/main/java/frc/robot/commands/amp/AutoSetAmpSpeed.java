@@ -6,19 +6,17 @@ package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AMP.AMP_STATE;
-import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.AmpShooter;
-import frc.robot.subsystems.Shooter;
 
 public class AutoSetAmpSpeed extends Command {
-    AmpShooter m_ampshooter;
-    AMP_STATE m_state;
+  AmpShooter m_ampshooter;
+  AMP_STATE m_state;
 
   public AutoSetAmpSpeed(AmpShooter ampshooter, AMP_STATE state) {
- m_ampshooter = ampshooter;
- m_state = state;
- 
- addRequirements(m_ampshooter);
+    m_ampshooter = ampshooter;
+    m_state = state;
+
+    addRequirements(m_ampshooter);
   }
 
   // Called when the command is initially scheduled.
@@ -27,8 +25,7 @@ public class AutoSetAmpSpeed extends Command {
 
   @Override
   public void execute() {
-     m_ampshooter.setPercentOutput(m_state.get());
-
+    m_ampshooter.setPercentOutput(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

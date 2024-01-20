@@ -29,7 +29,6 @@ public class AmpShooter extends SubsystemBase {
     pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
   }
 
-
   public double getRPM() {
     return encoder.getVelocity();
   }

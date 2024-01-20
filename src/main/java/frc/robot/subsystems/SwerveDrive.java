@@ -6,8 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -31,8 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ModuleMap.MODULE_POSITION;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,28 +50,32 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontLeftTurnMotor),
                       new TalonFX(CAN.frontLeftDriveMotor),
                       new CANcoder(CAN.frontLeftCanCoder),
-                      DRIVE.frontLeftCANCoderOffset),
+                      DRIVE.frontLeftCANCoderOffset,
+                      true),
               MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.FRONT_RIGHT,
                       new TalonFX(CAN.frontRightTurnMotor),
                       new TalonFX(CAN.frontRightDriveMotor),
                       new CANcoder(CAN.frontRightCanCoder),
-                      DRIVE.frontRightCANCoderOffset),
+                      DRIVE.frontRightCANCoderOffset,
+                      true),
               MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_LEFT,
                       new TalonFX(CAN.backLeftTurnMotor),
                       new TalonFX(CAN.backLeftDriveMotor),
                       new CANcoder(CAN.backLeftCanCoder),
-                      DRIVE.backLeftCANCoderOffset),
+                      DRIVE.backLeftCANCoderOffset,
+                      true),
               MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_RIGHT,
                       new TalonFX(CAN.backRightTurnMotor),
                       new TalonFX(CAN.backRightDriveMotor),
                       new CANcoder(CAN.backRightCanCoder),
-                      DRIVE.backRightCANCoderOffset)));
+                      DRIVE.backRightCANCoderOffset,
+                      true)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private Pigeon2SimState m_pigeonSim;
@@ -336,6 +343,21 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_currentMaxVelocity = mps;
   }
 
+  public void initDriveSysid() {
+    for (SwerveModule module : m_swerveModules.values()) {
+      module.initDriveSysid();
+    }
+
+    var signalLoggerDir = new File("/home/lvuser/logger/sysid/");
+    if (!signalLoggerDir.exists()) {
+      var result = signalLoggerDir.mkdirs();
+      System.out.println("mkdirs() result: " + result);
+    }
+
+    SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
+    System.out.println("Finished Initializing Drive Settings");
+  }
+
   public SwerveDrivePoseEstimator getOdometry() {
     return m_odometry;
   }
@@ -351,16 +373,18 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void updateOdometry() {
     m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
 
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
-      Transform2d moduleTransform =
-          new Transform2d(
-              DRIVE.kModuleTranslations.get(module.getModulePosition()),
-              module.getTurnHeadingR2d());
-      module.setModulePose(getPoseMeters().transformBy(moduleTransform));
-    }
+    if (!ROBOT.disableVisualization)
+      for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
+        Transform2d moduleTransform =
+            new Transform2d(
+                DRIVE.kModuleTranslations.get(module.getModulePosition()),
+                module.getTurnHeadingR2d());
+        module.setModulePose(getPoseMeters().transformBy(moduleTransform));
+      }
   }
 
   private void initSmartDashboard() {
+    setName("SwerveDrive");
     SmartDashboard.putData(this);
   }
 
@@ -376,7 +400,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
     updateOdometry();
     updateSmartDashboard();
-    updateLog();
+    if (!ROBOT.disableLogging) updateLog();
   }
 
   @Override

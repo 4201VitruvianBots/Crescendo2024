@@ -47,7 +47,7 @@ public final class SWERVE {
     public static final double kI_Y = 0;
     public static final double kD_Y = 0;
 
-    public static double kP_Theta = 5.0;
+    public static double kP_Theta = 8.0;
     public static double kI_Theta = 0;
     public static double kD_Theta = 0.5;
   }

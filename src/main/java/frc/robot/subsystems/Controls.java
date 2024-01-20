@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
 @SuppressWarnings("RedundantThrows")
@@ -13,7 +14,9 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public Controls() {
     isInit = false;
-    Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
+
+    if (!ROBOT.disableLogging)
+      Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
   /**
@@ -69,7 +72,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
       updateAllianceColor();
     }
     // This method will be called once per scheduler run
-    updateLogger();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 
   @Override

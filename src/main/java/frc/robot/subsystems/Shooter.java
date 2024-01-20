@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +14,7 @@ public class Shooter extends SubsystemBase {
   private final PWMTalonFX flywheelmotor2 = new PWMTalonFX(CAN.flywheel2);
   private double m_rpm;
   private double flywheelRPMRatio = 1.0;
+
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
@@ -21,12 +23,13 @@ public class Shooter extends SubsystemBase {
     // flywheel motor 2
     flywheelmotor2.setInverted(false);
   }
+
   // values that we set
   public void setRPM(double m_rpm) {
     flywheelmotor1.set(m_rpm);
     flywheelmotor2.set(m_rpm * flywheelRPMRatio);
-    
   }
+
   // values that we are pulling
   public double getRPM1() {
     return m_rpm;
@@ -35,7 +38,6 @@ public class Shooter extends SubsystemBase {
   public double getRPM2() {
     return m_rpm * flywheelRPMRatio;
   }
-
 
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPM1", this.getRPM1());

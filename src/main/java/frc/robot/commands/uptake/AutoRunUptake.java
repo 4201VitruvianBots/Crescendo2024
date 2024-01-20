@@ -9,14 +9,14 @@ import frc.robot.constants.UPTAKE.UPTAKE_STATE;
 import frc.robot.subsystems.Uptake;
 
 public class AutoRunUptake extends Command {
-    Uptake m_uptake;
-    UPTAKE_STATE m_state;
+  Uptake m_uptake;
+  UPTAKE_STATE m_state;
 
   public AutoRunUptake(Uptake uptake, UPTAKE_STATE state) {
- m_uptake = uptake;
- m_state = state;
- 
- addRequirements(m_uptake);
+    m_uptake = uptake;
+    m_state = state;
+
+    addRequirements(m_uptake);
   }
 
   // Called when the command is initially scheduled.
@@ -25,8 +25,7 @@ public class AutoRunUptake extends Command {
 
   @Override
   public void execute() {
-     m_uptake.setPercentOutput(m_state.get());
-
+    m_uptake.setPercentOutput(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
