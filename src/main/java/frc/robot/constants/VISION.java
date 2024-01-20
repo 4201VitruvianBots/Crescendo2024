@@ -13,9 +13,7 @@ public final class VISION {
 
   public enum PIPELINE {
     APRILTAGS(0);
-
     private final int pipeline;
-
     PIPELINE(final int pipeline) {
       this.pipeline = pipeline;
     }
@@ -27,9 +25,7 @@ public final class VISION {
 
   public enum CAMERA_SERVER {
     FRONT("10.42.1.11");
-
     private final String ip;
-
     CAMERA_SERVER(final String ip) {
       this.ip = ip;
     }
