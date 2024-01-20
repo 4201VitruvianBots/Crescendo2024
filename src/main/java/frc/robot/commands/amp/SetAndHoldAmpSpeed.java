@@ -2,18 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.AmpShooter;
 
-public class SetAndHoldRPMSetpoint extends Command {
-  Shooter m_shooter;
-  Double m_RPM;
+public class SetAndHoldAmpSpeed extends Command {
+  AmpShooter m_ampShooter;
+  double m_speed;
 
-  public SetAndHoldRPMSetpoint(Shooter shooter, Double RPM) {
+  public SetAndHoldAmpSpeed(AmpShooter ampShooter, double RPM) {
+    m_ampShooter = ampShooter;
+    addRequirements(m_ampShooter);
 
-    addRequirements(m_shooter);
+    m_speed = RPM;
   }
 
   // Called when the command is initially scheduled.
@@ -22,7 +24,7 @@ public class SetAndHoldRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setRPM(m_RPM);
+    m_ampShooter.setPercentOutput(m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

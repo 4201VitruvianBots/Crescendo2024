@@ -2,27 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.uptake;
+package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Uptake;
+import frc.robot.constants.AMP.FLIPPER_SETPOINT;
+import frc.robot.subsystems.AmpFlipper;
 
-public class RunUptake extends Command {
-  Uptake m_uptake;
-  double m_speed;
+public class AutoAmpFlipperSetpoints extends Command {
+  AmpFlipper m_flipper;
+  FLIPPER_SETPOINT m_state;
 
-  /** Creates a new RunIntake. */
-  public RunUptake(Uptake uptake, double speed) {
-    m_uptake = uptake;
-    m_speed = speed;
+  /** Creates a new AmpFlipperForward. */
+  public AutoAmpFlipperSetpoints(AmpFlipper flipper, FLIPPER_SETPOINT state) {
+    m_flipper = flipper;
+    m_state = state;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_uptake);
+    addRequirements(m_flipper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_uptake.setPercentOutput(m_speed);
+    m_flipper.setDesiredSetpointRadians(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,13 +32,11 @@ public class RunUptake extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_uptake.setPercentOutput(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.AmpFlipperForward;
 import frc.robot.commands.autos.DriveStriaghtTest;
+import frc.robot.commands.autos.ScoreAmp;
+import frc.robot.commands.autos.ScoreSpeaker;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -39,6 +41,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
   private final AmpFlipper m_flipper = new AmpFlipper();
+  private final AmpShooter m_ampshooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
@@ -89,8 +92,8 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter));
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // amp
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
@@ -104,6 +107,8 @@ public class RobotContainer {
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
+    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
