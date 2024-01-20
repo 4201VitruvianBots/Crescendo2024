@@ -26,10 +26,10 @@ public final class CtreUtils {
     turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
     //    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     //    turnMotorConfig.Slot0.kV = 0.0;
-    turnMotorConfig.Slot0.kP = 100.0;
+    turnMotorConfig.Slot0.kP = 65.74;
     turnMotorConfig.Slot0.kI = 0.0;
     //    turnMotorConfig.Slot0.integralZone = 121.904762;
-    turnMotorConfig.Slot0.kD = 0.0; // 0.0;
+    turnMotorConfig.Slot0.kD = 3.8803; // 0.0;
     //    turnMotorConfig.Slot0.allowableClosedloopError = 0.0;
 
     return turnMotorConfig;
@@ -49,7 +49,7 @@ public final class CtreUtils {
     driveMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
     //    driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     //    driveMotorConfig.Slot0.kV = 0.1185;
-    driveMotorConfig.Slot0.kP = 0.12;
+    driveMotorConfig.Slot0.kP = 0.14315;
     driveMotorConfig.Slot0.kI = 0.0;
     driveMotorConfig.Slot0.kD = 0.0;
 

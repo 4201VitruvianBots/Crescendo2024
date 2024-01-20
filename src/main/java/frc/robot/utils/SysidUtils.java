@@ -30,7 +30,7 @@ public class SysidUtils {
   }
 
   public static void createSwerveTurnRoutines(SwerveDrive swerveDrive) {
-    var module = swerveDrive.getSwerveModule(MODULE_POSITION.FRONT_LEFT);
+    var module = swerveDrive.getSwerveModule(MODULE_POSITION.FRONT_RIGHT);
     swerveTurnRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(

@@ -18,16 +18,16 @@ public class SwerveTurnQuasistatic extends SequentialCommandGroup {
   /** Creates a new SwerveTurnQuasistatic. */
   public SwerveTurnQuasistatic(SwerveDrive swerveDrive, SysIdRoutine.Direction direction) {
     var routine = SysidUtils.getSwerveTurnRoutine();
-    MODULE_POSITION position = MODULE_POSITION.FRONT_LEFT;
+    MODULE_POSITION position = MODULE_POSITION.FRONT_RIGHT;
     var module = swerveDrive.getSwerveModule(position);
 
     Command sysidCommand = routine.quasistatic(direction);
 
     addCommands(
-        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), module),
+        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
         new WaitCommand(1),
         sysidCommand
             .withTimeout(8)
-            .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), module));
+            .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive));
   }
 }

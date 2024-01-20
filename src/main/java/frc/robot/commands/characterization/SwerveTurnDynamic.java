@@ -21,10 +21,10 @@ public class SwerveTurnDynamic extends SequentialCommandGroup {
     Command sysidCommand = routine.dynamic(direction);
 
     addCommands(
-        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), module),
+        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
         new WaitCommand(1),
         sysidCommand
             .withTimeout(8)
-            .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), module));
+            .andThen(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive));
   }
 }

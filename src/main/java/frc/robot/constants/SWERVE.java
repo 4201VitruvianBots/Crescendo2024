@@ -65,9 +65,9 @@ public final class SWERVE {
     public static final double kTurnInertia = 0.00001;
     public static final boolean kTurnInverted = true;
 
-    public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
-    public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
-    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.193 / 12;
+    public static final double ksDriveVoltSecondsPerMeter = 0.11286 / 12;
+    public static final double kvDriveVoltSecondsSquaredPerMeter = 0.10079 / 12;
+    public static final double kaDriveVoltSecondsSquaredPerMeter =0.040151   / 12;
 
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
