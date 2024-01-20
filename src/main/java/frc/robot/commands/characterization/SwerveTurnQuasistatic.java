@@ -24,7 +24,8 @@ public class SwerveTurnQuasistatic extends SequentialCommandGroup {
     Command sysidCommand = routine.quasistatic(direction);
 
     addCommands(
-        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
+        new InstantCommand(
+            () -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
         new WaitCommand(1),
         sysidCommand
             .withTimeout(8)

@@ -86,7 +86,7 @@ public class RobotContainer {
     SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
 
-    SmartDashboard.putData( 
+    SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
     SmartDashboard.putData(
         "Stop Logging", new InstantCommand(SignalLogger::stop).ignoringDisable(true));

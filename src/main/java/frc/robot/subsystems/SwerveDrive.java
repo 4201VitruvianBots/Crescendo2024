@@ -412,9 +412,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_simYaw += chassisSpeed.omegaRadiansPerSecond * RobotTime.getTimeDelta();
 
     m_pigeonSim.setRawYaw(-Units.radiansToDegrees(m_simYaw));
-    }
+  }
 
-    @Override
+  @Override
   public void close() throws Exception {
     if (m_swerveChassis2d != null) m_swerveChassis2d.close();
     for (var module : ModuleMap.orderedValuesList(m_swerveModules)) module.close();

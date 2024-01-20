@@ -21,7 +21,8 @@ public class SwerveTurnDynamic extends SequentialCommandGroup {
     Command sysidCommand = routine.dynamic(direction);
 
     addCommands(
-        new InstantCommand(() -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
+        new InstantCommand(
+            () -> module.setDesiredState(new SwerveModuleState(), false), swerveDrive),
         new WaitCommand(1),
         sysidCommand
             .withTimeout(8)
