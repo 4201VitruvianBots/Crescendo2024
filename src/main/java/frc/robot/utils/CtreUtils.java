@@ -11,6 +11,19 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.SWERVE;
 
 public final class CtreUtils {
+  /**
+   * Initialize Phoenix Server by creating a dummy device. We do this so that the CANCoders don't
+   * get configured before Phoenix Server is up, which causes issues with encoder offsets not being
+   * set/applied properly.
+   */
+  public static void initPhoenixServer() {
+    if (RobotBase.isReal()) {
+      TalonFX dummy = new TalonFX(0);
+      Timer.delay(5);
+      dummy = null;
+    }
+  }
+
   public static TalonFXConfiguration generateTurnMotorConfig() {
     TalonFXConfiguration turnMotorConfig = new TalonFXConfiguration();
 

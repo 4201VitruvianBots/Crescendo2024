@@ -4,6 +4,16 @@
       "/FMSInfo": "FMSInfo"
     }
   },
+<<<<<<< HEAD
+=======
+  "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        "open": true
+      }
+    }
+  },
+>>>>>>> main
   "NetworkTables Info": {
     "visible": true
   }

@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.BASE;
 import frc.robot.constants.CAN;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
@@ -373,7 +373,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void updateOdometry() {
     m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
 
-    if (!BASE.disableVisualization)
+    if (!ROBOT.disableVisualization)
       for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
         Transform2d moduleTransform =
             new Transform2d(
@@ -400,7 +400,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
     updateOdometry();
     updateSmartDashboard();
-    if (!BASE.disableLogging) updateLog();
+    if (!ROBOT.disableLogging) updateLog();
   }
 
   @Override
