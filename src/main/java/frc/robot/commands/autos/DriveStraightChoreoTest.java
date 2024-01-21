@@ -23,7 +23,7 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
 
     PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory("DriveStraightTest");
 
-    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps(), false);
+    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
     SwerveModuleState[] states = {
             new SwerveModuleState(),

@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestDriveStraightChoreoTest {
+    static final double DELTA = 0.02; // acceptable deviation range
+
     RobotTime m_robotTime;
     SwerveDrive m_swerveDrive;
     FieldSim m_fieldSim;
@@ -44,7 +46,9 @@ public class TestDriveStraightChoreoTest {
         PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory("DriveStraightTest");
 
         var startPose = new Pose2d(2,2, new Rotation2d());
+        var maxVel = 1.0;
 
+//        assertEquals(path.getGlobalConstraints().getMaxVelocityMps(), maxVel, DELTA);
         assertEquals(startPose, path.getPreviewStartingHolonomicPose());
     }
 
