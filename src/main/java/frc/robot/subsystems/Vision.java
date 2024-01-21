@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-
+  
   PhotonCamera camera = new PhotonCamera("Limelight2");
 
   public Vision() {}
@@ -15,7 +15,7 @@ public class Vision extends SubsystemBase {
   public boolean isCameraConnected() {
     return camera.isConnected();
   }
-
+    
   public boolean isAprilTagDetected() {
     if (camera.isConnected()) {
       var result = camera.getLatestResult();
@@ -25,33 +25,42 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public boolean is3DPoseEstimationAvailable() {
+  public String getTargets() {
     if (camera.isConnected()) {
       var result = camera.getLatestResult();
-      if (result.hasTargets()) {
-        PhotonTrackedTarget target = result.getBestTarget();
-        return PhotonUtils.is3DPoseEstimationAvailable(target);
+      List<PhotonTrackedTarget> targets = result.getTargets();
+      String targetString = "";
+      for (PhotonTrackedTarget target : targets) {
+        targetString += target + " ";
       }
+      return targetString;
+    } else {
+      return "No targets";
     }
-    return false;
+  }
+
+  public PhotonTrackedTarget getTarget() {
+    if (camera.isConnected()) {
+      var result = camera.getLatestResult();
+      List<PhotonTrackedTarget> targets = result.getTargets();
+      if (targets.size() > 0) {
+        return targets.get(0);
+      } else   {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   public void updateLog() {
     Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
     Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
-    Logger.recordOutput("vision/is3DPoseEstimationAvailable", is3DPoseEstimationAvailable());
+    Logger.recordOutput("vision/getTargets", getTargets());
+  }
 
-    if (camera.isConnected()) {
-      var result = camera.getLatestResult();
-      if (result.hasTargets()) {
-        PhotonTrackedTarget target = result.getBestTarget();
-        Logger.recordOutput("vision/targetX", target.getX());
-        Logger.recordOutput("vision/targetY", target.getY());
-        Logger.recordOutput("vision/targetArea", target.getArea());
-        Logger.recordOutput("vision/targetDistance", target.getDistance());
-        Logger.recordOutput("vision/targetRotation", target.getRotation());
-      }
-    }
+  public void smartDashboard() {
+    // Implement the smartDashboard method here
   }
 
   @Override
