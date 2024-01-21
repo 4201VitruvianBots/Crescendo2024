@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
-import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
-
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -33,8 +29,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
+import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
@@ -70,6 +71,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new CANcoder(CAN.backRightCanCoder),
                       DRIVE.backRightCANCoderOffset)));
 
+  private Vision m_vision;
+
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private Pigeon2SimState m_pigeonSim;
 
@@ -103,7 +106,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private final double m_limitedVelocity = DRIVE.kLimitedSpeedMetersPerSecond;
   private double m_currentMaxVelocity = m_maxVelocity;
 
-  public SwerveDrive() {
+  public SwerveDrive(Vision vision) {
+    m_vision = vision;
     m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
     m_pigeon.setYaw(0);
     m_odometry =
@@ -350,6 +354,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   public void updateOdometry() {
     m_odometry.update(getHeadingRotation2d(), getSwerveDriveModulePositionsArray());
+
+    m_vision.getEstimatedGlobalPose(m_odometry.getEstimatedPosition()).ifPresent(pose ->
+            m_odometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds));
 
     for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
       Transform2d moduleTransform =
