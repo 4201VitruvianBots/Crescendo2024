@@ -110,7 +110,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     var driveConfig = CtreUtils.generateDriveMotorConfig();
     if (invertDirection) {
       turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     }
     configureTalonFx(m_turnMotor, turnConfig);
     configureTalonFx(m_driveMotor, driveConfig);

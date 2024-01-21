@@ -56,7 +56,7 @@ public final class CtreUtils {
     driveMotorConfig.CustomParams.CustomParam0 = 2; // Identify the config
 
     driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveMotorConfig.CurrentLimits.SupplyCurrentLimit = 35;
