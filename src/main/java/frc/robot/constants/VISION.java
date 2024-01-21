@@ -27,7 +27,6 @@ public final class VISION {
     // Camera offset from robot center in meters
     public static final Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
 
-
     public enum CAMERA_TYPE {
         LIMELIGHT,
         PHOTONVISION

@@ -74,9 +74,14 @@ public class Vision extends SubsystemBase {
 
   public Pose3d getEstimatedFieldPose() {
     var result = camera.getLatestResult();
-    List<PhotonTrackedTarget> targets = result.getTargets();
     PhotonTrackedTarget target = result.getBestTarget();
-    return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId()), cameraToRobot);
+
+    var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
+    if(aprilTagDetection.isPresent()) {
+      return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
+    } else {
+      return null;
+    }
   }
 
   private void updateLog() {
