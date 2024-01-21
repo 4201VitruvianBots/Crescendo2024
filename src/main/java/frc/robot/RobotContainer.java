@@ -14,15 +14,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autos.DriveStriaghtTest;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.USB;
+import frc.robot.constants.CLIMBER;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.EndgameMechanism;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  private final EndgameMechanism m_endgameMechanism = new EndgameMechanism();
+  private final Climber m_climber = new Climber();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final RobotTime m_robotTime = new RobotTime();
