@@ -26,17 +26,19 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
     var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
     SwerveModuleState[] states = {
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState(),
+      new SwerveModuleState(),
+      new SwerveModuleState(),
+      new SwerveModuleState(),
+      new SwerveModuleState(),
     };
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-            new SetSwerveOdometry(swerveDrive, path.getPreviewStartingHolonomicPose(), fieldSim),
-            new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false)).alongWith(new WaitCommand(1)),
-            m_ppCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
+        new PlotAutoPath(fieldSim, "DriveStraightTest", path),
+        new SetSwerveOdometry(swerveDrive, path.getPreviewStartingHolonomicPose(), fieldSim),
+        new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false))
+            .alongWith(new WaitCommand(1)),
+        m_ppCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
   }
 }

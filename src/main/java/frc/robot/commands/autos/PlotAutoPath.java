@@ -22,8 +22,8 @@ public class PlotAutoPath extends Command {
 
     for (var path : paths) {
       var trajectory =
-          new PathPlannerTrajectory(
-              path, new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
+          path.getTrajectory(
+              new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
       pathPoints.addAll(
           trajectory.getStates().stream()
               .map(PathPlannerTrajectory.State::getTargetHolonomicPose)
@@ -40,8 +40,8 @@ public class PlotAutoPath extends Command {
 
   public PlotAutoPath(FieldSim fieldSim, String pathName, PathPlannerPath path) {
     var trajectory =
-        new PathPlannerTrajectory(
-            path, new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
+        path.getTrajectory(
+            new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
     var pathPoints =
         new ArrayList<>(
             trajectory.getStates().stream()
