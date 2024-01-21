@@ -35,6 +35,8 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
+import org.littletonrobotics.junction.Logger;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -390,7 +392,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   private void updateSmartDashboard() {}
 
-  private void updateLog() {}
+  private void updateLog() {
+    Logger.recordOutput("Swerve/Pose", getPoseMeters());
+  }
 
   @Override
   public void periodic() {
