@@ -53,10 +53,10 @@ public class ROBOT {
   public static void initGridlock() {}
 
   public static void initBobot() {
-    SWERVE.DRIVE.frontLeftCANCoderOffset = 95.27328;
-    SWERVE.DRIVE.frontRightCANCoderOffset = 34.18956;
-    SWERVE.DRIVE.backLeftCANCoderOffset = 77.51952;
-    SWERVE.DRIVE.backRightCANCoderOffset = 330.55668;
+    SWERVE.DRIVE.kFrontLeftEncoderOffset = Units.degreesToRotations(95.27328);
+    SWERVE.DRIVE.kFrontRightEncoderOffset = Units.degreesToRotations(34.18956);
+    SWERVE.DRIVE.kBackLeftEncoderOffset = Units.degreesToRotations(77.51952);
+    SWERVE.DRIVE.kBackRightEncoderOffset = Units.degreesToRotations(330.55668);
   }
 
   public static void initSim() {}

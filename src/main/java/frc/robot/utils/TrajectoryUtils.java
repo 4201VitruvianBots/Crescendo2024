@@ -10,23 +10,26 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import frc.robot.constants.SWERVE.DRIVE;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class TrajectoryUtils {
   public static FollowPathHolonomic generatePPHolonomicCommand(
-      SwerveDrive swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
+      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
     return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, flipPath);
   }
 
   public static FollowPathHolonomic generatePPHolonomicCommand(
-      SwerveDrive swerveDrive, PathPlannerPath path, double maxSpeed, boolean flipPath) {
+      CommandSwerveDrivetrain swerveDrive,
+      PathPlannerPath path,
+      double maxSpeed,
+      boolean flipPath) {
     return new FollowPathHolonomic(
         path,
-        swerveDrive::getPoseMeters,
-        swerveDrive::getChassisSpeeds,
-        swerveDrive::setChassisSpeeds,
+        () -> swerveDrive.getState().Pose,
+        swerveDrive::getChassisSpeed,
+        swerveDrive::setChassisSpeed,
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
             new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
