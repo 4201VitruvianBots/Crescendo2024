@@ -60,7 +60,8 @@ public final class SWERVE {
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
 
-    public static final double kSlipCurrent = 300.0;
+    public static final double kSlipCurrent = 400.0;
+    public static final double kFrictionVoltage = 0.25;
     public static final double kDriveInertia = 0.001;
     public static final double kTurnInertia = 0.00001;
     public static final boolean kTurnInverted = true;

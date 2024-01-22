@@ -7,15 +7,18 @@ package frc.robot.subsystems;
 import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
 
-import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -24,9 +27,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,6 +39,8 @@ import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
@@ -77,23 +80,33 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       DRIVE.backRightCANCoderOffset,
                       true)));
 
+  private SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4];
+  private SwerveModuleState[] m_desiredStates = {
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState()
+  };
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private Pigeon2SimState m_pigeonSim;
-
-  private double m_rollOffset;
+  private final StatusSignal<Double> m_yaw;
+  private final StatusSignal<Double> m_angularVelocity;
 
   private boolean m_limitJoystickInput = false;
 
   private final SwerveDrivePoseEstimator m_odometry;
+  private final OdometryThread m_odometryThread;
+  private final ReadWriteLock m_stateLock = new ReentrantReadWriteLock();
+  private final SwerveDrivetrain.SwerveDriveState m_cachedState =
+      new SwerveDrivetrain.SwerveDriveState();
 
   private MechanismLigament2d m_swerveChassis2d;
 
   @SuppressWarnings("CanBeFinal")
   private boolean m_simOverride = false; // DO NOT MAKE FINAL. WILL BREAK UNIT TESTS
 
+  private Notifier m_simNotifier;
   private Rotation2d m_simYaw = new Rotation2d();
-  private double m_simRoll;
-  private DoublePublisher pitchPub, rollPub, yawPub, odometryXPub, odometryYPub, odometryYawPub;
 
   private boolean useHeadingTarget = false;
   private double m_desiredHeadingRadians;
@@ -112,6 +125,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   public SwerveDrive() {
     m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
+    m_yaw = m_pigeon.getYaw().clone();
+    m_angularVelocity = m_pigeon.getAngularVelocityZWorld().clone();
     m_pigeon.setYaw(0);
     m_odometry =
         new SwerveDrivePoseEstimator(
@@ -126,10 +141,14 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       resetModulesToAbsolute();
     } else {
       m_pigeonSim = m_pigeon.getSimState();
+      startSimThread();
     }
 
     initSmartDashboard();
     setTurnMotorCoast();
+
+    m_odometryThread = new OdometryThread();
+    m_odometryThread.start();
   }
 
   private void resetModulesToAbsolute() {
@@ -144,8 +163,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       double throttle,
       double strafe,
       double rotation,
-      boolean isFieldRelative,
-      boolean isOpenLoop) {
+      boolean isFieldRelative) {
     if (m_limitJoystickInput) {
       throttle *= m_limitedVelocity;
       strafe *= m_limitedVelocity;
@@ -168,17 +186,13 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                   throttle, strafe, rotation, getHeadingRotation2d())
               : new ChassisSpeeds(throttle, strafe, rotation);
     }
-    //    var newChassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, RobotTime.getTimeDelta());
-    var newChassisSpeeds = chassisSpeeds;
+    var newChassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, RobotTime.getTimeDelta());
 
-    Map<MODULE_POSITION, SwerveModuleState> moduleStates =
-        ModuleMap.of(DRIVE.kSwerveKinematics.toSwerveModuleStates(newChassisSpeeds));
+    var states = DRIVE.kSwerveKinematics.toSwerveModuleStates(newChassisSpeeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, m_currentMaxVelocity);
 
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.setDesiredState(moduleStates.get(module.getModulePosition()), isOpenLoop);
+    setSwerveModuleStates(states);
   }
 
   /** Set robot heading to a clear target */
@@ -201,27 +215,34 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     useHeadingTarget = enable;
   }
 
-  public void setSwerveModuleStates(SwerveModuleState[] states, boolean isOpenLoop) {
+  public void setSwerveModuleStates(SwerveModuleState[] states) {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, m_currentMaxVelocity);
 
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.setDesiredState(states[module.getModulePosition().ordinal()], isOpenLoop);
-  }
+    try {
+      m_stateLock.writeLock().lock();
 
-  public void setSwerveModuleStatesAuto(SwerveModuleState[] states) {
-    setSwerveModuleStates(states, false);
+      m_desiredStates = states;
+    } finally {
+      m_stateLock.writeLock().unlock();
+    }
   }
 
   public void setChassisSpeed(ChassisSpeeds chassisSpeeds) {
     var states = DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds);
-    setSwerveModuleStates(states, false);
+    setSwerveModuleStates(states);
   }
 
   public void setOdometry(Pose2d pose) {
-    if (RobotBase.isSimulation()) {
-      m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
-    } else m_pigeon.setYaw(pose.getRotation().getDegrees());
-    m_odometry.resetPosition(getHeadingRotation2d(), getSwerveModulesPositionsArray(), pose);
+    try {
+      m_stateLock.writeLock().lock();
+
+      m_odometry.resetPosition(
+          Rotation2d.fromDegrees(m_yaw.getValue()), getSwerveModulesPositionsArray(), pose);
+      /* We need to update our cached pose immediately so that race conditions don't happen */
+      m_cachedState.Pose = pose;
+    } finally {
+      m_stateLock.writeLock().unlock();
+    }
 
     for (var position : MODULE_POSITION.values()) {
       var transform =
@@ -230,14 +251,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       getSwerveModule(position).setTurnAngle(pose.getRotation().getDegrees());
       getSwerveModule(position).setModulePose(modulePose);
     }
-  }
-
-  public void setRollOffset() {
-    m_rollOffset = -m_pigeon.getRoll().getValue(); // -2.63
-  }
-
-  public double getRollOffsetDegrees() {
-    return m_rollOffset;
   }
 
   public double getPitchDegrees() {
@@ -257,15 +270,21 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public Pose2d getPoseMeters() {
-    return m_odometry.getEstimatedPosition();
+    try {
+      m_stateLock.readLock().lock();
+
+      return m_cachedState.Pose;
+    } finally {
+      m_stateLock.readLock().unlock();
+    }
   }
 
   public ChassisSpeeds getChassisSpeeds() {
     return kSwerveKinematics.toChassisSpeeds(
-        m_swerveModules.get(MODULE_POSITION.FRONT_LEFT).getState(),
-        m_swerveModules.get(MODULE_POSITION.FRONT_RIGHT).getState(),
-        m_swerveModules.get(MODULE_POSITION.BACK_LEFT).getState(),
-        m_swerveModules.get(MODULE_POSITION.BACK_RIGHT).getState());
+        m_swerveModules.get(MODULE_POSITION.FRONT_LEFT).getCurrentState(),
+        m_swerveModules.get(MODULE_POSITION.FRONT_RIGHT).getCurrentState(),
+        m_swerveModules.get(MODULE_POSITION.BACK_LEFT).getCurrentState(),
+        m_swerveModules.get(MODULE_POSITION.BACK_RIGHT).getCurrentState());
   }
 
   public void setChassisSpeeds(ChassisSpeeds targetSpeeds) {
@@ -275,7 +294,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);
 
-    setSwerveModuleStatesAuto(moduleStates.values().toArray(new SwerveModuleState[0]));
+    setSwerveModuleStates(moduleStates.values().toArray(new SwerveModuleState[0]));
   }
 
   public SwerveModule getSwerveModule(MODULE_POSITION modulePosition) {
@@ -285,14 +304,14 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public Map<MODULE_POSITION, SwerveModuleState> getModuleStates() {
     Map<MODULE_POSITION, SwerveModuleState> map = new HashMap<>();
     for (MODULE_POSITION i : m_swerveModules.keySet())
-      map.put(i, m_swerveModules.get(i).getState());
+      map.put(i, m_swerveModules.get(i).getCurrentState());
     return map;
   }
 
   public Map<MODULE_POSITION, SwerveModulePosition> getModulePositions() {
     Map<MODULE_POSITION, SwerveModulePosition> map = new HashMap<>();
     for (MODULE_POSITION i : m_swerveModules.keySet())
-      map.put(i, m_swerveModules.get(i).getPosition());
+      map.put(i, m_swerveModules.get(i).getPosition(true));
     return map;
   }
 
@@ -359,10 +378,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     System.out.println("Finished Initializing Drive Settings");
   }
 
-  public SwerveDrivePoseEstimator getOdometry() {
-    return m_odometry;
-  }
-
   public void resetGyro() {
     //    if (DriverStation.isFMSAttached() && Controls.getAllianceColor() ==
     // DriverStation.Alliance.Red)
@@ -372,7 +387,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public void updateOdometry() {
-    m_odometry.update(getHeadingRotation2d(), getSwerveModulesPositionsArray());
+//    m_odometry.update(getHeadingRotation2d(), getSwerveModulesPositionsArray());
 
     if (!ROBOT.disableVisualization)
       for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
@@ -384,6 +399,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
       }
   }
 
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+    try {
+      m_stateLock.writeLock().lock();
+      m_odometry.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+    } finally {
+      m_stateLock.writeLock().unlock();
+    }
+  }
+
   private void initSmartDashboard() {
     setName("SwerveDrive");
     SmartDashboard.putData(this);
@@ -393,24 +417,232 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   private void updateLog() {}
 
+  /* Perform swerve module updates in a separate thread to minimize latency */
+  public class OdometryThread {
+    protected static final int START_THREAD_PRIORITY =
+        1; // Testing shows 1 (minimum realtime) is sufficient for tighter
+    // odometry loops.
+    // If the odometry period is far away from the desired frequency,
+    // increasing this may help
+
+    protected final Thread m_thread;
+    protected volatile boolean m_running = false;
+
+    protected final BaseStatusSignal[] m_allSignals;
+
+    protected final MedianFilter peakRemover = new MedianFilter(3);
+    protected final LinearFilter lowPass = LinearFilter.movingAverage(50);
+    protected double lastTime = 0;
+    protected double currentTime = 0;
+    protected double averageLoopTime = 0;
+    protected int SuccessfulDaqs = 0;
+    protected int FailedDaqs = 0;
+
+    protected int lastThreadPriority = START_THREAD_PRIORITY;
+    protected volatile int threadPriorityToSet = START_THREAD_PRIORITY;
+
+    protected final boolean IsOnCANFD = false;
+    protected final double UpdateFrequency;
+
+    public OdometryThread() {
+      m_thread = new Thread(this::run);
+      /* Mark this thread as a "daemon" (background) thread
+       * so it doesn't hold up program shutdown */
+      m_thread.setDaemon(true);
+
+      UpdateFrequency = IsOnCANFD ? 250 : 100;
+
+      /* 4 signals for each module + 2 for Pigeon2 */
+      m_allSignals = new BaseStatusSignal[(MODULE_POSITION.values().length * 4) + 2];
+      for (MODULE_POSITION i : m_swerveModules.keySet()) {
+        var signals = m_swerveModules.get(i).getSignals();
+        m_allSignals[(i.ordinal() * 4) + 0] = signals[0];
+        m_allSignals[(i.ordinal() * 4) + 1] = signals[1];
+        m_allSignals[(i.ordinal() * 4) + 2] = signals[2];
+        m_allSignals[(i.ordinal() * 4) + 3] = signals[3];
+      }
+      m_allSignals[m_allSignals.length - 2] = m_yaw;
+      m_allSignals[m_allSignals.length - 1] = m_angularVelocity;
+    }
+
+    /** Starts the odometry thread. */
+    public void start() {
+      m_running = true;
+      m_thread.start();
+    }
+
+    /** Stops the odometry thread. */
+    public void stop() {
+      stop(0);
+    }
+
+    /**
+     * Stops the odometry thread with a timeout.
+     *
+     * @param millis The time to wait in milliseconds
+     */
+    public void stop(long millis) {
+      m_running = false;
+      try {
+        m_thread.join(millis);
+      } catch (final InterruptedException ex) {
+        Thread.currentThread().interrupt();
+      }
+    }
+
+    public void run() {
+      /* Make sure all signals update at the correct update frequency */
+      BaseStatusSignal.setUpdateFrequencyForAll(UpdateFrequency, m_allSignals);
+      Threads.setCurrentThreadPriority(true, START_THREAD_PRIORITY);
+
+      /* Run as fast as possible, our signals will control the timing */
+      while (m_running) {
+        /* Synchronously wait for all signals in drivetrain */
+        /* Wait up to twice the period of the update frequency */
+        StatusCode status;
+        if (IsOnCANFD) {
+          status = BaseStatusSignal.waitForAll(2.0 / UpdateFrequency, m_allSignals);
+        } else {
+          /* Wait for the signals to update */
+          Timer.delay(1.0 / UpdateFrequency);
+          status = BaseStatusSignal.refreshAll(m_allSignals);
+        }
+
+        try {
+          m_stateLock.writeLock().lock();
+
+          lastTime = currentTime;
+          currentTime = RobotTime.getTime();
+          /* We don't care about the peaks, as they correspond to GC events, and we want the period generally low passed */
+          averageLoopTime = lowPass.calculate(peakRemover.calculate(currentTime - lastTime));
+
+          /* Get status of first element */
+          if (status.isOK()) {
+            SuccessfulDaqs++;
+          } else {
+            FailedDaqs++;
+          }
+
+          /* Now update odometry */
+          /* Keep track of the change in azimuth rotations */
+          for (MODULE_POSITION i : m_swerveModules.keySet()) {
+            m_modulePositions[i.ordinal()] = m_swerveModules.get(i).getPosition(false);
+          }
+          double yawDegrees = BaseStatusSignal.getLatencyCompensatedValue(m_yaw, m_angularVelocity);
+
+          /* Keep track of previous and current pose to account for the carpet vector */
+          m_odometry.update(Rotation2d.fromDegrees(yawDegrees), m_modulePositions);
+
+          /* And now that we've got the new odometry, update the controls */
+          //          m_requestParameters.currentPose = m_odometry.getEstimatedPosition()
+          //                  .relativeTo(new Pose2d(0, 0, m_fieldRelativeOffset));
+          //          m_requestParameters.kinematics = kSwerveKinematics;
+          //          m_requestParameters.swervePositions = DRIVE.kModuleTranslations;
+          //          m_requestParameters.timestamp = currentTime;
+          //          m_requestParameters.updatePeriod = 1.0 / UpdateFrequency;
+          //
+          //          m_requestToApply.apply(m_requestParameters, Modules);
+          for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
+            module.setDesiredState(m_desiredStates[module.getModulePosition().ordinal()], false);
+          }
+
+          /* Update our cached state with the newly updated data */
+          m_cachedState.FailedDaqs = FailedDaqs;
+          m_cachedState.SuccessfulDaqs = SuccessfulDaqs;
+          m_cachedState.Pose = m_odometry.getEstimatedPosition();
+          m_cachedState.OdometryPeriod = averageLoopTime;
+
+          if (m_cachedState.ModuleStates == null) {
+            m_cachedState.ModuleStates = new SwerveModuleState[m_modulePositions.length];
+          }
+          if (m_cachedState.ModuleTargets == null) {
+            m_cachedState.ModuleTargets = new SwerveModuleState[m_modulePositions.length];
+          }
+          for (MODULE_POSITION i : m_swerveModules.keySet()) {
+            m_cachedState.ModuleStates[i.ordinal()] = m_swerveModules.get(i).getCurrentState();
+            m_cachedState.ModuleTargets[i.ordinal()] = m_swerveModules.get(i).getDesiredState();
+          }
+
+          // TODO: Change this to AdvantageKit
+          //          if (m_telemetryFunction != null) {
+          //            /* Log our state */
+          //            m_telemetryFunction.accept(m_cachedState);
+          //          }
+        } finally {
+          m_stateLock.writeLock().unlock();
+        }
+
+        /**
+         * This is inherently synchronous, since lastThreadPriority is only written here and
+         * threadPriorityToSet is only read here
+         */
+        if (threadPriorityToSet != lastThreadPriority) {
+          Threads.setCurrentThreadPriority(true, threadPriorityToSet);
+          lastThreadPriority = threadPriorityToSet;
+        }
+      }
+    }
+
+    public boolean odometryIsValid() {
+      return SuccessfulDaqs > 2; // Wait at least 3 daqs before saying the odometry is valid
+    }
+
+    /**
+     * Sets the DAQ thread priority to a real time priority under the specified priority level
+     *
+     * @param priority Priority level to set the DAQ thread to. This is a value between 0 and 99,
+     *     with 99 indicating higher priority and 0 indicating lower priority.
+     */
+    public void setThreadPriority(int priority) {
+      threadPriorityToSet = priority;
+    }
+  }
+
   @Override
   public void periodic() {
     if (DriverStation.isEnabled() && useHeadingTarget) {
       calculateRotationSpeed();
     }
 
-    updateOdometry();
+//    updateOdometry();
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLog();
   }
 
   @Override
   public void simulationPeriodic() {
-    var twist = kSwerveKinematics.toTwist2d(getSwerveModulesPositionsArray());
+    //    var twist = kSwerveKinematics.toTwist2d(getSwerveModulesPositionsArray());
+    //
+    //    m_simYaw = m_simYaw.plus(Rotation2d.fromRadians(twist.dtheta));
+    //
+    //    m_pigeonSim.setRawYaw(-m_simYaw.getDegrees());
+  }
 
-    m_simYaw = m_simYaw.plus(Rotation2d.fromRadians(twist.dtheta));
+  private void startSimThread() {
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    m_simNotifier =
+        new Notifier(
+            () -> {
+              double deltaTime = RobotTime.getTimeDelta();
 
-    m_pigeonSim.setRawYaw(-m_simYaw.getDegrees());
+              /* use the measured time delta, get battery voltage from WPILib */
+              updateSimState(deltaTime, RobotController.getBatteryVoltage());
+            });
+    m_simNotifier.startPeriodic(0.005);
+  }
+
+  private void updateSimState(double deltaTime, double supplyVoltage) {
+    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
+      module.updateSimState(deltaTime, supplyVoltage);
+    }
+
+    // Update Chassis Heading
+    ChassisSpeeds chassisSpeed =
+        kSwerveKinematics.toChassisSpeeds(
+            ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+    m_simYaw =
+        m_simYaw.plus(Rotation2d.fromRadians(chassisSpeed.omegaRadiansPerSecond * deltaTime));
+    m_pigeonSim.setRawYaw(m_simYaw.getDegrees());
   }
 
   @Override

@@ -51,11 +51,11 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     robotPose = m_swerveDrive.getPoseMeters();
     m_field2d.setRobotPose(robotPose);
 
-    if (RobotBase.isSimulation()) {
-      m_field2d
-          .getObject("Swerve Modules")
-          .setPoses(ModuleMap.orderedValues(m_swerveDrive.getModulePoses(), new Pose2d[0]));
-    }
+//    if (RobotBase.isSimulation()) {
+//      m_field2d
+//          .getObject("Swerve Modules")
+//          .setPoses(ModuleMap.orderedValues(m_swerveDrive.getModulePoses(), new Pose2d[0]));
+//    }
   }
 
   @Override

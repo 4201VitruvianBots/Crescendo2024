@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.constants.SIM.kMotorResistance;
 import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
 
@@ -20,19 +19,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ROBOT;
@@ -53,18 +47,17 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private boolean invertDirection = false;
 
   private final double m_angleOffset;
+  private final SwerveModulePosition m_internalState = new SwerveModulePosition();
   private Rotation2d m_lastHeadingR2d;
   private Pose2d m_pose;
   private boolean m_initSuccess = false;
   private SwerveModuleState m_desiredState = new SwerveModuleState();
 
-  private final StatusSignal<Double> m_encoderPosition;
-  private final StatusSignal<Double> m_encoderAbsPosition;
-  private final StatusSignal<Double> m_encoderVelocity;
-  private final StatusSignal<Double> m_turnPosition;
-  private final StatusSignal<Double> m_turnVelocity;
   private final StatusSignal<Double> m_drivePosition;
   private final StatusSignal<Double> m_driveVelocity;
+  private final StatusSignal<Double> m_turnPosition;
+  private final StatusSignal<Double> m_turnVelocity;
+  private final BaseStatusSignal[] m_signals = new BaseStatusSignal[4];
 
   private final VoltageOut m_voltageOut = new VoltageOut(0);
   private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
@@ -79,18 +72,18 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   private SwerveModuleVisualizer m_moduleVisualizer;
 
-  private TalonFXSimState m_turnMotorSimState;
-  private TalonFXSimState m_driveMotorSimState;
-  private CANcoderSimState m_angleEncoderSimState;
-
+  //  private DCMotorSim m_turnMotorSim =
+  //      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, 0.5);
+  //  private DCMotorSim m_driveMotorSim =
+  //      new DCMotorSim(
+  //          //          LinearSystemId.createDCMotorSystem(0.134648227, 0.002802309),
+  //          LinearSystemId.createDCMotorSystem(0.02, 0.001),
+  //          MODULE.kDriveGearbox,
+  //          MODULE.kDriveMotorGearRatio);
   private DCMotorSim m_turnMotorSim =
-      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, 0.5);
+      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, MODULE.kTurnInertia);
   private DCMotorSim m_driveMotorSim =
-      new DCMotorSim(
-          //          LinearSystemId.createDCMotorSystem(0.134648227, 0.002802309),
-          LinearSystemId.createDCMotorSystem(0.02, 0.001),
-          MODULE.kDriveGearbox,
-          MODULE.kDriveMotorGearRatio);
+      new DCMotorSim(MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, MODULE.kDriveInertia);
 
   public SwerveModule(
       MODULE_POSITION modulePosition,
@@ -119,13 +112,14 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     configureTalonFx(m_turnMotor, turnConfig);
     configureTalonFx(m_driveMotor, driveConfig);
 
-    m_encoderPosition = m_angleEncoder.getPosition().clone();
-    m_encoderAbsPosition = m_angleEncoder.getAbsolutePosition().clone();
-    m_encoderVelocity = m_angleEncoder.getVelocity().clone();
     m_turnPosition = m_turnMotor.getPosition().clone();
     m_turnVelocity = m_turnMotor.getVelocity().clone();
     m_drivePosition = m_driveMotor.getPosition().clone();
     m_driveVelocity = m_driveMotor.getVelocity().clone();
+    m_signals[0] = m_drivePosition;
+    m_signals[1] = m_driveVelocity;
+    m_signals[2] = m_turnPosition;
+    m_signals[3] = m_turnVelocity;
 
     setTurnAngle(0);
 
@@ -137,18 +131,16 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     // To distinguish modules in CommandScheduler
     setName("SwerveModule_" + m_modulePosition.ordinal());
 
-    if (!RobotBase.isReal()) {
-      m_turnMotorSimState = m_turnMotor.getSimState();
-      m_driveMotorSimState = m_driveMotor.getSimState();
-      m_angleEncoderSimState = m_angleEncoder.getSimState();
-    }
-
     SmartDashboard.putData(
         "SwerveModule2D_" + m_modulePosition.ordinal(), m_moduleVisualizer.getMechanism2d());
   }
 
   public boolean getInitSuccess() {
     return m_initSuccess;
+  }
+
+  public BaseStatusSignal[] getSignals() {
+    return m_signals;
   }
 
   public MODULE_POSITION getModulePosition() {
@@ -195,12 +187,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public double getTurnHeadingDeg() {
-    m_turnPosition.refresh();
-    return 360.0 * m_turnPosition.getValue();
+    return getTurnHeadingR2d().getDegrees();
   }
 
   public Rotation2d getTurnHeadingR2d() {
-    return Rotation2d.fromDegrees(getTurnHeadingDeg());
+    return getPosition(true).angle;
   }
 
   public double getDriveMps() {
@@ -209,8 +200,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public double getDriveMeters() {
-    m_drivePosition.refresh();
-    return m_drivePosition.getValue() * MODULE.kWheelDiameterMeters * Math.PI;
+    return getPosition(true).distanceMeters;
   }
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -276,12 +266,41 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_turnMotor.setControl(m_voltageOut.withOutput(volts));
   }
 
-  public SwerveModuleState getState() {
+  public SwerveModuleState getCurrentState() {
     return new SwerveModuleState(getDriveMps(), getTurnHeadingR2d());
   }
 
-  public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(getDriveMeters(), getTurnHeadingR2d());
+  public SwerveModuleState getDesiredState() {
+    return m_desiredState;
+  }
+
+  public SwerveModulePosition getPosition(boolean refresh) {
+    if (refresh) {
+      /* Refresh all signals */
+      m_drivePosition.refresh();
+      m_driveVelocity.refresh();
+      m_turnPosition.refresh();
+      m_turnVelocity.refresh();
+    }
+
+    /* Now latency-compensate our signals */
+    double drive_rot =
+        BaseStatusSignal.getLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
+    double angle_rot = BaseStatusSignal.getLatencyCompensatedValue(m_turnPosition, m_turnVelocity);
+
+    /*
+     * Back out the drive rotations based on angle rotations due to coupling between
+     * azimuth and steer
+     */
+    //    drive_rot -= angle_rot * m_couplingRatioDriveRotorToCANcoder;
+    drive_rot -= angle_rot * 3.5714285714285716;
+
+    /* And push them into a SwerveModulePosition object to return */
+    m_internalState.distanceMeters = drive_rot / (MODULE.kWheelDiameterMeters * Math.PI);
+    /* Angle is already in terms of steer rotations */
+    m_internalState.angle = Rotation2d.fromRotations(angle_rot);
+
+    return m_internalState;
   }
 
   public void setModulePose(Pose2d pose) {
@@ -336,47 +355,91 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     //            m_driveMotor.getAppliedControl().getControlInfo().getOrDefault("Velocity", "0")));
   }
 
+  public void updateSimState(double deltaTime, double supplyVoltage) {
+    TalonFXSimState simTurnMotor = m_turnMotor.getSimState();
+    TalonFXSimState simDriveMotor = m_driveMotor.getSimState();
+    CANcoderSimState simCanCoder = m_angleEncoder.getSimState();
+
+    simTurnMotor.setSupplyVoltage(supplyVoltage);
+    simDriveMotor.setSupplyVoltage(supplyVoltage);
+    simCanCoder.setSupplyVoltage(supplyVoltage);
+
+    m_turnMotorSim.setInputVoltage(
+        addFriction(simTurnMotor.getMotorVoltage(), MODULE.kFrictionVoltage));
+    m_driveMotorSim.setInputVoltage(
+        addFriction(simDriveMotor.getMotorVoltage(), MODULE.kFrictionVoltage));
+
+    m_turnMotorSim.update(deltaTime);
+    m_driveMotorSim.update(deltaTime);
+
+    simTurnMotor.setRawRotorPosition(
+        m_turnMotorSim.getAngularPositionRotations() * MODULE.kTurnMotorGearRatio);
+    simTurnMotor.setRotorVelocity(
+        m_turnMotorSim.getAngularVelocityRPM() / 60.0 * MODULE.kTurnMotorGearRatio);
+
+    /* CANcoders see the mechanism, so don't account for the steer gearing */
+    simCanCoder.setRawPosition(m_turnMotorSim.getAngularPositionRotations());
+    simCanCoder.setVelocity(m_turnMotorSim.getAngularVelocityRPM() / 60.0);
+
+    simDriveMotor.setRawRotorPosition(
+        m_driveMotorSim.getAngularPositionRotations() * MODULE.kDriveMotorGearRatio);
+    simDriveMotor.setRotorVelocity(
+        m_driveMotorSim.getAngularVelocityRPM() / 60.0 * MODULE.kDriveMotorGearRatio);
+  }
+
+  private double addFriction(double motorVoltage, double frictionVoltage) {
+    if (Math.abs(motorVoltage) < frictionVoltage) {
+      motorVoltage = 0.0;
+    } else if (motorVoltage > 0.0) {
+      motorVoltage -= frictionVoltage;
+    } else {
+      motorVoltage += frictionVoltage;
+    }
+    return motorVoltage;
+  }
+
   @Override
   public void periodic() {
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLog();
 
-    if (!ROBOT.disableVisualization) m_moduleVisualizer.update(getState());
+    if (!ROBOT.disableVisualization) m_moduleVisualizer.update(getCurrentState());
   }
 
   @Override
   public void simulationPeriodic() {
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(
-            m_turnMotorSim.getCurrentDrawAmps(), m_driveMotorSim.getCurrentDrawAmps()));
-
-    m_turnMotorSim.setInputVoltage(MathUtil.clamp(m_turnMotorSimState.getMotorVoltage(), -12, 12));
-    m_driveMotorSim.setInputVoltage(
-        MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
-
-    double dt = RobotTime.getTimeDelta();
-    m_turnMotorSim.update(dt);
-    m_driveMotorSim.update(dt);
-
-    m_turnMotorSimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
-    m_driveMotorSimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
-
-    var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
-    var driveVelocityRps =
-        m_driveMotorSim.getAngularVelocityRPM() * MODULE.kDriveMotorGearRatio / 60.0;
-
-    m_turnMotorSimState.setRawRotorPosition(
-        m_turnMotorSim.getAngularPositionRotations() * MODULE.kTurnMotorGearRatio);
-    m_turnMotorSimState.setRotorVelocity(turnVelocityRps * MODULE.kTurnMotorGearRatio);
-    m_angleEncoderSimState.setRawPosition(m_turnMotorSim.getAngularPositionRotations());
-    m_angleEncoderSimState.setVelocity(turnVelocityRps);
-    m_driveMotorSimState.setRawRotorPosition(
-        m_driveMotorSim.getAngularPositionRotations() * MODULE.kDriveMotorGearRatio);
-    m_driveMotorSimState.setRotorVelocity(driveVelocityRps);
+    //    RoboRioSim.setVInVoltage(
+    //        BatterySim.calculateDefaultBatteryLoadedVoltage(
+    //            m_turnMotorSim.getCurrentDrawAmps(), m_driveMotorSim.getCurrentDrawAmps()));
+    //
+    //    m_turnMotorSim.setInputVoltage(MathUtil.clamp(m_turnMotorSimState.getMotorVoltage(), -12,
+    // 12));
+    //    m_driveMotorSim.setInputVoltage(
+    //        MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
+    //
+    //    double dt = RobotTime.getTimeDelta();
+    //    m_turnMotorSim.update(dt);
+    //    m_driveMotorSim.update(dt);
+    //
+    //    m_turnMotorSimState.setSupplyVoltage(
+    //        RobotController.getBatteryVoltage()
+    //            - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
+    //    m_driveMotorSimState.setSupplyVoltage(
+    //        RobotController.getBatteryVoltage()
+    //            - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
+    //
+    //    var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
+    //    var driveVelocityRps =
+    //        m_driveMotorSim.getAngularVelocityRPM() * MODULE.kDriveMotorGearRatio / 60.0;
+    //
+    //    m_turnMotorSimState.setRawRotorPosition(
+    //        m_turnMotorSim.getAngularPositionRotations() * MODULE.kTurnMotorGearRatio);
+    //    m_turnMotorSimState.setRotorVelocity(turnVelocityRps * MODULE.kTurnMotorGearRatio);
+    //    m_angleEncoderSimState.setRawPosition(m_turnMotorSim.getAngularPositionRotations());
+    //    m_angleEncoderSimState.setVelocity(turnVelocityRps);
+    //    m_driveMotorSimState.setRawRotorPosition(
+    //        m_driveMotorSim.getAngularPositionRotations() * MODULE.kDriveMotorGearRatio);
+    //    m_driveMotorSimState.setRotorVelocity(driveVelocityRps);
   }
 
   @SuppressWarnings("RedundantThrows")

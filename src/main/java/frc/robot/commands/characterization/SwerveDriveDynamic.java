@@ -26,7 +26,7 @@ public class SwerveDriveDynamic extends SequentialCommandGroup {
     };
 
     addCommands(
-        new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false)),
+        new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states)),
         new WaitCommand(1),
         sysidCommand
             .withTimeout(3)

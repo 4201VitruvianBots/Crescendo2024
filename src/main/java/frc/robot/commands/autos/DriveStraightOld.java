@@ -51,6 +51,6 @@ public class DriveStraightOld extends SequentialCommandGroup {
         new SetSwerveOdometry(swerveDrive, new Pose2d(3, 3, Rotation2d.fromDegrees(0)), fieldSim),
         new PlotAutoPath(fieldSim, "DriveStraight", path),
         new WaitCommand(1),
-        swerveCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
+        swerveCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false)));
   }
 }

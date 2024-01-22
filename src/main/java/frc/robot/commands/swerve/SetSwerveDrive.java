@@ -53,7 +53,7 @@ public class SetSwerveDrive extends Command {
     //      strafe *= -1;
     //    }
 
-    m_swerveDrive.drive(throttle, strafe, rotation, true, false);
+    m_swerveDrive.drive(throttle, strafe, rotation, true);
   }
 
   // Called once the command ends or is interrupted.

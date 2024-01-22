@@ -18,7 +18,8 @@ public class RobotTime extends SubsystemBase {
   }
 
   public RobotTime() {
-    m_timeMode = TIME_MODE.FPGA_TIME;
+    if (RobotBase.isSimulation()) m_timeMode = TIME_MODE.CTRE_TIME;
+    else m_timeMode = TIME_MODE.FPGA_TIME;
   }
 
   public static double getTime() {
