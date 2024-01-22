@@ -13,6 +13,8 @@
       "/SmartDashboard/SwerveModule2D_3": "Mechanism2d"
     }
   },
+<<<<<<< HEAD
+=======
   "NetworkTables": {
     "transitory": {
       "Shuffleboard": {
@@ -20,6 +22,7 @@
       }
     }
   },
+>>>>>>> main
   "NetworkTables Info": {
     "visible": true
   }

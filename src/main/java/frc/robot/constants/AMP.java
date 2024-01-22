@@ -24,8 +24,29 @@ public final class AMP {
             this.angle = angle;
         }
 
-        public double get() {
-            return angle;
-        }
+  public enum AMP_STATE {
+    NONE(0),
+    SCORE(0.8);
+
+    private final double value;
+
+    AMP_STATE(final double value) {
+      this.value = value;
+    }
+
+    public double get() {
+      return value;
+    }
+  }
+
+  public static enum FLIPPER_SETPOINT {
+    STOWED(Units.degreesToRadians(0.0)),
+    FORWARD(Units.degreesToRadians(120.0));
+
+    private final double angle;
+
+    FLIPPER_SETPOINT(final double angle) {
+      // this.sucks = taxes;
+      this.angle = angle;
     }
 }

@@ -62,15 +62,41 @@ public final class SWERVE {
         public static final double kTurnInertia = 0.00001;
         public static final boolean kTurnInverted = true;
 
-        //    public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
-        //    public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
-        //    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.193 / 12;
+    public static double kP_Theta = 8.0;
+    public static double kI_Theta = 0;
+    public static double kD_Theta = 0.5;
+  }
 
         public static final double ksDriveVoltSecondsPerMeter = 0.32;
         public static final double kvDriveVoltSecondsSquaredPerMeter = 1.51;
         public static final double kaDriveVoltSecondsSquaredPerMeter = 0.27;
 
-        public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
-        public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
-    }
+    public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
+    public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
+
+    public static final double kSlipCurrent = 300.0;
+    public static final double kDriveInertia = 0.001;
+    public static final double kTurnInertia = 0.00001;
+    public static final boolean kTurnInverted = true;
+
+    //    public static final double ksDriveVoltsRotation = 0.11286;
+    //    public static final double kvDriveVoltSecondsPerRotation = 0.10079;
+    //    public static final double kaDriveVoltSecondsSquaredPerRotation = 0.040151;
+
+    public static final double ksDriveVoltsRotation = 0.24085;
+    public static final double kvDriveVoltSecondsPerRotation = 2.4597;
+    public static final double kaDriveVoltSecondsSquaredPerRotation = 0.033818;
+
+    //    public static final double ksDriveVoltsRotation = (0.11286 / 12.0);
+    //    public static final double kvDriveVoltSecondsPerRotation = (0.10079 / 12.0);
+    //    public static final double kaDriveVoltSecondsSquaredPerRotation = (0.040151 / 12.0);
+
+    //    public static final double ksDriveVoltsRotation = (0.32 / 12);
+    //    public static final double kvDriveVoltSecondsPerRotation = (1.51 / 12);
+    //    public static final double kaDriveVoltSecondsSquaredPerRotation = (0.27 / 12);
+
+    public static final double ksTurnVoltsRotation = (0.24085 / 12.0);
+    public static final double kvTurnVoltSecondsPerRotation = (2.4597 / 12.0);
+    public static final double kaTurnVoltSecondsSquaredPerRotation = (0.033818 / 12.0);
+  }
 }

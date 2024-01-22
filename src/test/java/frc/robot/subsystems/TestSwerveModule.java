@@ -46,7 +46,8 @@ public class TestSwerveModule implements AutoCloseable {
             new TalonFX(CAN.frontLeftTurnMotor),
             new TalonFX(CAN.frontLeftDriveMotor),
             new CANcoder(CAN.frontLeftCanCoder),
-            0.0);
+            0.0,
+            true);
 
     /* enable the robot */
     DriverStationSim.setEnabled(true);

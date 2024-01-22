@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.FLYWHEEL.maxRPM;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -26,12 +24,8 @@ public class AmpShooter extends SubsystemBase {
     pidController.setOutputRange(0, 0);
   }
 
-  public void setMaxRPM() {
-    pidController.setReference(maxRPM, CANSparkMax.ControlType.kVelocity);
-  }
-
-  public void setMinRPM() {
-    pidController.setReference(0, CANSparkMax.ControlType.kVelocity);
+  public void setPercentOutput(double m_speed) {
+    pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
   }
 
   public double getRPM() {
