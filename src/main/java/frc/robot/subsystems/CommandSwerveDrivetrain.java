@@ -58,7 +58,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             setChassisSpeeds
                 .withVelocityX(chassisSpeeds.vxMetersPerSecond)
                 .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-                .withVelocityY(chassisSpeeds.omegaRadiansPerSecond));
+                .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
   }
 
   public ChassisSpeeds getChassisSpeed() {
