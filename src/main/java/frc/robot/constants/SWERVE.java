@@ -69,8 +69,8 @@ public final class SWERVE {
     public static final double kDriveMotorGearRatio = 6.12;
     public static final double kTurnMotorGearRatio = 150.0 / 7.0;
     public static final double kCoupleRatio = 3.5714285714285716;
-    public static final double kWheelRadiusMeters = Units.inchesToMeters(2);
-    public static final double kWheelDiameterMeters = 2 * kWheelRadiusMeters;
+    public static final double kWheelRadiusInches = 2;
+    public static final double kWheelDiameterMeters = 2 * Units.inchesToMeters(kWheelRadiusInches);
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
@@ -123,7 +123,7 @@ public final class SWERVE {
       new SwerveModuleConstantsFactory()
           .withDriveMotorGearRatio(MODULE.kDriveMotorGearRatio)
           .withSteerMotorGearRatio(MODULE.kTurnMotorGearRatio)
-          .withWheelRadius(MODULE.kWheelRadiusMeters)
+          .withWheelRadius(MODULE.kWheelRadiusInches)
           .withSlipCurrent(MODULE.kSlipCurrent)
           .withSteerMotorGains(MODULE.turnGains)
           .withDriveMotorGains(MODULE.driveGains)

@@ -1,7 +1,7 @@
 package frc.robot.constants;
 
 public final class CAN {
-  public static final String rioCanbus = "";
+  public static final String rioCanbus = "rio";
 
   public static final int pigeon = 9;
 
