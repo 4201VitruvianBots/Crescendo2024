@@ -5,25 +5,20 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.List;
 
 public class FieldSim extends SubsystemBase implements AutoCloseable {
-  private final CommandSwerveDrivetrain m_swerveDrive;
 
   private final Field2d m_field2d = new Field2d();
 
-  private Pose2d robotPose = new Pose2d(0, 0, new Rotation2d(0));
-  private Pose2d intakePose;
+  private Pose2d m_robotPose = new Pose2d();
+  private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
 
-  public FieldSim(CommandSwerveDrivetrain swerveDrive) {
-    m_swerveDrive = swerveDrive;
-
+  public FieldSim() {
     initSim();
   }
 
@@ -31,31 +26,29 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     SmartDashboard.putData("Field2d", m_field2d);
   }
 
-  public Field2d getField2d() {
-    return m_field2d;
-  }
-
   public void setPath(List<Pose2d> pathPoints) {
     m_field2d.getObject("path").setPoses(pathPoints);
   }
 
-  public void resetRobotPose(Pose2d pose) {
-    m_field2d.getObject("Swerve Modules").setPoses(m_swerveDrive.getModulePoses());
-    m_field2d.setRobotPose(pose);
+  public void updateRobotPose(Pose2d pose) {
+    m_robotPose = pose;
   }
 
-  private void updateRobotPoses() {
-    robotPose = m_swerveDrive.getState().Pose;
-    m_field2d.setRobotPose(robotPose);
+  public void updateSwervePoses(Pose2d[] poses) {
+    m_swervePoses = poses;
+  }
+
+  private void updateField2d() {
+    m_field2d.setRobotPose(m_robotPose);
 
     if (RobotBase.isSimulation()) {
-      m_field2d.getObject("Swerve Modules").setPoses(m_swerveDrive.getModulePoses());
+      m_field2d.getObject("Swerve Modules").setPoses(m_swervePoses);
     }
   }
 
   @Override
   public void periodic() {
-    updateRobotPoses();
+    updateField2d();
   }
 
   @Override

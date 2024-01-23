@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.RobotTime;
+import frc.robot.utils.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ public class TestDriveStraightChoreoTest {
 
   RobotTime m_robotTime;
   CommandSwerveDrivetrain m_swerveDrive;
+  Telemetry m_telemetry;
   FieldSim m_fieldSim;
 
   @BeforeEach
@@ -38,7 +40,10 @@ public class TestDriveStraightChoreoTest {
             FrontRightConstants,
             BackLeftConstants,
             BackRightConstants);
-    m_fieldSim = new FieldSim(m_swerveDrive);
+    m_telemetry = new Telemetry();
+    m_fieldSim = new FieldSim();
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_telemetry.registerFieldSim(m_fieldSim);
 
     /* enable the robot */
     DriverStationSim.setDsAttached(true);

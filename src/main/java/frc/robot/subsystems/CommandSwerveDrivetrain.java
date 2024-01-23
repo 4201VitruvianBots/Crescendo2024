@@ -32,8 +32,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private double m_lastSimTime;
   private Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
 
-  private final SwerveRequest.RobotCentric setChassisSpeeds = new SwerveRequest.RobotCentric();
-
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
       double OdometryUpdateFrequency,
@@ -50,15 +48,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-  }
-
-  public void setChassisSpeed(ChassisSpeeds chassisSpeeds) {
-    applyRequest(
-        () ->
-            setChassisSpeeds
-                .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
   }
 
   public ChassisSpeeds getChassisSpeed() {

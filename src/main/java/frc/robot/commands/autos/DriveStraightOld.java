@@ -1,12 +1,12 @@
 package frc.robot.commands.autos;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -48,11 +48,13 @@ public class DriveStraightOld extends SequentialCommandGroup {
     var swerveCommand =
         TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, maxVel, false);
 
+    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
+
     addCommands(
         new InstantCommand(
             () -> swerveDrive.seedFieldRelative(path.getPreviewStartingHolonomicPose())),
         new PlotAutoPath(fieldSim, "DriveStraight", path),
         new WaitCommand(1),
-        swerveCommand.andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds())));
+        swerveCommand.andThen(() -> swerveDrive.setControl(stopRequest), swerveDrive));
   }
 }

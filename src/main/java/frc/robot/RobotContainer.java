@@ -35,6 +35,7 @@ import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysidUtils;
+import frc.robot.utils.Telemetry;
 
 public class RobotContainer {
   //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -45,6 +46,7 @@ public class RobotContainer {
           FrontRightConstants,
           BackLeftConstants,
           BackRightConstants);
+  private final Telemetry m_telemetry = new Telemetry();
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
@@ -54,7 +56,7 @@ public class RobotContainer {
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
+  private final FieldSim m_fieldSim = new FieldSim();
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -75,6 +77,8 @@ public class RobotContainer {
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
   public RobotContainer() {
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_telemetry.registerFieldSim(m_fieldSim);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();

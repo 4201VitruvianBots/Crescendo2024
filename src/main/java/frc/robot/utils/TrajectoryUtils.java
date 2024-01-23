@@ -4,6 +4,7 @@
 
 package frc.robot.utils;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -13,6 +14,9 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class TrajectoryUtils {
+  private static final SwerveRequest.ApplyChassisSpeeds autoRequest =
+      new SwerveRequest.ApplyChassisSpeeds();
+
   public static FollowPathHolonomic generatePPHolonomicCommand(
       CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
@@ -29,7 +33,7 @@ public class TrajectoryUtils {
         path,
         () -> swerveDrive.getState().Pose,
         swerveDrive::getChassisSpeed,
-        swerveDrive::setChassisSpeed,
+        (speeds) -> swerveDrive.setControl(autoRequest.withSpeeds(speeds)),
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
             new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),

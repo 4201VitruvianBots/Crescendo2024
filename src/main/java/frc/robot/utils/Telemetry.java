@@ -3,94 +3,42 @@ package frc.robot.utils;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.constants.SWERVE;
+import frc.robot.simulation.FieldSim;
+import frc.robot.visualizers.SwerveModuleVisualizer;
+import org.littletonrobotics.junction.Logger;
 
 public class Telemetry {
-  private final double MaxSpeed;
+  private FieldSim m_fieldSim;
+  private final double m_maxSpeed = SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 
-  /**
-   * Construct a telemetry object, with the specified max speed of the robot
-   *
-   * @param maxSpeed Maximum speed in meters per second
-   */
-  public Telemetry(double maxSpeed) {
-    MaxSpeed = maxSpeed;
+  private SwerveModuleVisualizer[] m_moduleVisualizer = {
+    new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.FRONT_LEFT.name(), m_maxSpeed),
+    new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.FRONT_RIGHT.name(), m_maxSpeed),
+    new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_LEFT.name(), m_maxSpeed),
+    new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_RIGHT.name(), m_maxSpeed)
+  };
+
+  private Pose2d[] m_swerveModulePoses = {
+    new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
+  };
+
+  /** Construct a telemetry object */
+  public Telemetry() {}
+
+  public void registerFieldSim(FieldSim fieldSim) {
+    m_fieldSim = fieldSim;
   }
-
-  /* What to publish over networktables for telemetry */
-  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
-  /* Robot pose for field positioning */
-  private final NetworkTable table = inst.getTable("Pose");
-  private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
-  private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
-
-  /* Robot speeds for general checking */
-  private final NetworkTable driveStats = inst.getTable("Drive");
-  private final DoublePublisher velocityX = driveStats.getDoubleTopic("Velocity X").publish();
-  private final DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
-  private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
-  private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
 
   /* Keep a reference of the last pose to calculate the speeds */
   private Pose2d m_lastPose = new Pose2d();
   private double lastTime = Utils.getCurrentTimeSeconds();
 
-  /* Mechanisms to represent the swerve module states */
-  private final Mechanism2d[] m_moduleMechanisms =
-      new Mechanism2d[] {
-        new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1),
-      };
-  /* A direction and length changing ligament for speed representation */
-  private final MechanismLigament2d[] m_moduleSpeeds =
-      new MechanismLigament2d[] {
-        m_moduleMechanisms[0]
-            .getRoot("RootSpeed", 0.5, 0.5)
-            .append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[1]
-            .getRoot("RootSpeed", 0.5, 0.5)
-            .append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[2]
-            .getRoot("RootSpeed", 0.5, 0.5)
-            .append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[3]
-            .getRoot("RootSpeed", 0.5, 0.5)
-            .append(new MechanismLigament2d("Speed", 0.5, 0)),
-      };
-  /* A direction changing and length constant ligament for module direction */
-  private final MechanismLigament2d[] m_moduleDirections =
-      new MechanismLigament2d[] {
-        m_moduleMechanisms[0]
-            .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[1]
-            .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[2]
-            .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[3]
-            .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-      };
-
   /* Accept the swerve drive state and telemeterize it to smartdashboard */
   public void telemeterize(SwerveDriveState state) {
-    /* Telemeterize the pose */
-    Pose2d pose = state.Pose;
-    fieldTypePub.set("Field2d");
-    fieldPub.set(new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()});
-
+    var pose = state.Pose;
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTime;
@@ -100,18 +48,24 @@ public class Telemetry {
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    speed.set(velocities.getNorm());
-    velocityX.set(velocities.getX());
-    velocityY.set(velocities.getY());
-    odomPeriod.set(state.OdometryPeriod);
+    Logger.recordOutput("Swerve/Pose", pose);
+    Logger.recordOutput("Swerve/Speed", velocities.getNorm());
+    Logger.recordOutput("Swerve/Velocity X", velocities.getX());
+    Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
+    Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
 
     /* Telemeterize the module's states */
-    for (int i = 0; i < 4; ++i) {
-      m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+    for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
+      m_moduleVisualizer[i.ordinal()].update(state.ModuleStates[i.ordinal()]);
+      var moduleTransform =
+          new Transform2d(
+              SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
+      m_swerveModulePoses[i.ordinal()] = pose.transformBy(moduleTransform);
+    }
 
-      SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
+    if (m_fieldSim != null) {
+      m_fieldSim.updateRobotPose(pose);
+      m_fieldSim.updateSwervePoses(m_swerveModulePoses);
     }
   }
 }

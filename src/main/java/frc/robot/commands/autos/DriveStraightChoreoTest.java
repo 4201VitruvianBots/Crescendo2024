@@ -7,7 +7,6 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -27,6 +26,7 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
     var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
     var point = new SwerveRequest.PointWheelsAt();
+    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -37,6 +37,6 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)
             .alongWith(new WaitCommand(1)),
-        m_ppCommand.andThen(() -> swerveDrive.setChassisSpeed(new ChassisSpeeds())));
+        m_ppCommand.andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
