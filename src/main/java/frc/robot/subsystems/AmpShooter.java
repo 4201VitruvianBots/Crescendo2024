@@ -1,48 +1,49 @@
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.CAN;
-import org.littletonrobotics.junction.Logger;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.SparkMaxPIDController;
 
-public class AmpShooter extends SubsystemBase {
-  private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
-  private final SparkMaxPIDController pidController = ampMotor.getPIDController();
-  private final RelativeEncoder encoder = ampMotor.getEncoder();
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.constants.CAN;
+// import org.littletonrobotics.junction.Logger;
 
-  public AmpShooter() {
-    ampMotor.restoreFactoryDefaults();
-    encoder.setVelocityConversionFactor(0);
-    pidController.setFeedbackDevice(encoder);
-    pidController.setP(0);
-    pidController.setI(0);
-    pidController.setD(0);
-    pidController.setFF(0);
-    pidController.setOutputRange(0, 0);
-  }
+// public class AmpShooter extends SubsystemBase {
+//   private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
+//   private final SparkMaxPIDController pidController = ampMotor.getPIDController();
+//   private final RelativeEncoder encoder = ampMotor.getEncoder();
 
-  public void setPercentOutput(double m_speed) {
-    pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
-  }
+//   public AmpShooter() {
+//     ampMotor.restoreFactoryDefaults();
+//     encoder.setVelocityConversionFactor(0);
+//     pidController.setFeedbackDevice(encoder);
+//     pidController.setP(0);
+//     pidController.setI(0);
+//     pidController.setD(0);
+//     pidController.setFF(0);
+//     pidController.setOutputRange(0, 0);
+//   }
 
-  public double getRPM() {
-    return encoder.getVelocity();
-  }
+//   public void setPercentOutput(double m_speed) {
+//     pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
+//   }
 
-  private void updateShuffleboard() {
-    //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
-  }
+//   public double getRPM() {
+//     return encoder.getVelocity();
+//   }
 
-  private void updateLog() {
-    Logger.recordOutput("AmpShooter/RPM", getRPM());
-  }
+//   private void updateShuffleboard() {
+//     //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
+//   }
 
-  @Override
-  public void periodic() {
-    updateShuffleboard();
-    updateLog();
-  }
-}
+//   private void updateLog() {
+//     Logger.recordOutput("AmpShooter/RPM", getRPM());
+//   }
+
+//   @Override
+//   public void periodic() {
+//     updateShuffleboard();
+//     updateLog();
+//   }
+// }
+// //TODO: Update this code as it doesn't work with new revrobotics libraries
