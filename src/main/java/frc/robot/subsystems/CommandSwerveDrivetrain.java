@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -16,11 +19,14 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem so it can be used
@@ -48,6 +54,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    var pigeonConfig = new Pigeon2Configuration();
+    pigeonConfig.MountPose = new MountPoseConfigs().withMountPoseRoll(-180);
+    getPigeon2().getConfigurator().apply(pigeonConfig);
+  }
+
+  public void resetOdometry(Pose2d pose) {
+
   }
 
   public ChassisSpeeds getChassisSpeed() {
@@ -111,6 +124,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     System.out.println("Finished Initializing Drive Settings");
   }
 
+  public void resetGyro() {
+    getPigeon2().setYaw(0);
+  }
+
   public void initTurnSysid() {
     var turnMotor = getModule(0).getSteerMotor();
     CtreUtils.configureTalonFx(turnMotor, new TalonFXConfiguration());
@@ -128,5 +145,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
     System.out.println("Finished Initializing Drive Settings");
+  }
+
+  public void updateLog() {
+    Logger.recordOutput("Swerve/Gyro", getPigeon2().getAngle());
+  }
+
+  @Override
+  public void periodic() {
+    updateLog();
   }
 }

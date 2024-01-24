@@ -31,6 +31,7 @@ import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
@@ -143,6 +144,8 @@ public class RobotContainer {
 
   public void initAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addOption(
+        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
