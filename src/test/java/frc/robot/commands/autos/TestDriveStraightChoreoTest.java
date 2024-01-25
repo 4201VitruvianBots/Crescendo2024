@@ -13,7 +13,6 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Vision;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +22,7 @@ public class TestDriveStraightChoreoTest {
   RobotTime m_robotTime;
   SwerveDrive m_swerveDrive;
   FieldSim m_fieldSim;
-  Vision m_vision; 
+  Vision m_vision;
 
   @BeforeEach
   public void constructDevices() {

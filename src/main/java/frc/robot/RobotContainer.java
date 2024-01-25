@@ -33,7 +33,7 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
 
-public class RobotContainer{
+public class RobotContainer {
   private final Vision m_vision = new Vision();
   private final SwerveDrive m_swerveDrive = new SwerveDrive(m_vision);
   private final Intake m_intake = new Intake();

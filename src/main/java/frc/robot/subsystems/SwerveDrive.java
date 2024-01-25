@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -39,10 +40,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
-import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
-import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
