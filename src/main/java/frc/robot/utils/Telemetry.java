@@ -56,16 +56,15 @@ public class Telemetry {
     Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
     Logger.recordOutput("Swerve/Module States", state.ModuleStates);
 
-    /* Telemeterize the module's states */
-    for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
-      m_moduleVisualizer[i.ordinal()].update(state.ModuleStates[i.ordinal()]);
-      var moduleTransform =
-          new Transform2d(
-              SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
-      m_swerveModulePoses[i.ordinal()] = pose.transformBy(moduleTransform);
-    }
-
     if (m_fieldSim != null) {
+      for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
+        m_moduleVisualizer[i.ordinal()].update(state.ModuleStates[i.ordinal()]);
+        var moduleTransform =
+            new Transform2d(
+                SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
+        m_swerveModulePoses[i.ordinal()] = pose.transformBy(moduleTransform);
+      }
+
       m_fieldSim.updateRobotPose(pose);
       m_fieldSim.updateSwervePoses(m_swerveModulePoses);
     }
