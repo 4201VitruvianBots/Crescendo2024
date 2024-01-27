@@ -6,13 +6,13 @@ package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AMP;
-import frc.robot.subsystems.TrampArm;
+import frc.robot.subsystems.Arm;
 
-public class TrampArmForward extends Command {
-  TrampArm m_flipper;
+public class ArmForward extends Command {
+  Arm m_flipper;
 
-  /** Creates a new TrampArmForward. */
-  public TrampArmForward(TrampArm flipper) {
+  /** Creates a new ArmForward. */
+  public ArmForward(Arm flipper) {
     m_flipper = flipper;
 
     // Use addRequirements() here to declare subsystem dependencies.

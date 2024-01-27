@@ -27,9 +27,9 @@ import frc.robot.constants.AMP;
 import frc.robot.constants.CAN;
 import frc.robot.utils.CtreUtils;
 
-public class TrampArm extends SubsystemBase {
-  /** Creates a new TrampArm. */
-  private final TalonFX flipperMotor = new TalonFX(CAN.TrampArm);
+public class Arm extends SubsystemBase {
+  /** Creates a new Arm. */
+  private final TalonFX flipperMotor = new TalonFX(CAN.Arm);
 
   private final PositionVoltage m_position = new PositionVoltage(0);
 
@@ -60,12 +60,12 @@ public class TrampArm extends SubsystemBase {
   
   private final Mechanism2d m_amp2d = new Mechanism2d(AMP.length*2, AMP.length*2);
 
-  private final MechanismRoot2d m_ampRoot2d = m_amp2d.getRoot("Tramp Arm", AMP.length/2, AMP.length/2);
+  private final MechanismRoot2d m_ampRoot2d = m_amp2d.getRoot("Arm", AMP.length/2, AMP.length/2);
   
   private final MechanismLigament2d m_ampLigament2d =
-      new MechanismLigament2d("Tramp Arm", AMP.length, AMP.fourbarAngleDegrees);
+      new MechanismLigament2d("Arm", AMP.length, AMP.fourbarAngleDegrees);
   
-  public TrampArm() {
+  public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kS = AMP.kS;
     config.Slot0.kV = AMP.kV;
@@ -93,10 +93,10 @@ public class TrampArm extends SubsystemBase {
   }
 
   public void updateLogger() {
-    Logger.recordOutput("TrampArm/DesiredAngle", m_desiredAngleRadians);
-    Logger.recordOutput("TrampArm/CurrentAngle", getAngleRadians());
-    Logger.recordOutput("TrampArm/DesiredSetpoint", m_setpoint.position);
-    Logger.recordOutput("TrampArm/PercentOutput", flipperMotor.get());
+    Logger.recordOutput("Arm/DesiredAngle", m_desiredAngleRadians);
+    Logger.recordOutput("Arm/CurrentAngle", getAngleRadians());
+    Logger.recordOutput("Arm/DesiredSetpoint", m_setpoint.position);
+    Logger.recordOutput("Arm/PercentOutput", flipperMotor.get());
   }
   
   public double getAngleRadians() {
@@ -113,7 +113,7 @@ public class TrampArm extends SubsystemBase {
     m_position.Velocity = m_setpoint.velocity;
     flipperMotor.setControl(m_position);
     
-    SmartDashboard.putData("Tramp Arm Sim", m_amp2d);
+    SmartDashboard.putData("Arm Sim", m_amp2d);
     updateLogger();
   }
   

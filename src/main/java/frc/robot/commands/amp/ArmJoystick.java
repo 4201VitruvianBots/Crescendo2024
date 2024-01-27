@@ -5,16 +5,16 @@ the WPILib BSD license file in the root directory of this project. */
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.TrampArm;
+import frc.robot.subsystems.Arm;
 import java.util.function.DoubleSupplier;
 
-public class TrampArmJoystick extends Command {
-  /** Creates a new TrampArmForward. */
-  TrampArm m_flipper;
+public class ArmJoystick extends Command {
+  /** Creates a new ArmForward. */
+  Arm m_flipper;
 
   private DoubleSupplier m_output;
 
-  public TrampArmJoystick(TrampArm flipper, DoubleSupplier output) {
+  public ArmJoystick(Arm flipper, DoubleSupplier output) {
     m_flipper = flipper;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_flipper);

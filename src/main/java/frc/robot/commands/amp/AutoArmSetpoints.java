@@ -6,14 +6,14 @@ package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AMP.FLIPPER_SETPOINT;
-import frc.robot.subsystems.TrampArm;
+import frc.robot.subsystems.Arm;
 
-public class AutoTrampArmSetpoints extends Command {
-  TrampArm m_flipper;
+public class AutoArmSetpoints extends Command {
+  Arm m_flipper;
   FLIPPER_SETPOINT m_state;
 
-  /** Creates a new TrampArmForward. */
-  public AutoTrampArmSetpoints(TrampArm flipper, FLIPPER_SETPOINT state) {
+  /** Creates a new ArmForward. */
+  public AutoArmSetpoints(Arm flipper, FLIPPER_SETPOINT state) {
     m_flipper = flipper;
     m_state = state;
     // Use addRequirements() here to declare subsystem dependencies.
