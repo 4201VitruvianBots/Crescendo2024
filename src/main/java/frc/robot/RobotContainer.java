@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.amp.AmpFlipperForward;
+import frc.robot.commands.amp.TrampArmForward;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -39,7 +39,7 @@ public class RobotContainer{
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
-  private final AmpFlipper m_flipper = new AmpFlipper();
+  private final TrampArm m_flipper = new TrampArm();
   //private final AmpShooter m_ampshooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final LED m_led = new LED();
@@ -96,7 +96,7 @@ public class RobotContainer{
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
+    xboxController.y().whileTrue(new TrampArmForward(m_flipper));
   }
 
   public void initAutoChooser() {
