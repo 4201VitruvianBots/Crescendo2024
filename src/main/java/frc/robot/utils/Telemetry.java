@@ -14,14 +14,14 @@ public class Telemetry {
   private FieldSim m_fieldSim;
   private final double m_maxSpeed = SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 
-  private SwerveModuleVisualizer[] m_moduleVisualizer = {
+  private final SwerveModuleVisualizer[] m_moduleVisualizer = {
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.FRONT_LEFT.name(), m_maxSpeed),
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.FRONT_RIGHT.name(), m_maxSpeed),
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_LEFT.name(), m_maxSpeed),
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_RIGHT.name(), m_maxSpeed)
   };
 
-  private Pose2d[] m_swerveModulePoses = {
+  private final Pose2d[] m_swerveModulePoses = {
     new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
   };
 

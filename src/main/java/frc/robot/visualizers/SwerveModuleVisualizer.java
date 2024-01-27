@@ -14,8 +14,8 @@ public class SwerveModuleVisualizer implements AutoCloseable {
   private final MechanismRoot2d m_moduleRoot;
   private final MechanismLigament2d m_moduleLigament;
   private Color8Bit m_ligamentColor = new Color8Bit(Color.kGray);
-  private String m_name;
-  private double m_moduleMaxSpeedMps;
+  private final String m_name;
+  private final double m_moduleMaxSpeedMps;
 
   private enum SPEED_COLOR {
     STOPPED(new Color8Bit(Color.kGray)),
