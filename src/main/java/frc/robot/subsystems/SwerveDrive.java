@@ -384,14 +384,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_vision.getEstimatedGlobalPose(m_odometry.getEstimatedPosition()).ifPresent(pose ->
             m_odometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds));
 
-    for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
-      Transform2d moduleTransform =
-          new Transform2d(
-              DRIVE.kModuleTranslations.get(module.getModulePosition()),
-              module.getTurnHeadingR2d());
-      module.setModulePose(getPoseMeters().transformBy(moduleTransform));
-    }
-
     if (!ROBOT.disableVisualization)
       for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
         Transform2d moduleTransform =
