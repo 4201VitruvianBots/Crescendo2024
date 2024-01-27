@@ -9,20 +9,11 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import java.io.IOException;
 
 public final class VISION {
 
-  public static final AprilTagFieldLayout aprilTagFieldLayout;
-
-  static {
-    try {
-      aprilTagFieldLayout =
-          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+  public static final AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
   // Camera offset from robot center in meters
   public static final Transform3d robotToCam =
