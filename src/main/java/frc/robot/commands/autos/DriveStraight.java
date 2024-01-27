@@ -9,11 +9,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
 
@@ -26,11 +27,11 @@ import java.util.ArrayList;
 // Interrupting command
 // Interrupting comma-
 public class DriveStraight extends Command {
-  private final SwerveDrive m_swerveDrive;
+  private final CommandSwerveDrivetrain m_swerveDrive;
   private final FieldSim m_fieldSim;
   private FollowPathHolonomic m_ppCommand;
 
-  public DriveStraight(SwerveDrive swerveDrive, FieldSim fieldSim) {
+  public DriveStraight(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     m_swerveDrive = swerveDrive;
     m_fieldSim = fieldSim;
 
@@ -65,18 +66,25 @@ public class DriveStraight extends Command {
             new PathConstraints(maxVel, maxAccel, maxAngularVel, maxAngularAccel),
             new GoalEndState(0, Rotation2d.fromDegrees(0)));
 
-    var trajectory =
+    var ppTrajectory =
         new PathPlannerTrajectory(
             path, new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
 
     var pathPoints =
         new ArrayList<>(
-            trajectory.getStates().stream()
-                .map(PathPlannerTrajectory.State::getTargetHolonomicPose)
+            ppTrajectory.getStates().stream()
+                .map(
+                    (state) ->
+                        new Trajectory.State(
+                            state.timeSeconds,
+                            state.velocityMps,
+                            state.accelerationMpsSq,
+                            state.getTargetHolonomicPose(),
+                            state.curvatureRadPerMeter))
                 .toList());
 
-    m_fieldSim.setPath(pathPoints);
-    m_swerveDrive.setOdometry(startPoint);
+    m_fieldSim.setTrajectory(new Trajectory(pathPoints));
+    m_swerveDrive.seedFieldRelative(startPoint);
 
     m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(m_swerveDrive, path, maxVel, false);
     m_ppCommand.initialize();

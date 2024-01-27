@@ -2,18 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.swerve;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class ResetOdometry extends Command {
   /** Creates a new ResetGyro. */
-  private final SwerveDrive m_swerveDrive;
+  private final CommandSwerveDrivetrain m_swerveDrive;
 
-  public ResetOdometry(SwerveDrive swerveDrive) {
-    m_swerveDrive = swerveDrive;
+  public ResetOdometry(CommandSwerveDrivetrain swerveDrivetrain) {
 
+    m_swerveDrive = swerveDrivetrain;
     addRequirements(m_swerveDrive);
   }
 

@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
+import java.util.List;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -11,18 +13,15 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import java.util.List;
-import java.util.Optional;
-
 public class Vision extends SubsystemBase {
-  
+
   PhotonCamera camera = new PhotonCamera("Limelight2");
-  PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
+  PhotonPoseEstimator photonPoseEstimator =
+      new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
           camera,
-          VISION.robotToCam
-  );
+          VISION.robotToCam);
 
   private Pose2d estimatedPose;
 
@@ -31,7 +30,7 @@ public class Vision extends SubsystemBase {
   public boolean isCameraConnected() {
     return camera.isConnected();
   }
-    
+
   public boolean isAprilTagDetected() {
     if (camera.isConnected()) {
       var result = camera.getLatestResult();
@@ -57,7 +56,7 @@ public class Vision extends SubsystemBase {
       List<PhotonTrackedTarget> targets = result.getTargets();
       if (!targets.isEmpty()) {
         return targets.get(0);
-      } else   {
+      } else {
         return null;
       }
     } else {
@@ -77,8 +76,9 @@ public class Vision extends SubsystemBase {
     PhotonTrackedTarget target = result.getBestTarget();
 
     var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
-    if(aprilTagDetection.isPresent()) {
-      return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
+    if (aprilTagDetection.isPresent()) {
+      return PhotonUtils.estimateFieldToRobotAprilTag(
+          target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
     } else {
       return null;
     }

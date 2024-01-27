@@ -4,14 +4,14 @@
 
 package frc.robot.commands.autos;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.swerve.SetSwerveOdometry;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.TrajectoryUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,26 +19,24 @@ import frc.robot.utils.TrajectoryUtils;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveStraightChoreoTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
-  public DriveStraightChoreoTest(SwerveDrive swerveDrive, FieldSim fieldSim) {
+  public DriveStraightChoreoTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
 
-    PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory("DriveStraightTest");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Drivefowardtest");
 
     var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
-    SwerveModuleState[] states = {
-      new SwerveModuleState(),
-      new SwerveModuleState(),
-      new SwerveModuleState(),
-      new SwerveModuleState(),
-    };
-
+    var point = new SwerveRequest.PointWheelsAt();
+    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new PlotAutoPath(fieldSim, "DriveStraightTest", path),
-        new SetSwerveOdometry(swerveDrive, path.getPreviewStartingHolonomicPose(), fieldSim),
-        new InstantCommand(() -> swerveDrive.setSwerveModuleStates(states, false))
+        new PlotAutoPath(fieldSim, "Drivefowardtest", path),
+        new InstantCommand(
+            () -> swerveDrive.seedFieldRelative(path.getPreviewStartingHolonomicPose())),
+        new InstantCommand(
+                () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
+                swerveDrive)
             .alongWith(new WaitCommand(1)),
-        m_ppCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
+        m_ppCommand.andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
