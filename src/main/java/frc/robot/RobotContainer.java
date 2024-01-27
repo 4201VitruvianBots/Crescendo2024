@@ -33,8 +33,9 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
 
-public class RobotContainer {
-  private final SwerveDrive m_swerveDrive = new SwerveDrive();
+public class RobotContainer{
+  private final Vision m_vision = new Vision();
+  private final SwerveDrive m_swerveDrive = new SwerveDrive(m_vision);
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
@@ -45,7 +46,6 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
-  private final Vision m_vision = new Vision();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();

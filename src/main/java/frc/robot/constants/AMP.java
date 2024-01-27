@@ -38,15 +38,5 @@ public final class AMP {
       return value;
     }
   }
-
-  public static enum FLIPPER_SETPOINT {
-    STOWED(Units.degreesToRadians(0.0)),
-    FORWARD(Units.degreesToRadians(120.0));
-
-    private final double angle;
-
-    FLIPPER_SETPOINT(final double angle) {
-      // this.sucks = taxes;
-      this.angle = angle;
-    }
+}
 }

@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Vision;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +23,7 @@ public class TestDriveStraightChoreoTest {
   RobotTime m_robotTime;
   SwerveDrive m_swerveDrive;
   FieldSim m_fieldSim;
+  Vision m_vision; 
 
   @BeforeEach
   public void constructDevices() {
@@ -28,7 +31,7 @@ public class TestDriveStraightChoreoTest {
 
     m_robotTime = new RobotTime();
     RobotTime.setTimeMode(RobotTime.TIME_MODE.UNITTEST);
-    m_swerveDrive = new SwerveDrive();
+    m_swerveDrive = new SwerveDrive(m_vision);
     m_fieldSim = new FieldSim(m_swerveDrive);
 
     /* enable the robot */
