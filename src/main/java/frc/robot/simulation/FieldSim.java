@@ -5,11 +5,12 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 public class FieldSim extends SubsystemBase implements AutoCloseable {
 
@@ -26,8 +27,9 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     SmartDashboard.putData("Field2d", m_field2d);
   }
 
-  public void setPath(List<Pose2d> pathPoints) {
-    m_field2d.getObject("path").setPoses(pathPoints);
+  public void setTrajectory(Trajectory trajectory) {
+    m_field2d.getObject("path").setTrajectory(trajectory);
+    Logger.recordOutput("Trajectory/Auto Trajectory", trajectory);
   }
 
   public void updateRobotPose(Pose2d pose) {
