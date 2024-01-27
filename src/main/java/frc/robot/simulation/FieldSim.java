@@ -5,26 +5,21 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.utils.ModuleMap;
-import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 public class FieldSim extends SubsystemBase implements AutoCloseable {
-  private final SwerveDrive m_swerveDrive;
 
   private final Field2d m_field2d = new Field2d();
 
-  private Pose2d robotPose = new Pose2d(0, 0, new Rotation2d(0));
-  private Pose2d intakePose;
+  private Pose2d m_robotPose = new Pose2d();
+  private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
 
-  public FieldSim(SwerveDrive swerveDrive) {
-    m_swerveDrive = swerveDrive;
-
+  public FieldSim() {
     initSim();
   }
 
@@ -32,35 +27,30 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     SmartDashboard.putData("Field2d", m_field2d);
   }
 
-  public Field2d getField2d() {
-    return m_field2d;
+  public void setTrajectory(Trajectory trajectory) {
+    m_field2d.getObject("path").setTrajectory(trajectory);
+    Logger.recordOutput("Trajectory/Auto Trajectory", trajectory);
   }
 
-  public void setPath(List<Pose2d> pathPoints) {
-    m_field2d.getObject("path").setPoses(pathPoints);
+  public void updateRobotPose(Pose2d pose) {
+    m_robotPose = pose;
   }
 
-  public void resetRobotPose(Pose2d pose) {
-    m_field2d
-        .getObject("Swerve Modules")
-        .setPoses(ModuleMap.orderedValues(m_swerveDrive.getModulePoses(), new Pose2d[0]));
-    m_field2d.setRobotPose(pose);
+  public void updateSwervePoses(Pose2d[] poses) {
+    m_swervePoses = poses;
   }
 
-  private void updateRobotPoses() {
-    robotPose = m_swerveDrive.getPoseMeters();
-    m_field2d.setRobotPose(robotPose);
+  private void updateField2d() {
+    m_field2d.setRobotPose(m_robotPose);
 
     if (RobotBase.isSimulation()) {
-      m_field2d
-          .getObject("Swerve Modules")
-          .setPoses(ModuleMap.orderedValues(m_swerveDrive.getModulePoses(), new Pose2d[0]));
+      m_field2d.getObject("Swerve Modules").setPoses(m_swervePoses);
     }
   }
 
   @Override
   public void periodic() {
-    updateRobotPoses();
+    updateField2d();
   }
 
   @Override

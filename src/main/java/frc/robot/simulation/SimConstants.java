@@ -27,7 +27,7 @@ public final class SimConstants {
   public static final double fieldLength = Units.inchesToMeters(651.25);
   public static final double fieldWidth = Units.inchesToMeters(315.5);
   public static final double tapeWidth = Units.inchesToMeters(2.0);
-  public static final double aprilTagWidth = Units.inchesToMeters(6.0);
+  public static final double aprilTagWidth = Units.inchesToMeters(6.5);
   public static final double fieldHeightMeters = Units.feetToMeters(27);
 
   /**

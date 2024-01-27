@@ -29,7 +29,7 @@ import frc.robot.utils.CtreUtils;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
-  private final TalonFX flipperMotor = new TalonFX(CAN.Arm);
+  private final TalonFX flipperMotor = new TalonFX(CAN.armMotor);
 
   private final PositionVoltage m_position = new PositionVoltage(0);
 

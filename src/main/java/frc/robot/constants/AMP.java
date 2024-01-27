@@ -13,11 +13,11 @@ public final class AMP {
     public static final double kMaxFlipperVelocity = 10;
     public static final double kMaxFlipperAcceleration = 10;
 
-    public enum FLIPPER_SETPOINT {
-        STOWED(Units.degreesToRadians(0.0)),
-        FORWARD(Units.degreesToRadians(120.0));
+  public enum FLIPPER_SETPOINT {
+    STOWED(Units.degreesToRadians(0.0)),
+    FORWARD(Units.degreesToRadians(120.0));
 
-        private final double angle;
+    private final double angle;
 
         FLIPPER_SETPOINT(final double angle) {
             // this.sucks = taxes;

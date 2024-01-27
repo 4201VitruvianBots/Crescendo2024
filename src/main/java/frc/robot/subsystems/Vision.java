@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
+import java.util.List;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -12,27 +14,24 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import java.util.List;
-import java.util.Optional;
-
 public class Vision extends SubsystemBase {
-  
+
   PhotonCamera camera = new PhotonCamera("Limelight2");
-  PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
+  PhotonPoseEstimator photonPoseEstimator =
+      new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
           camera,
-          VISION.robotToCam
-  );
+          VISION.robotToCam);
 
-  private Pose2d estimatedPose;
+  private Pose2d estimatedPose = new Pose2d();
 
   public Vision() {}
 
   public boolean isCameraConnected() {
     return camera.isConnected();
   }
-    
+
   public boolean isAprilTagDetected() {
     if (camera.isConnected()) {
       var result = camera.getLatestResult();
@@ -58,7 +57,7 @@ public class Vision extends SubsystemBase {
       List<PhotonTrackedTarget> targets = result.getTargets();
       if (!targets.isEmpty()) {
         return targets.get(0);
-      } else   {
+      } else {
         return null;
       }
     } else {
@@ -75,23 +74,30 @@ public class Vision extends SubsystemBase {
 
   public Pose3d getEstimatedFieldPose() {
     var result = camera.getLatestResult();
-    PhotonTrackedTarget target = result.getBestTarget();
 
-    var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
-    if(aprilTagDetection.isPresent()) {
-      return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
-    } else {
-      return null;
+    if (result.hasTargets()) {
+      PhotonTrackedTarget target = result.getBestTarget();
+
+      if (target != null) {
+        var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
+        if (aprilTagDetection.isPresent()) {
+          return PhotonUtils.estimateFieldToRobotAprilTag(
+              target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
+        }
+      }
     }
+
+    return new Pose3d();
   }
 
   private void updateLog() {
-    if (RobotBase.isReal()) {
-        Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
-        Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
-        Logger.recordOutput("vision/getTargets", getTargets());
-        Logger.recordOutput("vision/estimatedPose", estimatedPose);
-        Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+    Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
+
+    if (isCameraConnected()) {
+      Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
+      Logger.recordOutput("vision/getTargets", getTargets());
+      Logger.recordOutput("vision/estimatedPose", estimatedPose);
+      Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
     }
   }
 
