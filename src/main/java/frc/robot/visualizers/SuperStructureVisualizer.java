@@ -48,6 +48,8 @@ public class SuperStructureVisualizer {
     MechanismLigament2d m_climberHook1_2d = m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
     MechanismLigament2d m_climberHook2_2d = m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
   
+  Color8Bit m_drivebase2d_originalColor, m_limelight2d_originalColor, m_intake2d_originalColor, m_uptake2d_originalColor, m_climber2d_originalColor, m_climberHook1_2d_originalColor, m_climberHook2_2d_originalColor, m_shooter2d_originalColor, m_arm2d_originalColor, m_ampShooter2d_originalColor;
+  
   public SuperStructureVisualizer(
       Intake intake,
       Uptake uptake,
@@ -75,55 +77,63 @@ public class SuperStructureVisualizer {
     m_arm2d.setColor(new Color8Bit(235, 137, 52));
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
     
+    m_drivebase2d_originalColor = m_drivebase2d.getColor();
+    m_limelight2d_originalColor = m_limelight2d.getColor();
+    m_intake2d_originalColor = m_intake2d.getColor();
+    m_uptake2d_originalColor = m_uptake2d.getColor();
+    m_climber2d_originalColor = m_climber2d.getColor();
+    m_climberHook1_2d_originalColor = m_climberHook1_2d.getColor();
+    m_climberHook2_2d_originalColor = m_climberHook2_2d.getColor();
+    m_shooter2d_originalColor = m_shooter2d.getColor();
+    m_arm2d_originalColor = m_arm2d.getColor();
+    m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
+    
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
   }
   
   /* Function to visualize the speed of a particular motor. */
-  public void updateMotorColor(MechanismLigament2d ligament, double motorSpeed) {
+  public void updateMotorColor(MechanismLigament2d ligament, double motorSpeed, Color8Bit originalColor) {
     double deltaBrightness = Math.abs(motorSpeed) * 75;
     
-    Color8Bit m_originalColor = ligament.getColor();
-    
     Color8Bit newColor = new Color8Bit(
-        m_originalColor.red + (int) deltaBrightness,
-        m_originalColor.green + (int) deltaBrightness,
-        m_originalColor.blue + (int) deltaBrightness
+        originalColor.red + (int) deltaBrightness,
+        originalColor.green + (int) deltaBrightness,
+        originalColor.blue + (int) deltaBrightness
     );
     
     ligament.setColor(newColor);
   }
   
   /* Function to visualize the state of a limelight. */
-  public void updateLimelightColor(MechanismLigament2d ligament, boolean isActive) {
-    Color8Bit m_originalColor = ligament.getColor();
+  public void updateLimelightColor(MechanismLigament2d ligament, boolean isActive, Color8Bit originalColor) {
     
     Color8Bit newColor = new Color8Bit(
-        m_originalColor.red + (isActive ? 75 : 0),
-        m_originalColor.green + (isActive ? 75 : 0),
-        m_originalColor.blue + (isActive ? 75 : 0)
+        originalColor.red + (isActive ? 75 : 0),
+        originalColor.green + (isActive ? 75 : 0),
+        originalColor.blue + (isActive ? 75 : 0)
     );
     
     ligament.setColor(newColor);
   }
   
   public void updateIntake() {
-    updateMotorColor(m_intake2d, m_intake.getSpeed());
+    updateMotorColor(m_intake2d, m_intake.getSpeed(), m_intake2d_originalColor);
   }
   
   public void updateUptake() {
-    updateMotorColor(m_uptake2d, m_uptake.getSpeed());
+    updateMotorColor(m_uptake2d, m_uptake.getSpeed(), m_uptake2d_originalColor);
   }
   
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getRPM1());
+    updateMotorColor(m_shooter2d, m_shooter.getRPM1(), m_shooter2d_originalColor);
   }
 
   public void updateAmpShooter() {
-    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed());
+    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
   }
 
   public void updateArm() {
-    updateMotorColor(m_arm2d, m_arm.getPercentOutput());
+    updateMotorColor(m_arm2d, m_arm.getPercentOutput(), m_arm2d_originalColor);
     m_arm2d.setAngle(Units.radiansToDegrees(m_arm.getAngleRadians() + AMP.mountingAngle));
   }
 
@@ -132,7 +142,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateLimelight() {
-    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected());
+    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(), m_limelight2d_originalColor);
   }
   
   public void periodic() {
