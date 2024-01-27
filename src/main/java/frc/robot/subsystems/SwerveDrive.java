@@ -52,7 +52,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontLeftTurnMotor),
                       new TalonFX(CAN.frontLeftDriveMotor),
                       new CANcoder(CAN.frontLeftCanCoder),
-                      DRIVE.frontLeftCANCoderOffset,
+                      DRIVE.kFrontLeftEncoderOffset,
                       false),
               MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
@@ -60,7 +60,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontRightTurnMotor),
                       new TalonFX(CAN.frontRightDriveMotor),
                       new CANcoder(CAN.frontRightCanCoder),
-                      DRIVE.frontRightCANCoderOffset,
+                      DRIVE.kFrontRightEncoderOffset,
                       false),
               MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
@@ -68,7 +68,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.backLeftTurnMotor),
                       new TalonFX(CAN.backLeftDriveMotor),
                       new CANcoder(CAN.backLeftCanCoder),
-                      DRIVE.backLeftCANCoderOffset,
+                      DRIVE.kBackLeftEncoderOffset,
                       false),
               MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
@@ -76,7 +76,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.backRightTurnMotor),
                       new TalonFX(CAN.backRightDriveMotor),
                       new CANcoder(CAN.backRightCanCoder),
-                      DRIVE.backRightCANCoderOffset,
+                      DRIVE.kBackRightEncoderOffset,
                       false)));
 
   private Vision m_vision;

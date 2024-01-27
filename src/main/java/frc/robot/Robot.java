@@ -57,15 +57,15 @@ public class Robot extends LoggedRobot {
         // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
       } catch (NoSuchElementException e) {
         System.out.println("\nAdvantageKit - Failed to find Replay source!");
-      } finally {
-        // Log simulation output
-        var logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
-        var logDir = new File(logDirPath);
-        if (!logDir.exists()) {
-          logDir.mkdir();
-        }
-        Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
       }
+      // Log simulation output
+      var logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
+      var logDir = new File(logDirPath);
+      if (!logDir.exists()) {
+        logDir.mkdir();
+      }
+      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+      Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
       // Save outputs to a new log
     }
 
