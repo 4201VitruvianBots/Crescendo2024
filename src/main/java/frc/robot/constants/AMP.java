@@ -37,17 +37,17 @@ public final class AMP {
 
     public static final double gearRatio = 1;
 
-    public static final double length = 1;
+    public static final double length = Units.inchesToMeters(21.5);
 
     public static final double mass = 1;
 
-    public static final double minAngle = 0;
+    public static final double minAngle = Units.degreesToRadians(0.0);
 
-    public static final double maxAngle = 1;
+    public static final double maxAngle = Units.degreesToRadians(175.0);
 
     public static final double fourbarAngleDegrees = 1;
 
-    public static final double rotationsToDegrees = 1;
+    public static final double rotationsToDegrees = 360.0 / gearRatio;
 
   public enum AMP_STATE {
     NONE(0),

@@ -86,7 +86,7 @@ public class AmpFlipper extends SubsystemBase {
 
   public void setDesiredSetpointRadians(double radians) {
     m_desiredAngleRadians = radians;
-    m_goal = new TrapezoidProfile.State(radians * AMP.kRadiansToRotations, 0);
+    m_goal = new TrapezoidProfile.State(Units.radiansToDegrees(radians) / AMP.rotationsToDegrees, 0);
   }
 
   public double getDesiredSetpointRadians() {
