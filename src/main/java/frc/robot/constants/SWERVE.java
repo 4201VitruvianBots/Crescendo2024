@@ -52,14 +52,11 @@ public final class SWERVE {
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
     public static final double kLimitedRotationRadiansPerSecond = kMaxRotationRadiansPerSecond / 5;
-
-    public static final double kP_X = 2.5;
+//Driving 
+    public static final double kP_X =7;
     public static final double kI_X = 0;
     public static final double kD_X = 0;
-    public static final double kP_Y = 2.5;
-    public static final double kI_Y = 0;
-    public static final double kD_Y = 0;
-
+//Rotation 
     public static double kP_Theta = 8.0;
     public static double kI_Theta = 0;
     public static double kD_Theta = 0.5;

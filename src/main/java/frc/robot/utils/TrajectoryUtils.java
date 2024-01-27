@@ -4,12 +4,17 @@
 
 package frc.robot.utils;
 
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -40,6 +45,30 @@ public class TrajectoryUtils {
             maxSpeed,
             0.86210458762,
             new ReplanningConfig(false, false, 1.0, 0.25)),
+        () -> flipPath,
+        swerveDrive);
+  }
+
+
+  public static Command generateChoreoCommand(
+      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
+    ChoreoTrajectory traj = Choreo.getTrajectory(pathName); 
+
+    return generateChoreoCommand(swerveDrive, traj, maxSpeed, flipPath);
+  }
+
+  public static Command generateChoreoCommand(
+      CommandSwerveDrivetrain swerveDrive,
+      ChoreoTrajectory traj,
+      double maxSpeed,
+      boolean flipPath) {
+    return  Choreo.choreoSwerveCommand(
+        traj,
+        () -> swerveDrive.getState().Pose,
+        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
+        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
+        new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
+        (speeds) -> swerveDrive.setControl(autoRequest.withSpeeds(speeds)),
         () -> flipPath,
         swerveDrive);
   }

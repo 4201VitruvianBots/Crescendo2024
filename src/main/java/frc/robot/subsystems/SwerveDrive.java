@@ -100,7 +100,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private double m_desiredHeadingRadians;
 
   private final PIDController m_xController = new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X);
-  private final PIDController m_yController = new PIDController(DRIVE.kP_Y, DRIVE.kI_Y, DRIVE.kD_Y);
+ 
   private final PIDController m_turnController =
       new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta);
 
@@ -320,9 +320,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_xController;
   }
 
-  public PIDController getYPidController() {
-    return m_yController;
-  }
+
 
   public PIDController getThetaPidController() {
     return m_turnController;

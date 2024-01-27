@@ -5,7 +5,7 @@
 package frc.robot;
 
 import static frc.robot.constants.SWERVE.*;
-
+import frc.robot.commands.autos.DriveStraightPathplannerTest;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -144,8 +144,7 @@ public class RobotContainer {
 
   public void initAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
-    m_autoChooser.addOption(
-        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+   m_autoChooser.addOption("DriveStraightPathplannerTest", new DriveStraightPathplannerTest(m_swerveDrive, m_fieldSim)) ;
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
