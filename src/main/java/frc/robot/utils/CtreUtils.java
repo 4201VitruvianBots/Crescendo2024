@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -87,6 +88,30 @@ public final class CtreUtils {
         AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
 
     return sensorConfig;
+  }
+
+  public static boolean configureTalonFx(TalonFX motor, SwerveModuleConstants constants) {
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+    int deviceType = motor.getDeviceID() % 2; // 1 == Turn, 0 == Drive;
+    if (deviceType == 0) {
+      motorConfig.Slot0 = constants.DriveMotorGains;
+      motorConfig.Feedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
+      motorConfig.MotorOutput.Inverted =
+          constants.DriveMotorInverted
+              ? InvertedValue.CounterClockwise_Positive
+              : InvertedValue.Clockwise_Positive;
+    } else if (deviceType == 1) {
+      motorConfig.Slot0 = constants.SteerMotorGains;
+      motorConfig.Feedback.SensorToMechanismRatio = constants.SteerMotorGearRatio;
+      motorConfig.Feedback.RotorToSensorRatio = constants.CouplingGearRatio;
+      motorConfig.MotorOutput.Inverted =
+          constants.SteerMotorInverted
+              ? InvertedValue.CounterClockwise_Positive
+              : InvertedValue.Clockwise_Positive;
+    }
+
+    return configureTalonFx(motor, motorConfig);
   }
 
   public static boolean configureTalonFx(TalonFX motor, TalonFXConfiguration config) {

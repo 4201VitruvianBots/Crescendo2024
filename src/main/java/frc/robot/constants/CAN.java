@@ -1,7 +1,9 @@
 package frc.robot.constants;
 
 public final class CAN {
-    public static final int pigeon = 9;
+  public static final String rioCanbus = "rio";
+
+  public static final int pigeon = 9;
 
     public static final int frontLeftCanCoder = 10;
     public static final int frontRightCanCoder = 11;

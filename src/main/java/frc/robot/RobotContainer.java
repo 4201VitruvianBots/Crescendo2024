@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import static frc.robot.constants.SWERVE.*;
+
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -24,18 +28,27 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
-import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SWERVE;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
-import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
+import frc.robot.utils.Telemetry;
 
-public class RobotContainer{
+public class RobotContainer {
+  //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final CommandSwerveDrivetrain m_swerveDrive =
+      new CommandSwerveDrivetrain(
+          DrivetrainConstants,
+          FrontLeftConstants,
+          FrontRightConstants,
+          BackLeftConstants,
+          BackRightConstants);
+  private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
-  private final SwerveDrive m_swerveDrive = new SwerveDrive(m_vision);
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
@@ -45,7 +58,16 @@ public class RobotContainer{
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
+  private final FieldSim m_fieldSim = new FieldSim();
+
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  // driving in open loop
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -57,6 +79,8 @@ public class RobotContainer{
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
 
   public RobotContainer() {
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_telemetry.registerFieldSim(m_fieldSim);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
@@ -67,18 +91,38 @@ public class RobotContainer{
   private void initializeSubsystems() {
     if (RobotBase.isReal()) {
       m_swerveDrive.setDefaultCommand(
-          new SetSwerveDrive(
-              m_swerveDrive,
-              () -> leftJoystick.getRawAxis(1),
-              () -> leftJoystick.getRawAxis(0),
-              () -> rightJoystick.getRawAxis(0)));
+          m_swerveDrive.applyRequest(
+              () ->
+                  drive
+                      .withVelocityX(
+                          leftJoystick.getRawAxis(1)
+                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+                      // negative Y (forward)
+                      .withVelocityY(
+                          leftJoystick.getRawAxis(0)
+                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
+                      .withRotationalRate(
+                          rightJoystick.getRawAxis(0)
+                              * DRIVE
+                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
+      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
-          new SetSwerveDrive(
-              m_swerveDrive,
-              () -> -m_testController.getRawAxis(1),
-              () -> -m_testController.getRawAxis(0),
-              () -> -m_testController.getRawAxis(2)));
+          m_swerveDrive.applyRequest(
+              () ->
+                  drive
+                      .withVelocityX(
+                          -m_testController.getRawAxis(1)
+                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+                      // negative Y (forward)
+                      .withVelocityY(
+                          -m_testController.getRawAxis(0)
+                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
+                      .withRotationalRate(
+                          -m_testController.getRawAxis(2)
+                              * DRIVE
+                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
+      // negative X (left)
     }
 
     m_intake.setDefaultCommand(
@@ -103,6 +147,8 @@ public class RobotContainer{
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
@@ -124,13 +170,7 @@ public class RobotContainer{
         "initDriveSettings",
         new InstantCommand(m_swerveDrive::initDriveSysid).ignoringDisable(true));
     SmartDashboard.putData(
-        "initTurnSettings",
-        new InstantCommand(
-                () ->
-                    m_swerveDrive
-                        .getSwerveModule(ModuleMap.MODULE_POSITION.FRONT_LEFT)
-                        .initTurnSysid())
-            .ignoringDisable(true));
+        "initTurnSettings", new InstantCommand(m_swerveDrive::initTurnSysid).ignoringDisable(true));
 
     m_sysidChooser.addOption(
         "driveQuasistaticForward",
