@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
@@ -16,14 +17,18 @@ public class ShootNStrafe extends Command {
   Shooter m_shooter;
   FLYWHEEL_STATE m_state;
   SwerveDrive m_swerveDrive;
+  SwerveModule m_swerveModule;
   private double m_rpm;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
   private double displacementX = 5.548 - m_swerveDrive.getOdometry().getEstimatedPosition().getX();
   private double displacementY = m_swerveDrive.getOdometry().getEstimatedPosition().getY();
-  private double VelocityY = 0;
-  private double VelocityX = 0;
-  private double VelocityShoot = 0;
+  private double VelocityY =
+      m_swerveModule.getTurnHeadingR2d().getSin() * m_swerveModule.getVelocity();
+  private double VelocityX =
+      m_swerveModule.getTurnHeadingR2d().getCos() * m_swerveModule.getVelocity();
+  private double VelocityShoot = 1.2;
+
   double m_headingOffset =
       Math.asin(
           Math.abs(

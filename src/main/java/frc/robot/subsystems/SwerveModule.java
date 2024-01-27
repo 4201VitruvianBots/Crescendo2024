@@ -191,6 +191,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     return m_driveMotor.getVelocity().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
   }
 
+  public double getVelocity() {
+    return m_driveMotor.getVelocity().getValue();
+  }
+
   public double getDriveMeters() {
     return m_driveMotor.getPosition().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
   }
