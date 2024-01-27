@@ -82,6 +82,10 @@ public class Arm extends SubsystemBase {
   public void setPercentOutput(double speed) {
     flipperMotor.set(speed);
   }
+  
+  public double getPercentOutput() {
+    return flipperMotor.get();
+  }
 
   public void setDesiredSetpointRadians(double radians) {
     m_desiredAngleRadians = radians;

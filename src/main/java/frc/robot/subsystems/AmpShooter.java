@@ -31,6 +31,10 @@ public class AmpShooter extends SubsystemBase {
   public double getRPM() {
     return encoder.getVelocity();
   }
+  
+  public double getSpeed() {
+    return ampMotor.get();
+  }
 
   private void updateShuffleboard() {
     //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
