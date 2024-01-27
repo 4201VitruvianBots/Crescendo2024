@@ -45,7 +45,7 @@ public final class AMP {
 
     public static final double startingAngle = Units.degreesToRadians(0.0);
     
-    public static final double mountingAngle = Units.degreesToRadians(0.0);
+    public static final double mountingAngle = Units.degreesToRadians(-200.0);
 
     public static final double rotationsToDegrees = 360.0 / gearRatio;
 

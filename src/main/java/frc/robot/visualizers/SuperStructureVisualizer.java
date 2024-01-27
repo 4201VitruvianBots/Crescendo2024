@@ -33,21 +33,21 @@ public class SuperStructureVisualizer {
   Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
   
   MechanismRoot2d m_drivebaseRoot2d = m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_climberRoot2d = m_mech2d.getRoot("Climber", CLIMBER.kDistanceFromIntake, ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_shooterRoot2d = m_mech2d.getRoot("Shooter", FLYWHEEL.kDistanceFromIntake, ROBOT.drivebaseWidth * 0.5);
+  MechanismRoot2d m_climberRoot2d = m_mech2d.getRoot("Climber", ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake, ROBOT.drivebaseWidth * 0.5);
+  MechanismRoot2d m_shooterRoot2d = m_mech2d.getRoot("Shooter", ROBOT.drivebaseLength * 0.5 + FLYWHEEL.kDistanceFromIntake, ROBOT.drivebaseWidth * 0.5);
 
   MechanismLigament2d m_drivebase2d = m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
   MechanismLigament2d m_limelight2d = m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
   MechanismLigament2d m_intake2d = m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
     MechanismLigament2d m_uptake2d = m_intake2d.append(new MechanismLigament2d("Uptake", UPTAKE.uptakeLength, 35));
   
+  MechanismLigament2d m_shooter2d = m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
+  MechanismLigament2d m_arm2d = m_shooter2d.append(new MechanismLigament2d("Arm", AMP.length, Units.radiansToDegrees(AMP.startingAngle + AMP.mountingAngle)));
+  MechanismLigament2d m_ampShooter2d = m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
+  
   MechanismLigament2d m_climber2d = m_climberRoot2d.append(new MechanismLigament2d("Climber", CLIMBER.kUnextendedLength, 90));
     MechanismLigament2d m_climberHook1_2d = m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
     MechanismLigament2d m_climberHook2_2d = m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
-  
-  MechanismLigament2d m_shooter2d = m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), -90));
-  MechanismLigament2d m_arm2d = m_shooter2d.append(new MechanismLigament2d("Arm", AMP.length, Units.radiansToDegrees(AMP.startingAngle + AMP.mountingAngle)));
-  MechanismLigament2d m_ampShooter2d = m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
   
   public SuperStructureVisualizer(
       Intake intake,
