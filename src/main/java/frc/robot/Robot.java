@@ -39,7 +39,7 @@ public class Robot extends LoggedRobot {
       } catch (Exception e) {
         System.out.println("\nAdvantageKit - Failed to log to USB Drive!");
         e.printStackTrace();
-      } finally {
+
         var tempLogDir = new File("/tmp/logs");
         if (!tempLogDir.exists()) tempLogDir.mkdirs();
         Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));

@@ -38,6 +38,11 @@ import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import org.littletonrobotics.junction.Logger;
+
+import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
+import static frc.robot.constants.SWERVE.DRIVE.kSwerveKinematics;
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
@@ -51,7 +56,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontLeftDriveMotor),
                       new CANcoder(CAN.frontLeftCanCoder),
                       DRIVE.frontLeftCANCoderOffset,
-                      true),
+                      false),
               MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.FRONT_RIGHT,
@@ -59,7 +64,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.frontRightDriveMotor),
                       new CANcoder(CAN.frontRightCanCoder),
                       DRIVE.frontRightCANCoderOffset,
-                      true),
+                      false),
               MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_LEFT,
@@ -67,7 +72,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.backLeftDriveMotor),
                       new CANcoder(CAN.backLeftCanCoder),
                       DRIVE.backLeftCANCoderOffset,
-                      true),
+                      false),
               MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_RIGHT,
@@ -75,7 +80,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       new TalonFX(CAN.backRightDriveMotor),
                       new CANcoder(CAN.backRightCanCoder),
                       DRIVE.backRightCANCoderOffset,
-                      true)));
+                      false)));
+
+  private Vision m_vision;
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private Pigeon2SimState m_pigeonSim;
@@ -110,7 +117,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private final double m_limitedVelocity = DRIVE.kLimitedSpeedMetersPerSecond;
   private double m_currentMaxVelocity = m_maxVelocity;
 
-  public SwerveDrive() {
+  public SwerveDrive(Vision vision) {
+    m_vision = vision;
     m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
     m_pigeon.setYaw(0);
     m_odometry =
@@ -390,7 +398,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   private void updateSmartDashboard() {}
 
-  private void updateLog() {}
+  private void updateLog() {
+    Logger.recordOutput("Swerve/Pose", getPoseMeters());
+  }
 
   @Override
   public void periodic() {

@@ -16,9 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.AmpFlipperForward;
-import frc.robot.commands.autos.DriveStriaghtTest;
-import frc.robot.commands.autos.ScoreAmp;
-import frc.robot.commands.autos.ScoreSpeaker;
+import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -35,8 +33,9 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.SysidUtils;
 
-public class RobotContainer {
-  private final SwerveDrive m_swerveDrive = new SwerveDrive();
+public class RobotContainer{
+  private final Vision m_vision = new Vision();
+  private final SwerveDrive m_swerveDrive = new SwerveDrive(m_vision);
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
@@ -101,14 +100,15 @@ public class RobotContainer {
   }
 
   public void initAutoChooser() {
-    m_autoChooser.addOption("do nothing", new DriveStriaghtTest(m_swerveDrive));
-    // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addOption(
+        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+    // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
-    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
-    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
+    //    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+    //    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
