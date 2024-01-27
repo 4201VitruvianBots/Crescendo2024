@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AMP;
 import frc.robot.constants.CAN;
@@ -45,16 +48,15 @@ public class AmpFlipper extends SubsystemBase {
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
-          AMP.gearBox,
-          AMP.gearRatio,
-          SingleJointedArmSim.estimateMOI(AMP.length, AMP.mass),
-          AMP.length,
-          AMP.minAngle,
-          AMP.maxAngle,
-          false,
-          AMP.fourbarAngleDegrees
-          //VecBuilder.fill(2.0 * Math.PI / 2048.0) // Add noise with a std-dev of 1 tick
-          );
+        AMP.gearBox,
+        AMP.gearRatio,
+        SingleJointedArmSim.estimateMOI(AMP.length, AMP.mass),
+        AMP.length,
+        AMP.minAngle,
+        AMP.maxAngle,
+        false,
+        0
+    );
   
   private final Mechanism2d m_amp2d = new Mechanism2d(AMP.length*2, AMP.length*2);
 
@@ -91,6 +93,17 @@ public class AmpFlipper extends SubsystemBase {
     return m_desiredAngleRadians;
   }
 
+  public void updateLogger() {
+    Logger.recordOutput("AmpFlipper/DesiredAngle", m_desiredAngleRadians);
+    Logger.recordOutput("AmpFlipper/CurrentAngle", getAngleRadians());
+    Logger.recordOutput("AmpFlipper/DesiredSetpoint", m_setpoint.position);
+    Logger.recordOutput("AmpFlipper/PercentOutput", flipperMotor.get());
+  }
+  
+  public double getAngleRadians() {
+    return Math.toRadians(flipperMotor.getRotorPosition().getValueAsDouble() * AMP.rotationsToDegrees);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -100,6 +113,9 @@ public class AmpFlipper extends SubsystemBase {
     m_position.Position = m_setpoint.position;
     m_position.Velocity = m_setpoint.velocity;
     flipperMotor.setControl(m_position);
+    
+    SmartDashboard.putData("Amp Flipper Sim", m_amp2d);
+    updateLogger();
   }
   
   @Override
@@ -130,6 +146,7 @@ public class AmpFlipper extends SubsystemBase {
     //flipperMotor.setBusVoltage(RobotController.getBatteryVoltage());
     m_ampLigament2d.setAngle(m_armSim.getAngleRads());
     // Ligma2d?
+    
   }
   
 }

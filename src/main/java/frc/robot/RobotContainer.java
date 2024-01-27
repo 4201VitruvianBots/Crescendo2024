@@ -40,7 +40,7 @@ public class RobotContainer{
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
   private final AmpFlipper m_flipper = new AmpFlipper();
-  private final AmpShooter m_ampshooter = new AmpShooter();
+  //private final AmpShooter m_ampshooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();

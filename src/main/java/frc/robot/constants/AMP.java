@@ -27,22 +27,27 @@ public final class AMP {
             // this.sucks = taxes;
             this.angle = angle;
         }
+        
+        public double get() {
+            return angle;
+        }
+    }
 
-public static final LinearSystem<N2, N1, N1> gearBox = null;
+    public static final DCMotor gearBox = DCMotor.getFalcon500(1);
 
-public static final DCMotor gearRatio = null;
+    public static final double gearRatio = 1;
 
-public static final double length = 0;
+    public static final double length = 1;
 
-public static final double mass = 0;
+    public static final double mass = 1;
 
-public static final double minAngle = 0;
+    public static final double minAngle = 0;
 
-public static final double maxAngle = 0;
+    public static final double maxAngle = 1;
 
-public static final double fourbarAngleDegrees = 0;
+    public static final double fourbarAngleDegrees = 1;
 
-public static final double rotationsToDegrees = 0;
+    public static final double rotationsToDegrees = 1;
 
   public enum AMP_STATE {
     NONE(0),
@@ -58,5 +63,4 @@ public static final double rotationsToDegrees = 0;
       return value;
     }
   }
-}
 }

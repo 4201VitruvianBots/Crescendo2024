@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
 import org.littletonrobotics.junction.Logger;
@@ -85,11 +86,13 @@ public class Vision extends SubsystemBase {
   }
 
   private void updateLog() {
-    Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
-    Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
-    Logger.recordOutput("vision/getTargets", getTargets());
-    Logger.recordOutput("vision/estimatedPose", estimatedPose);
-    Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+    if (RobotBase.isReal()) {
+        Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
+        Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
+        Logger.recordOutput("vision/getTargets", getTargets());
+        Logger.recordOutput("vision/estimatedPose", estimatedPose);
+        Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+    }
   }
 
   private void smartDashboard() {
