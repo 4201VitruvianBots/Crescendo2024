@@ -28,6 +28,14 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     return allianceColor;
   }
 
+  public static boolean IsRedAlliance() {
+    return (allianceColor ==  DriverStation.Alliance.Red);
+  }
+
+  public static boolean IsBlueAllaince() {
+    return (allianceColor == DriverStation.Alliance.Blue);
+  }
+
   public void setPDHChannel(boolean on) {
     // pdh.setSwitchableChannel(on);
   }
