@@ -54,7 +54,7 @@ public class RobotContainer {
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_flipper = new Arm();
-  //private final AmpShooter m_ampshooter = new AmpShooter();
+  private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
@@ -72,7 +72,7 @@ public class RobotContainer {
 
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
-          m_intake, m_uptake, m_shooter, null, m_flipper, m_climber, m_vision);
+          m_intake, m_uptake, m_shooter, m_ampShooter, m_flipper, m_climber, m_vision);
   
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -214,5 +214,6 @@ public class RobotContainer {
 
   public void periodic() {
     m_fieldSim.periodic();
+    m_visualizer.periodic();
   }
 }

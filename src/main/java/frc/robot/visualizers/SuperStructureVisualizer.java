@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.AMP;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.FLYWHEEL;
@@ -107,4 +106,42 @@ public class SuperStructureVisualizer {
     ligament.setColor(newColor);
   }
   
+  public void updateIntake() {
+    updateMotorColor(m_intake2d, m_intake.getSpeed());
+  }
+  
+  public void updateUptake() {
+    updateMotorColor(m_uptake2d, m_uptake.getSpeed());
+  }
+  
+  public void updateShooter() {
+    updateMotorColor(m_shooter2d, m_shooter.getRPM1());
+  }
+
+  public void updateAmpShooter() {
+    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed());
+  }
+
+  public void updateArm() {
+    updateMotorColor(m_arm2d, m_arm.getPercentOutput());
+    m_arm2d.setAngle(Units.radiansToDegrees(m_arm.getAngleRadians() + AMP.mountingAngle));
+  }
+
+  public void updateClimber() {
+    // TODO: Update this code to work with climber code once completed
+  }
+
+  public void updateLimelight() {
+    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected());
+  }
+  
+  public void periodic() {
+    updateIntake();
+    updateUptake();
+    updateShooter();
+    updateAmpShooter();
+    updateArm();
+    updateClimber();
+    updateLimelight();
+  }
 }
