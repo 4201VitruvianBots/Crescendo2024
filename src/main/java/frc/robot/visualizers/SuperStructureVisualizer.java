@@ -65,16 +65,16 @@ public class SuperStructureVisualizer {
     m_climber = climber;
     m_vision = vision;
     
-    m_drivebase2d.setColor(new Color8Bit(235, 205, 52));
+    m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
-    m_uptake2d.setColor(new Color8Bit(0, 255, 0));
-    m_climber2d.setColor(new Color8Bit(255, 0, 0));
-    m_climberHook1_2d.setColor(new Color8Bit(255, 0, 0));
-    m_climberHook2_2d.setColor(new Color8Bit(255, 0, 0));
-    m_shooter2d.setColor(new Color8Bit(255, 0, 255));
-    m_arm2d.setColor(new Color8Bit(255, 0, 255));
-    m_ampShooter2d.setColor(new Color8Bit(255, 0, 255));
+    m_uptake2d.setColor(new Color8Bit(235, 52, 176));
+    m_climber2d.setColor(new Color8Bit(52, 212, 235));
+    m_climberHook1_2d.setColor(new Color8Bit(52, 212, 235));
+    m_climberHook2_2d.setColor(new Color8Bit(52, 212, 235));
+    m_shooter2d.setColor(new Color8Bit(189, 189, 189));
+    m_arm2d.setColor(new Color8Bit(235, 137, 52));
+    m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
     
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
   }

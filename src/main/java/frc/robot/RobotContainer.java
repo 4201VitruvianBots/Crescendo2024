@@ -37,6 +37,7 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysidUtils;
 import frc.robot.utils.Telemetry;
+import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
   //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -59,7 +60,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim();
-
+  
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -69,6 +70,10 @@ public class RobotContainer {
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
   // driving in open loop
 
+  private final SuperStructureVisualizer m_visualizer =
+      new SuperStructureVisualizer(
+          m_intake, m_uptake, m_shooter, null, m_flipper, m_climber, m_vision);
+  
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
 
