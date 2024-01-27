@@ -55,15 +55,15 @@ public class Arm extends SubsystemBase {
         AMP.minAngle,
         AMP.maxAngle,
         false,
-        0
+        AMP.startingAngle
     );
   
-  private final Mechanism2d m_amp2d = new Mechanism2d(AMP.length*2, AMP.length*2);
+  private final Mechanism2d m_arm2d = new Mechanism2d(AMP.length*2, AMP.length*2);
 
-  private final MechanismRoot2d m_ampRoot2d = m_amp2d.getRoot("Arm", AMP.length/2, AMP.length/2);
+  private final MechanismRoot2d m_armRoot2d = m_arm2d.getRoot("Arm", AMP.length/2, AMP.length/2);
   
-  private final MechanismLigament2d m_ampLigament2d =
-      new MechanismLigament2d("Arm", AMP.length, AMP.fourbarAngleDegrees);
+  private final MechanismLigament2d m_armLigament2d =
+      new MechanismLigament2d("Arm", AMP.length, Units.radiansToDegrees(AMP.startingAngle));
   
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -76,7 +76,7 @@ public class Arm extends SubsystemBase {
     
     // Simulation setup
     lastSimTime = m_simTimer.get();
-    m_ampRoot2d.append(m_ampLigament2d);
+    m_armRoot2d.append(m_armLigament2d);
   }
 
   public void setPercentOutput(double speed) {
@@ -100,7 +100,7 @@ public class Arm extends SubsystemBase {
   }
   
   public double getAngleRadians() {
-    return Math.toRadians(flipperMotor.getRotorPosition().getValueAsDouble() * AMP.rotationsToDegrees);
+    return Units.degreesToRadians(flipperMotor.getRotorPosition().getValueAsDouble() * AMP.rotationsToDegrees);
   }
 
   @Override
@@ -113,7 +113,7 @@ public class Arm extends SubsystemBase {
     m_position.Velocity = m_setpoint.velocity;
     flipperMotor.setControl(m_position);
     
-    SmartDashboard.putData("Arm Sim", m_amp2d);
+    SmartDashboard.putData("Arm Sim", m_arm2d);
     updateLogger();
   }
   
@@ -130,20 +130,20 @@ public class Arm extends SubsystemBase {
     // Using negative sensor units to match physical behavior
     flipperMotor
         .setPosition(
-            (int)
-                (Units.radiansToDegrees(m_armSim.getAngleRads())
-                    / AMP.rotationsToDegrees));
+            Units.radiansToDegrees(m_armSim.getAngleRads()
+                / AMP.rotationsToDegrees));
 
     flipperMotor
         .setVoltage(
-            (int)
-                (Units.radiansToDegrees(m_armSim.getVelocityRadPerSec())
+            Units.radiansToDegrees(m_armSim.getVelocityRadPerSec())
                     / AMP.rotationsToDegrees
-                    * 10.0));
+                    * 10.0);
     
     // Set supply voltage of flipper motor
-    //flipperMotor.setBusVoltage(RobotController.getBatteryVoltage());
-    m_ampLigament2d.setAngle(m_armSim.getAngleRads());
+    // TODO: Find phoenix 6 equivalent to phoenix 5's setBusVoltage function
+    // flipperMotor.setBusVoltage(RobotController.getBatteryVoltage());
+    
+    m_armLigament2d.setAngle(m_armSim.getAngleRads());
     // Ligma2d?
     
   }
