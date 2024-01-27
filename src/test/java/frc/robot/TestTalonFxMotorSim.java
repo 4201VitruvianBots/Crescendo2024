@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.jni.PlatformJNI;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;

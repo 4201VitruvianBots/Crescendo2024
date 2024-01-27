@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotTime extends SubsystemBase {
@@ -14,11 +16,12 @@ public class RobotTime extends SubsystemBase {
   public static enum TIME_MODE {
     REAL_TIME,
     ROBORIO_TIMESTEP,
+    CTRE_TIME,
     UNITTEST
   }
 
   public RobotTime() {
-    m_timeMode = TIME_MODE.ROBORIO_TIMESTEP;
+    m_timeMode = TIME_MODE.REAL_TIME;
   }
 
   public static double getTime() {
@@ -49,6 +52,9 @@ public class RobotTime extends SubsystemBase {
           setTime(getTime() + 0.02);
           break;
         }
+      case CTRE_TIME:
+        setTime(Utils.getCurrentTimeSeconds());
+        break;
       case UNITTEST:
         setTime(Logger.getRealTimestamp() * 1.0e-6);
         break;

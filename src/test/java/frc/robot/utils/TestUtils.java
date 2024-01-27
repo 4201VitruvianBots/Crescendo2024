@@ -1,6 +1,9 @@
 package frc.robot.utils;
 
 import java.lang.reflect.Field;
+
+import com.ctre.phoenix6.jni.CtreJniWrapper;
+import edu.wpi.first.wpilibj.simulation.CTREPCMSim;
 import org.littletonrobotics.conduit.ConduitApi;
 import org.littletonrobotics.junction.inputs.LoggedDriverStation;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
