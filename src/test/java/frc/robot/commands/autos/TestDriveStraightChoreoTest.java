@@ -26,6 +26,7 @@ public class TestDriveStraightChoreoTest {
   CommandSwerveDrivetrain m_swerveDrive;
   Telemetry m_telemetry;
   FieldSim m_fieldSim;
+  Vision m_vision; 
 
   @BeforeEach
   public void constructDevices() {

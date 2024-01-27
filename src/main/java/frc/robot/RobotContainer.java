@@ -48,6 +48,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
