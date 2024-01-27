@@ -21,10 +21,10 @@ public class ShootNStrafe extends Command {
   private double m_rpm;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
-  private double displacementX = 5.548 - m_swerveDrive.getOdometry().getEstimatedPosition().getX();
-  private double displacementY = m_swerveDrive.getOdometry().getEstimatedPosition().getY();
+  private double displacementX = m_swerveDrive.getOdometry().getEstimatedPosition().getX();
+  private double displacementY = 5.548 - m_swerveDrive.getOdometry().getEstimatedPosition().getY();
   private double VelocityY =
-      m_swerveModule.getTurnHeadingR2d().getSin() * m_swerveModule.getVelocity();
+    m_swerveModule.getTurnHeadingR2d().getSin() * m_swerveModule.getVelocity();
   private double VelocityX =
       m_swerveModule.getTurnHeadingR2d().getCos() * m_swerveModule.getVelocity();
   private double VelocityShoot = 1.2;
@@ -33,8 +33,8 @@ public class ShootNStrafe extends Command {
       Math.asin(
           Math.abs(
               (displacementY * VelocityX - displacementX * VelocityY)
-                  / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2))))
-                  * VelocityShoot));
+                  / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
+                  * VelocityShoot)));
 
   public ShootNStrafe(
       SwerveDrive swerveDrive,
