@@ -37,6 +37,8 @@ public class SetSwerveDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // TODO: If you change value in here, change value in ShootNStrafe
     double throttle =
         MathUtil.applyDeadband(Math.abs(m_throttleInput.getAsDouble()), 0.05)
             * Math.signum(m_throttleInput.getAsDouble());

@@ -13,6 +13,7 @@ public class Shooter extends SubsystemBase {
   private final TalonFX flywheelmotor1 = new TalonFX(CAN.flywheel1);
   private final TalonFX flywheelmotor2 = new TalonFX(CAN.flywheel2);
   private double m_rpm;
+  private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
