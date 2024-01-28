@@ -5,7 +5,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.constants.SWERVE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.visualizers.SwerveModuleVisualizer;
@@ -54,13 +53,9 @@ public class Telemetry {
     Logger.recordOutput("Swerve/Velocity X", velocities.getX());
     Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
     Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
-    Logger.recordOutput("Swerve/Module States", new SwerveModuleState[] {
-      state.ModuleStates[0],
-      state.ModuleStates[1],
-      state.ModuleStates[2],
-      state.ModuleStates[3]
-    });
-      
+    Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
+    Logger.recordOutput("Swerve/Module States", state.ModuleStates);
+
     /* Telemeterize the module's states */
     for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
       m_moduleVisualizer[i.ordinal()].update(state.ModuleStates[i.ordinal()]);

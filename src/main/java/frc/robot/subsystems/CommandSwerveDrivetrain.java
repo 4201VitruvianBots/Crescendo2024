@@ -61,19 +61,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return run(() -> this.setControl(requestSupplier.get()));
   }
 
-  public Pose2d[] getModulePoses() {
-    var robotPose = getState().Pose;
-
-    for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
-      Transform2d moduleTransform =
-          new Transform2d(
-              SWERVE.DRIVE.kModuleTranslations.get(i),
-              getModule(i.ordinal()).getPosition(true).angle);
-      m_modulePoses[i.ordinal()] = robotPose.transformBy(moduleTransform);
-    }
-    return m_modulePoses;
-  }
-
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
 

@@ -1,3 +1,4 @@
 package frc.robot.constants;
 
-public final class AUTO {}
+public final class AUTO {
+}
