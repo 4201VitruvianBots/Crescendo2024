@@ -138,7 +138,10 @@ public class SuperStructureVisualizer {
   }
 
   public void updateClimber() {
-    // TODO: Update this code to work with climber code once completed
+    updateMotorColor(m_climber2d, m_climber.getPercentOutput(), m_climber2d_originalColor);
+    updateMotorColor(m_climberHook1_2d, m_climber.getPercentOutput(), m_climberHook1_2d_originalColor);
+    updateMotorColor(m_climberHook2_2d, m_climber.getPercentOutput(), m_climberHook2_2d_originalColor);
+    m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
   }
 
   public void updateLimelight() {
