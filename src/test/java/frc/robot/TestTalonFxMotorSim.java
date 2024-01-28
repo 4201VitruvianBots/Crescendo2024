@@ -22,7 +22,6 @@ import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
@@ -91,7 +90,8 @@ public class TestTalonFxMotorSim implements AutoCloseable {
 
     /* create the TalonFX */
     m_driveMotor = new TalonFX(0);
-    // Don't know why unit test requires different constants than simulation/pre-generated PID Constants
+    // Don't know why unit test requires different constants than simulation/pre-generated PID
+    // Constants
     var driveConfig = CtreUtils.generateDriveMotorConfig();
     driveConfig.Slot0.kP = 0.5;
     driveConfig.Slot0.kV = 0.7;
