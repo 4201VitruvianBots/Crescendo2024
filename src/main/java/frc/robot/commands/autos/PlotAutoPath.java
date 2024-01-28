@@ -5,34 +5,40 @@
 package frc.robot.commands.autos;
 
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.simulation.FieldSim;
 import java.util.ArrayList;
 
 public class PlotAutoPath extends Command {
   private final FieldSim m_fieldSim;
-  private final ArrayList<Pose2d> m_pathPoints;
+  private final Trajectory m_trajectory;
   private final String m_pathName;
 
   public PlotAutoPath(FieldSim fieldSim, String pathName, ArrayList<PathPlannerPath> paths) {
-    var pathPoints = new ArrayList<Pose2d>();
+    var pathPoints = new ArrayList<Trajectory.State>();
 
     for (var path : paths) {
       var trajectory =
-          new PathPlannerTrajectory(
-              path, new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
+          path.getTrajectory(
+              new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
       pathPoints.addAll(
           trajectory.getStates().stream()
-              .map(PathPlannerTrajectory.State::getTargetHolonomicPose)
+              .map(
+                  (state) ->
+                      new Trajectory.State(
+                          state.timeSeconds,
+                          state.velocityMps,
+                          state.accelerationMpsSq,
+                          state.getTargetHolonomicPose(),
+                          state.curvatureRadPerMeter))
               .toList());
     }
 
     m_fieldSim = fieldSim;
     m_pathName = pathName;
-    m_pathPoints = pathPoints;
+    m_trajectory = new Trajectory(pathPoints);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_fieldSim);
@@ -40,17 +46,24 @@ public class PlotAutoPath extends Command {
 
   public PlotAutoPath(FieldSim fieldSim, String pathName, PathPlannerPath path) {
     var trajectory =
-        new PathPlannerTrajectory(
-            path, new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
+        path.getTrajectory(
+            new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
     var pathPoints =
         new ArrayList<>(
             trajectory.getStates().stream()
-                .map(PathPlannerTrajectory.State::getTargetHolonomicPose)
+                .map(
+                    (state) ->
+                        new Trajectory.State(
+                            state.timeSeconds,
+                            state.velocityMps,
+                            state.accelerationMpsSq,
+                            state.getTargetHolonomicPose(),
+                            state.curvatureRadPerMeter))
                 .toList());
 
     m_fieldSim = fieldSim;
     m_pathName = pathName;
-    m_pathPoints = pathPoints;
+    m_trajectory = new Trajectory(pathPoints);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_fieldSim);
@@ -59,7 +72,7 @@ public class PlotAutoPath extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_fieldSim.setPath(m_pathPoints);
+    m_fieldSim.setTrajectory(m_trajectory);
   }
 
   @Override

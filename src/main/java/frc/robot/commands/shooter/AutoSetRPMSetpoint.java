@@ -2,35 +2,33 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.swerve;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
+import frc.robot.subsystems.Shooter;
 
-public class ResetOdometry extends Command {
-  /** Creates a new ResetGyro. */
-  private final SwerveDrive m_swerveDrive;
+public class AutoSetRPMSetpoint extends Command {
+  Shooter m_shooter;
+  FLYWHEEL_STATE m_state;
 
-  public ResetOdometry(SwerveDrive swerveDrive) {
-    m_swerveDrive = swerveDrive;
+  public AutoSetRPMSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
+    m_shooter = shooter;
+    m_state = state;
 
-    addRequirements(m_swerveDrive);
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_swerveDrive.resetGyro();
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    m_shooter.setRPM(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
