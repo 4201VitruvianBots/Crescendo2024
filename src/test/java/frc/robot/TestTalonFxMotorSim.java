@@ -5,10 +5,11 @@ import static frc.robot.utils.TestUtils.refreshAkitData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.jni.PlatformJNI;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
@@ -17,10 +18,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.*;
 import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -31,7 +29,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TestTalonFxMotorSim implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
-  static final double WAIT_TIME = 0.02;
+  static final double WAIT_TIME = 0.02; // WAIT_TIME MUST BE ~0.02 FOR VALUES TO UPDATE PROPERLY
   static final double MAX_SPEED_RPS = 6380.0 / 60.0;
 
   NetworkTableInstance m_nt;
@@ -53,7 +51,14 @@ public class TestTalonFxMotorSim implements AutoCloseable {
         BatterySim.calculateDefaultBatteryLoadedVoltage(
             m_driveMotorSim.getCurrentDrawAmps(), m_turnMotorSim.getCurrentDrawAmps()));
 
+    m_turnMotorSimState.setSupplyVoltage(
+            RobotController.getBatteryVoltage()
+                    - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
+    m_driveMotorSimState.setSupplyVoltage(
+            RobotController.getBatteryVoltage()
+                    - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
     refreshAkitData();
+    Timer.delay(WAIT_TIME);
 
     m_driveMotorSim.setInputVoltage(
         MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
@@ -63,13 +68,6 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     double dt = m_currentTime - m_lastTime;
     m_driveMotorSim.update(dt);
     m_turnMotorSim.update(dt);
-
-    m_turnMotorSimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
-    m_driveMotorSimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
 
     //    System.out.printf("DT: %.2f\tDrive Rotations: %.2f\tDrive RPM: %.2f\n", dt,
     // m_driveMotorSim.getAngularPositionRotations(), m_driveMotorSim.getAngularVelocityRPM());
@@ -94,15 +92,11 @@ public class TestTalonFxMotorSim implements AutoCloseable {
 
     /* create the TalonFX */
     m_driveMotor = new TalonFX(0);
-    var driveConfig = CtreUtils.generateDriveMotorConfig();
-    driveConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
-    m_driveMotor.getConfigurator().apply(driveConfig);
+    CtreUtils.configureTalonFx(m_driveMotor, CtreUtils.generateDriveMotorConfig());
     m_driveMotorSimState = m_driveMotor.getSimState();
 
     m_turnMotor = new TalonFX(1);
-    var turnConfig = CtreUtils.generateTurnMotorConfig();
-    turnConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
-    m_turnMotor.getConfigurator().apply(turnConfig);
+    CtreUtils.configureTalonFx(m_turnMotor, CtreUtils.generateTurnMotorConfig());
     m_turnMotorSimState = m_turnMotor.getSimState();
 
     m_turnMotorSim =
@@ -120,6 +114,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     DriverStationSim.setEnabled(true);
     DriverStationSim.notifyNewData();
     RoboRioSim.resetData();
+    SimHooks.setProgramStarted();
     refreshAkitData();
 
     m_nt = NetworkTableInstance.getDefault();
@@ -189,53 +184,46 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     idxPub.close();
   }
 
-  @Disabled("Constants do not work without feedforward")
+  @Disabled("WIP")
   public void testPositionControl() {
     var testPositionDeg = 90.0;
-    var testPositionRot = (testPositionDeg / 360.0) * SWERVE.MODULE.kTurnMotorGearRatio;
+    var testPositionRot = (testPositionDeg / 360.0);
     var positionRequest = new PositionVoltage(0);
     var positionSignal = m_turnMotor.getPosition().clone();
     m_turnMotor.setControl(positionRequest.withPosition(testPositionRot));
+    refreshAkitData();
     Timer.delay(WAIT_TIME);
 
     var posPub = m_table.getDoubleTopic("position").publish();
     var batteryVPub = m_table.getDoubleTopic("batteryV").publish();
     var voltagePub = m_table.getDoubleTopic("voltage").publish();
     var currentPub = m_table.getDoubleTopic("current").publish();
-    var idxPub = m_table.getIntegerTopic("idx").publish();
-    var stopPub = false;
-    var testPosRot = 0.0;
-    var testPosDeg = 0.0;
-    m_lastTime = 0;
+    var positionRot = 0.0;
+    var positionDeg = 0.0;
+    m_lastTime = Logger.getRealTimestamp() * 1e-6;
     for (int i = 0; i < 25; i++) {
-      Timer.delay(WAIT_TIME);
       simulateMotorModels();
       positionSignal.refresh();
-      testPosRot = positionSignal.getValue();
-      testPosDeg = testPosRot * 360.0 / SWERVE.MODULE.kTurnMotorGearRatio;
+      positionRot = positionSignal.getValue();
+      positionDeg = positionRot * 360.0;
 
-      System.out.printf("Idx: %2d\tRotations: %5.2f\tDegrees: %6.2f\n", i, testPosRot, testPosDeg);
+      System.out.printf("Idx: %2d\tRotations: %5.2f\tDegrees: %6.2f\n", i, positionRot, positionDeg);
       var setpoint =
           Double.valueOf(m_turnMotor.getAppliedControl().getControlInfo().get("Position"));
       m_turnMotor.getClosedLoopError().refresh();
       var error = m_turnMotor.getClosedLoopError().getValue();
       System.out.printf(
-          "Turn Pos: %5.2f\tSetpoint: %5.2f\tError: %5.2f\n", testPosRot, setpoint, error);
+          "Turn Pos: %5.2f\tSetpoint: %5.2f\tError: %5.2f\n", positionRot, setpoint, error);
 
-      posPub.set(testPosDeg);
+      posPub.set(positionDeg);
       voltagePub.set(m_turnMotorSimState.getMotorVoltage());
       currentPub.set(m_turnMotorSimState.getSupplyCurrent());
       batteryVPub.set(RobotController.getBatteryVoltage());
-      if (positionSignal.getValue() > testPositionRot && !stopPub) {
-        idxPub.set(i);
-        stopPub = true;
-      }
+
       m_nt.flush();
     }
 
-    assertEquals(testPositionDeg, testPosDeg, DELTA);
-    posPub.close();
-    idxPub.close();
+    assertEquals(testPositionDeg, positionDeg, DELTA);
   }
 
   @Test
@@ -300,6 +288,48 @@ public class TestTalonFxMotorSim implements AutoCloseable {
         motorBVelSignal.getValue(), motorBSetpoint, motorBError.getValue());
 
     System.out.println();
+  }
+
+  /** Example of running Physics Sim in AdvantageKit */
+  @Test
+  public void testTalonFXSim() {
+    var testMotor = new TalonFX(4);
+    var testConfig = new TalonFXConfiguration();
+    testConfig.Slot0.kP = 100;
+    var returnCode = testMotor.getConfigurator().apply(testConfig);
+
+    var testMotorSimState = testMotor.getSimState();
+    var velocitySignal = testMotor.getVelocity().clone();
+
+    var velocityControl = new VelocityVoltage(0);
+    testMotor.setControl(velocityControl.withVelocity(100));
+    testMotor.setControl(new VoltageOut(12));
+
+    // Delay and refreshAkitData() to update the TalonFX Control Properly THIS ORDER MATTERS
+    refreshAkitData();
+    Timer.delay(WAIT_TIME);
+
+    var testInputVoltage =
+        RobotController.getInputVoltage() - m_driveMotorSim.getCurrentDrawAmps() * 0.02;
+
+    testMotorSimState.setSupplyVoltage(testInputVoltage);
+    // Delay and refreshAkitData() to update supplyVoltage properly THIS ORDER MATTERS
+    refreshAkitData();
+    Timer.delay(WAIT_TIME);
+
+    var testSimMotorVoltage = testMotorSimState.getMotorVoltage();
+
+    assertNotEquals(0.0, testSimMotorVoltage);
+    m_driveMotorSim.setInputVoltage(testSimMotorVoltage);
+
+    m_driveMotorSim.update(0.02);
+
+    testMotorSimState.setRawRotorPosition(m_driveMotorSim.getAngularPositionRotations());
+    testMotorSimState.setRotorVelocity(m_driveMotorSim.getAngularVelocityRPM() / 60.0);
+
+    velocitySignal.refresh();
+
+    assertNotEquals(0.0, testSimMotorVoltage);
   }
 
   @AfterEach
