@@ -4,52 +4,95 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CLIMBER;
 
 public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)};
-  private final NeutralOut neutralControl = new NeutralOut();
-  private final StaticBrake holdPosition = new StaticBrake();
+  private final StaticBrake brake = new StaticBrake();
+  private final Follower follower = new Follower(0, false);
 
-  private double climberPosition = 0;
+  private double m_upperLimitMeters = CLIMBER.upperLimitMeters;
+  private double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
+
   private boolean elevatorClimbSate;
+  private double holdPosition;
 
 
   
   /** Creates a new climberMechanism. */
   public Climber() {
     for (TalonFX motor : elevatorClimbMotors)
-    motor.setControl(holdPosition);
+    motor.setControl(brake);
     
     elevatorClimbMotors[0].getConfigurator().apply(new TalonFXConfiguration());
     elevatorClimbMotors[0].setInverted(true);
     elevatorClimbMotors[1].setInverted(true);
+    elevatorClimbMotors[1].setControl(follower);
   }
 
-  public void setElevatorClimbState(boolean state) {
+  public void setClimbState(boolean state) {
     elevatorClimbSate = state;
   }
 
-  public boolean getElevatorClimbState() {
+  public boolean getClimbState() {
     return elevatorClimbSate;
   }
 
-  public void setElevatorMotorOutput(double percentOutput) {
-    elevatorClimbMotors[0].set(percentOutput);
+  public void setPercentOutput(double output, boolean enforceLimits) {
+    if (enforceLimits){
+      if (getHeightMeters() > getUpperLimitMeters())
+        output = Math.min(output, 0);
+
+      if (getHeightMeters() < getLowerLimitMeters())
+        output = Math.max(output, 0);
+    }
+
+    elevatorClimbMotors[0].set(output);
   }
 
-  
-  public double getElevatorClimbPosition() {
+  public double getVelocityMetersPerSecond() {
+    return elevatorClimbMotors[0].getRotorVelocity().getValueAsDouble() * CLIMBER.encoderCountsToMeters *10;
+  }
+
+  public double getHeightMeters() {
+    return getHeightEncoderCounts() * CLIMBER.encoderCountsToMeters;
+  }
+
+  public double getHeightEncoderCounts() {
     return elevatorClimbMotors[0].getRotorPosition().getValueAsDouble();
+  }
+
+  public void setSensorPosition(double meters) {
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.encoderCountsToMeters);
+  }
+
+  public void holdClimber() {
+    elevatorClimbMotors[0].set(holdPosition);
+  }
+
+  public void setHoldPosition(double position) {
+    holdPosition = position;
+  }
+
+  public void setLowerLimitMeters(double meters) {
+    m_lowerLimitMeters = meters;
+  }
+
+  public double getLowerLimitMeters() {
+    return m_lowerLimitMeters;
+  }
+
+  public void setUpperLimitMeters(double meters) {
+    m_upperLimitMeters = meters;
+  }
+
+  public double getUpperLimitMeters() {
+    return m_upperLimitMeters;
   }
 
   @Override
