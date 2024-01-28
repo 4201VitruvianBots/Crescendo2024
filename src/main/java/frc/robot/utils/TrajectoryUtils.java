@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -49,10 +48,9 @@ public class TrajectoryUtils {
         swerveDrive);
   }
 
-
   public static Command generateChoreoCommand(
       CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
-    ChoreoTrajectory traj = Choreo.getTrajectory(pathName); 
+    ChoreoTrajectory traj = Choreo.getTrajectory(pathName);
 
     return generateChoreoCommand(swerveDrive, traj, maxSpeed, flipPath);
   }
@@ -62,7 +60,7 @@ public class TrajectoryUtils {
       ChoreoTrajectory traj,
       double maxSpeed,
       boolean flipPath) {
-    return  Choreo.choreoSwerveCommand(
+    return Choreo.choreoSwerveCommand(
         traj,
         () -> swerveDrive.getState().Pose,
         new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),

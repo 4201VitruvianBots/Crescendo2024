@@ -6,7 +6,6 @@ package frc.robot.commands.autos;
 
 import com.choreo.lib.Choreo;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -32,8 +31,7 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         // new PlotAutoPath(fieldSim, "44r4r", traj),
-        new InstantCommand(
-            () -> swerveDrive.seedFieldRelative(traj.getInitialPose())),
+        new InstantCommand(() -> swerveDrive.seedFieldRelative(traj.getInitialPose())),
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)
