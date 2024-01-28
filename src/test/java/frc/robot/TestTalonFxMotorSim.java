@@ -13,7 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
@@ -52,11 +51,11 @@ public class TestTalonFxMotorSim implements AutoCloseable {
             m_driveMotorSim.getCurrentDrawAmps(), m_turnMotorSim.getCurrentDrawAmps()));
 
     m_turnMotorSimState.setSupplyVoltage(
-            RobotController.getBatteryVoltage()
-                    - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
+        RobotController.getBatteryVoltage()
+            - m_turnMotorSim.getCurrentDrawAmps() * kMotorResistance);
     m_driveMotorSimState.setSupplyVoltage(
-            RobotController.getBatteryVoltage()
-                    - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
+        RobotController.getBatteryVoltage()
+            - m_driveMotorSim.getCurrentDrawAmps() * kMotorResistance);
     refreshAkitData();
     Timer.delay(WAIT_TIME);
 
@@ -92,7 +91,11 @@ public class TestTalonFxMotorSim implements AutoCloseable {
 
     /* create the TalonFX */
     m_driveMotor = new TalonFX(0);
-    CtreUtils.configureTalonFx(m_driveMotor, CtreUtils.generateDriveMotorConfig());
+    // Don't know why unit test requires different constants than simulation/pre-generated PID Constants
+    var driveConfig = CtreUtils.generateDriveMotorConfig();
+    driveConfig.Slot0.kP = 0.5;
+    driveConfig.Slot0.kV = 0.7;
+    CtreUtils.configureTalonFx(m_driveMotor, driveConfig);
     m_driveMotorSimState = m_driveMotor.getSimState();
 
     m_turnMotor = new TalonFX(1);
@@ -101,14 +104,14 @@ public class TestTalonFxMotorSim implements AutoCloseable {
 
     m_turnMotorSim =
         new DCMotorSim(
-            //            LinearSystemId.createDCMotorSystem(0.00002, 0.00001),
-            SWERVE.MODULE.kTurnGearbox, SWERVE.MODULE.kTurnMotorGearRatio, 0.00001);
+            SWERVE.MODULE.kTurnGearbox,
+            SWERVE.MODULE.kTurnMotorGearRatio,
+            SWERVE.MODULE.kTurnInertia);
     m_driveMotorSim =
         new DCMotorSim(
-            //                    LinearSystemId.createDCMotorSystem(0.8, 0.6),
-            LinearSystemId.createDCMotorSystem(0.02, 0.001),
             SWERVE.MODULE.kDriveGearbox,
-            SWERVE.MODULE.kDriveMotorGearRatio);
+            SWERVE.MODULE.kDriveMotorGearRatio,
+            SWERVE.MODULE.kDriveInertia);
 
     /* enable the robot */
     DriverStationSim.setEnabled(true);
@@ -131,26 +134,24 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     close();
   }
 
-  @Disabled("Constants do not work without feedforward")
+  @Test
   public void testVelocityControl() {
     var testSpeedMps = 4;
     var testSpeedRps = testSpeedMps / (SWERVE.MODULE.kWheelDiameterMeters * Math.PI);
     var velocityRequest = new VelocityVoltage(0);
     var velocitySignal = m_driveMotor.getVelocity().clone();
     m_driveMotor.setControl(velocityRequest.withVelocity(testSpeedRps));
+    refreshAkitData();
     Timer.delay(WAIT_TIME);
 
     var velPub = m_table.getDoubleTopic("velocity").publish();
     var batteryVPub = m_table.getDoubleTopic("batteryV").publish();
     var voltagePub = m_table.getDoubleTopic("voltage").publish();
     var currentPub = m_table.getDoubleTopic("current").publish();
-    var idxPub = m_table.getIntegerTopic("idx").publish();
-    var stopPub = false;
     var testVelRps = 0.0;
     var testVelMps = 0.0;
-    m_lastTime = 0;
+    m_lastTime = Logger.getRealTimestamp() * 1e-6;
     for (int i = 0; i < 25; i++) {
-      Timer.delay(WAIT_TIME);
       simulateMotorModels();
       velocitySignal.refresh();
       testVelRps = m_driveMotor.getVelocity().getValue();
@@ -172,19 +173,13 @@ public class TestTalonFxMotorSim implements AutoCloseable {
       voltagePub.set(m_driveMotorSimState.getMotorVoltage());
       currentPub.set(m_driveMotorSimState.getSupplyCurrent());
       batteryVPub.set(RobotController.getBatteryVoltage());
-      if (testVelMps > testSpeedRps && !stopPub) {
-        idxPub.set(i);
-        stopPub = true;
-      }
       m_nt.flush();
     }
 
     assertEquals(testSpeedMps, testVelMps, DELTA);
-    velPub.close();
-    idxPub.close();
   }
 
-  @Disabled("WIP")
+  @Test
   public void testPositionControl() {
     var testPositionDeg = 90.0;
     var testPositionRot = (testPositionDeg / 360.0);
@@ -207,7 +202,8 @@ public class TestTalonFxMotorSim implements AutoCloseable {
       positionRot = positionSignal.getValue();
       positionDeg = positionRot * 360.0;
 
-      System.out.printf("Idx: %2d\tRotations: %5.2f\tDegrees: %6.2f\n", i, positionRot, positionDeg);
+      System.out.printf(
+          "Idx: %2d\tRotations: %5.2f\tDegrees: %6.2f\n", i, positionRot, positionDeg);
       var setpoint =
           Double.valueOf(m_turnMotor.getAppliedControl().getControlInfo().get("Position"));
       m_turnMotor.getClosedLoopError().refresh();
