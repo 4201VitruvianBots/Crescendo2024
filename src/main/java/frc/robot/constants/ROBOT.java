@@ -8,6 +8,9 @@ public class ROBOT {
   public static boolean disableLogging = false;
   public static boolean disableVisualization = false;
   public static boolean useSysID = false;
+  
+  public static final double drivebaseWidth = Units.inchesToMeters(26.0);
+  public static final double drivebaseLength = Units.inchesToMeters(27.5);
 
   public enum CONTROL_MODE {
     OPEN_LOOP,

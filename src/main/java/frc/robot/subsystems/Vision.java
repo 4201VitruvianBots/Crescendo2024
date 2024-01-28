@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Vision extends SubsystemBase {
           camera,
           VISION.robotToCam);
 
-  private Pose2d estimatedPose;
+  private Pose2d estimatedPose = new Pose2d();
 
   public Vision() {}
 
@@ -73,23 +74,31 @@ public class Vision extends SubsystemBase {
 
   public Pose3d getEstimatedFieldPose() {
     var result = camera.getLatestResult();
-    PhotonTrackedTarget target = result.getBestTarget();
 
-    var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
-    if (aprilTagDetection.isPresent()) {
-      return PhotonUtils.estimateFieldToRobotAprilTag(
-          target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
-    } else {
-      return null;
+    if (result.hasTargets()) {
+      PhotonTrackedTarget target = result.getBestTarget();
+
+      if (target != null) {
+        var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
+        if (aprilTagDetection.isPresent()) {
+          return PhotonUtils.estimateFieldToRobotAprilTag(
+              target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
+        }
+      }
     }
+
+    return new Pose3d();
   }
 
   private void updateLog() {
     Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
-    Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
-    Logger.recordOutput("vision/getTargets", getTargets());
-    Logger.recordOutput("vision/estimatedPose", estimatedPose);
-    Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+
+    if (isCameraConnected()) {
+      Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
+      Logger.recordOutput("vision/getTargets", getTargets());
+      Logger.recordOutput("vision/estimatedPose", estimatedPose);
+      Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+    }
   }
 
   private void smartDashboard() {
