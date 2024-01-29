@@ -22,7 +22,7 @@ public class Uptake extends SubsystemBase {
   public void setPercentOutput(double d) {
     uptakeMotor.set(d);
   }
-  
+
   public double getSpeed() {
     return uptakeMotor.get();
   }

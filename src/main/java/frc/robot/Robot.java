@@ -60,13 +60,21 @@ public class Robot extends LoggedRobot {
         System.out.println("\nAdvantageKit - Failed to find Replay source!");
       }
       // Log simulation output
-      var logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
+      String os = System.getProperty("os.name").toLowerCase();
+      String logDirPath;
+      if (os.contains("win")) {
+        logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
+      } else {
+        logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "/logs";
+      }
       var logDir = new File(logDirPath);
       if (!logDir.exists()) {
         logDir.mkdir();
       }
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
+
+      if (ROBOT.simulateAdvantageKit)
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       // Save outputs to a new log
     }
 
