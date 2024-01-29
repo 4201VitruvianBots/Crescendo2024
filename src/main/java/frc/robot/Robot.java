@@ -65,8 +65,10 @@ public class Robot extends LoggedRobot {
       if (!logDir.exists()) {
         logDir.mkdir();
       }
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
+
+      if (ROBOT.simulateAdvantageKit)
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
       // Save outputs to a new log
     }
 

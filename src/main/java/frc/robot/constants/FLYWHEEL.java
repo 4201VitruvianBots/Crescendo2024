@@ -4,7 +4,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class FLYWHEEL {
   public static double gearRatio = 1.0;
-  
+
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 
   public enum WAIT {

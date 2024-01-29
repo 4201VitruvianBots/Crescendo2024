@@ -60,7 +60,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim();
-  
+
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -73,7 +73,7 @@ public class RobotContainer {
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
           m_intake, m_uptake, m_shooter, m_ampShooter, m_flipper, m_climber, m_vision);
-  
+
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
 
