@@ -38,15 +38,12 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.RobotTime;
-import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysidUtils;
 import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
-  private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  private final Climber m_climber = new Climber();
   //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final CommandSwerveDrivetrain m_swerveDrive =
       new CommandSwerveDrivetrain(

@@ -8,6 +8,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CLIMBER;
 
@@ -22,10 +26,22 @@ public class Climber extends SubsystemBase {
   private boolean elevatorClimbSate;
   private double holdPosition;
 
+   // Testing value for mech2d
+  public double m_mechHeight = 0.1;
 
+  public DoubleSubscriber m_mechHeightSub;
+
+  NetworkTable climberNtTab =
+      NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Climber");
   
   /** Creates a new climberMechanism. */
   public Climber() {
+    // Initialize Test Values
+    climberNtTab.getDoubleTopic("Climber Sim Test Height").publish().set(m_mechHeight);
+    m_mechHeightSub =
+      climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
+
+
     for (TalonFX motor : elevatorClimbMotors)
     motor.setControl(brake);
     

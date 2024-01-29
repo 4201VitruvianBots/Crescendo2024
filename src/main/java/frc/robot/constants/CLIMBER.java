@@ -13,6 +13,12 @@ public final class CLIMBER {
     public static final int kFalconSensorUnitsPerRotation = 2048;
     // public static final int kCANCoderSensorUnitsPerRotation = 4096;
 
+    public static final double kMaxHeightMeters = 1.0;
+  
+    public static final double kDistanceFromIntake = Units.inchesToMeters(17);
+    
+    public static final double kUnextendedLength = Units.inchesToMeters(22);
+
     //values to change
     public static final double upperLimitMeters = (Units.inchesToMeters(0.0));
     public static final double lowerLimitMeters = (Units.inchesToMeters(0.0));
