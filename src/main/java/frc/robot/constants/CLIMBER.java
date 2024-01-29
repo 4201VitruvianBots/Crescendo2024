@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class CLIMBER {
     public static final int climbMotor1 = 31;
-    public static final int climbMotor2 = 32;
+    // public static final int climbMotor2 = 32;
 
     // //sensors and encoders are tbd
     public static final int kFalconSensorUnitsPerRotation = 2048;
@@ -28,7 +28,6 @@ public final class CLIMBER {
     // public static final double massKg = 4.0; will be under 125lbs
     public static final double drumRadiusMeters = Units.inchesToMeters(1.185);
     // public static final double centerOffset = Units.inchesToMeters(14);
-    // public static final int mech2dAngleDegrees = 35;
     // public static final double kMaxReverseOutput = -0.45;
 
     // // PID
