@@ -38,9 +38,6 @@ public class Arm extends SubsystemBase {
 
   private double m_desiredAngleRadians = 0;
 
-  private Timer m_simTimer = new Timer();
-  private double lastSimTime;
-
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
@@ -71,8 +68,9 @@ public class Arm extends SubsystemBase {
     CtreUtils.configureTalonFx(flipperMotor, config);
 
     // Simulation setup
-    lastSimTime = m_simTimer.get();
     m_armRoot2d.append(m_armLigament2d);
+
+    initSmartDashboard();
   }
 
   public void setPercentOutput(double speed) {
@@ -93,16 +91,20 @@ public class Arm extends SubsystemBase {
     return m_desiredAngleRadians;
   }
 
+  public double getAngleRadians() {
+    return Units.degreesToRadians(
+        flipperMotor.getRotorPosition().getValueAsDouble() * AMP.rotationsToDegrees);
+  }
+
+  public void initSmartDashboard() {
+    SmartDashboard.putData("Arm Sim", m_arm2d);
+  }
+
   public void updateLogger() {
     Logger.recordOutput("Arm/DesiredAngle", m_desiredAngleRadians);
     Logger.recordOutput("Arm/CurrentAngle", getAngleRadians());
     Logger.recordOutput("Arm/DesiredSetpoint", m_setpoint.position);
     Logger.recordOutput("Arm/PercentOutput", flipperMotor.get());
-  }
-
-  public double getAngleRadians() {
-    return Units.degreesToRadians(
-        flipperMotor.getRotorPosition().getValueAsDouble() * AMP.rotationsToDegrees);
   }
 
   @Override
@@ -115,7 +117,6 @@ public class Arm extends SubsystemBase {
     m_position.Velocity = m_setpoint.velocity;
     flipperMotor.setControl(m_position);
 
-    SmartDashboard.putData("Arm Sim", m_arm2d);
     updateLogger();
   }
 
@@ -124,11 +125,7 @@ public class Arm extends SubsystemBase {
     m_armSim.setInputVoltage(
         MathUtil.clamp(flipperMotor.getMotorVoltage().getValueAsDouble(), -12, 12));
 
-    double dt = m_simTimer.get() - lastSimTime;
-    m_armSim.update(dt);
-    lastSimTime = m_simTimer.get();
-
-    Unmanaged.feedEnable(20);
+    m_armSim.update(RobotTime.getTimeDelta());
 
     // Using negative sensor units to match physical behavior
     flipperMotor.setPosition(
