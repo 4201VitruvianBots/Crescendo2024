@@ -1,17 +1,14 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
 import java.util.List;
 import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
@@ -20,11 +17,15 @@ public class Vision extends SubsystemBase {
   PhotonPoseEstimator photonPoseEstimator =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
-          PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
+          PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           camera,
           VISION.robotToCam);
 
-  private Pose2d estimatedPose = new Pose2d();
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    return photonPoseEstimator.update();
+  }
+  
+  // private Pose2d estimatedPose = new Pose2d();
 
   public Vision() {}
 
@@ -51,44 +52,37 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public PhotonTrackedTarget getTarget() {
-    if (camera.isConnected()) {
-      var result = camera.getLatestResult();
-      List<PhotonTrackedTarget> targets = result.getTargets();
-      if (!targets.isEmpty()) {
-        return targets.get(0);
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
+  // public PhotonTrackedTarget getTarget() {
+  //   if (camera.isConnected()) {
+  //     var result = camera.getLatestResult();
+  //     List<PhotonTrackedTarget> targets = result.getTargets();
+  //     if (!targets.isEmpty()) {
+  //       return targets.get(0);
+  //     } else {
+  //       return null;
+  //     }
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-    photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    var result = photonPoseEstimator.update();
-    result.ifPresent(pose -> estimatedPose = pose.estimatedPose.toPose2d());
-    return result;
-  }
+  // public Pose3d getEstimatedFieldPose() {
+  //   var result = camera.getLatestResult();
 
-  public Pose3d getEstimatedFieldPose() {
-    var result = camera.getLatestResult();
+  //   if (result.hasTargets()) {
+  //     PhotonTrackedTarget target = result.getBestTarget();
 
-    if (result.hasTargets()) {
-      PhotonTrackedTarget target = result.getBestTarget();
+  //     if (target != null) {
+  //       var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
+  //       if (aprilTagDetection.isPresent()) {
+  //         return PhotonUtils.estimateFieldToRobotAprilTag(
+  //             target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
+  //       }
+  //     }
+  //   }
 
-      if (target != null) {
-        var aprilTagDetection = VISION.aprilTagFieldLayout.getTagPose(target.getFiducialId());
-        if (aprilTagDetection.isPresent()) {
-          return PhotonUtils.estimateFieldToRobotAprilTag(
-              target.getBestCameraToTarget(), aprilTagDetection.get(), VISION.robotToCam);
-        }
-      }
-    }
-
-    return new Pose3d();
-  }
+  //   return new Pose3d();
+  // }
 
   private void updateLog() {
     Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
@@ -96,8 +90,9 @@ public class Vision extends SubsystemBase {
     if (isCameraConnected()) {
       Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
       Logger.recordOutput("vision/getTargets", getTargets());
-      Logger.recordOutput("vision/estimatedPose", estimatedPose);
-      Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+      // Logger.recordOutput("vision/estimatedPose", estimatedPose);
+      // Logger.recordOutput("vision/estimated3DPose", getEstimatedFieldPose());
+      // Logger.recordOutput("vision/estimatedGlobalPose", getEstimatedGlobalPose());
     }
   }
 

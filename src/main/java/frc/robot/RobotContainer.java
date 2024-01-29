@@ -213,6 +213,10 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    final var globalPose = m_vision.getEstimatedGlobalPose();
+    if (globalPose.isPresent()) {
+      m_swerveDrive.addVisionMeasurement(globalPose.get().estimatedPose.toPose2d(), globalPose.get().timestampSeconds);
+    }
     m_fieldSim.periodic();
     m_visualizer.periodic();
   }
