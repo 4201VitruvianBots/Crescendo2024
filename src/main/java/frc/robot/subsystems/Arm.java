@@ -112,21 +112,18 @@ public class Arm extends SubsystemBase {
   
   @Override
   public void simulationPeriodic() {
-    m_armSim.setInputVoltage(MathUtil.clamp(m_armMotor.getMotorVoltage().getValueAsDouble(), -12, 12));
+    // Set supply voltage of flipper motor
+    m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    m_armSim.setInputVoltage(MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12));
 
     double dt = m_simTimer.get() - lastSimTime;
     m_armSim.update(dt);
     lastSimTime = m_simTimer.get();
+    
+    m_simState.setRawRotorPosition(Units.radiansToRotations(m_armSim.getAngleRads()) * AMP.gearRatio);
 
-    Unmanaged.feedEnable(20);
-    
-    m_simState.setRawRotorPosition(Units.radiansToDegrees(m_armSim.getAngleRads()) / AMP.rotationsToDegrees);
-
-    m_simState.setRotorVelocity(Units.radiansToDegrees(m_armSim.getVelocityRadPerSec()) / AMP.rotationsToDegrees);
-    
-    // Set supply voltage of flipper motor
-    m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    
+    m_simState.setRotorVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()) * AMP.gearRatio);
   }
   
 }
