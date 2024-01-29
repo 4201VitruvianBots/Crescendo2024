@@ -13,16 +13,11 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.unmanaged.Unmanaged;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AMP;
 import frc.robot.constants.CAN;
@@ -37,7 +32,7 @@ public class Arm extends SubsystemBase {
   private final PositionVoltage m_position = new PositionVoltage(0);
 
   private final TrapezoidProfile.Constraints m_constraints =
-      new TrapezoidProfile.Constraints(AMP.kMaxFlipperVelocity, AMP.kMaxFlipperAcceleration);
+      new TrapezoidProfile.Constraints(AMP.kMaxArmVelocity, AMP.kMaxArmAcceleration);
   private final TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
 
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
@@ -91,7 +86,7 @@ public class Arm extends SubsystemBase {
     return m_desiredAngleRadians;
   }
 
-  public void updateLogger() {
+  private void updateLogger() {
     Logger.recordOutput("Arm/DesiredAngle", m_desiredAngleRadians);
     Logger.recordOutput("Arm/CurrentAngle", getAngleRadians());
     Logger.recordOutput("Arm/DesiredSetpoint", m_setpoint.position);

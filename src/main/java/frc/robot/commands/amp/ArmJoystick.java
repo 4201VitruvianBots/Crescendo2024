@@ -10,14 +10,14 @@ import java.util.function.DoubleSupplier;
 
 public class ArmJoystick extends Command {
   /** Creates a new ArmForward. */
-  Arm m_flipper;
+  Arm m_arm;
 
   private DoubleSupplier m_output;
 
-  public ArmJoystick(Arm flipper, DoubleSupplier output) {
-    m_flipper = flipper;
+  public ArmJoystick(Arm arm, DoubleSupplier output) {
+    m_arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flipper);
+    addRequirements(m_arm);
   }
 
   // Called when the command is initially scheduled.
@@ -27,7 +27,7 @@ public class ArmJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flipper.setPercentOutput(m_output.getAsDouble());
+    m_arm.setPercentOutput(m_output.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
