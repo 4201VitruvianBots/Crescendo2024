@@ -8,5 +8,5 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public final class INTAKE {
-    public static final double intakeLength = Units.inchesToMeters(4);
+  public static final double intakeLength = Units.inchesToMeters(4);
 }

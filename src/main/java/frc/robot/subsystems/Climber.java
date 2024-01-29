@@ -26,16 +26,16 @@ public class Climber extends SubsystemBase {
     m_mechHeightSub =
         climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
   }
-  
+
   public double getHeightMeters() {
     return m_mechHeight;
   }
-  
+
   public double getPercentOutput() {
     // TODO: Implement
     return 0;
   }
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

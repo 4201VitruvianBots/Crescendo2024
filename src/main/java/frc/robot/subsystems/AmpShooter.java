@@ -31,7 +31,7 @@ public class AmpShooter extends SubsystemBase {
   public double getRPM() {
     return encoder.getVelocity();
   }
-  
+
   public double getSpeed() {
     return ampMotor.get();
   }

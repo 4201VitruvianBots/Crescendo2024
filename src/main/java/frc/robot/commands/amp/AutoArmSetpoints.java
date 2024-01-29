@@ -23,7 +23,7 @@ public class AutoArmSetpoints extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.setDesiredSetpointRadians(m_state.get());
+    m_arm.setDesiredSetpointRotations(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

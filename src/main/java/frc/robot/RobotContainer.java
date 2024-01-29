@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
+import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -60,7 +61,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final FieldSim m_fieldSim = new FieldSim();
-  
+
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -73,7 +74,7 @@ public class RobotContainer {
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
           m_intake, m_uptake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision);
-  
+
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
 
@@ -133,6 +134,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new SetIntakePercentOutput(
             m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+    m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
   }
 
   private void configureBindings() {
