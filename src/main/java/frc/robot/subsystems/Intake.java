@@ -17,6 +17,7 @@ public class Intake extends SubsystemBase {
   private boolean m_isIntaking = false;
 
   private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
 
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
@@ -50,9 +51,9 @@ public class Intake extends SubsystemBase {
     return m_isIntaking;
   }
 
-  public void setIntakingState(INTAKE_STATE speed) {
-    m_state = speed;
-  }
+  //   public void setIntakingState(INTAKE_STATE speed) {
+  //     m_state = speed;
+  //   }
 
   public INTAKE_STATE getIntakeState() {
     return m_state;

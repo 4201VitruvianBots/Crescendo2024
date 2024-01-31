@@ -6,9 +6,7 @@ package frc.robot.commands.led;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.LED;
-import frc.robot.constants.UPTAKE.UPTAKE_STATE;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDSubsystem;
@@ -50,8 +48,8 @@ public class GetSubsystemStates extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isIntaking = m_intake.getIntakeState() == INTAKE_STATE.INTAKING;
-    isUptaking = m_uptake.getUptakeState() == UPTAKE_STATE.UPTAKING;
+    // isIntaking = m_intake.getIntakeState() == INTAKE_STATE.INTAKING;
+    // isUptaking = m_uptake.getUptakeState() == UPTAKE_STATE.UPTAKING;
     isDisabled = DriverStation.isDisabled();
     isEnabled = !isDisabled;
     // isClimbing = m_climber.getClimberState() == SUBSYSTEM_STATES.CLIMBING;

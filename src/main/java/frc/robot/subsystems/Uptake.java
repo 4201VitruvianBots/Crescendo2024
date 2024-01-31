@@ -41,9 +41,9 @@ public class Uptake extends SubsystemBase {
     return m_isUptaking;
   }
 
-  public void setUptakingState(UPTAKE_STATE speed) {
-    m_state = speed;
-  }
+  //   public void setUptakingState(UPTAKE_STATE speed) {
+  //     m_state = speed;
+  //   }
 
   public UPTAKE_STATE getUptakeState() {
     return m_state;

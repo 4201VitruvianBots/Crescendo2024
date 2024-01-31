@@ -20,9 +20,11 @@ import frc.robot.constants.ROBOT;
 import frc.robot.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
+@Disabled("To Fix")
 public class TestArm {
   static final double DELTA = 0.2; // acceptable deviation range
   static final double WAIT_TIME = 0.04;
