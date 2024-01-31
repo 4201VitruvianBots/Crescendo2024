@@ -17,7 +17,7 @@ public final class VISION {
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-  // Camera offset from robot center in meters
+  // Camera offset from robot center in meters. Will need to update this
   public static final Transform3d robotToCam =
       new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 

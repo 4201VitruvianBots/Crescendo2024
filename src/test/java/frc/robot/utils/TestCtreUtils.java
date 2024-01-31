@@ -15,14 +15,9 @@ public class TestCtreUtils implements AutoCloseable {
   static final double DELTA = 1e-3; // acceptable deviation range
   static final double WAIT_TIME = 0.02;
 
-  TalonFX m_testMotor;
-
   @BeforeEach
   public void constructDevices() {
     assert HAL.initialize(500, 0);
-
-    /* create the TalonFX */
-    m_testMotor = new TalonFX(0);
 
     /* enable the robot */
     DriverStationSim.setEnabled(true);
@@ -39,34 +34,33 @@ public class TestCtreUtils implements AutoCloseable {
 
   @Disabled
   public void testSensorRatioConfig() {
-    var testMotorSim = m_testMotor.getSimState();
+    /* create the TalonFX */
+    var testMotor = new TalonFX(0);
+    var testMotorSim = testMotor.getSimState();
 
     var testConfig = CtreUtils.generateTurnMotorConfig();
     testConfig.Feedback.SensorToMechanismRatio = MODULE.kTurnMotorGearRatio;
-    m_testMotor.getConfigurator().apply(testConfig);
+    CtreUtils.configureTalonFx(testMotor, testConfig);
 
     testMotorSim.setRawRotorPosition(-1);
     Timer.delay(WAIT_TIME);
-    m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
+    testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
     var expectedRotation = 1.0 / MODULE.kTurnMotorGearRatio;
-    var testPosition = m_testMotor.getPosition().getValue();
+    var testPosition = testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);
 
     testMotorSim.setRawRotorPosition(1);
     Timer.delay(WAIT_TIME);
-    m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
+    testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
     expectedRotation = -1.0 / MODULE.kTurnMotorGearRatio;
-    testPosition = m_testMotor.getPosition().getValue();
+    testPosition = testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);
   }
 
   @Override
-  public void close() {
-    /* destroy our TalonFX object */
-    m_testMotor.close();
-  }
+  public void close() {}
 }
