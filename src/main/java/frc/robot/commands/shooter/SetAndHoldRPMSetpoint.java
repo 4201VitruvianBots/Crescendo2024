@@ -8,19 +8,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldRPMSetpoint extends Command {
+  Shooter m_shooter;
+  double m_RPM;
 
-  public SetAndHoldRPMSetpoint(Shooter m_shooter) {
-    if (m_shooter.getRPM() == 0) {
-      m_shooter.setMaxRPM();
-    } else {
-      m_shooter.setMinRPM();
-    }
+  public SetAndHoldRPMSetpoint(Shooter shooter, double RPM) {
+    m_shooter = shooter;
+    m_RPM = RPM;
     addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
+
+  @Override
+  public void execute() {
+    m_shooter.setRPM(m_RPM);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
 

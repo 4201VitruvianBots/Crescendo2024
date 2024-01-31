@@ -31,6 +31,10 @@ public class Intake extends SubsystemBase {
     intakeMotor2.set(speed2);
   }
 
+  public double getSpeed() {
+    return intakeMotor1.get();
+  }
+
   public void updateSmartDashboard() {}
 
   public void updateLog() {

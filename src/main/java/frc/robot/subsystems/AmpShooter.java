@@ -1,18 +1,16 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.FLYWHEEL.maxRPM;
-
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
   private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
-  private final SparkMaxPIDController pidController = ampMotor.getPIDController();
+  private final SparkPIDController pidController = ampMotor.getPIDController();
   private final RelativeEncoder encoder = ampMotor.getEncoder();
 
   public AmpShooter() {
@@ -26,16 +24,16 @@ public class AmpShooter extends SubsystemBase {
     pidController.setOutputRange(0, 0);
   }
 
-  public void setMaxRPM() {
-    pidController.setReference(maxRPM, CANSparkMax.ControlType.kVelocity);
-  }
-
-  public void setMinRPM() {
-    pidController.setReference(0, CANSparkMax.ControlType.kVelocity);
+  public void setPercentOutput(double m_speed) {
+    pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
   }
 
   public double getRPM() {
     return encoder.getVelocity();
+  }
+
+  public double getSpeed() {
+    return ampMotor.get();
   }
 
   private void updateShuffleboard() {
@@ -52,3 +50,4 @@ public class AmpShooter extends SubsystemBase {
     updateLog();
   }
 }
+// TODO: Update this code as it doesn't work with new revrobotics libraries

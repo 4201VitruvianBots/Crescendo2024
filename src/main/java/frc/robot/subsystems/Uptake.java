@@ -25,8 +25,12 @@ public class Uptake extends SubsystemBase {
     CtreUtils.configureTalonFx(uptakeMotor, new TalonFXConfiguration());
   }
 
-  public void setSpeed(double speed) {
-    uptakeMotor.set(speed);
+  public void setPercentOutput(double d) {
+    uptakeMotor.set(d);
+  }
+
+  public double getSpeed() {
+    return uptakeMotor.get();
   }
    // control mode function
    public void setUptaking(boolean isUptaking) {

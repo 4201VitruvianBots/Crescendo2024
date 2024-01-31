@@ -22,7 +22,7 @@ public class RunUptake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_uptake.setSpeed(m_speed);
+    m_uptake.setPercentOutput(m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +32,7 @@ public class RunUptake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_uptake.setSpeed(0.0);
+    m_uptake.setPercentOutput(0.0);
   }
 
   // Returns true when the command should end.
