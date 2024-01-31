@@ -70,8 +70,9 @@ public class Arm extends SubsystemBase {
 
     // Simulation setup
     lastSimTime = m_simTimer.get();
+    m_simTimer.start();
     SmartDashboard.putData(this);
-
+    
     m_armMotor.setPosition(Units.radiansToRotations(AMP.minAngleRadians));
     setDesiredSetpointRotations(Units.radiansToRotations(AMP.minAngleRadians));
   }
@@ -138,7 +139,7 @@ public class Arm extends SubsystemBase {
     m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     m_armSim.setInputVoltage(MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12));
-
+    
     double dt = m_simTimer.get() - lastSimTime;
     m_armSim.update(dt);
     lastSimTime = m_simTimer.get();
