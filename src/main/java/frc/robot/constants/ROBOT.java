@@ -8,7 +8,7 @@ public class ROBOT {
   public static final boolean disableLogging = false;
   public static final boolean disableVisualization = false;
   public static final boolean useSysID = false;
-  public static final boolean simulateAdvantageKit = true;
+  public static final boolean useReplayLogs = false;
 
   public static final double drivebaseWidth = Units.inchesToMeters(26.0);
   public static final double drivebaseLength = Units.inchesToMeters(27.5);
