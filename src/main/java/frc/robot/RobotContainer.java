@@ -56,9 +56,9 @@ public class RobotContainer {
   private final Arm m_flipper = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
-  private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
+  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
   private final SwerveRequest.FieldCentric drive =
