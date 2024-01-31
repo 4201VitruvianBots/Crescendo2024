@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CLIMBER;
 
 public class Climber extends SubsystemBase {
-  // private final TalonFX[] elevatorClimbMotors = {new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)};
-  private final TalonFX elevatorClimbMotors = new TalonFX(CLIMBER.climbMotor1);
+  private final TalonFX[] elevatorClimbMotors = {new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)};
   private final StaticBrake brake = new StaticBrake();
   private final Follower follower = new Follower(0, false);
 
@@ -43,15 +42,13 @@ public class Climber extends SubsystemBase {
       climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
 
 
-    // for (TalonFX motor : elevatorClimbMotors)
-    elevatorClimbMotors.setControl(brake);
-    elevatorClimbMotors.getConfigurator().apply(new TalonFXConfiguration());
-    elevatorClimbMotors.setInverted(true);
+    for (TalonFX motor : elevatorClimbMotors)
+    motor.setControl(brake);
     
-    // elevatorClimbMotors[0].getConfigurator().apply(new TalonFXConfiguration());
-    // elevatorClimbMotors[0].setInverted(true);
-    // elevatorClimbMotors[1].setInverted(true);
-    // elevatorClimbMotors[1].setControl(follower);
+    elevatorClimbMotors[0].getConfigurator().apply(new TalonFXConfiguration());
+    elevatorClimbMotors[0].setInverted(true);
+    elevatorClimbMotors[1].setInverted(true);
+    elevatorClimbMotors[1].setControl(follower);
   }
 
   public void setClimbState(boolean state) {
@@ -62,6 +59,7 @@ public class Climber extends SubsystemBase {
     return elevatorClimbSate;
   }
 
+  //sets the percent ourput of the elevator based on its position
   public void setPercentOutput(double output, boolean enforceLimits) {
     if (enforceLimits){
       if (getHeightMeters() > getUpperLimitMeters())
@@ -71,27 +69,30 @@ public class Climber extends SubsystemBase {
         output = Math.max(output, 0);
     }
 
-    elevatorClimbMotors.set(output);
+    elevatorClimbMotors[0].set(output);
   }
 
   public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors.getRotorVelocity().getValueAsDouble() * CLIMBER.encoderCountsToMeters *10;
+    return elevatorClimbMotors[0].getRotorVelocity().getValueAsDouble() * CLIMBER.encoderCountsToMeters *10;
   }
 
+  // gets the position of the climber in meters
   public double getHeightMeters() {
     return getHeightEncoderCounts() * CLIMBER.encoderCountsToMeters;
   }
 
+  //gets the position of the climber in encoder counts
   public double getHeightEncoderCounts() {
-    return elevatorClimbMotors.getRotorPosition().getValueAsDouble();
+    return elevatorClimbMotors[0].getRotorPosition().getValueAsDouble();
   }
 
+  //sets position in meters
   public void setSensorPosition(double meters) {
-    elevatorClimbMotors.setPosition(meters / CLIMBER.encoderCountsToMeters);
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.encoderCountsToMeters);
   }
 
   public void holdClimber() {
-    elevatorClimbMotors.set(holdPosition);
+    elevatorClimbMotors[0].set(holdPosition);
   }
 
   public void setHoldPosition(double position) {

@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class CLIMBER {
     public static final int climbMotor1 = 31;
-    // public static final int climbMotor2 = 32;
+    public static final int climbMotor2 = 32;
 
     // //sensors and encoders are tbd
     public static final int kFalconSensorUnitsPerRotation = 2048;
