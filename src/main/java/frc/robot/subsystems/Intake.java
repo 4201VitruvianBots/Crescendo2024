@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.CAN.INTAKE_STATE;
+//import frc.robot.constants.CAN.INTAKE_STATE;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
-  private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+  //private INTAKE_STATE m_state = INTAKE_STATE.NONE;
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
 
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
@@ -49,13 +49,14 @@ public class Intake extends SubsystemBase {
     return m_isIntaking;
   }
 
-  public void setIntakingState(INTAKE_STATE speed) {
-    m_state = speed;
-  }
+//   public void setIntakingState(INTAKE_STATE speed) {
+//     m_state = speed;
+//   }
 
-  public INTAKE_STATE getIntakeState() {
-    return m_state;
-  }
+//   public INTAKE_STATE getIntakeState() {
+//     return m_state;
+//   }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
