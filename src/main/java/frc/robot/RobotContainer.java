@@ -223,4 +223,12 @@ public class RobotContainer {
     m_fieldSim.periodic();
     m_visualizer.periodic();
   }
+  
+  public void testInit() {
+    m_arm.testInit();
+  }
+  
+  public void testPeriodic() {
+    m_arm.testPeriodic();
+  }
 }

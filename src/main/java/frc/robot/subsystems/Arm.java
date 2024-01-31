@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,6 +15,9 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +38,7 @@ public class Arm extends SubsystemBase {
 
   private final PositionVoltage m_position = new PositionVoltage(0);
 
-  private final TrapezoidProfile.Constraints m_constraints =
+  private TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(ARM.kMaxArmVelocity, ARM.kMaxArmAcceleration);
   private final TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
 
@@ -56,6 +60,16 @@ public class Arm extends SubsystemBase {
           Units.degreesToRadians(ARM.startingAngleDegrees + 90.0));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
+  
+  // Test mode setup
+  private DoubleSubscriber m_kS_subscriber,
+    m_kV_subscriber,
+    m_kP_subscriber,
+    m_kI_subscriber,
+    m_kD_subscriber,
+    m_kMaxArmVelocity_subscriber,
+    m_kMaxArmAcceleration_subscriber;
+  private NetworkTable armTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -113,6 +127,41 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
 
+  public void testInit() {
+    armTab.getDoubleTopic("kS").publish().set(ARM.kS);
+    armTab.getDoubleTopic("kV").publish().set(ARM.kV);
+    armTab.getDoubleTopic("kP").publish().set(ARM.kP);
+    armTab.getDoubleTopic("kI").publish().set(ARM.kI);
+    armTab.getDoubleTopic("kD").publish().set(ARM.kD);
+    
+    armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
+    armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
+    
+    m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
+    m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
+    m_kP_subscriber = armTab.getDoubleTopic("kP").subscribe(ARM.kP);
+    m_kI_subscriber = armTab.getDoubleTopic("kI").subscribe(ARM.kI);
+    m_kD_subscriber = armTab.getDoubleTopic("kD").subscribe(ARM.kD);
+    
+    m_kMaxArmVelocity_subscriber = armTab.getDoubleTopic("kMaxVel").subscribe(ARM.kMaxArmVelocity);
+    m_kMaxArmAcceleration_subscriber = armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
+  }
+  
+  public void testPeriodic() {
+    Slot0Configs slot0Configs = new Slot0Configs();
+    slot0Configs.kS = m_kS_subscriber.get(ARM.kS);
+    slot0Configs.kV = m_kV_subscriber.get(ARM.kV);
+    slot0Configs.kP = m_kP_subscriber.get(ARM.kP);
+    slot0Configs.kI = m_kI_subscriber.get(ARM.kI);
+    slot0Configs.kD = m_kD_subscriber.get(ARM.kD);
+    
+    m_armMotor.getConfigurator().apply(slot0Configs);
+    
+    m_constraints =
+      new TrapezoidProfile.Constraints(m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
+    
+  }
+  
   @Override
   public void periodic() {
     switch (m_controlMode) {
