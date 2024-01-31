@@ -15,7 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.*;
-import frc.robot.constants.AMP;
+import frc.robot.constants.ARM;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -52,10 +52,10 @@ public class TestArm {
     m_armModel.update(0.02);
 
     m_armMotorSimState.setRawRotorPosition(
-        Units.radiansToRotations(m_armModel.getAngleRads()) * AMP.gearRatio);
+        Units.radiansToRotations(m_armModel.getAngleRads()) * ARM.gearRatio);
 
     m_armMotorSimState.setRotorVelocity(
-        Units.radiansToRotations(m_armModel.getVelocityRadPerSec()) * AMP.gearRatio);
+        Units.radiansToRotations(m_armModel.getVelocityRadPerSec()) * ARM.gearRatio);
   }
 
   @BeforeEach
@@ -71,14 +71,14 @@ public class TestArm {
     m_armMotorSimState = m_armMotor.getSimState();
     m_armModel =
         new SingleJointedArmSim(
-            AMP.gearBox,
-            AMP.gearRatio,
-            SingleJointedArmSim.estimateMOI(AMP.length, AMP.mass),
-            AMP.length,
-            AMP.minAngleRadians,
-            AMP.maxAngleRadians,
+            ARM.gearBox,
+            ARM.gearRatio,
+            SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
+            ARM.length,
+            Units.degreesToRadians(ARM.minAngleDegrees),
+            Units.degreesToRadians(ARM.maxAngleDegrees),
             false,
-            AMP.startingAngle);
+            Units.degreesToRadians(ARM.startingAngleDegrees));
 
     /* enable the robot */
     DriverStationSim.setEnabled(true);
@@ -148,7 +148,7 @@ public class TestArm {
 
   @Test
   public void testArmSetpoint() {
-    m_arm.setDesiredSetpointRotations(AMP.ARM_SETPOINT.FORWARD.get());
+    m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.FORWARD.get());
     refreshAkitData();
     Timer.delay(WAIT_TIME);
 

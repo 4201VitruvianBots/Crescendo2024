@@ -5,7 +5,7 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AMP.ARM_SETPOINT;
+import frc.robot.constants.ARM.ARM_SETPOINT;
 import frc.robot.subsystems.Arm;
 
 public class AutoArmSetpoints extends Command {

@@ -9,4 +9,20 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public final class INTAKE {
   public static final double intakeLength = Units.inchesToMeters(4);
+
+  public enum INTAKE_STATE {
+    // Units are in Percent Output
+    NONE(0),
+    INTAKING(0.6);
+
+    private final double value;
+
+    INTAKE_STATE(final double value) {
+      this.value = value;
+    }
+
+    public double get() {
+      return value;
+    }
+  }
 }

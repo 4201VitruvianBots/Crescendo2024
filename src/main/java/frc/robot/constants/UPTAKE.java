@@ -8,7 +8,8 @@ public final class UPTAKE {
   public enum UPTAKE_STATE {
     DOWNTAKE(-0.8),
     NONE(0),
-    UPTAKE(0.8);
+    UPTAKE(0.8),
+    UPTAKING(0.6);
 
     private final double value;
 

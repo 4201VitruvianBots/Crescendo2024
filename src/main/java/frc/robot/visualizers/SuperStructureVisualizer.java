@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.AMP;
+import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
@@ -58,11 +58,9 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_arm2d =
       m_shooter2d.append(
           new MechanismLigament2d(
-              "Arm",
-              AMP.length,
-              Units.radiansToDegrees(AMP.startingAngle + AMP.mountingAngleRadians)));
-  MechanismLigament2d m_ampShooter2d =
-      m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
+              "Arm", ARM.length, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
+//  MechanismLigament2d m_ampShooter2d =
+//      m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
   MechanismLigament2d m_climber2d =
       m_climberRoot2d.append(new MechanismLigament2d("Climber", CLIMBER.kUnextendedLength, 90));
@@ -107,7 +105,7 @@ public class SuperStructureVisualizer {
     m_climberHook2_2d.setColor(new Color8Bit(52, 212, 235));
     m_shooter2d.setColor(new Color8Bit(189, 189, 189));
     m_arm2d.setColor(new Color8Bit(235, 137, 52));
-    m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
+//    m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
     m_limelight2d_originalColor = m_limelight2d.getColor();
@@ -118,7 +116,7 @@ public class SuperStructureVisualizer {
     m_climberHook2_2d_originalColor = m_climberHook2_2d.getColor();
     m_shooter2d_originalColor = m_shooter2d.getColor();
     m_arm2d_originalColor = m_arm2d.getColor();
-    m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
+//    m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
   }
@@ -163,12 +161,12 @@ public class SuperStructureVisualizer {
   }
 
   public void updateAmpShooter() {
-    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
+//    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
   }
 
   public void updateArm() {
     updateMotorColor(m_arm2d, m_arm.getPercentOutput(), m_arm2d_originalColor);
-    m_arm2d.setAngle(m_arm.getAngleDegrees() + Units.radiansToDegrees(AMP.mountingAngleRadians));
+    m_arm2d.setAngle(90 - m_arm.getAngleDegrees());
   }
 
   public void updateClimber() {

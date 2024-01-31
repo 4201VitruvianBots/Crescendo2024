@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.CAN.UPTAKE_STATE;
+import frc.robot.constants.UPTAKE.UPTAKE_STATE;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,7 +16,6 @@ public class Uptake extends SubsystemBase {
   /** Creates a new Uptake. */
   private boolean m_isUptaking = false;
 
- 
   private UPTAKE_STATE m_state = UPTAKE_STATE.NONE;
 
   private final TalonFX uptakeMotor = new TalonFX(CAN.uptakeMotor);
@@ -32,8 +31,9 @@ public class Uptake extends SubsystemBase {
   public double getSpeed() {
     return uptakeMotor.get();
   }
-   // control mode function
-   public void setUptaking(boolean isUptaking) {
+
+  // control mode function
+  public void setUptaking(boolean isUptaking) {
     m_isUptaking = isUptaking;
   }
 
@@ -48,6 +48,7 @@ public class Uptake extends SubsystemBase {
   public UPTAKE_STATE getUptakeState() {
     return m_state;
   }
+
   public void updateSmartDashboard() {}
 
   public void updateLog() {

@@ -3,7 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
-public final class AMP {
+public final class ARM {
   public static final double kS = 0.06;
   public static final double kV = 1.6;
   public static final double kP = 0.085;
@@ -32,20 +32,20 @@ public final class AMP {
   public static final DCMotor gearBox = DCMotor.getFalcon500(1);
 
   // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
-  public static final double gearRatio = 140 / 1;
+  public static final double gearRatio = 140.0 / 1.0;
 
   public static final double length = Units.inchesToMeters(21.5);
 
   // TOOD: Find actual mass of arm
   public static final double mass = Units.lbsToKilograms(20.0);
 
-  public static final double minAngleRadians = Units.degreesToRadians(160.0);
+  public static final double minAngleDegrees = -70;
 
-  public static final double maxAngleRadians = Units.degreesToRadians(0.0);
+  public static final double maxAngleDegrees = 160;
 
-  public static final double startingAngle = minAngleRadians;
+  public static final double startingAngleDegrees = minAngleDegrees;
 
-  public static final double mountingAngleRadians = minAngleRadians;
+  public static final double mountingAngleDegrees = 0;
 
   public enum AMP_STATE {
     NONE(0),

@@ -4,18 +4,22 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.AMP;
+import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
@@ -27,10 +31,12 @@ public class Arm extends SubsystemBase {
 
   private TalonFXSimState m_simState = m_armMotor.getSimState();
 
+  private StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
+
   private final PositionVoltage m_position = new PositionVoltage(0);
 
   private final TrapezoidProfile.Constraints m_constraints =
-      new TrapezoidProfile.Constraints(AMP.kMaxArmVelocity, AMP.kMaxArmAcceleration);
+      new TrapezoidProfile.Constraints(ARM.kMaxArmVelocity, ARM.kMaxArmAcceleration);
   private final TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
 
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
@@ -38,40 +44,37 @@ public class Arm extends SubsystemBase {
 
   private double m_desiredRotations = 0;
 
-  private Timer m_simTimer = new Timer();
-  private double lastSimTime;
-
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
-          AMP.gearBox,
-          AMP.gearRatio,
-          SingleJointedArmSim.estimateMOI(AMP.length, AMP.mass),
-          AMP.length,
-          AMP.minAngleRadians,
-          AMP.maxAngleRadians,
+          ARM.gearBox,
+          ARM.gearRatio,
+          SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
+          ARM.length,
+          Units.degreesToRadians(ARM.minAngleDegrees + 90.0),
+          Units.degreesToRadians(ARM.maxAngleDegrees + 90.0),
           false,
-          AMP.minAngleRadians);
+          Units.degreesToRadians(ARM.startingAngleDegrees + 90.0));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
 
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kS = AMP.kS;
-    config.Slot0.kV = AMP.kV;
-    config.Slot0.kP = AMP.kP;
-    config.Slot0.kI = AMP.kI;
-    config.Slot0.kD = AMP.kD;
-    config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
+    config.Slot0.kS = ARM.kS;
+    config.Slot0.kV = ARM.kV;
+    config.Slot0.kP = ARM.kP;
+    config.Slot0.kI = ARM.kI;
+    config.Slot0.kD = ARM.kD;
+    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
-    lastSimTime = m_simTimer.get();
     SmartDashboard.putData(this);
 
-    m_armMotor.setPosition(Units.radiansToRotations(AMP.minAngleRadians));
-    setDesiredSetpointRotations(Units.radiansToRotations(AMP.minAngleRadians));
+    m_armMotor.setPosition(Units.degreesToRotations(ARM.minAngleDegrees));
+    setDesiredSetpointRotations(Units.degreesToRotations(ARM.minAngleDegrees));
   }
 
   public void setPercentOutput(double speed) {
@@ -84,7 +87,7 @@ public class Arm extends SubsystemBase {
 
   public void setDesiredSetpointRotations(double rotations) {
     m_desiredRotations = rotations;
-    m_goal = new TrapezoidProfile.State(rotations, 0);
+    m_goal = new TrapezoidProfile.State(m_desiredRotations, 0);
   }
 
   public double getDesiredSetpointRotations() {
@@ -92,7 +95,8 @@ public class Arm extends SubsystemBase {
   }
 
   public double getAngleDegrees() {
-    return Units.rotationsToDegrees(m_armMotor.getPosition().getValue());
+    m_positionSignal.refresh();
+    return Units.rotationsToDegrees(m_positionSignal.getValue());
   }
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
@@ -130,21 +134,20 @@ public class Arm extends SubsystemBase {
     updateLogger();
   }
 
+  double m_last_time;
   @Override
   public void simulationPeriodic() {
-    // Set supply voltage of flipper motor
+    //    // Set supply voltage of flipper motor
     m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     m_armSim.setInputVoltage(MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12));
 
-    double dt = m_simTimer.get() - lastSimTime;
-    m_armSim.update(dt);
-    lastSimTime = m_simTimer.get();
+    m_armSim.update(RobotTime.getTimeDelta());
 
     m_simState.setRawRotorPosition(
-        Units.radiansToRotations(m_armSim.getAngleRads()) * AMP.gearRatio);
+        Units.radiansToRotations(m_armSim.getAngleRads()) * ARM.gearRatio);
 
     m_simState.setRotorVelocity(
-        Units.radiansToRotations(m_armSim.getVelocityRadPerSec()) * AMP.gearRatio);
+        Units.radiansToRotations(m_armSim.getVelocityRadPerSec()) * ARM.gearRatio);
   }
 }
