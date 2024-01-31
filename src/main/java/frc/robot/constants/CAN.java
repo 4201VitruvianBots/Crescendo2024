@@ -23,6 +23,7 @@ public final class CAN {
   public static final int intakeMotor1 = 30;
   public static final int intakeMotor2 = 31;
   public static final int uptakeMotor = 35;
+
   public enum INTAKE_STATE {
     // Units are in Percent Output
     NONE(0),
@@ -38,6 +39,7 @@ public final class CAN {
       return value;
     }
   }
+
   public enum UPTAKE_STATE {
     // Units are in Percent Output
     NONE(0),
@@ -53,6 +55,7 @@ public final class CAN {
       return value;
     }
   }
+
   public static final int flywheel1 = 41;
   public static final int flywheel2 = 42;
 
