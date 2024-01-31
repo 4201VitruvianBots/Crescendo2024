@@ -56,9 +56,9 @@ public class RobotContainer {
   private final Arm m_flipper = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
-  private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
+  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
   private final SwerveRequest.FieldCentric drive =
@@ -215,7 +215,8 @@ public class RobotContainer {
   public void periodic() {
     final var globalPose = m_vision.getEstimatedGlobalPose();
     if (globalPose.isPresent()) {
-      m_swerveDrive.addVisionMeasurement(globalPose.get().estimatedPose.toPose2d(), globalPose.get().timestampSeconds);
+      m_swerveDrive.addVisionMeasurement(
+          globalPose.get().estimatedPose.toPose2d(), globalPose.get().timestampSeconds);
     }
     m_fieldSim.periodic();
     m_visualizer.periodic();
