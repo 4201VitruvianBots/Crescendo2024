@@ -39,10 +39,10 @@ public final class SWERVE {
     //    public static double backLeftCANCoderOffset = 10.1952;
     //    public static double backRightCANCoderOffset = 211.55256;
     // In rotations
-    public static double kFrontLeftEncoderOffset = -0.047607421875;
-    public static double kFrontRightEncoderOffset = -0.975830078125;
-    public static double kBackLeftEncoderOffset = -0.527099609375;
-    public static double kBackRightEncoderOffset = -0.587646484375;
+    public static double kFrontLeftEncoderOffset = -0.046875;
+    public static double kFrontRightEncoderOffset = 0.03173828125;
+    public static double kBackLeftEncoderOffset = 0.47216796875;
+    public static double kBackRightEncoderOffset = 0.420166015625;
 
     private static final boolean kInvertLeftDrive = true;
     private static final boolean kInvertRightDrive = false;

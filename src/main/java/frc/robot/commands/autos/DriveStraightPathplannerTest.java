@@ -21,7 +21,7 @@ public class DriveStraightPathplannerTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
   public DriveStraightPathplannerTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
 
-    PathPlannerPath path = PathPlannerPath.fromPathFile("TestPathauto");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Drivefowardtest");
 
     var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
@@ -30,7 +30,7 @@ public class DriveStraightPathplannerTest extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new PlotAutoPath(fieldSim, "TestPathauto", path),
+        new PlotAutoPath(fieldSim, "Drivefowardtest", path),
         new InstantCommand(
             () -> swerveDrive.seedFieldRelative(path.getPreviewStartingHolonomicPose())),
         new InstantCommand(

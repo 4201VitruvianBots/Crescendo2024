@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -18,11 +20,13 @@ public final class CtreUtils {
    * set/applied properly.
    */
   public static void initPhoenixServer() {
+    System.out.println("Starting Phoenix Server at: " + Logger.getTimestamp());
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null;
     }
+    System.out.println("Phoenx Server finished Init at: " + Logger.getTimestamp());
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {
@@ -39,18 +43,19 @@ public final class CtreUtils {
     turnMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
     turnMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 100.0 / SWERVE.MODULE.kTurnMotorGearRatio;
-    turnMotorConfig.MotionMagic.MotionMagicAcceleration = turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
+    turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity =
+        100.0 / SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.MotionMagic.MotionMagicAcceleration =
+        turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
     turnMotorConfig.MotionMagic.MotionMagicExpo_kV = 0.12 * SWERVE.MODULE.kTurnMotorGearRatio;
     turnMotorConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    //    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    //    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
-    turnMotorConfig.Feedback.RotorToSensorRatio = SWERVE.MODULE.kTurnMotorGearRatio;
-//    turnMotorConfig.Feedback.FeedbackRemoteSensorID = 0;
-
+       turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    // turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+       turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    // turnMotorConfig.Feedback.RotorToSensorRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    //    turnMotorConfig.Feedback.FeedbackRemoteSensorID = 0;
 
     return turnMotorConfig;
   }
@@ -87,9 +92,10 @@ public final class CtreUtils {
   public static CANcoderConfiguration generateCanCoderConfig() {
     CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
 
-//    sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-//    sensorConfig.MagnetSensor.AbsoluteSensorRange =
-//        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
+    //    sensorConfig.MagnetSensor.SensorDirection =
+    // SensorDirectionValue.CounterClockwise_Positive;
+    //    sensorConfig.MagnetSensor.AbsoluteSensorRange =
+    //        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
 
     return sensorConfig;
   }

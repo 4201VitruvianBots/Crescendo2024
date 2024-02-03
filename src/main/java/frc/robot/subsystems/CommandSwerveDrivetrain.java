@@ -2,17 +2,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.utils.CtreUtils;
@@ -30,37 +36,75 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
   private final Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
-
+  private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    resetGyro();
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    // resetGyro();
+    System.out.println("Swerve Init at: " + Logger.getRealTimestamp());
   }
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
 
-    for(int i = 0; i < modules.length; i++) {
+    for (int i = 0; i < modules.length; i++) {
+      m_constants[i] = modules[i];
       var encoderConfigs = CtreUtils.generateCanCoderConfig();
-      encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
+      // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
       CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
 
       var turnConfigs = CtreUtils.generateTurnMotorConfig();
-      turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
+      // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
       CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
+      setTurnAngle(i, 0);
 
       var driveConfigs = CtreUtils.generateDriveMotorConfig();
+      // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
       CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
     }
+    resetGyro();
 
     if (Utils.isSimulation()) {
       startSimThread();
+    }
+    System.out.println("Swerve Init at: " + Logger.getTimestamp());
+  }
+
+    public void setTurnAngle(int moduleId, double angle) {
+    var newAngle = getModule(moduleId).getCANcoder().getAbsolutePosition().getValue() - Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset) + angle;
+
+    StatusCode turnMotorStatus = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
+      turnMotorStatus = getModule(moduleId).getSteerMotor().setPosition(newAngle / 360.0);
+      if (turnMotorStatus.isOK()) break;
+      if (RobotBase.isReal()) Timer.delay(0.02);
+    }
+
+    if (!turnMotorStatus.isOK()) {
+      System.out.println(
+          "Could not update Swerve Turn TalonFX Angle: "
+              + getModule(moduleId).getSteerMotor().getDeviceID()
+              + ". Error code: "
+              + turnMotorStatus);
+    } else {
+      // System.out.printf(
+      //     """
+      //                 Updated Turn Motor %2d Angle:
+      //                 Desired Angle: %.2f
+      //                 Turn Motor Angle: %.2f
+      //                 CANCoder Absolute Angle: %.2f
+      //                 CANCoder Offset: %.2f\n""",
+      //     m_turnMotor.getDeviceID(),
+      //     angle,
+      //     getTurnHeadingDeg(),
+      //     getTurnEncoderAbsHeading().getDegrees(),
+      //     m_angleOffset);
     }
   }
 
@@ -115,7 +159,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public void resetGyro() {
-    // getPigeon2().setYaw(0);
+    getPigeon2().setYaw(0);
   }
 
   public void initTurnSysid() {
