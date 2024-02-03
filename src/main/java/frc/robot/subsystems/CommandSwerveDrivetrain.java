@@ -45,6 +45,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
+
+    for(int i = 0; i < modules.length; i++) {
+      var encoderConfigs = CtreUtils.generateCanCoderConfig();
+      encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
+      CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
+
+      var turnConfigs = CtreUtils.generateTurnMotorConfig();
+      turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
+      CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
+
+      var driveConfigs = CtreUtils.generateDriveMotorConfig();
+      CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
+    }
+
     if (Utils.isSimulation()) {
       startSimThread();
     }
