@@ -218,9 +218,11 @@ public class RobotContainer {
   public void periodic() {
     // TODO: Move this into the Vision subsystem
     final var globalPose = m_vision.getEstimatedGlobalPose();
-    globalPose.ifPresent(estimatedRobotPose -> m_swerveDrive.addVisionMeasurement(
-            estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
-    
+    globalPose.ifPresent(
+        estimatedRobotPose ->
+            m_swerveDrive.addVisionMeasurement(
+                estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
+
     m_fieldSim.periodic();
     m_visualizer.periodic();
   }

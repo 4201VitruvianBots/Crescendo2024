@@ -7,24 +7,28 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.FLYWHEEL;
 import frc.robot.utils.CtreUtils;
+import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
 
-  private final TalonFX[] flywheelmotors = {new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)};
+  private final TalonFX[] m_flywheelMotors = {
+    new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)
+  };
 
   private double m_percentOutput;
   private double flywheelPercentRatio = 1.0;
-  final DutyCycleOut m_request = new DutyCycleOut(0);
+  private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
   private final SimpleMotorFeedforward m_feedForward =
-      new SimpleMotorFeedforward(FLYWHEEL.kG, FLYWHEEL.kV, FLYWHEEL.kA);
+      new SimpleMotorFeedforward(FLYWHEEL.kS, FLYWHEEL.kV, FLYWHEEL.kA);
   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
@@ -35,29 +39,38 @@ public class Shooter extends SubsystemBase {
     config.Slot0.kP = FLYWHEEL.kP;
     config.Slot0.kI = FLYWHEEL.kI;
     config.Slot0.kD = FLYWHEEL.kD;
-    CtreUtils.configureTalonFx(flywheelmotors[0], config);
+    CtreUtils.configureTalonFx(m_flywheelMotors[0], config);
 
     // flywheel motor 1
-    flywheelmotors[1].setControl(new Follower(flywheelmotors[0].getDeviceID(), true));
+    m_flywheelMotors[1].setControl(new Follower(m_flywheelMotors[0].getDeviceID(), true));
   }
 
   // values that we set
-  public void setPercentOutput(double m_percentOutput) {
-
-    flywheelmotors[0].setControl(m_request.withOutput(m_percentOutput));
+  public void setPercentOutput(double percentOutput) {
+    m_flywheelMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
-  public void setPIDvalues(double v, double p, double i, double d) {
+  public void setRpmOutput(double rpm) {
+    // Phoenix 6 uses rotations per second for velocity control
+    var rps = rpm / 60.0;
+    m_flywheelMotors[0].setControl(
+        m_velocityRequest.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+  }
+
+  public void setPidValues(double v, double p, double i, double d) {
     TalonFXConfiguration config = new TalonFXConfiguration();
+
+    // Get the current motor configs to not erase everything
+    m_flywheelMotors[0].getConfigurator().refresh(config);
     config.Slot0.kV = v;
     config.Slot0.kP = p;
     config.Slot0.kI = i;
     config.Slot0.kD = d;
-    CtreUtils.configureTalonFx(flywheelmotors[0], config);
+    CtreUtils.configureTalonFx(m_flywheelMotors[0], config);
   }
 
-  public void setSimpleMotorFeedForward(double g, double v, double a) {
-    m_currentFeedForward = new SimpleMotorFeedforward(g, v, a);
+  public void setSimpleMotorFeedForward(double s, double v, double a) {
+    m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
   // values that we are pulling
@@ -65,12 +78,15 @@ public class Shooter extends SubsystemBase {
     return m_percentOutput;
   }
 
-  private void updateShuffleboard() {
-    SmartDashboard.putNumber("getPercentOutput", this.getPercentOutput());
+  private void updateLogger() {
+    Logger.recordOutput("Flywheel/PercentOutput", getPercentOutput());
   }
+
+  private void updateShuffleboard() {}
 
   @Override
   public void periodic() {
-    this.updateShuffleboard();
+    updateShuffleboard();
+    updateLogger();
   }
 }
