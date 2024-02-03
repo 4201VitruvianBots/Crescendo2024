@@ -41,8 +41,8 @@ public final class SWERVE {
     public static double kBackLeftEncoderOffset = 0.483642578125;
     public static double kBackRightEncoderOffset = 0.414306640625;
 
-    private static final boolean kInvertLeftDrive = false;
-    private static final boolean kInvertRightDrive = true;
+    public static final boolean kInvertLeftDrive = false;
+    public static final boolean kInvertRightDrive = true;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
