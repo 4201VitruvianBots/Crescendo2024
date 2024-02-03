@@ -39,6 +39,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    // resetGyro();
   }
 
   public CommandSwerveDrivetrain(
@@ -100,7 +101,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public void resetGyro() {
-    getPigeon2().setYaw(0);
+    // getPigeon2().setYaw(0);
   }
 
   public void initTurnSysid() {
@@ -124,6 +125,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public void updateLog() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
+    Logger.recordOutput(
+        "Swerve/FRONT_LEFT_ENCODER", getModule(0).getCANcoder().getAbsolutePosition().getValue());
+    Logger.recordOutput(
+        "Swerve/FRONT_RIGHT_ENCODER", getModule(1).getCANcoder().getAbsolutePosition().getValue());
+    Logger.recordOutput(
+        "Swerve/BACK_LEFT_ENCODER", getModule(2).getCANcoder().getAbsolutePosition().getValue());
+    Logger.recordOutput(
+        "Swerve/BACK_RIGHT_ENCODER", getModule(3).getCANcoder().getAbsolutePosition().getValue());
   }
 
   @Override
