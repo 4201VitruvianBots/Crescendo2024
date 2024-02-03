@@ -14,6 +14,7 @@ import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
+import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.UPTAKE;
 import frc.robot.constants.VISION;
@@ -28,6 +29,7 @@ public class SuperStructureVisualizer {
   Arm m_arm;
   Climber m_climber;
   Vision m_vision;
+  LEDSubsystem m_led;
 
   Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
 
@@ -53,6 +55,7 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_uptake2d =
       m_intake2d.append(new MechanismLigament2d("Uptake", UPTAKE.uptakeLength, 35));
 
+  MechanismLigament2d m_led2d = m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
   MechanismLigament2d m_arm2d =
@@ -68,7 +71,7 @@ public class SuperStructureVisualizer {
       m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
   MechanismLigament2d m_climberHook2_2d =
       m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
-
+  
   Color8Bit m_drivebase2d_originalColor,
       m_limelight2d_originalColor,
       m_intake2d_originalColor,
@@ -87,7 +90,8 @@ public class SuperStructureVisualizer {
       AmpShooter ampShooter,
       Arm arm,
       Climber climber,
-      Vision vision) {
+      Vision vision,
+      LEDSubsystem led) {
     m_intake = intake;
     m_uptake = uptake;
     m_shooter = shooter;
@@ -95,6 +99,7 @@ public class SuperStructureVisualizer {
     m_arm = arm;
     m_climber = climber;
     m_vision = vision;
+    m_led = led;
 
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
@@ -181,6 +186,10 @@ public class SuperStructureVisualizer {
   public void updateLimelight() {
     updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(), m_limelight2d_originalColor);
   }
+  
+  public void updateLED() {
+    m_led2d.setColor(m_led.getColor());
+  }
 
   public void periodic() {
     updateIntake();
@@ -190,5 +199,6 @@ public class SuperStructureVisualizer {
     updateArm();
     updateClimber();
     updateLimelight();
+    updateLED();
   }
 }

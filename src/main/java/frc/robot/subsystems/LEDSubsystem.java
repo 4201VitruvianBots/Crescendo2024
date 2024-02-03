@@ -26,6 +26,7 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
@@ -154,6 +155,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  public Color8Bit getColor() {
+    return new Color8Bit(red, green, blue);
+  }
+  
   @Override
   public void periodic() {
     // null indicates that the animation is "Solid"

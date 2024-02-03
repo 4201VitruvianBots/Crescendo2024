@@ -90,10 +90,11 @@ public class Arm extends SubsystemBase {
     setDesiredSetpointRotations(Units.degreesToRotations(ARM.minAngleDegrees));
   }
 
+  // Get the percent output of the arm motor.
   public void setPercentOutput(double speed) {
     m_armMotor.set(speed);
   }
-
+  
   public double getPercentOutput() {
     return m_armMotor.get();
   }

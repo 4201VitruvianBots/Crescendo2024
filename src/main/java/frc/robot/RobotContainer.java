@@ -73,7 +73,7 @@ public class RobotContainer {
 
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
-          m_intake, m_uptake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision);
+          m_intake, m_uptake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
