@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.CAN.UPTAKE_STATE;
+import frc.robot.constants.UPTAKE.UPTAKE_STATE;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -41,9 +41,9 @@ public class Uptake extends SubsystemBase {
     return m_isUptaking;
   }
 
-  public void setUptakingState(UPTAKE_STATE speed) {
-    m_state = speed;
-  }
+  //   public void setUptakingState(UPTAKE_STATE speed) {
+  //     m_state = speed;
+  //   }
 
   public UPTAKE_STATE getUptakeState() {
     return m_state;

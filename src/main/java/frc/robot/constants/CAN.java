@@ -24,38 +24,6 @@ public final class CAN {
   public static final int intakeMotor2 = 31;
   public static final int uptakeMotor = 35;
 
-  public enum INTAKE_STATE {
-    // Units are in Percent Output
-    NONE(0),
-    INTAKING(0.6);
-
-    private final double value;
-
-    INTAKE_STATE(final double value) {
-      this.value = value;
-    }
-
-    public double get() {
-      return value;
-    }
-  }
-
-  public enum UPTAKE_STATE {
-    // Units are in Percent Output
-    NONE(0),
-    UPTAKING(0.6);
-
-    private final double value;
-
-    UPTAKE_STATE(final double value) {
-      this.value = value;
-    }
-
-    public double get() {
-      return value;
-    }
-  }
-
   public static final int flywheel1 = 41;
   public static final int flywheel2 = 42;
 

@@ -5,25 +5,25 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AMP.FLIPPER_SETPOINT;
+import frc.robot.constants.ARM.ARM_SETPOINT;
 import frc.robot.subsystems.Arm;
 
 public class AutoArmSetpoints extends Command {
-  Arm m_flipper;
-  FLIPPER_SETPOINT m_state;
+  Arm m_arm;
+  ARM_SETPOINT m_state;
 
   /** Creates a new ArmForward. */
-  public AutoArmSetpoints(Arm flipper, FLIPPER_SETPOINT state) {
-    m_flipper = flipper;
+  public AutoArmSetpoints(Arm arm, ARM_SETPOINT state) {
+    m_arm = arm;
     m_state = state;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flipper);
+    addRequirements(m_arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_flipper.setDesiredSetpointRadians(m_state.get());
+    m_arm.setDesiredSetpointRotations(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

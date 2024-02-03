@@ -10,10 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.AMP;
+import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
+import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.UPTAKE;
 import frc.robot.constants.VISION;
@@ -28,6 +29,7 @@ public class SuperStructureVisualizer {
   Arm m_arm;
   Climber m_climber;
   Vision m_vision;
+  LEDSubsystem m_led;
 
   Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
 
@@ -53,12 +55,14 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_uptake2d =
       m_intake2d.append(new MechanismLigament2d("Uptake", UPTAKE.uptakeLength, 35));
 
+  MechanismLigament2d m_led2d =
+      m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
   MechanismLigament2d m_arm2d =
       m_shooter2d.append(
           new MechanismLigament2d(
-              "Arm", AMP.length, Units.radiansToDegrees(AMP.startingAngle + AMP.mountingAngle)));
+              "Arm", ARM.length, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
   MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
@@ -87,7 +91,8 @@ public class SuperStructureVisualizer {
       AmpShooter ampShooter,
       Arm arm,
       Climber climber,
-      Vision vision) {
+      Vision vision,
+      LEDSubsystem led) {
     m_intake = intake;
     m_uptake = uptake;
     m_shooter = shooter;
@@ -95,6 +100,7 @@ public class SuperStructureVisualizer {
     m_arm = arm;
     m_climber = climber;
     m_vision = vision;
+    m_led = led;
 
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
@@ -166,15 +172,24 @@ public class SuperStructureVisualizer {
 
   public void updateArm() {
     updateMotorColor(m_arm2d, m_arm.getPercentOutput(), m_arm2d_originalColor);
-    m_arm2d.setAngle(Units.radiansToDegrees(m_arm.getAngleRadians() + AMP.mountingAngle));
+    m_arm2d.setAngle(90 - m_arm.getAngleDegrees());
   }
 
   public void updateClimber() {
-    // TODO: Update this code to work with climber code once completed
+    updateMotorColor(m_climber2d, m_climber.getPercentOutput(), m_climber2d_originalColor);
+    updateMotorColor(
+        m_climberHook1_2d, m_climber.getPercentOutput(), m_climberHook1_2d_originalColor);
+    updateMotorColor(
+        m_climberHook2_2d, m_climber.getPercentOutput(), m_climberHook2_2d_originalColor);
+    m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
   }
 
   public void updateLimelight() {
     updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(), m_limelight2d_originalColor);
+  }
+
+  public void updateLED() {
+    m_led2d.setColor(m_led.getColor());
   }
 
   public void periodic() {
@@ -185,5 +200,6 @@ public class SuperStructureVisualizer {
     updateArm();
     updateClimber();
     updateLimelight();
+    updateLED();
   }
 }

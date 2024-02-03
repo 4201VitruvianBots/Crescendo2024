@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
+import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -54,7 +55,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
-  private final Arm m_flipper = new Arm();
+  private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
@@ -73,7 +74,7 @@ public class RobotContainer {
 
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
-          m_intake, m_uptake, m_shooter, m_ampShooter, m_flipper, m_climber, m_vision);
+          m_intake, m_uptake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -134,6 +135,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new SetIntakePercentOutput(
             m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+    m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
   }
 
   private void configureBindings() {
@@ -146,7 +148,7 @@ public class RobotContainer {
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new ArmForward(m_flipper));
+    xboxController.y().whileTrue(new ArmForward(m_arm));
   }
 
   public void initAutoChooser() {
@@ -218,10 +220,20 @@ public class RobotContainer {
   public void periodic() {
     // TODO: Move this into the Vision subsystem
     final var globalPose = m_vision.getEstimatedGlobalPose();
-    globalPose.ifPresent(estimatedRobotPose -> m_swerveDrive.addVisionMeasurement(
-            estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
-    
+    globalPose.ifPresent(
+        estimatedRobotPose ->
+            m_swerveDrive.addVisionMeasurement(
+                estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
+
     m_fieldSim.periodic();
     m_visualizer.periodic();
+  }
+
+  public void testInit() {
+    m_arm.testInit();
+  }
+
+  public void testPeriodic() {
+    m_arm.testPeriodic();
   }
 }
