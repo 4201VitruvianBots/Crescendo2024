@@ -41,6 +41,7 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
   }
+
   public void setIntaking(boolean isIntaking) {
     m_isIntaking = isIntaking;
   }
@@ -56,6 +57,7 @@ public class Intake extends SubsystemBase {
   public INTAKE_STATE getIntakeState() {
     return m_state;
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

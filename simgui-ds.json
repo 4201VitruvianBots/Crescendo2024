@@ -105,6 +105,10 @@
   "robotJoysticks": [
     {},
     {},
+<<<<<<< HEAD
+    {},
+=======
+>>>>>>> main
     {
       "guid": "Keyboard0"
     }

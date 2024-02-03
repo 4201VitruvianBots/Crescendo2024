@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.SWERVE;
+import org.littletonrobotics.junction.Logger;
 
 public final class CtreUtils {
   /**
@@ -18,11 +19,13 @@ public final class CtreUtils {
    * set/applied properly.
    */
   public static void initPhoenixServer() {
+    System.out.println("Starting Phoenix Server at: " + Logger.getTimestamp());
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null;
     }
+    System.out.println("Phoenx Server finished Init at: " + Logger.getTimestamp());
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {
@@ -33,18 +36,25 @@ public final class CtreUtils {
     turnMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    turnMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnMotorConfig.Slot0 = SWERVE.MODULE.turnGains;
     turnMotorConfig.CurrentLimits.SupplyCurrentLimit = 25;
     turnMotorConfig.CurrentLimits.SupplyCurrentThreshold = 40;
     turnMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    turnMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity =
+        100.0 / SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.MotionMagic.MotionMagicAcceleration =
+        turnMotorConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
+    turnMotorConfig.MotionMagic.MotionMagicExpo_kV = 0.12 * SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
+
     turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
     //    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    turnMotorConfig.Slot0.kP = 100.0;
-    turnMotorConfig.Slot0.kI = 0.0;
-    turnMotorConfig.Slot0.kD = 0.2;
-    turnMotorConfig.Slot0.kV = 1.5;
+    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    //    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.Feedback.RotorToSensorRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    //    turnMotorConfig.Feedback.FeedbackRemoteSensorID = 0;
 
     return turnMotorConfig;
   }
@@ -57,17 +67,17 @@ public final class CtreUtils {
     driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveMotorConfig.Slot0 = SWERVE.MODULE.driveGains;
+    driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = SWERVE.MODULE.kSlipCurrent;
+    driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -SWERVE.MODULE.kSlipCurrent;
+    driveMotorConfig.CurrentLimits.StatorCurrentLimit = SWERVE.MODULE.kSlipCurrent;
+    driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveMotorConfig.CurrentLimits.SupplyCurrentLimit = 35;
     driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
     driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     driveMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kDriveMotorGearRatio;
-    //    driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    driveMotorConfig.Slot0.kP = 3.0;
-    driveMotorConfig.Slot0.kI = 0.0;
-    driveMotorConfig.Slot0.kD = 0.0;
-    driveMotorConfig.Slot0.kV = 0.0;
 
     driveMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.25; // TODO adjust this later
     driveMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25; // TODO adjust this later
@@ -81,9 +91,10 @@ public final class CtreUtils {
   public static CANcoderConfiguration generateCanCoderConfig() {
     CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
 
-    sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    sensorConfig.MagnetSensor.AbsoluteSensorRange =
-        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
+    //    sensorConfig.MagnetSensor.SensorDirection =
+    // SensorDirectionValue.CounterClockwise_Positive;
+    //    sensorConfig.MagnetSensor.AbsoluteSensorRange =
+    //        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
 
     return sensorConfig;
   }

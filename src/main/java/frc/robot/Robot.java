@@ -77,6 +77,11 @@ public class Robot extends LoggedRobot {
     // "Understanding Data Flow" page
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
+
+    System.out.println("AdvantageKit Logging Started!");
+    // Update robot constants based off of robot used
+    ROBOT.initConstants();
+    CtreUtils.initPhoenixServer();
   }
 
   /**
@@ -85,9 +90,6 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    // Update robot constants based off of robot used
-    ROBOT.initConstants();
-    CtreUtils.initPhoenixServer();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
+import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -151,7 +152,9 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+        "DriveStraightPathplannerTest",
+        new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
+    //    m_autoChooser.addOption("frourpeiceNear", new frourpeiceNear(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
