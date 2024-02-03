@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
+import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -153,7 +154,9 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+        "DriveStraightPathplannerTest",
+        new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
+    //    m_autoChooser.addOption("frourpeiceNear", new frourpeiceNear(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
@@ -215,19 +218,21 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    // TODO: Move this into the Vision subsystem
     final var globalPose = m_vision.getEstimatedGlobalPose();
-    if (globalPose.isPresent()) {
-      m_swerveDrive.addVisionMeasurement(
-          globalPose.get().estimatedPose.toPose2d(), globalPose.get().timestampSeconds);
-    }
+    globalPose.ifPresent(
+        estimatedRobotPose ->
+            m_swerveDrive.addVisionMeasurement(
+                estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
+
     m_fieldSim.periodic();
     m_visualizer.periodic();
   }
-  
+
   public void testInit() {
     m_arm.testInit();
   }
-  
+
   public void testPeriodic() {
     m_arm.testPeriodic();
   }

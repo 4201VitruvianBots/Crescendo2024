@@ -60,16 +60,17 @@ public class Arm extends SubsystemBase {
           Units.degreesToRadians(ARM.startingAngleDegrees + 90.0));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
-  
+
   // Test mode setup
   private DoubleSubscriber m_kS_subscriber,
-    m_kV_subscriber,
-    m_kP_subscriber,
-    m_kI_subscriber,
-    m_kD_subscriber,
-    m_kMaxArmVelocity_subscriber,
-    m_kMaxArmAcceleration_subscriber;
-  private NetworkTable armTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
+      m_kV_subscriber,
+      m_kP_subscriber,
+      m_kI_subscriber,
+      m_kD_subscriber,
+      m_kMaxArmVelocity_subscriber,
+      m_kMaxArmAcceleration_subscriber;
+  private NetworkTable armTab =
+      NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -94,7 +95,7 @@ public class Arm extends SubsystemBase {
   public void setPercentOutput(double speed) {
     m_armMotor.set(speed);
   }
-  
+
   public double getPercentOutput() {
     return m_armMotor.get();
   }
@@ -134,20 +135,21 @@ public class Arm extends SubsystemBase {
     armTab.getDoubleTopic("kP").publish().set(ARM.kP);
     armTab.getDoubleTopic("kI").publish().set(ARM.kI);
     armTab.getDoubleTopic("kD").publish().set(ARM.kD);
-    
+
     armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
     armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
-    
+
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
     m_kP_subscriber = armTab.getDoubleTopic("kP").subscribe(ARM.kP);
     m_kI_subscriber = armTab.getDoubleTopic("kI").subscribe(ARM.kI);
     m_kD_subscriber = armTab.getDoubleTopic("kD").subscribe(ARM.kD);
-    
+
     m_kMaxArmVelocity_subscriber = armTab.getDoubleTopic("kMaxVel").subscribe(ARM.kMaxArmVelocity);
-    m_kMaxArmAcceleration_subscriber = armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
+    m_kMaxArmAcceleration_subscriber =
+        armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
   }
-  
+
   public void testPeriodic() {
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kS = m_kS_subscriber.get(ARM.kS);
@@ -155,14 +157,14 @@ public class Arm extends SubsystemBase {
     slot0Configs.kP = m_kP_subscriber.get(ARM.kP);
     slot0Configs.kI = m_kI_subscriber.get(ARM.kI);
     slot0Configs.kD = m_kD_subscriber.get(ARM.kD);
-    
+
     m_armMotor.getConfigurator().apply(slot0Configs);
-    
+
     m_constraints =
-      new TrapezoidProfile.Constraints(m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
-    
+        new TrapezoidProfile.Constraints(
+            m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
   }
-  
+
   @Override
   public void periodic() {
     switch (m_controlMode) {

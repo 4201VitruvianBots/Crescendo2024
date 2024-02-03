@@ -55,7 +55,8 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_uptake2d =
       m_intake2d.append(new MechanismLigament2d("Uptake", UPTAKE.uptakeLength, 35));
 
-  MechanismLigament2d m_led2d = m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
+  MechanismLigament2d m_led2d =
+      m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
   MechanismLigament2d m_arm2d =
@@ -71,7 +72,7 @@ public class SuperStructureVisualizer {
       m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
   MechanismLigament2d m_climberHook2_2d =
       m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
-  
+
   Color8Bit m_drivebase2d_originalColor,
       m_limelight2d_originalColor,
       m_intake2d_originalColor,
@@ -186,7 +187,7 @@ public class SuperStructureVisualizer {
   public void updateLimelight() {
     updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(), m_limelight2d_originalColor);
   }
-  
+
   public void updateLED() {
     m_led2d.setColor(m_led.getColor());
   }
