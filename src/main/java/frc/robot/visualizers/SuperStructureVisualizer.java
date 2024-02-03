@@ -16,14 +16,12 @@ import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
-import frc.robot.constants.UPTAKE;
 import frc.robot.constants.VISION;
 import frc.robot.subsystems.*;
 
 /** A class to visualize the state of all mechanisms on the robot. */
 public class SuperStructureVisualizer {
   Intake m_intake;
-  Uptake m_uptake;
   Shooter m_shooter;
   AmpShooter m_ampShooter;
   Arm m_arm;
@@ -52,8 +50,6 @@ public class SuperStructureVisualizer {
       m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
   MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
-  MechanismLigament2d m_uptake2d =
-      m_intake2d.append(new MechanismLigament2d("Uptake", UPTAKE.uptakeLength, 35));
 
   MechanismLigament2d m_led2d =
       m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
@@ -76,7 +72,6 @@ public class SuperStructureVisualizer {
   Color8Bit m_drivebase2d_originalColor,
       m_limelight2d_originalColor,
       m_intake2d_originalColor,
-      m_uptake2d_originalColor,
       m_climber2d_originalColor,
       m_climberHook1_2d_originalColor,
       m_climberHook2_2d_originalColor,
@@ -86,7 +81,6 @@ public class SuperStructureVisualizer {
 
   public SuperStructureVisualizer(
       Intake intake,
-      Uptake uptake,
       Shooter shooter,
       AmpShooter ampShooter,
       Arm arm,
@@ -94,7 +88,6 @@ public class SuperStructureVisualizer {
       Vision vision,
       LEDSubsystem led) {
     m_intake = intake;
-    m_uptake = uptake;
     m_shooter = shooter;
     m_ampShooter = ampShooter;
     m_arm = arm;
@@ -105,7 +98,6 @@ public class SuperStructureVisualizer {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
-    m_uptake2d.setColor(new Color8Bit(235, 52, 176));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
     m_climberHook1_2d.setColor(new Color8Bit(52, 212, 235));
     m_climberHook2_2d.setColor(new Color8Bit(52, 212, 235));
@@ -116,7 +108,6 @@ public class SuperStructureVisualizer {
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
     m_limelight2d_originalColor = m_limelight2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
-    m_uptake2d_originalColor = m_uptake2d.getColor();
     m_climber2d_originalColor = m_climber2d.getColor();
     m_climberHook1_2d_originalColor = m_climberHook1_2d.getColor();
     m_climberHook2_2d_originalColor = m_climberHook2_2d.getColor();
@@ -158,10 +149,6 @@ public class SuperStructureVisualizer {
     updateMotorColor(m_intake2d, m_intake.getSpeed(), m_intake2d_originalColor);
   }
 
-  public void updateUptake() {
-    updateMotorColor(m_uptake2d, m_uptake.getSpeed(), m_uptake2d_originalColor);
-  }
-
   public void updateShooter() {
     updateMotorColor(m_shooter2d, m_shooter.getRPM1(), m_shooter2d_originalColor);
   }
@@ -194,7 +181,6 @@ public class SuperStructureVisualizer {
 
   public void periodic() {
     updateIntake();
-    updateUptake();
     updateShooter();
     updateAmpShooter();
     updateArm();

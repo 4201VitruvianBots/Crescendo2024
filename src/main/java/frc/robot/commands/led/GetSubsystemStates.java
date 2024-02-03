@@ -7,18 +7,14 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Uptake;
+import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LEDSubsystem m_led;
 
-  private final Uptake m_uptake;
+  private final AmpShooter m_ampShooter;
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
@@ -31,11 +27,11 @@ public class GetSubsystemStates extends Command {
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Uptake uptake, Shooter shooter) {
+      LEDSubsystem led, Intake intake, Climber climber, AmpShooter ampShooter, Shooter shooter) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
-    m_uptake = uptake;
+    m_ampShooter = ampShooter;
     m_shooter = shooter;
 
     addRequirements(m_led);

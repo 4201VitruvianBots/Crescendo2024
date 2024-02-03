@@ -30,7 +30,6 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
-import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -53,7 +52,6 @@ public class RobotContainer {
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
-  private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
@@ -74,7 +72,7 @@ public class RobotContainer {
 
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
-          m_intake, m_uptake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
+          m_intake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -146,8 +144,8 @@ public class RobotContainer {
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // amp
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
-    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
-    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));
   }
 
