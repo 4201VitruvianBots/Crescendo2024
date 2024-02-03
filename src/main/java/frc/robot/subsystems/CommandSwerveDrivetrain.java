@@ -53,21 +53,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
 
-    for (int i = 0; i < modules.length; i++) {
-      m_constants[i] = modules[i];
-      var encoderConfigs = CtreUtils.generateCanCoderConfig();
-      // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
-      CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
+    // for (int i = 0; i < modules.length; i++) {
+    //   m_constants[i] = modules[i];
+    //   var encoderConfigs = CtreUtils.generateCanCoderConfig();
+    //   // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
+    //   CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
 
-      var turnConfigs = CtreUtils.generateTurnMotorConfig();
-      // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
-      CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
-      setTurnAngle(i, 0);
+    //   var turnConfigs = CtreUtils.generateTurnMotorConfig();
+    //   // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
+    //   CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
+    //   setTurnAngle(i, 0);
 
-      var driveConfigs = CtreUtils.generateDriveMotorConfig();
-      // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-      CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
-    }
+    //   var driveConfigs = CtreUtils.generateDriveMotorConfig();
+    //   // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+    //   CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
+    // }
     resetGyro();
 
     if (Utils.isSimulation()) {
@@ -101,7 +101,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       //                 CANCoder Absolute Angle: %.2f
       //                 CANCoder Offset: %.2f\n""",
       //     m_turnMotor.getDeviceID(),
-      //     angle,
+      //     angle,    
       //     getTurnHeadingDeg(),
       //     getTurnEncoderAbsHeading().getDegrees(),
       //     m_angleOffset);
@@ -184,13 +184,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void updateLog() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
-        "Swerve/FRONT_LEFT_ENCODER", getModule(0).getCANcoder().getAbsolutePosition().getValue());
+
+        "Swerve/FRONTLEFTENCODER", Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/FRONT_RIGHT_ENCODER", getModule(1).getCANcoder().getAbsolutePosition().getValue());
+        "Swerve/FRONTRIGHTENCODER",  Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACK_LEFT_ENCODER", getModule(2).getCANcoder().getAbsolutePosition().getValue());
+        "Swerve/BACKLEFTENCODER",  Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACK_RIGHT_ENCODER", getModule(3).getCANcoder().getAbsolutePosition().getValue());
+        "Swerve/BACKRIGHTENCODER",  Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
   }
 
   @Override

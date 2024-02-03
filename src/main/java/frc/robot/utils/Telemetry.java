@@ -55,6 +55,14 @@ public class Telemetry {
     Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
     Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
     Logger.recordOutput("Swerve/Module States", state.ModuleStates);
+    Logger.recordOutput("Swerve/Module Angles", 
+      new double[] {
+      state.ModuleStates[0].angle.getDegrees(),
+      state.ModuleStates[1].angle.getDegrees(),
+      state.ModuleStates[2].angle.getDegrees(),
+      state.ModuleStates[3].angle.getDegrees()
+      }
+    );
 
     if (m_fieldSim != null) {
       for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
