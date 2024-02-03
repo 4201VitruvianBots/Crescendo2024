@@ -19,13 +19,13 @@ public final class CtreUtils {
    * set/applied properly.
    */
   public static void initPhoenixServer() {
-    System.out.println("Starting Phoenix Server at: " + Logger.getTimestamp());
+    System.out.printf("Starting Phoenix Server at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null;
     }
-    System.out.println("Phoenx Server finished Init at: " + Logger.getTimestamp());
+    System.out.printf("Phoenix Server finished Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {
