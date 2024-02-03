@@ -12,7 +12,7 @@ import frc.robot.constants.LED;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Uptake;
 
 public class GetSubsystemStates extends Command {
@@ -23,7 +23,7 @@ public class GetSubsystemStates extends Command {
   private final Uptake m_uptake;
   private final Climber m_climber;
   private final Intake m_intake;
-  private final Shooter m_shooter;
+  private final Flywheel m_flywheel;
   private boolean isIntaking;
   private boolean isClimbing;
   private boolean isScoringSpeaker;
@@ -33,12 +33,12 @@ public class GetSubsystemStates extends Command {
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Uptake uptake, Shooter shooter) {
+      LEDSubsystem led, Intake intake, Climber climber, Uptake uptake, Flywheel flywheel) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
     m_uptake = uptake;
-    m_shooter = shooter;
+    m_flywheel = flywheel;
 
     addRequirements(m_led);
   }

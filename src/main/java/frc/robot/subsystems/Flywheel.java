@@ -16,7 +16,7 @@ import frc.robot.constants.FLYWHEEL;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends SubsystemBase {
+public class Flywheel extends SubsystemBase {
 
   private final TalonFX[] m_flywheelMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)
@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
-  public Shooter() {
+  public Flywheel() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kV = FLYWHEEL.kV;
     config.Slot0.kP = FLYWHEEL.kP;

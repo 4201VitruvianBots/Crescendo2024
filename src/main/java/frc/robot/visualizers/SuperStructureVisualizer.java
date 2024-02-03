@@ -23,7 +23,7 @@ import frc.robot.subsystems.*;
 public class SuperStructureVisualizer {
   Intake m_intake;
   Uptake m_uptake;
-  Shooter m_shooter;
+  Flywheel m_flywheel;
   AmpShooter m_ampShooter;
   Arm m_arm;
   Climber m_climber;
@@ -83,14 +83,14 @@ public class SuperStructureVisualizer {
   public SuperStructureVisualizer(
       Intake intake,
       Uptake uptake,
-      Shooter shooter,
+      Flywheel flywheel,
       AmpShooter ampShooter,
       Arm arm,
       Climber climber,
       Vision vision) {
     m_intake = intake;
     m_uptake = uptake;
-    m_shooter = shooter;
+    m_flywheel = flywheel;
     m_ampShooter = ampShooter;
     m_arm = arm;
     m_climber = climber;
@@ -157,7 +157,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getPercentOutput(), m_shooter2d_originalColor);
+    updateMotorColor(m_shooter2d, m_flywheel.getPercentOutput(), m_shooter2d_originalColor);
   }
 
   public void updateAmpShooter() {

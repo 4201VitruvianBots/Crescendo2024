@@ -53,7 +53,7 @@ public class RobotContainer {
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
-  private final Shooter m_shooter = new Shooter();
+  private final Flywheel m_flywheel = new Flywheel();
   private final Arm m_flipper = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
@@ -73,7 +73,7 @@ public class RobotContainer {
 
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
-          m_intake, m_uptake, m_shooter, m_ampShooter, m_flipper, m_climber, m_vision);
+          m_intake, m_uptake, m_flywheel, m_ampShooter, m_flipper, m_climber, m_vision);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -141,8 +141,8 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // amp
-    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // sbeaker
+    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_flywheel, 420.69)); // amp
+    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_flywheel, 420.69)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));

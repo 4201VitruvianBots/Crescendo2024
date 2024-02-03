@@ -11,19 +11,19 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Flywheel;
 
 public class RunShooterTestMode extends Command {
-  private final Shooter m_shooter;
+  private final Flywheel m_flywheel;
 
   private final DoubleSubscriber kSetpointSub, kFSub, kPSub, kISub, kDSub, kGSub, kVSub, kASub;
   private double testKP, testKI, testKD, testKG, testKV, testKA;
 
   /** Creates a new RunShooterTestMode. */
-  public RunShooterTestMode(Shooter shooter) {
-    m_shooter = shooter;
+  public RunShooterTestMode(Flywheel flywheel) {
+    m_flywheel = flywheel;
 
-    addRequirements(m_shooter);
+    addRequirements(m_flywheel);
 
     NetworkTable shooterNtTab =
         NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("ShooterControls");
@@ -81,7 +81,7 @@ public class RunShooterTestMode extends Command {
     double newKA = kASub.get(FLYWHEEL.kA);
 
     if (testKV != newKV || testKP != newKP || testKI != newKI || testKD != newKD) {
-      m_shooter.setPidValues(newKV, newKP, newKI, newKD);
+      m_flywheel.setPidValues(newKV, newKP, newKI, newKD);
       testKV = newKV;
       testKP = newKP;
       testKI = newKI;
@@ -89,13 +89,13 @@ public class RunShooterTestMode extends Command {
     }
 
     if (testKG != newKG || testKV != newKV || testKA != newKA) {
-      m_shooter.setSimpleMotorFeedForward(newKG, newKV, newKA);
+      m_flywheel.setSimpleMotorFeedForward(newKG, newKV, newKA);
       testKG = newKG;
       testKV = newKV;
       testKA = newKA;
     }
 
-    m_shooter.setRpmOutput(newSetpoint);
+    m_flywheel.setRpmOutput(newSetpoint);
   }
 
   // Called once the command ends or is interrupted.
