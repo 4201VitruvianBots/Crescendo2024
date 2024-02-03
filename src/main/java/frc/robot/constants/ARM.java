@@ -2,12 +2,34 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Velocity;
 
 public final class ARM {
+  /* Static Feedforward Gain
+     This is added to the closed loop output. The sign is determined by target velocity.
+     The unit for this constant is dependent on the control mode,
+     typically fractional duty cycle, voltage, or torque current */
   public static final double kS = 0.06;
+  
+  /* Velocity Feedforward Gain
+     The units for this gain is dependent on the control mode.
+     Since this gain is multiplied by the requested velocity,
+     the units should be defined as units of output per unit of requested input velocity.
+     For example, when controlling velocity using a duty cycle closed loop,
+     the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps. */
   public static final double kV = 1.6;
+  
+  /* A higher P value means you will put more effort into correcting the measured error,
+     but it means you can overshoot your target and then the response will look like an oscillating graph. */
   public static final double kP = 0.085;
+  
+  /* I value is generally used to correct steady-state error
+     (e.g. your goal is 100 but you are at 99, so the sum of error
+     over time will let it correct for that final error). */
   public static final double kI = 0.0;
+  
+  /* D is generally used to 'predict' the next output using the slope of the error,
+     so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 13.0;
 
   public static final double kMaxArmVelocity = 10;
