@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.amp.AmpFlipperForward;
+import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -38,6 +38,7 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysidUtils;
 import frc.robot.utils.Telemetry;
+import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
   //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
@@ -53,12 +54,12 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Uptake m_uptake = new Uptake();
   private final Shooter m_shooter = new Shooter();
-  private final AmpFlipper m_flipper = new AmpFlipper();
-  private final AmpShooter m_ampshooter = new AmpShooter();
+  private final Arm m_flipper = new Arm();
+  private final AmpShooter m_ampShooter = new AmpShooter();
   private final Climber m_climber = new Climber();
-  private final LED m_led = new LED();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
+  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
   private final SwerveRequest.FieldCentric drive =
@@ -69,6 +70,10 @@ public class RobotContainer {
           .withDriveRequestType(
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
   // driving in open loop
+
+  private final SuperStructureVisualizer m_visualizer =
+      new SuperStructureVisualizer(
+          m_intake, m_uptake, m_shooter, m_ampShooter, m_flipper, m_climber, m_vision);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -141,7 +146,7 @@ public class RobotContainer {
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
+    xboxController.y().whileTrue(new ArmForward(m_flipper));
   }
 
   public void initAutoChooser() {
@@ -211,6 +216,12 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    final var globalPose = m_vision.getEstimatedGlobalPose();
+    if (globalPose.isPresent()) {
+      m_swerveDrive.addVisionMeasurement(
+          globalPose.get().estimatedPose.toPose2d(), globalPose.get().timestampSeconds);
+    }
     m_fieldSim.periodic();
+    m_visualizer.periodic();
   }
 }

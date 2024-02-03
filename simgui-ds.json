@@ -1,4 +1,9 @@
 {
+  "Keyboard 0 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -18,12 +23,20 @@
         }
       ],
       "axisCount": 3,
-      "buttonCount": 4,
+      "buttonCount": 12,
       "buttonKeys": [
         90,
         88,
         67,
-        86
+        86,
+        66,
+        78,
+        77,
+        49,
+        50,
+        51,
+        52,
+        53
       ],
       "povConfig": [
         {
@@ -53,7 +66,7 @@
       "axisCount": 2,
       "buttonCount": 4,
       "buttonKeys": [
-        77,
+        -1,
         44,
         46,
         47
@@ -92,7 +105,10 @@
   "robotJoysticks": [
     {},
     {},
+<<<<<<< HEAD
     {},
+=======
+>>>>>>> main
     {
       "guid": "Keyboard0"
     }

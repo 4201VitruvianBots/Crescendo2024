@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import static frc.robot.simulation.SimConstants.kMotorResistance;
 import static frc.robot.utils.TestUtils.refreshAkitData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,59 +17,74 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.*;
+import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE;
+import frc.robot.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
-@Disabled("To Fix with rewrite")
+@Disabled("Not working")
 public class TestSwerveModule implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
-  static final double WAIT_TIME = 0.02;
+  static final double WAIT_TIME = 0.04;
 
   NetworkTableInstance m_nt;
   NetworkTable m_table;
 
-  RobotTime m_robotTime;
   SwerveModule m_testModule;
-  static DCMotorSim SteerMotor;
-  static DCMotorSim DriveMotor;
 
-  private void updateSimModule(SwerveModule module, double deltaTime, double supplyVoltage) {
-    TalonFXSimState steerMotor = module.getSteerMotor().getSimState();
-    TalonFXSimState driveMotor = module.getDriveMotor().getSimState();
-    CANcoderSimState cancoder = module.getCANcoder().getSimState();
+  private DCMotorSim m_turnMotorModel;
+  private DCMotorSim m_driveMotorModel;
+  private TalonFXSimState m_turnSimState;
+  private TalonFXSimState m_driveSimState;
+  private CANcoderSimState m_canCoderSimSate;
 
-    steerMotor.setSupplyVoltage(supplyVoltage);
-    driveMotor.setSupplyVoltage(supplyVoltage);
-    cancoder.setSupplyVoltage(supplyVoltage);
+  private final TalonFXConfiguration m_testTurnConfig = new TalonFXConfiguration();
+  private final TalonFXConfiguration m_testDriveConfig = new TalonFXConfiguration();
 
-    SteerMotor.setInputVoltage(
-        addFriction(steerMotor.getMotorVoltage(), SWERVE.MODULE.kFrictionVoltage));
-    DriveMotor.setInputVoltage(
-        addFriction(driveMotor.getMotorVoltage(), SWERVE.MODULE.kFrictionVoltage));
+  private void updateSimModule() {
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(
+            m_driveMotorModel.getCurrentDrawAmps(), m_turnMotorModel.getCurrentDrawAmps()));
 
-    SteerMotor.update(deltaTime);
-    DriveMotor.update(deltaTime);
+    m_turnSimState.setSupplyVoltage(
+        RobotController.getBatteryVoltage()
+            - m_turnMotorModel.getCurrentDrawAmps() * kMotorResistance);
+    m_driveSimState.setSupplyVoltage(
+        RobotController.getBatteryVoltage()
+            - m_driveMotorModel.getCurrentDrawAmps() * kMotorResistance);
+    m_canCoderSimSate.setSupplyVoltage(RobotController.getBatteryVoltage());
+    TestUtils.refreshAkitData();
+    Timer.delay(WAIT_TIME);
 
-    steerMotor.setRawRotorPosition(
-        SteerMotor.getAngularPositionRotations() * SWERVE.MODULE.kTurnMotorGearRatio);
-    steerMotor.setRotorVelocity(
-        SteerMotor.getAngularVelocityRPM() / 60.0 * SWERVE.MODULE.kTurnMotorGearRatio);
+    var testTurnMotorVoltage = m_turnSimState.getMotorVoltage();
+    var testDriveMotorVoltage = m_driveSimState.getMotorVoltage();
+
+    m_turnMotorModel.setInputVoltage(
+        addFriction(m_turnSimState.getMotorVoltage(), SWERVE.MODULE.kFrictionVoltage));
+    m_driveMotorModel.setInputVoltage(
+        addFriction(m_driveSimState.getMotorVoltage(), SWERVE.MODULE.kFrictionVoltage));
+
+    m_turnMotorModel.update(0.02);
+    m_driveMotorModel.update(0.02);
+
+    m_turnSimState.setRawRotorPosition(
+        m_turnMotorModel.getAngularPositionRotations() * SWERVE.MODULE.kTurnMotorGearRatio);
+    m_turnSimState.setRotorVelocity(
+        m_turnMotorModel.getAngularVelocityRPM() / 60.0 * SWERVE.MODULE.kTurnMotorGearRatio);
 
     /* CANcoders see the mechanism, so don't account for the steer gearing */
-    cancoder.setRawPosition(SteerMotor.getAngularPositionRotations());
-    cancoder.setVelocity(SteerMotor.getAngularVelocityRPM() / 60.0);
+    m_canCoderSimSate.setRawPosition(m_turnMotorModel.getAngularPositionRotations());
+    m_canCoderSimSate.setVelocity(m_turnMotorModel.getAngularVelocityRPM() / 60.0);
 
-    driveMotor.setRawRotorPosition(
-        DriveMotor.getAngularPositionRotations() * SWERVE.MODULE.kDriveMotorGearRatio);
-    driveMotor.setRotorVelocity(
-        DriveMotor.getAngularVelocityRPM() / 60.0 * SWERVE.MODULE.kDriveMotorGearRatio);
+    m_driveSimState.setRawRotorPosition(
+        m_driveMotorModel.getAngularPositionRotations() * SWERVE.MODULE.kDriveMotorGearRatio);
+    m_driveSimState.setRotorVelocity(
+        m_driveMotorModel.getAngularVelocityRPM() / 60.0 * SWERVE.MODULE.kDriveMotorGearRatio);
   }
 
   protected double addFriction(double motorVoltage, double frictionVoltage) {
@@ -86,24 +104,30 @@ public class TestSwerveModule implements AutoCloseable {
 
     Logger.start();
 
-    m_robotTime = new RobotTime();
-    RobotTime.setTimeMode(RobotTime.TIME_MODE.UNITTEST);
-
     /* create the TalonFX */
-    m_testModule = new SwerveModule(SWERVE.FrontLeftConstants, "");
-    SteerMotor =
+    m_testModule = new SwerveModule(SWERVE.testConstants, CAN.rioCanbus);
+    m_turnMotorModel =
         new DCMotorSim(
             DCMotor.getFalcon500(1), SWERVE.MODULE.kTurnMotorGearRatio, SWERVE.MODULE.kTurnInertia);
-    DriveMotor =
+    m_driveMotorModel =
         new DCMotorSim(
             DCMotor.getFalcon500(1),
             SWERVE.MODULE.kDriveMotorGearRatio,
             SWERVE.MODULE.kDriveInertia);
 
+    m_turnSimState = m_testModule.getSteerMotor().getSimState();
+    m_turnSimState.Orientation =
+        SWERVE.MODULE.kTurnInverted
+            ? ChassisReference.Clockwise_Positive
+            : ChassisReference.CounterClockwise_Positive;
+    m_driveSimState = m_testModule.getDriveMotor().getSimState();
+    m_canCoderSimSate = m_testModule.getCANcoder().getSimState();
+
     /* enable the robot */
     DriverStationSim.setEnabled(true);
     DriverStationSim.notifyNewData();
     RoboRioSim.resetData();
+    SimHooks.setProgramStarted();
     refreshAkitData();
 
     m_nt = NetworkTableInstance.getDefault();
@@ -112,7 +136,7 @@ public class TestSwerveModule implements AutoCloseable {
     m_table = m_nt.getTable("unittest");
 
     /* delay ~100ms so the devices can start up and enable */
-    Timer.delay(0.200);
+    Timer.delay(0.300);
   }
 
   @AfterEach
@@ -122,16 +146,29 @@ public class TestSwerveModule implements AutoCloseable {
 
   @Test
   public void testModuleAngles() {
-    var testAngle = 90.0;
+    var testAngle = 0.0;
 
-    var testState = new SwerveModuleState(0, Rotation2d.fromDegrees(testAngle));
+    var testState =
+        new SwerveModuleState(
+            SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.11, Rotation2d.fromDegrees(testAngle));
 
     m_testModule.apply(testState, SwerveModule.DriveRequestType.Velocity);
+    refreshAkitData();
+    Timer.delay(WAIT_TIME);
+
+    var posPub = m_table.getDoubleTopic("position").publish();
+    var voltagePub = m_table.getDoubleTopic("voltage").publish();
+    var currentPub = m_table.getDoubleTopic("current").publish();
+
     for (int i = 0; i < 25; i++) {
-      Timer.delay(WAIT_TIME);
-      updateSimModule(m_testModule, RobotTime.getTimeDelta(), RobotController.getBatteryVoltage());
+      updateSimModule();
+      posPub.set(m_testModule.getPosition(true).angle.getDegrees());
+      voltagePub.set(m_testModule.getSteerMotor().getMotorVoltage().getValue());
+      currentPub.set(m_testModule.getSteerMotor().getStatorCurrent().getValue());
+      m_nt.flush();
     }
 
+    var testPos = m_testModule.getPosition(true).angle.getDegrees();
     assertEquals(testAngle, m_testModule.getPosition(true).angle.getDegrees(), DELTA);
   }
 

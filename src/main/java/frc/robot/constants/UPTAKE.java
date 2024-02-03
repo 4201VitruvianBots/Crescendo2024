@@ -1,6 +1,9 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.util.Units;
+
 public final class UPTAKE {
+  public static final double uptakeLength = Units.inchesToMeters(18);
 
   public enum UPTAKE_STATE {
     DOWNTAKE(-0.8),

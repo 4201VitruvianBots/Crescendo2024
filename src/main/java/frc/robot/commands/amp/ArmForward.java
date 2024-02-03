@@ -5,17 +5,16 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AMP.FLIPPER_SETPOINT;
-import frc.robot.subsystems.AmpFlipper;
+import frc.robot.constants.AMP;
+import frc.robot.subsystems.Arm;
 
-public class AutoAmpFlipperSetpoints extends Command {
-  AmpFlipper m_flipper;
-  FLIPPER_SETPOINT m_state;
+public class ArmForward extends Command {
+  Arm m_flipper;
 
-  /** Creates a new AmpFlipperForward. */
-  public AutoAmpFlipperSetpoints(AmpFlipper flipper, FLIPPER_SETPOINT state) {
+  /** Creates a new ArmForward. */
+  public ArmForward(Arm flipper) {
     m_flipper = flipper;
-    m_state = state;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_flipper);
   }
@@ -23,7 +22,7 @@ public class AutoAmpFlipperSetpoints extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_flipper.setDesiredSetpointRadians(m_state.get());
+    m_flipper.setDesiredSetpointRadians(AMP.FLIPPER_SETPOINT.FORWARD.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,11 +31,13 @@ public class AutoAmpFlipperSetpoints extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_flipper.setDesiredSetpointRadians(AMP.FLIPPER_SETPOINT.STOWED.get());
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
