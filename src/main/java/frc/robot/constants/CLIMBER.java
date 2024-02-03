@@ -9,7 +9,6 @@ public final class CLIMBER {
     public static final int climbMotor1 = 31;
     public static final int climbMotor2 = 32;
 
-    // //sensors and encoders are tbd
     public static final int kFalconSensorUnitsPerRotation = 2048;
     // public static final int kCANCoderSensorUnitsPerRotation = 4096;
 
@@ -20,11 +19,11 @@ public final class CLIMBER {
     public static final double kUnextendedLength = Units.inchesToMeters(22);
 
     //values to change
-    public static final double upperLimitMeters = (Units.inchesToMeters(0.0));
-    public static final double lowerLimitMeters = (Units.inchesToMeters(0.0));
+    public static final double upperLimitMeters = Units.inchesToMeters(0.0);
+    public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 
     // public static final DCMotor gearbox = DCMotor.getFalcon500(2);
-    public static final double gearRatio = (1 / 26.4);
+    public static final double gearRatio = 1 / 26.4;
     // public static final double massKg = 4.0; will be under 125lbs
     public static final double drumRadiusMeters = Units.inchesToMeters(1.185);
     // public static final double centerOffset = Units.inchesToMeters(14);
@@ -55,6 +54,21 @@ public final class CLIMBER {
 
     // public static final double kPercentOutputMultiplier = 0.2;
     // public static final double kLimitedPercentOutputMultiplier = 0.1;
+
+    public enum CLIMBER_SETPOINT {
+      FULL_RETRACT(Units.inchesToMeters(0.0)),
+      EXTEND(Units.inchesToMeters(10.0));
+
+      private final double climberSetpointMeters;
+
+      CLIMBER_SETPOINT(double climberSetpointMeters) {
+        this.climberSetpointMeters = climberSetpointMeters;
+      }
+
+      public double getClimberSetpointMeters() {
+        return climberSetpointMeters;
+      }
+    }
 
     public enum CLIMBSTATE {
       STILL,

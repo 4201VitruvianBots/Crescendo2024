@@ -14,15 +14,20 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CLIMBER;
+import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 
 public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)};
   private final StaticBrake brake = new StaticBrake();
   private final Follower follower = new Follower(0, false);
 
+  private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
+
   private double m_upperLimitMeters = CLIMBER.upperLimitMeters;
   private double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
 
+  private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
+  private double m_elevatorDesiredSetpointMeters;
   private boolean elevatorClimbSate;
   private double holdPosition;
 
@@ -93,6 +98,23 @@ public class Climber extends SubsystemBase {
 
   public void holdClimber() {
     elevatorClimbMotors[0].set(holdPosition);
+  }
+
+  public void setDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
+    m_desiredSetpoint = desiredSetpoint;
+    setCLimberDesiredSetpoint(desiredSetpoint);
+  }
+
+  public void setCLimberDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
+    m_elevatorDesiredSetpointMeters = desiredSetpoint.getClimberSetpointMeters();
+  }
+
+  public void setDesiredPositionMeters(double meters) {
+    m_desiredPositionMeters = meters;
+  }
+
+  public double getDesiredPostionMeters(double meters) {
+    return m_desiredPositionMeters;
   }
 
   public void setHoldPosition(double position) {
