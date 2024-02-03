@@ -16,7 +16,6 @@ public class Uptake extends SubsystemBase {
   /** Creates a new Uptake. */
   private boolean m_isUptaking = false;
 
- 
   private UPTAKE_STATE m_state = UPTAKE_STATE.NONE;
 
   private final TalonFX uptakeMotor = new TalonFX(CAN.uptakeMotor);
@@ -32,8 +31,9 @@ public class Uptake extends SubsystemBase {
   public double getSpeed() {
     return uptakeMotor.get();
   }
-   // control mode function
-   public void setUptaking(boolean isUptaking) {
+
+  // control mode function
+  public void setUptaking(boolean isUptaking) {
     m_isUptaking = isUptaking;
   }
 
@@ -48,6 +48,7 @@ public class Uptake extends SubsystemBase {
   public UPTAKE_STATE getUptakeState() {
     return m_state;
   }
+
   public void updateSmartDashboard() {}
 
   public void updateLog() {

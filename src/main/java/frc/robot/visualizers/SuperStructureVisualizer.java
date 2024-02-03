@@ -157,7 +157,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getRPM1(), m_shooter2d_originalColor);
+    updateMotorColor(m_shooter2d, m_shooter.getPercentOutput(), m_shooter2d_originalColor);
   }
 
   public void updateAmpShooter() {
