@@ -47,7 +47,7 @@ public final class ARM {
     }
 
     public double get() {
-      return angle;
+      return angle * 4; // Temporary fix, TODO: remove
     }
   }
 
