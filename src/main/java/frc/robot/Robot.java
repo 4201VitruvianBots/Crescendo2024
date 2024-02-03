@@ -73,10 +73,11 @@ public class Robot extends LoggedRobot {
     // "Understanding Data Flow" page
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
-    
+
+    System.out.println("AdvantageKit Logging Started!");
     // Update robot constants based off of robot used
     ROBOT.initConstants();
-    // CtreUtils.initPhoenixServer();
+    CtreUtils.initPhoenixServer();
   }
 
   /**

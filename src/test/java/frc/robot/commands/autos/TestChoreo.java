@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled("To Fix after Swerve Code Updates")
-public class TestDriveStraightChoreoTest {
+public class TestChoreo {
   static final double DELTA = 0.02; // acceptable deviation range
 
   RobotTime m_robotTime;
@@ -66,7 +66,7 @@ public class TestDriveStraightChoreoTest {
   }
 
   @Test
-  public void testTestDriveStraightChoreoTestCommand() {
+  public void testTestDriveStraightCommand() {
     var command = new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim);
 
     CommandScheduler.getInstance().enable();
