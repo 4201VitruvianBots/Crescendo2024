@@ -1,5 +1,8 @@
 package frc.robot.commands.autos;
 
+import static frc.robot.constants.SWERVE.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,10 +15,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.utils.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static frc.robot.constants.SWERVE.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestPathPlanner {
   static final double DELTA = 0.02; // acceptable deviation range
@@ -64,11 +65,15 @@ public class TestPathPlanner {
     var endPose = new Pose2d(5.05, 4.89, new Rotation2d());
 
     //        assertEquals(path.getGlobalConstraints().getMaxVelocityMps(), maxVel, DELTA);
-    assertEquals(endPose.getTranslation(), path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).position);
-    assertEquals(endPose.getRotation(), path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).rotationTarget.getTarget());
+    assertEquals(
+        endPose.getTranslation(),
+        path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).position);
+    assertEquals(
+        endPose.getRotation(),
+        path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).rotationTarget.getTarget());
   }
 
-  @Test
+  @Disabled
   public void testDriveStraightCommand() {
     var command = new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim);
 

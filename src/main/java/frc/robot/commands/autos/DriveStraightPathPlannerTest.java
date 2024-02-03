@@ -17,9 +17,9 @@ import frc.robot.utils.TrajectoryUtils;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveStraightPathplannerTest extends SequentialCommandGroup {
+public class DriveStraightPathPlannerTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
-  public DriveStraightPathplannerTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
+  public DriveStraightPathPlannerTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("Drivefowardtest");
 

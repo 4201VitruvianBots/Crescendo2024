@@ -1,7 +1,5 @@
 package frc.robot.utils;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -12,6 +10,7 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.SWERVE;
+import org.littletonrobotics.junction.Logger;
 
 public final class CtreUtils {
   /**

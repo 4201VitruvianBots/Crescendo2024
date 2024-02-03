@@ -149,7 +149,7 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "DriveStraightPathplannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
-//    m_autoChooser.addOption("frourpeiceNear", new frourpeiceNear(m_swerveDrive, m_fieldSim));
+    //    m_autoChooser.addOption("frourpeiceNear", new frourpeiceNear(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));

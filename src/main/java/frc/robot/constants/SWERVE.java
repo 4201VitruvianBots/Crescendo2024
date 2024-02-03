@@ -48,7 +48,8 @@ public final class SWERVE {
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
-    public static final double kLimitedRotationRadiansPerSecond = kMaxRotationRadiansPerSecond / 5.0;
+    public static final double kLimitedRotationRadiansPerSecond =
+        kMaxRotationRadiansPerSecond / 5.0;
 
     // Driving
     public static final double kP_X = 7.0;
@@ -66,7 +67,8 @@ public final class SWERVE {
     public static final double kTurnMotorGearRatio = 150.0 / 7.0;
     public static final double kCoupleRatio = 3.5714285714285716;
     public static final double kWheelRadiusInches = 2.0;
-    public static final double kWheelDiameterMeters = 2.0 * Units.inchesToMeters(kWheelRadiusInches);
+    public static final double kWheelDiameterMeters =
+        2.0 * Units.inchesToMeters(kWheelRadiusInches);
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
