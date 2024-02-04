@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -67,10 +68,10 @@ public class Climber extends SubsystemBase {
   //sets the percent ourput of the elevator based on its position
   public void setPercentOutput(double output, boolean enforceLimits) {
     if (enforceLimits){
-      if (getHeightMeters() > getUpperLimitMeters())
+      if (getHeightMeters() > getUpperLimitMeters() - Units.inchesToMeters(1.2))
         output = Math.min(output, 0);
 
-      if (getHeightMeters() < getLowerLimitMeters())
+      if (getHeightMeters() < getLowerLimitMeters() + Units.inchesToMeters(0.05))
         output = Math.max(output, 0);
     }
 

@@ -19,22 +19,17 @@ public final class CLIMBER {
     public static final double kUnextendedLength = Units.inchesToMeters(22);
 
     //values to change
-    public static final double upperLimitMeters = Units.inchesToMeters(0.0);
+    public static final double upperLimitMeters = Units.inchesToMeters(22.00);
     public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 
     // public static final DCMotor gearbox = DCMotor.getFalcon500(2);
-    public static final double gearRatio = 1 / 26.4;
+    public static final double gearRatio = 0.07575757576;
     // public static final double massKg = 4.0; will be under 125lbs
     public static final double drumRadiusMeters = Units.inchesToMeters(1.185);
     // public static final double centerOffset = Units.inchesToMeters(14);
     // public static final double kMaxReverseOutput = -0.45;
 
-    // // PID
-    public static final double climberHeightSlowdown = 0.75;
-
-    public static final double climberEncoderSlowdown =
-        climberHeightSlowdown * kFalconSensorUnitsPerRotation * gearRatio;
-
+    // PID
     // public static final double kMaxVel = Units.inchesToMeters(1000);
     // public static final double kMaxAccel = Units.inchesToMeters(1800);
     // public static final int kSlotIdx = 0;
