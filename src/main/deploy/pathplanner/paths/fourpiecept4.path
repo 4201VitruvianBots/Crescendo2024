@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4960767175713405,
-        "y": 7.038096840751932
+        "x": 2.582110829141167,
+        "y": 7.188095225182329
       },
       "isLocked": false,
       "linkedName": null
@@ -20,7 +20,7 @@
         "y": 7.401026427201135
       },
       "prevControl": {
-        "x": 8.058634375157244,
+        "x": 7.858634375157244,
         "y": 7.401026427201135
       },
       "nextControl": null,
@@ -30,13 +30,22 @@
   ],
   "rotationTargets": [
     {
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept4.path
       "waypointRelativePos": 0.0,
+=======
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/4 peice near.path
+      "waypointRelativePos": 0.95,
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/4 peice near.path
       "rotationDegrees": 150.0,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 0.0,
       "rotationDegrees": -150.0,
+=======
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": 0.0,
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept4.path
       "rotateFast": false
     }
   ],
@@ -131,13 +140,21 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -170.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "4peiceauto",
   "previewStartingState": {
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept4.path
     "rotation": -0.33982863378258094,
+=======
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/4 peice near.path
+    "rotation": 130.0,
+=======
+    "rotation": 30.0,
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept4.path
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/4 peice near.path
     "velocity": 0
   },
   "useDefaultConstraints": false

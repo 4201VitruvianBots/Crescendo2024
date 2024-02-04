@@ -8,8 +8,13 @@
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<< Updated upstream
         "x": 2.5266517083611073,
         "y": 6.316488834518445
+=======
+        "x": 2.595508288762723,
+        "y": 5.5430292057165325
+>>>>>>> Stashed changes
       },
       "isLocked": false,
       "linkedName": null
@@ -20,14 +25,20 @@
         "y": 7.1380952251823295
       },
       "prevControl": {
+<<<<<<< Updated upstream
         "x": 2.4949398599541057,
         "y": 7.238093609612727
+=======
+        "x": 2.4089057483842793,
+        "y": 7.08809522518233
+>>>>>>> Stashed changes
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
+<<<<<<< Updated upstream
   "rotationTargets": [
     {
       "waypointRelativePos": 0.0,
@@ -40,6 +51,9 @@
       "rotateFast": false
     }
   ],
+=======
+  "rotationTargets": [],
+>>>>>>> Stashed changes
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -53,6 +67,7 @@
       }
     }
   ],
+<<<<<<< Updated upstream
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -123,6 +138,9 @@
       }
     }
   ],
+=======
+  "eventMarkers": [],
+>>>>>>> Stashed changes
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -131,13 +149,21 @@
   },
   "goalEndState": {
     "velocity": 0,
+<<<<<<< Updated upstream
     "rotation": -170.0,
+=======
+    "rotation": 30.0,
+>>>>>>> Stashed changes
     "rotateFast": false
   },
   "reversed": false,
   "folder": "4peiceauto",
   "previewStartingState": {
+<<<<<<< Updated upstream
     "rotation": -0.33982863378258094,
+=======
+    "rotation": 0.0,
+>>>>>>> Stashed changes
     "velocity": 0
   },
   "useDefaultConstraints": false

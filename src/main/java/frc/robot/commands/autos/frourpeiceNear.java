@@ -49,7 +49,16 @@ pathsList.add(path4);
 pathsList.add(path5);
     
     addCommands(
+<<<<<<< Updated upstream
         new PlotAutoPath(fieldSim, "AutoExample", pathsList),
+=======
+<<<<<<< Updated upstream
+        new PlotAutoPath(fieldSim, "TestAuto1", path),
+=======
+        new PlotAutoPath(fieldSim, "AutoExample", pathsList),
+        // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         new InstantCommand(
             () -> swerveDrive.seedFieldRelative(path1.getPreviewStartingHolonomicPose())),
         new InstantCommand(

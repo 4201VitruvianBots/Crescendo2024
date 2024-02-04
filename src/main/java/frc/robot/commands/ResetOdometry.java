@@ -25,7 +25,7 @@ public class ResetOdometry extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerveDrive.resetGyro();
+    m_swerveDrive.resetGyro(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
