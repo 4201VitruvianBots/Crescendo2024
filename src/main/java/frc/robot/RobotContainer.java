@@ -86,6 +86,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
+    m_vision.registerFieldSim(m_fieldSim);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
