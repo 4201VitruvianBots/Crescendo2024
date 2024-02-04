@@ -31,6 +31,10 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
+import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
+import frc.robot.commands.shooter.ShootNStrafe;
+import frc.robot.commands.swerve.SetSwerveDrive;
+import frc.robot.commands.uptake.RunUptake;
 import frc.robot.commands.shooter.SetAndHoldPercentSetpoint;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
@@ -146,9 +150,20 @@ public class RobotContainer {
     xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // amp
     xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
-    //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
-    //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new ArmForward(m_arm));
+    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    xboxController.y().whileTrue(new AmpFlipperForward(m_flipper));
+
+    xboxController
+        .x()
+        .whileTrue(
+            new ShootNStrafe(
+                m_swerveDrive,
+                m_vision,
+                () -> leftJoystick.getRawAxis(1),
+                () -> leftJoystick.getRawAxis(0),
+                () -> rightJoystick.getRawAxis(0),
+                600));
   }
 
   public void initAutoChooser() {
