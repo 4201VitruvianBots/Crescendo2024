@@ -7,8 +7,7 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -33,7 +32,6 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.constants.ROBOT;
-import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -63,15 +61,6 @@ public class RobotContainer {
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
-  private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-          .withRotationalDeadband(
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-  // driving in open loop
-
   private final SuperStructureVisualizer m_visualizer =
       new SuperStructureVisualizer(
           m_intake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
@@ -98,37 +87,53 @@ public class RobotContainer {
   private void initializeSubsystems() {
     if (RobotBase.isReal()) {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyRequest(
-              () ->
-                  drive
-                      .withVelocityX(
-                          leftJoystick.getRawAxis(1)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-                      // negative Y (forward)
-                      .withVelocityY(
-                          leftJoystick.getRawAxis(0)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
-                      .withRotationalRate(
-                          rightJoystick.getRawAxis(0)
-                              * DRIVE
-                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
-      // negative X (left)
+          m_swerveDrive.applyFieldCentricDrive(
+                  ()-> new ChassisSpeeds(
+                  leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                  leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                  rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+      //      m_swerveDrive.setDefaultCommand(
+      //          m_swerveDrive.applyRequest(
+      //              () ->
+      //                  drive
+      //                      .withVelocityX(
+      //                          leftJoystick.getRawAxis(1)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+      //                      // negative Y (forward)
+      //                      .withVelocityY(
+      //                          leftJoystick.getRawAxis(0)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
+      // X (left)
+      //                      .withRotationalRate(
+      //                          rightJoystick.getRawAxis(0)
+      //                              * DRIVE
+      //                                  .kMaxRotationRadiansPerSecond))); // Drive
+      // counterclockwise with
+      //      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyRequest(
-              () ->
-                  drive
-                      .withVelocityX(
-                          -m_testController.getRawAxis(1)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-                      // negative Y (forward)
-                      .withVelocityY(
-                          -m_testController.getRawAxis(0)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
-                      .withRotationalRate(
-                          -m_testController.getRawAxis(2)
-                              * DRIVE
-                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
+          m_swerveDrive.applyFieldCentricDrive(
+                  ()-> new ChassisSpeeds(
+                  -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                  -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                  -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+      //      m_swerveDrive.setDefaultCommand(
+      //          m_swerveDrive.applyRequest(
+      //              () ->
+      //                  drive
+      //                      .withVelocityX(
+      //                          -m_testController.getRawAxis(1)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+      //                      // negative Y (forward)
+      //                      .withVelocityY(
+      //                          -m_testController.getRawAxis(0)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
+      // X (left)
+      //                      .withRotationalRate(
+      //                          -m_testController.getRawAxis(2)
+      //                              * DRIVE
+      //                                  .kMaxRotationRadiansPerSecond))); // Drive
+      // counterclockwise with
       // negative X (left)
     }
 
