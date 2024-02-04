@@ -4,6 +4,15 @@ import edu.wpi.first.math.util.Units;
 
 public final class FLYWHEEL {
   public static double gearRatio = 1.0;
+  public static final int kSlotIdx = 0;
+
+  public static final double kP = 0.6;
+  public static final double kI = 0.0;
+  public static final double kD = 0.0;
+
+  public static final double kS = 0.0;
+  public static final double kV = 0.0;
+  public static final double kA = 0.0;
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 

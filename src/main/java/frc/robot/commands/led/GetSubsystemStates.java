@@ -7,7 +7,11 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Uptake;
 
 public class GetSubsystemStates extends Command {
 
@@ -17,7 +21,7 @@ public class GetSubsystemStates extends Command {
   private final AmpShooter m_ampShooter;
   private final Climber m_climber;
   private final Intake m_intake;
-  private final Shooter m_shooter;
+  private final Flywheel m_flywheel;
   private boolean isIntaking;
   private boolean isClimbing;
   private boolean isScoringSpeaker;
