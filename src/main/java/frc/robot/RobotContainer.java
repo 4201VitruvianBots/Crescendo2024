@@ -88,10 +88,11 @@ public class RobotContainer {
     if (RobotBase.isReal()) {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyFieldCentricDrive(
-                  ()-> new ChassisSpeeds(
-                  leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                  leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                  rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+              () ->
+                  new ChassisSpeeds(
+                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
@@ -113,10 +114,11 @@ public class RobotContainer {
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyFieldCentricDrive(
-                  ()-> new ChassisSpeeds(
-                  -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                  -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                  -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+              () ->
+                  new ChassisSpeeds(
+                      -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->

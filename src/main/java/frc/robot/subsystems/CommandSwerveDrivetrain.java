@@ -141,22 +141,23 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return applyRequest(
         () -> {
           var futureRobotPose =
-                  new Pose2d(
-                          chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
-                          chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
-                          Rotation2d.fromRadians(chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
+              new Pose2d(
+                  chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
+                  chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
+                  Rotation2d.fromRadians(
+                      chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
 
           var twistFromPose = new Pose2d().log(futureRobotPose);
 
           var updatedChassisSpeeds =
-                  new ChassisSpeeds(
-                          twistFromPose.dx / loopPeriod,
-                          twistFromPose.dy / loopPeriod,
-                          chassisSpeeds.get().omegaRadiansPerSecond);
-            return m_driveRequest
-                .withVelocityX(updatedChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(updatedChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(updatedChassisSpeeds.omegaRadiansPerSecond);
+              new ChassisSpeeds(
+                  twistFromPose.dx / loopPeriod,
+                  twistFromPose.dy / loopPeriod,
+                  chassisSpeeds.get().omegaRadiansPerSecond);
+          return m_driveRequest
+              .withVelocityX(updatedChassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(updatedChassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(updatedChassisSpeeds.omegaRadiansPerSecond);
         });
   }
   ;
