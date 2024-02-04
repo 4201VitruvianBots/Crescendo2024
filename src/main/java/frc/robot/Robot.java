@@ -80,7 +80,7 @@ public class Robot extends LoggedRobot {
     System.out.println("AdvantageKit Logging Started!");
     // Update robot constants based off of robot used
     ROBOT.initConstants();
-    CtreUtils.initPhoenixServer();
+    // CtreUtils.initPhoenixServer();
   }
 
   /**
