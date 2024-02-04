@@ -1,7 +1,5 @@
 package frc.robot.utils;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -12,6 +10,7 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.SWERVE;
+import org.littletonrobotics.junction.Logger;
 
 public final class CtreUtils {
   /**
@@ -51,9 +50,9 @@ public final class CtreUtils {
     turnMotorConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     turnMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
-       turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     // turnMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-       turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
+    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurnMotorGearRatio;
     // turnMotorConfig.Feedback.RotorToSensorRatio = SWERVE.MODULE.kTurnMotorGearRatio;
     //    turnMotorConfig.Feedback.FeedbackRemoteSensorID = 0;
 

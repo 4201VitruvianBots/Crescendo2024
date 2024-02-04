@@ -8,39 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept2.path
-        "x": 2.356499570513062,
-        "y": 4.139730672623739
-=======
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Score 3.path
-        "x": 4.021966011250105,
-        "y": 5.65
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Score 3.path
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.4564995705130617,
-        "y": 4.793672714041803
-      },
-      "prevControl": {
-        "x": 2.4260039296378926,
-        "y": 4.456464106169639
-      },
-      "nextControl": {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept2.path
-        "x": 2.4869952113882308,
-        "y": 5.130881321913968
-=======
-        "x": 4.067828611314029,
-        "y": 6.990384785778517
-=======
         "x": 2.543102110891505,
         "y": 4.089730672623739
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept2.path
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Score 3.path
       },
       "isLocked": false,
       "linkedName": null
@@ -51,59 +20,20 @@
         "y": 5.5430292057165325
       },
       "prevControl": {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept2.path
-        "x": 2.4914850400969595,
-        "y": 5.443110171142666
-=======
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Score 3.path
-        "x": 4.6060842952014545,
-        "y": 5.662691835133223
-=======
         "x": 2.395508288762723,
         "y": 5.5430292057165325
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept2.path
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Score 3.path
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept2.path
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": 150.0,
-      "rotateFast": false
-=======
-      "name": "New Constraints Zone",
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Score 3.path
-      "minWaypointRelativePos": 0.6,
-      "maxWaypointRelativePos": 1.35,
-=======
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.0,
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept2.path
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Score 3.path
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Score 3.path
-    },
-    {
-      "waypointRelativePos": 2,
-      "rotationDegrees": -150.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 2,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
@@ -112,81 +42,7 @@
       }
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.9,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 2,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
-=======
-    }
-  ],
   "eventMarkers": [],
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept2.path
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -195,35 +51,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept2.path
-    "rotation": -170.0,
-    "rotateFast": false
-  },
-  "reversed": false,
-  "folder": "4peiceauto",
-  "previewStartingState": {
-    "rotation": -0.33982863378258094,
-    "velocity": 0
-  },
-=======
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Score 3.path
-    "rotation": 0,
-    "rotateFast": false
-  },
-  "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
-=======
     "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4peiceauto",
+  "folder": "4peiceautonear",
   "previewStartingState": {
     "rotation": -30.0,
     "velocity": 0
   },
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept2.path
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Score 3.path
   "useDefaultConstraints": false
 }

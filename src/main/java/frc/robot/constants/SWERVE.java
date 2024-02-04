@@ -47,7 +47,8 @@ public final class SWERVE {
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
-    public static final double kLimitedRotationRadiansPerSecond = kMaxRotationRadiansPerSecond / 5.0;
+    public static final double kLimitedRotationRadiansPerSecond =
+        kMaxRotationRadiansPerSecond / 5.0;
 
     // Driving
     public static final double kP_X = 7;

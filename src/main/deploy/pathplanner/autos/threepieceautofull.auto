@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.4,
+      "y": 2.36
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,31 +14,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept1"
+            "pathName": "3piece2Pt1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept2"
+            "pathName": "3piece2Pt2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept3"
+            "pathName": "3piece2Pt3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept4"
+            "pathName": "3piece2Pt4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept5"
+            "pathName": "3piece2Pt5"
           }
         }
       ]

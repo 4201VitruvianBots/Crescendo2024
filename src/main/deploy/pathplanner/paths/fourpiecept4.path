@@ -30,22 +30,8 @@
   ],
   "rotationTargets": [
     {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept4.path
-      "waypointRelativePos": 0.0,
-=======
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/4 peice near.path
-      "waypointRelativePos": 0.95,
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/4 peice near.path
-      "rotationDegrees": 150.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": -150.0,
-=======
       "waypointRelativePos": 0.25,
       "rotationDegrees": 0.0,
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept4.path
       "rotateFast": false
     }
   ],
@@ -62,76 +48,7 @@
       }
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -144,17 +61,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4peiceauto",
+  "folder": "4peiceautonear",
   "previewStartingState": {
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/fourpiecept4.path
-    "rotation": -0.33982863378258094,
-=======
-<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/4 peice near.path
-    "rotation": 130.0,
-=======
     "rotation": 30.0,
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/fourpiecept4.path
->>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/4 peice near.path
     "velocity": 0
   },
   "useDefaultConstraints": false
