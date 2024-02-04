@@ -41,8 +41,8 @@ public final class SWERVE {
     public static double kBackLeftEncoderOffset = 0.483642578125;
     public static double kBackRightEncoderOffset = 0.414306640625;
 
-    public static final boolean kInvertLeftDrive = false;
-    public static final boolean kInvertRightDrive = true;
+    public static boolean kInvertLeftDrive = true;
+    public static boolean kInvertRightDrive = false;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
@@ -73,11 +73,11 @@ public final class SWERVE {
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
 
+    public static boolean kTurnInverted = false;
     public static final double kSlipCurrent = 300.0;
     public static final double kFrictionVoltage = 0.25;
     public static final double kDriveInertia = 0.001;
     public static final double kTurnInertia = 0.00001;
-    public static final boolean kTurnInverted = true;
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput

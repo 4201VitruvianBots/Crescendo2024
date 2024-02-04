@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.utils.SysidUtils;
+import frc.robot.utils.SysIdUtils;
 
 public class SwerveTurnQuasistatic extends SequentialCommandGroup {
   /** Creates a new SwerveTurnQuasistatic. */
   public SwerveTurnQuasistatic(
       CommandSwerveDrivetrain swerveDrive, SysIdRoutine.Direction direction) {
-    var routine = SysidUtils.getSwerveTurnRoutine();
+    var routine = SysIdUtils.getSwerveTurnRoutine();
 
     Command sysidCommand = routine.quasistatic(direction);
 

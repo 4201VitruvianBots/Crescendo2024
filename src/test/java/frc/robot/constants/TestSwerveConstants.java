@@ -3,22 +3,12 @@ package frc.robot.constants;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.subsystems.RobotTime;
 import frc.robot.utils.ModuleMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TestSwerveConstants {
-  static final double DELTA = 0.2; // acceptable deviation range
-  static final double WAIT_TIME = 0.02;
-
-  NetworkTableInstance m_nt;
-  NetworkTable m_table;
-
-  RobotTime m_robotTime;
 
   @BeforeEach
   public void constructDevices() {}

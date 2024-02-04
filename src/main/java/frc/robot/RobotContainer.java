@@ -38,7 +38,7 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
-import frc.robot.utils.SysidUtils;
+import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 
@@ -170,8 +170,8 @@ public class RobotContainer {
   }
 
   public void initSysidChooser() {
-    SysidUtils.createSwerveDriveRoutines(m_swerveDrive);
-    SysidUtils.createSwerveTurnRoutines(m_swerveDrive);
+    SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
+    SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));

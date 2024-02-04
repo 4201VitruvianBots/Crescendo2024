@@ -20,6 +20,7 @@ public class ROBOT {
 
   public enum ROBOT_ID {
     // Robot Serial Numbers
+    ALPHABOT("ALPHABOT"),
     GRIDLOCK("0306ce62"),
     BOBOT("030e6a97"),
     SIM("");
@@ -54,7 +55,19 @@ public class ROBOT {
     }
   }
 
-  public static void initGridlock() {}
+  public static void initAlphaBot() {
+  }
+
+  public static void initGridlock() {
+    SWERVE.DRIVE.kFrontLeftEncoderOffset = -0.035888671875;
+    SWERVE.DRIVE.kFrontRightEncoderOffset = 0.04296875;
+    SWERVE.DRIVE.kBackLeftEncoderOffset = 0.483642578125;
+    SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
+
+    SWERVE.DRIVE.kInvertLeftDrive = false;
+    SWERVE.DRIVE.kInvertRightDrive = true;
+    SWERVE.MODULE.kTurnInverted = true;
+  }
 
   public static void initBobot() {
     SWERVE.DRIVE.kFrontLeftEncoderOffset = Units.degreesToRotations(95.27328);
@@ -71,7 +84,10 @@ public class ROBOT {
   }
 
   public static void initConstants() {
-    if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
+    if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
+      System.out.println("Setting Robot Constants for ALPABOT");
+      initAlphaBot();
+    } else if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
       System.out.println("Setting Robot Constants for Gridlock");
       initGridlock();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.BOBOT.getSerial())) {
