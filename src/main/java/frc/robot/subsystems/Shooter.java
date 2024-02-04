@@ -16,9 +16,9 @@ import frc.robot.constants.FLYWHEEL;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
-public class Flywheel extends SubsystemBase {
+public class Shooter extends SubsystemBase {
 
-  private final TalonFX[] m_flywheelMotors = {
+  private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)
   };
 
@@ -33,27 +33,27 @@ public class Flywheel extends SubsystemBase {
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
-  public Flywheel() {
+  public Shooter() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kV = FLYWHEEL.kV;
     config.Slot0.kP = FLYWHEEL.kP;
     config.Slot0.kI = FLYWHEEL.kI;
     config.Slot0.kD = FLYWHEEL.kD;
-    CtreUtils.configureTalonFx(m_flywheelMotors[0], config);
+    CtreUtils.configureTalonFx(m_shooterMotors[0], config);
 
     // flywheel motor 1
-    m_flywheelMotors[1].setControl(new Follower(m_flywheelMotors[0].getDeviceID(), true));
+    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
   }
 
   // values that we set
   public void setPercentOutput(double percentOutput) {
-    m_flywheelMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
+    m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
   public void setRpmOutput(double rpm) {
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
-    m_flywheelMotors[0].setControl(
+    m_shooterMotors[0].setControl(
         m_velocityRequest.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
   }
 
@@ -61,12 +61,12 @@ public class Flywheel extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     // Get the current motor configs to not erase everything
-    m_flywheelMotors[0].getConfigurator().refresh(config);
+    m_shooterMotors[0].getConfigurator().refresh(config);
     config.Slot0.kV = v;
     config.Slot0.kP = p;
     config.Slot0.kI = i;
     config.Slot0.kD = d;
-    CtreUtils.configureTalonFx(m_flywheelMotors[0], config);
+    CtreUtils.configureTalonFx(m_shooterMotors[0], config);
   }
 
   public void setSimpleMotorFeedForward(double s, double v, double a) {

@@ -5,16 +5,16 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Shooter;
 
 public class SetAndHoldPercentSetpoint extends Command {
-  Flywheel m_flywheel;
+  Shooter m_shooter;
   double m_percentOutput;
 
-  public SetAndHoldPercentSetpoint(Flywheel flywheel, double percentOutput) {
-    m_flywheel = flywheel;
+  public SetAndHoldPercentSetpoint(Shooter flywheel, double percentOutput) {
+    m_shooter = flywheel;
     m_percentOutput = percentOutput;
-    addRequirements(m_flywheel);
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -23,7 +23,7 @@ public class SetAndHoldPercentSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_flywheel.setPercentOutput(m_percentOutput);
+    m_shooter.setPercentOutput(m_percentOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
