@@ -55,8 +55,7 @@ public class ROBOT {
     }
   }
 
-  public static void initAlphaBot() {
-  }
+  public static void initAlphaBot() {}
 
   public static void initGridlock() {
     SWERVE.DRIVE.kFrontLeftEncoderOffset = -0.035888671875;
@@ -74,6 +73,10 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = Units.degreesToRotations(34.18956);
     SWERVE.DRIVE.kBackLeftEncoderOffset = Units.degreesToRotations(77.51952);
     SWERVE.DRIVE.kBackRightEncoderOffset = Units.degreesToRotations(330.55668);
+
+    SWERVE.DRIVE.kInvertLeftDrive = false;
+    SWERVE.DRIVE.kInvertRightDrive = true;
+    SWERVE.MODULE.kTurnInverted = true;
   }
 
   public static void initSim() {

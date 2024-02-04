@@ -179,14 +179,4 @@ public final class SWERVE {
   public static final SwerveModuleConstants[] MODULE_CONSTANTS = {
     FrontLeftConstants, FrontRightConstants, BackLeftConstants, BackRightConstants
   };
-
-  public static final SwerveModuleConstants testConstants =
-      ConstantCreator.createModuleConstants(
-          CAN.frontLeftTurnMotor,
-          CAN.frontLeftDriveMotor,
-          CAN.frontLeftCanCoder,
-          0,
-          DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getX(),
-          DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getY(),
-          DRIVE.kInvertLeftDrive);
 }
