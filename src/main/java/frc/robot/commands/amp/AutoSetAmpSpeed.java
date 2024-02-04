@@ -5,7 +5,7 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AMP.AMP_STATE;
+import frc.robot.constants.ARM.AMP_STATE;
 import frc.robot.subsystems.AmpShooter;
 
 public class AutoSetAmpSpeed extends Command {
