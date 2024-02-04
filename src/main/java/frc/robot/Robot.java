@@ -11,10 +11,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ROBOT;
 import java.io.File;
-import java.util.NoSuchElementException;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -33,39 +34,42 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("ProjectName", "Crescendo2024"); // Set a metadata value
 
     if (isReal()) {
+      new PowerDistribution(
+          1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
       try {
         Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
       } catch (Exception e) {
         System.out.println("\nAdvantageKit - Failed to log to USB Drive!");
         e.printStackTrace();
 
-        var tempLogDir = new File("/tmp/logs");
+        var tempLogDir = new File("/home/lvuser/logs");
         if (!tempLogDir.exists()) tempLogDir.mkdirs();
         Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));
       }
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      new PowerDistribution(
-          1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
     } else {
-      setUseTiming(false); // Run as fast as possible
-      try {
-        // TODO fix AdvantageKit installation
-        // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
-        // //       AdvantageScope (or prompt the user)
-        // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-      } catch (NoSuchElementException e) {
-        System.out.println("\nAdvantageKit - Failed to find Replay source!");
+      if (ROBOT.useReplayLogs) {
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_replay")));
+      } else {
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+
+        // Log simulation output
+        String os = System.getProperty("os.name").toLowerCase();
+        String logDirPath;
+        if (os.contains("win")) {
+          logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
+        } else {
+          logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "/logs";
+        }
+        var logDir = new File(logDirPath);
+        if (!logDir.exists()) {
+          logDir.mkdir();
+        }
+        Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
       }
-      // Log simulation output
-      var logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
-      var logDir = new File(logDirPath);
-      if (!logDir.exists()) {
-        logDir.mkdir();
-      }
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
-      // Save outputs to a new log
     }
 
     // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the
@@ -73,9 +77,10 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
 
+    System.out.println("AdvantageKit Logging Started!");
     // Update robot constants based off of robot used
     ROBOT.initConstants();
-    // CtreUtils.initPhoenixServer();
+    CtreUtils.initPhoenixServer();
   }
 
   /**
@@ -147,11 +152,15 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    m_robotContainer.testInit();
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_robotContainer.testPeriodic();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

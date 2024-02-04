@@ -5,19 +5,19 @@ the WPILib BSD license file in the root directory of this project. */
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AmpFlipper;
+import frc.robot.subsystems.Arm;
 import java.util.function.DoubleSupplier;
 
-public class AmpFlipperJoystick extends Command {
-  /** Creates a new AmpFlipperForward. */
-  AmpFlipper m_flipper;
+public class ArmJoystick extends Command {
+  /** Creates a new ArmForward. */
+  Arm m_arm;
 
   private DoubleSupplier m_output;
 
-  public AmpFlipperJoystick(AmpFlipper flipper, DoubleSupplier output) {
-    m_flipper = flipper;
+  public ArmJoystick(Arm arm, DoubleSupplier output) {
+    m_arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flipper);
+    addRequirements(m_arm);
   }
 
   // Called when the command is initially scheduled.
@@ -27,7 +27,7 @@ public class AmpFlipperJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flipper.setPercentOutput(m_output.getAsDouble());
+    m_arm.setPercentOutput(m_output.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

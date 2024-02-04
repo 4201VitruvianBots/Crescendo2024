@@ -5,9 +5,13 @@ import edu.wpi.first.wpilibj.RobotController;
 
 public class ROBOT {
   public static String robotName = "";
-  public static boolean disableLogging = false;
-  public static boolean disableVisualization = false;
-  public static boolean useSysID = false;
+  public static final boolean disableLogging = false;
+  public static final boolean disableVisualization = false;
+  public static final boolean useSysID = false;
+  public static final boolean useReplayLogs = false;
+
+  public static final double drivebaseWidth = Units.inchesToMeters(26.0);
+  public static final double drivebaseLength = Units.inchesToMeters(27.5);
 
   public enum CONTROL_MODE {
     OPEN_LOOP,
@@ -59,14 +63,22 @@ public class ROBOT {
     SWERVE.DRIVE.kBackRightEncoderOffset = Units.degreesToRotations(330.55668);
   }
 
-  public static void initSim() {}
+  public static void initSim() {
+    SWERVE.DRIVE.kFrontLeftEncoderOffset = 0;
+    SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
+    SWERVE.DRIVE.kBackLeftEncoderOffset = 0;
+    SWERVE.DRIVE.kBackRightEncoderOffset = 0;
+  }
 
   public static void initConstants() {
     if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
+      System.out.println("Setting Robot Constants for Gridlock");
       initGridlock();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.BOBOT.getSerial())) {
+      System.out.println("Setting Robot Constants for Bobot");
       initBobot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.SIM.getSerial())) {
+      System.out.println("Setting Robot Constants for Sim");
       initSim();
     } else {
       System.out.printf(

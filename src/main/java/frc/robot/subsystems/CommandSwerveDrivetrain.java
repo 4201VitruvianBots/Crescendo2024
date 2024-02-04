@@ -73,7 +73,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    System.out.println("Swerve Init at: " + Logger.getTimestamp());
+    System.out.printf("Swerve Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
   }
 
   public void setTurnAngle(int moduleId, double angle) {
