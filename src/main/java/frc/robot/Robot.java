@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ROBOT;
-import frc.robot.utils.CtreUtils;
 import java.io.File;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -81,7 +80,7 @@ public class Robot extends LoggedRobot {
     System.out.println("AdvantageKit Logging Started!");
     // Update robot constants based off of robot used
     ROBOT.initConstants();
-    CtreUtils.initPhoenixServer();
+    // CtreUtils.initPhoenixServer();
   }
 
   /**

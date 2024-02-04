@@ -41,7 +41,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    resetGyro();
+    resetGyro(0);
     if (Utils.isSimulation()) {
       startSimThread();
     }
@@ -68,7 +68,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // InvertedValue.CounterClockwise_Positive;
     //   CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
     // }
-    resetGyro();
+    resetGyro(0);
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -161,8 +161,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     System.out.println("Finished Initializing Drive Settings");
   }
 
-  public void resetGyro() {
-    getPigeon2().setYaw(0);
+  public void resetGyro(double angle) {
+    getPigeon2().setYaw(angle);
   }
 
   public void initTurnSysid() {

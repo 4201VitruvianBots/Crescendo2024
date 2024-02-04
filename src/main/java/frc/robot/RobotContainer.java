@@ -23,6 +23,8 @@ import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
+import frc.robot.commands.autos.FourPieceNear;
+import frc.robot.commands.autos.ThreePiecefar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -152,9 +154,10 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "DriveStraightPathplannerTest",
+        "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
-    //    m_autoChooser.addOption("frourpeiceNear", new frourpeiceNear(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption("ThreePiecefar", new ThreePiecefar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
