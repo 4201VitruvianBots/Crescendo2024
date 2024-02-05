@@ -108,17 +108,6 @@ public class ShootNStrafe extends Command {
         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
             * Math.signum(m_rotationInput.getAsDouble());
 
-    //    if (DriverStation.isFMSAttached()
-    //        && Controls.getAllianceColor() == DriverStation.Alliance.Red) {
-    //      throttle *= -1;
-    //      strafe *= -1;
-    //    }
-    if (inZone && (timePassed == false)){
-    m_swerveDrive.setControl(
-      drive.withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
-            .withVelocityY((strafe)* DRIVE.kMaxSpeedMetersPerSecond)
-            .withRotationalRate(((rotation) * DRIVE.kMaxRotationRadiansPerSecond) + m_headingOffset));
-   
 
   if (CorrectRange == true && m_shooter.getRPM() > RPMThreshold) { 
       
@@ -146,10 +135,6 @@ public class ShootNStrafe extends Command {
       timerStart = false;
   }
 
-    // m_swerveDrive.applyRequest(() -> RobotContainer.drive
-    // .withVelocityX((-Axis1) * DRIVE.kMaxSpeedMetersPerSecond)//forward
-    // .withVelocityY((-Axis0)* DRIVE.kMaxSpeedMetersPerSecond)//strafe
-    // .withRotationalRate((-Axis2) * DRIVE.kMaxRotationRadiansPerSecond));
 
    
    
