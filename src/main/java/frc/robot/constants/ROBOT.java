@@ -20,7 +20,7 @@ public class ROBOT {
 
   public enum ROBOT_ID {
     // Robot Serial Numbers
-    ALPHABOT("ALPHABOT"),
+    ALPHABOT("030cbcf0"),
     GRIDLOCK("0306ce62"),
     BOBOT("030e6a97"),
     SIM("");
