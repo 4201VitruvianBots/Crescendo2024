@@ -30,7 +30,7 @@ public class RunShooterTestMode extends Command {
 
     // initialize Test Values
     try {
-      shooterNtTab.getDoubleTopic("SetpointRPM").publish().set(0);
+      shooterNtTab.getDoubleTopic("SetpointPercent").publish().set(0);
 
       shooterNtTab.getDoubleTopic("kP").publish().set(FLYWHEEL.kP);
       shooterNtTab.getDoubleTopic("kI").publish().set(FLYWHEEL.kI);
@@ -43,7 +43,7 @@ public class RunShooterTestMode extends Command {
 
     }
 
-    kSetpointSub = shooterNtTab.getDoubleTopic("SetpointRPM").subscribe(0);
+    kSetpointSub = shooterNtTab.getDoubleTopic("SetpointPercent").subscribe(0);
 
     kFSub = shooterNtTab.getDoubleTopic("kF").subscribe(0);
     kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(FLYWHEEL.kP);
@@ -95,7 +95,7 @@ public class RunShooterTestMode extends Command {
       testKA = newKA;
     }
 
-    m_shooter.setRpmOutput(newSetpoint);
+    m_shooter.setPercentOutput(newSetpoint);
   }
 
   // Called once the command ends or is interrupted.

@@ -14,6 +14,8 @@ public final class FLYWHEEL {
   public static final double kV = 0.0;
   public static final double kA = 0.0;
 
+  public static final double shooterangle = 35;
+
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 
   public enum WAIT {

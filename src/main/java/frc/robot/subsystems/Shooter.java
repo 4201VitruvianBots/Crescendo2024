@@ -65,21 +65,21 @@ public class Shooter extends SubsystemBase {
     (FLYWHEEL.NoteVelocity * Math.sin(this.shootangle(RobotPose)) - RobotVelocity.vyMetersPerSecond),
     (FLYWHEEL.NoteVelocity * Math.cos(this.shootangle(RobotPose)) - RobotVelocity.vxMetersPerSecond));
   }
-  private double shootangle(Pose2d RobotPose) {
+  public double shootangle(Double RobotPoseX, double RobotPoseY) {
     if (Controls.IsBlueAllaince())
     {
     return (
-        Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerTLY - RobotPose.getY()), (FLYWHEEL.SPEAKER.BlueSpeakerTLX - RobotPose.getX())) 
-      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerTRY - RobotPose.getY()), (FLYWHEEL.SPEAKER.BlueSpeakerTRX - RobotPose.getX()))
-      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerBLY - RobotPose.getY()), (FLYWHEEL.SPEAKER.BlueSpeakerBLX - RobotPose.getX()))
-      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerBRY - RobotPose.getY()), (FLYWHEEL.SPEAKER.BlueSpeakerBRX - RobotPose.getX())))/4;
+        Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerTLY - RobotPoseY), (FLYWHEEL.SPEAKER.BlueSpeakerTLX - RobotPoseX)) 
+      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerTRY - RobotPoseY), (FLYWHEEL.SPEAKER.BlueSpeakerTRX - RobotPoseX))
+      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerBLY - RobotPoseY), (FLYWHEEL.SPEAKER.BlueSpeakerBLX - RobotPoseX))
+      + Math.atan2((FLYWHEEL.SPEAKER.BlueSpeakerBRY - RobotPoseY), (FLYWHEEL.SPEAKER.BlueSpeakerBRX - RobotPoseX)))/4;
     }else
     {
     return (
-        Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerTLY - RobotPose.getY()), (FLYWHEEL.SPEAKER.RedSpeakerTLX - RobotPose.getX())) 
-      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerTRY - RobotPose.getY()), (FLYWHEEL.SPEAKER.RedSpeakerTRX - RobotPose.getX()))
-      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerBLY - RobotPose.getY()), (FLYWHEEL.SPEAKER.RedSpeakerBLX - RobotPose.getX()))
-      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerBRY - RobotPose.getY()), (FLYWHEEL.SPEAKER.RedSpeakerBRX - RobotPose.getX())))/4;
+        Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerTLY - RobotPoseY), (FLYWHEEL.SPEAKER.RedSpeakerTLX - RobotPoseX)) 
+      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerTRY - RobotPoseY), (FLYWHEEL.SPEAKER.RedSpeakerTRX - RobotPoseX))
+      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerBLY - RobotPoseY), (FLYWHEEL.SPEAKER.RedSpeakerBLX - RobotPoseX))
+      + Math.atan2((FLYWHEEL.SPEAKER.RedSpeakerBRY - RobotPoseY), (FLYWHEEL.SPEAKER.RedSpeakerBRX - RobotPoseX)))/4;
     }
   }
 

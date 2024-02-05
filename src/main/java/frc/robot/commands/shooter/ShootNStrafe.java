@@ -7,27 +7,36 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
+import frc.robot.constants.SWERVE.DRIVE;
+import frc.robot.RobotContainer;
+import frc.robot.constants.SWERVE;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 
 public class ShootNStrafe extends Command {
   Shooter m_shooter;
   FLYWHEEL_STATE m_state;
   CommandSwerveDrivetrain m_swerveDrive;
-  SwerveModule m_swerveModule;
-  private double m_rpm;
+  private double m_percentOutput;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
-  private double displacementX = m_swerveDrive.getOdometry().getEstimatedPosition().getX();
-  private double displacementY = 5.548 - m_swerveDrive.getOdometry().getEstimatedPosition().getY();
+  private double PoseX = m_swerveDrive.getState().Pose.getX();
+  private double PoseY = m_swerveDrive.getState().Pose.getY();
+  private double shootangle = m_shooter.shootangle(PoseX,PoseY);
+  
+  private double displacementX = loremipsum * Math.sin(shootangle);
+  private double displacementY = loremipsum * Math.cos(shootangle);
+  
   private double VelocityY =
-    m_swerveModule.getTurnHeadingR2d().getSin() * m_swerveModule.getVelocity();
+    m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond * m_swerveDrive.getState().Pose.getRotation().getSin();
   private double VelocityX =
-      m_swerveModule.getTurnHeadingR2d().getCos() * m_swerveModule.getVelocity();
-  private double VelocityShoot = 1.2;
+      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond * m_swerveDrive.getState().Pose.getRotation().getCos();
+  private double VelocityShoot = 1.2; //TODO: Change after testing
 
   double m_headingOffset =
       Math.asin(
@@ -36,18 +45,26 @@ public class ShootNStrafe extends Command {
                   / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                   * VelocityShoot)));
 
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+
   public ShootNStrafe(
-      SwerveDrive swerveDrive,
+      CommandSwerveDrivetrain swerveDrive,
       Vision vision,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
-      double RPM) {
+      double percentOutput) {
     m_swerveDrive = swerveDrive;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    m_rpm = RPM;
+    m_percentOutput = percentOutput;
 
     addRequirements(m_shooter);
   }
@@ -59,7 +76,7 @@ public class ShootNStrafe extends Command {
   @Override
   public void execute() {
 
-    m_shooter.setRPM(m_rpm);
+    m_shooter.setPercentOutput(m_percentOutput);
 
     double throttle =
         MathUtil.applyDeadband(Math.abs(m_throttleInput.getAsDouble()), 0.05)
@@ -76,8 +93,20 @@ public class ShootNStrafe extends Command {
     //      throttle *= -1;
     //      strafe *= -1;
     //    }
+    if (inZone && timePassed == false){
+    m_swerveDrive.setControl(
+      drive.withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityY((strafe)* DRIVE.kMaxSpeedMetersPerSecond)
+            .withRotationalRate(((rotation) * DRIVE.kMaxRotationRadiansPerSecond)+ m_headingOffset));
+    }
 
-    m_swerveDrive.drive(throttle, strafe, rotation + m_headingOffset, true, false);
+    // m_swerveDrive.applyRequest(() -> RobotContainer.drive
+    // .withVelocityX((-Axis1) * DRIVE.kMaxSpeedMetersPerSecond)//forward
+    // .withVelocityY((-Axis0)* DRIVE.kMaxSpeedMetersPerSecond)//strafe
+    // .withRotationalRate((-Axis2) * DRIVE.kMaxRotationRadiansPerSecond));
+
+   
+   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -86,7 +115,7 @@ public class ShootNStrafe extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setRPM(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.
