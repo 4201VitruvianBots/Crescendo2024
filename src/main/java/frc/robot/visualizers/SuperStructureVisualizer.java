@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.commands.sim.ZoomIn;
+import frc.robot.commands.sim.ZoomOut;
 import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.FLYWHEEL;
@@ -28,46 +30,21 @@ public class SuperStructureVisualizer {
   Climber m_climber;
   Vision m_vision;
   LEDSubsystem m_led;
+  
+  Mechanism2d m_mech2d;
 
-  Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
-
-  MechanismRoot2d m_drivebaseRoot2d =
-      m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_climberRoot2d =
-      m_mech2d.getRoot(
-          "Climber",
-          ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake,
-          ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_shooterRoot2d =
-      m_mech2d.getRoot(
-          "Shooter",
-          ROBOT.drivebaseLength * 0.5 + FLYWHEEL.kDistanceFromIntake,
-          ROBOT.drivebaseWidth * 0.5);
-
-  MechanismLigament2d m_drivebase2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
-  MechanismLigament2d m_limelight2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
-  MechanismLigament2d m_intake2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
-
-  MechanismLigament2d m_led2d =
-      m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
-  MechanismLigament2d m_shooter2d =
-      m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
-  MechanismLigament2d m_arm2d =
-      m_shooter2d.append(
-          new MechanismLigament2d(
-              "Arm", ARM.length, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
-  MechanismLigament2d m_ampShooter2d =
-      m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
-
-  MechanismLigament2d m_climber2d =
-      m_climberRoot2d.append(new MechanismLigament2d("Climber", CLIMBER.kUnextendedLength, 90));
-  MechanismLigament2d m_climberHook1_2d =
-      m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
-  MechanismLigament2d m_climberHook2_2d =
-      m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
+  double m_root2d_x = ROBOT.drivebaseLength * 0.5;
+  double m_root2d_y = ROBOT.drivebaseWidth * 0.5;
+    
+  MechanismRoot2d m_drivebaseRoot2d;
+  MechanismRoot2d m_climberRoot2d;
+  MechanismRoot2d m_shooterRoot2d;
+  
+  ZoomIn m_zoomIn;
+  ZoomOut m_zoomOut;
+  
+  double m_cumulativeZoomMultiplier = 1;
+  double m_zoomMultiplier = 1;
 
   Color8Bit m_drivebase2d_originalColor,
       m_limelight2d_originalColor,
@@ -78,6 +55,19 @@ public class SuperStructureVisualizer {
       m_shooter2d_originalColor,
       m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
+  
+  MechanismLigament2d m_drivebase2d,
+        m_limelight2d,
+        m_intake2d,
+        m_climber2d,
+        m_climberHook1_2d,
+        m_climberHook2_2d,
+        m_led2d,
+        m_shooter2d,
+        m_arm2d,
+        m_ampShooter2d;
+
+  MechanismLigament2d[] m_allLigament2ds;
 
   public SuperStructureVisualizer(
       Intake intake,
@@ -95,6 +85,23 @@ public class SuperStructureVisualizer {
     m_vision = vision;
     m_led = led;
 
+    m_zoomIn = new ZoomIn(this);
+    m_zoomOut = new ZoomOut(this);
+    
+    init();
+    
+    m_allLigament2ds = new MechanismLigament2d[] {
+        m_drivebase2d,
+        m_limelight2d,
+        m_intake2d,
+        m_climberHook1_2d,
+        m_climberHook2_2d,
+        m_led2d,
+        m_shooter2d,
+        m_arm2d,
+        m_ampShooter2d
+    };
+    
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
@@ -104,7 +111,7 @@ public class SuperStructureVisualizer {
     m_shooter2d.setColor(new Color8Bit(189, 189, 189));
     m_arm2d.setColor(new Color8Bit(235, 137, 52));
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
-
+    
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
     m_limelight2d_originalColor = m_limelight2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
@@ -115,6 +122,43 @@ public class SuperStructureVisualizer {
     m_arm2d_originalColor = m_arm2d.getColor();
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
+    SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+    SmartDashboard.putData("Zoom In", m_zoomIn);
+    SmartDashboard.putData("Zoom Out", m_zoomOut);
+  }
+  
+  public void init() {
+    m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
+    
+    m_drivebaseRoot2d = m_mech2d.getRoot("Drivebase", m_root2d_x, m_root2d_y);
+    m_climberRoot2d = m_mech2d.getRoot("Climber", m_root2d_x + (CLIMBER.kDistanceFromIntake * m_cumulativeZoomMultiplier), m_root2d_y);
+    m_shooterRoot2d = m_mech2d.getRoot("Shooter", m_root2d_x + (FLYWHEEL.kDistanceFromIntake * m_cumulativeZoomMultiplier), m_root2d_y);
+    
+    m_drivebase2d =
+        m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength * m_cumulativeZoomMultiplier, 0));
+    m_limelight2d =
+        m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight * m_cumulativeZoomMultiplier, 90));
+    m_intake2d =
+        m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength * m_cumulativeZoomMultiplier, 0));
+
+    m_led2d =
+        m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength * m_cumulativeZoomMultiplier, 70));
+    m_shooter2d =
+        m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22) * m_cumulativeZoomMultiplier, 90));
+    m_arm2d =
+        m_shooter2d.append(
+        new MechanismLigament2d(
+            "Arm", ARM.length * m_cumulativeZoomMultiplier, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
+    m_ampShooter2d =
+        m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6) * m_cumulativeZoomMultiplier, 0));
+
+    m_climber2d =
+        m_climberRoot2d.append(new MechanismLigament2d("Climber", CLIMBER.kUnextendedLength * m_cumulativeZoomMultiplier, 90));
+    m_climberHook1_2d =
+        m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3) * m_cumulativeZoomMultiplier, -90));
+    m_climberHook2_2d =
+        m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3) * m_cumulativeZoomMultiplier, -90));
+    
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
   }
 
@@ -168,7 +212,7 @@ public class SuperStructureVisualizer {
         m_climberHook1_2d, m_climber.getPercentOutput(), m_climberHook1_2d_originalColor);
     updateMotorColor(
         m_climberHook2_2d, m_climber.getPercentOutput(), m_climberHook2_2d_originalColor);
-    m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
+    m_climber2d.setLength((CLIMBER.kUnextendedLength + m_climber.getHeightMeters()) * m_cumulativeZoomMultiplier);
   }
 
   public void updateLimelight() {
@@ -177,6 +221,32 @@ public class SuperStructureVisualizer {
 
   public void updateLED() {
     m_led2d.setColor(m_led.getColor());
+  }
+  
+  public void updateZoom() {
+    init();
+    
+    for (MechanismLigament2d ligament : m_allLigament2ds) {
+        if (ligament != null) {
+        //   ligament.setLength(ligament.getLength() * m_zoomMultiplier);
+          ligament.setLineWeight(ligament.getLineWeight() * m_zoomMultiplier);
+        }
+    }
+    m_climber2d.setLineWeight(m_climber2d.getLineWeight() * m_zoomMultiplier);
+  }
+  
+  public void zoomIn() {
+    m_cumulativeZoomMultiplier *= 1.2;
+    m_zoomMultiplier = 1.2;
+    
+    updateZoom();
+  }
+  
+  public void zoomOut() {
+    m_cumulativeZoomMultiplier *= 0.8;
+    m_zoomMultiplier = 0.8;
+    
+    updateZoom();
   }
 
   public void periodic() {
