@@ -22,8 +22,7 @@ import org.littletonrobotics.junction.Logger;
 import frc.robot.constants.FLYWHEEL;
 
 public class Shooter extends SubsystemBase {
-  private final TalonFX flywheelmotor1 = new TalonFX(CAN.flywheel1);
-  private final TalonFX flywheelmotor2 = new TalonFX(CAN.flywheel2);
+ 
   private double m_rpm;
   private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
@@ -91,8 +90,12 @@ public class Shooter extends SubsystemBase {
   }
 
   // values that we are pulling
-  public double getRPM() {
-    return m_rpm;
+  public double getRPMMaster() {
+    return m_shooterMotors[0].getVelocity().getValueAsDouble()*60.0;
+  }
+
+  public double getRPMFollower() {
+    return m_shooterMotors[1].getVelocity().getValueAsDouble()*60.0;
   }
 
   public void setPidValues(double v, double p, double i, double d) {
@@ -112,6 +115,8 @@ public class Shooter extends SubsystemBase {
   }
   private void updateShuffleboard() {
     SmartDashboard.putNumber("PercentOutput1", this.getPercentOutput());
+    Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
+    Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
   }
 
   // values that we are pulling
@@ -121,6 +126,8 @@ public class Shooter extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("Flywheel/PercentOutput", getPercentOutput());
+    Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
+    Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
   }
 
 
