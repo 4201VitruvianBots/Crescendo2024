@@ -28,7 +28,7 @@ public final class FLYWHEEL {
       this.value = value;
     }
 
-    public double get() {
+    public double getPercentOutput() {
       return value;
     }
   }
@@ -45,6 +45,11 @@ public final class FLYWHEEL {
 
     public double get() {
       return value;
+    }
+
+    public Object getPercentOutput() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPercentOutput'");
     }
   }
 

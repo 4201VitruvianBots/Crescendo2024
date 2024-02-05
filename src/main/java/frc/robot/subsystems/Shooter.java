@@ -109,6 +109,9 @@ public class Shooter extends SubsystemBase {
 
   public void setSimpleMotorFeedForward(double s, double v, double a) {
     m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
+  private void updateShuffleboard() {
+    SmartDashboard.putNumber("PercentOutput1", this.getPercentOutput1());
+    SmartDashboard.putNumber("PercentOutput2", this.getPercentOutput2());
   }
 
   // values that we are pulling

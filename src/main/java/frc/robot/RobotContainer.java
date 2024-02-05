@@ -33,6 +33,8 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetAndHoldPercentSetpoint;
+import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
+import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -144,8 +146,8 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // amp
-    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 420.69)); // sbeaker
+    xboxController.a().whileTrue(new SetAndHoldPercentOutputSetpoint(m_shooter, 0.6)); // amp
+    xboxController.b().whileTrue(new SetAndHoldPercentOutputSetpoint(m_shooter, 1)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
 
 
