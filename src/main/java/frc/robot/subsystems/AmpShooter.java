@@ -28,7 +28,7 @@ public class AmpShooter extends SubsystemBase {
     pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
   }
 
-  public double getRPM() {
+  public double getPercentOutput() {
     return encoder.getVelocity();
   }
 
@@ -37,11 +37,11 @@ public class AmpShooter extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-    //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
+    //    SmartDashboard.putNumber("ampShooterPercentOutput", this.getPercentOutput());
   }
 
   private void updateLog() {
-    Logger.recordOutput("AmpShooter/RPM", getRPM());
+    Logger.recordOutput("AmpShooter/PercentOutput", getPercentOutput());
   }
 
   @Override

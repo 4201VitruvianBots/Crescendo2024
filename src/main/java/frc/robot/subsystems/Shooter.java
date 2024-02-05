@@ -12,8 +12,8 @@ import frc.robot.constants.CAN;
 public class Shooter extends SubsystemBase {
   private final TalonFX flywheelmotor1 = new TalonFX(CAN.flywheel1);
   private final TalonFX flywheelmotor2 = new TalonFX(CAN.flywheel2);
-  private double m_rpm;
-  private double flywheelRPMRatio = 1.0;
+  private double m_percentOutput;
+  private double flywheelPercentOutputRatio = 1.0;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
@@ -25,23 +25,23 @@ public class Shooter extends SubsystemBase {
   }
 
   // values that we set
-  public void setRPM(double m_rpm) {
-    flywheelmotor1.set(m_rpm);
-    flywheelmotor2.set(m_rpm * flywheelRPMRatio);
+  public void setPercentOutput(double m_percentOutput) {
+    flywheelmotor1.set(m_percentOutput);
+    flywheelmotor2.set(m_percentOutput * flywheelPercentOutputRatio);
   }
 
   // values that we are pulling
-  public double getRPM1() {
-    return m_rpm;
+  public double getPercentOutput1() {
+    return m_percentOutput;
   }
 
-  public double getRPM2() {
-    return m_rpm * flywheelRPMRatio;
+  public double getPercentOutput2() {
+    return m_percentOutput * flywheelPercentOutputRatio;
   }
 
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("RPM1", this.getRPM1());
-    SmartDashboard.putNumber("RPM2", this.getRPM2());
+    SmartDashboard.putNumber("PercentOutput1", this.getPercentOutput1());
+    SmartDashboard.putNumber("PercentOutput2", this.getPercentOutput2());
   }
 
   @Override

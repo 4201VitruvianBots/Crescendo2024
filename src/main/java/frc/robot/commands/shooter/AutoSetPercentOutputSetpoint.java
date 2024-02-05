@@ -5,15 +5,17 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
-public class SetAndHoldRPMSetpoint extends Command {
+public class AutoSetPercentOutputSetpoint extends Command {
   Shooter m_shooter;
-  double m_RPM;
+  FLYWHEEL_STATE m_state;
 
-  public SetAndHoldRPMSetpoint(Shooter shooter, double RPM) {
+  public AutoSetPercentOutputSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
     m_shooter = shooter;
-    m_RPM = RPM;
+    m_state = state;
+
     addRequirements(m_shooter);
   }
 
@@ -23,7 +25,7 @@ public class SetAndHoldRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setRPM(m_RPM);
+    m_shooter.setPercentOutput(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
