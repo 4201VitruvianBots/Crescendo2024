@@ -8,7 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
@@ -16,7 +16,7 @@ import java.util.function.DoubleSupplier;
 public class ShootNStrafe extends Command {
   Shooter m_shooter;
   FLYWHEEL_STATE m_state;
-  SwerveDrive m_swerveDrive;
+  CommandSwerveDrivetrain m_swerveDrive;
   SwerveModule m_swerveModule;
   private double m_rpm;
 

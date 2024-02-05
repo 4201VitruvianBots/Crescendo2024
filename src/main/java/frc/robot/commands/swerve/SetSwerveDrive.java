@@ -2,12 +2,12 @@ package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.DoubleSupplier;
 
 public class SetSwerveDrive extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerveDrive m_swerveDrive;
+  private final CommandSwerveDrivetrain m_swerveDrive;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
@@ -17,7 +17,7 @@ public class SetSwerveDrive extends Command {
    * @param swerveDrive The subsystem used by this command.
    */
   public SetSwerveDrive(
-      SwerveDrive swerveDrive,
+      CommandSwerveDrivetrain swerveDrive,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput) {
