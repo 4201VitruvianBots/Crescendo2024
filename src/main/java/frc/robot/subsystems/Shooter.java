@@ -60,11 +60,12 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
-  public double ShootNStrafeAngle(Pose2d RobotPose, ChassisSpeeds RobotVelocity) {
+  public double ShootNStrafeAngle(double RobotPoseX, double RobotPoseY, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(
-    (FLYWHEEL.NoteVelocity * Math.sin(this.shootangle(RobotPose)) - RobotVelocity.vyMetersPerSecond),
-    (FLYWHEEL.NoteVelocity * Math.cos(this.shootangle(RobotPose)) - RobotVelocity.vxMetersPerSecond));
+    (FLYWHEEL.NoteVelocity * Math.sin(this.shootangle(RobotPoseX, RobotPoseY)) - RobotVelocityY),
+    (FLYWHEEL.NoteVelocity * Math.cos(this.shootangle(RobotPoseX, RobotPoseY)) - RobotVelocityX));
   }
+
   public double shootangle(Double RobotPoseX, double RobotPoseY) {
     if (Controls.IsBlueAllaince())
     {

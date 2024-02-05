@@ -93,7 +93,7 @@ public class ShootNStrafe extends Command {
     //      throttle *= -1;
     //      strafe *= -1;
     //    }
-    if (inZone && timePassed == false){
+    if (inZone && (timePassed == false)){
     m_swerveDrive.setControl(
       drive.withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
             .withVelocityY((strafe)* DRIVE.kMaxSpeedMetersPerSecond)
