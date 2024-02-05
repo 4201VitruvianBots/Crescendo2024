@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.BOT_ACCESS_TOKEN }}
+          ssh-key: ${{ secrets.BOT_ACCESS_TOKEN }}
       
       # Declares the repository safe and not under dubious ownership.
       - name: Add repository to git safe directories
