@@ -59,13 +59,19 @@ public class Shooter extends SubsystemBase {
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
+  public void setRpmOutput(double rpm) {
+    // Phoenix 6 uses rotations per second for velocity control
+    var rps = rpm / 60.0;
+    m_shooterMotors[0].setControl(
+        m_velocityRequest.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+  }
 
   public double ShootNStrafeAngle(double RobotPoseX, double RobotPoseY, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(
     (FLYWHEEL.NoteVelocity * Math.sin(this.shootangle(RobotPoseX, RobotPoseY)) - RobotVelocityY),
     (FLYWHEEL.NoteVelocity * Math.cos(this.shootangle(RobotPoseX, RobotPoseY)) - RobotVelocityX));
   }
-
+  
   public double shootangle(Double RobotPoseX, double RobotPoseY) {
     if (Controls.IsBlueAllaince())
     {
@@ -85,7 +91,7 @@ public class Shooter extends SubsystemBase {
   }
 
   // values that we are pulling
-  public double getRPM1() {
+  public double getRPM() {
     return m_rpm;
   }
 
