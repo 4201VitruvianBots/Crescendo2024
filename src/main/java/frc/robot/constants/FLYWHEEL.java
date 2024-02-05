@@ -28,9 +28,11 @@ public final class FLYWHEEL {
       this.value = value;
     }
 
-    public double getPercentOutput() {
+     public double get() {
       return value;
     }
+
+  
   }
 
   public enum FLYWHEEL_STATE {

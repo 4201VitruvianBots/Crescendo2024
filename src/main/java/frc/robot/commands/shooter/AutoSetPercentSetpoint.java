@@ -8,22 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
-<<<<<<<< HEAD:src/main/java/frc/robot/commands/shooter/AutoSetPercentSetpoint.java
 public class AutoSetPercentSetpoint extends Command {
   Shooter m_shooter;
   FLYWHEEL_STATE m_state;
 
-  public AutoSetPercentSetpoint(Shooter flywheel, FLYWHEEL_STATE state) {
-    m_shooter = flywheel;
-========
-public class AutoSetPercentOutputSetpoint extends Command {
-  Shooter m_shooter;
-  FLYWHEEL_STATE m_state;
-
-  public AutoSetPercentOutputSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
+  public AutoSetPercentSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
     m_shooter = shooter;
->>>>>>>> origin/47-change-rpm-to-percent-output:src/main/java/frc/robot/commands/shooter/AutoSetPercentOutputSetpoint.java
-    m_state = state;
+  m_state = state;
 
     addRequirements(m_shooter);
   }
