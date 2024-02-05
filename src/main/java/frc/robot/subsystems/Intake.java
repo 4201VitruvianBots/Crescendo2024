@@ -6,8 +6,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
@@ -23,8 +27,15 @@ public class Intake extends SubsystemBase {
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
 
   public Intake() {
-    CtreUtils.configureTalonFx(intakeMotor1, new TalonFXConfiguration());
-    CtreUtils.configureTalonFx(intakeMotor2, new TalonFXConfiguration());
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Slot0.kP = INTAKE.kP;
+    config.Slot0.kI = INTAKE.kI;
+    config.Slot0.kD = INTAKE.kD;
+    config.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    CtreUtils.configureTalonFx(intakeMotor1, config);
+    CtreUtils.configureTalonFx(intakeMotor2, config);
   }
 
   public void setSpeed(double speed1, double speed2) {
