@@ -25,6 +25,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
@@ -144,6 +145,9 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
+    //switch between open loop and close loop
+    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
+    
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // amp
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
