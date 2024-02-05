@@ -63,9 +63,6 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        ssh-key: ${{ secrets.BOT_ACCESS_TOKEN }}
     
     # Declares the repository safe and not under dubious ownership.
     - name: Add repository to git safe directories
