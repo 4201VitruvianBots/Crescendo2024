@@ -27,7 +27,7 @@ jobs:
       contents: write
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
       - name: Setup Git
         run: |
           git config user.name "4201-actions-bot"
-          git config user.email "gavinsjunkmail@yahoo.com"
+          git config user.email "jonathandao0@gmail.com"
           
       # Runs a single command using the runners shell
       - name: Applying spotless formatting
@@ -62,7 +62,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     # Declares the repository safe and not under dubious ownership.
     - name: Add repository to git safe directories
