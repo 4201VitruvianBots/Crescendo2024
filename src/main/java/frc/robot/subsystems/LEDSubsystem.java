@@ -154,6 +154,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  public Color8Bit getColor() {
+    return new Color8Bit(red, green, blue);
+  }
+
   @Override
   public void periodic() {
     // null indicates that the animation is "Solid"

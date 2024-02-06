@@ -4,12 +4,15 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /** Add your docs here. */
 public final class LED {
 
   public static final int LEDcount = 72;
+
+  public static final double LEDstripLength = Units.inchesToMeters(7); // meters
 
   /** Different LED animation types */
   public enum ANIMATION_TYPE {
@@ -24,6 +27,7 @@ public final class LED {
     TwinkleOff,
     Solid
   }
+}
 
   // These color are channels passed in the setPattern() method in the LED subsystem
   public static final Color8Bit red = new Color8Bit(255, 0, 0);

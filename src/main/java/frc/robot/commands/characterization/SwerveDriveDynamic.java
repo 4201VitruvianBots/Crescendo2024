@@ -9,12 +9,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.utils.SysidUtils;
+import frc.robot.utils.SysIdUtils;
 
 public class SwerveDriveDynamic extends SequentialCommandGroup {
   /** Creates a new SwerveDriveDynamic. */
   public SwerveDriveDynamic(CommandSwerveDrivetrain swerveDrive, SysIdRoutine.Direction direction) {
-    var routine = SysidUtils.getSwerveDriveRoutine();
+    var routine = SysIdUtils.getSwerveDriveRoutine();
 
     Command sysidCommand = routine.dynamic(direction);
 

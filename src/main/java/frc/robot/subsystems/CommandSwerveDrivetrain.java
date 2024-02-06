@@ -2,21 +2,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
@@ -32,34 +34,173 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
   private final Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
+  private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
+
+  private final SwerveRequest.FieldCentric m_driveRequest =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  // driving in open loop
+  private Pose2d m_futurePose = new Pose2d();
+  private Twist2d m_twistFromPose = new Twist2d();
+  private ChassisSpeeds m_newChassisSpeeds = new ChassisSpeeds();
+
+  private final SwerveRequest.ApplyChassisSpeeds m_chassisSpeedRequest =
+      new SwerveRequest.ApplyChassisSpeeds();
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    resetGyro(0);
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    System.out.println("Swerve Init at: " + Logger.getRealTimestamp());
   }
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
+
+    // for (int i = 0; i < modules.length; i++) {
+    //   m_constants[i] = modules[i];
+    //   var encoderConfigs = CtreUtils.generateCanCoderConfig();
+    //   // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
+    //   CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
+
+    //   var turnConfigs = CtreUtils.generateTurnMotorConfig();
+    //   // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
+    //   CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
+    //   setTurnAngle(i, 0);
+
+    //   var driveConfigs = CtreUtils.generateDriveMotorConfig();
+    //   // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive :
+    // InvertedValue.CounterClockwise_Positive;
+    //   CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
+    // }
+    resetGyro(0);
+
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    var pigeonConfig = new Pigeon2Configuration();
-    pigeonConfig.MountPose = new MountPoseConfigs().withMountPoseRoll(-180);
-    getPigeon2().getConfigurator().apply(pigeonConfig);
+    System.out.printf("Swerve Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
   }
+
+  public void setTurnAngle(int moduleId, double angle) {
+    var newAngle =
+        getModule(moduleId).getCANcoder().getAbsolutePosition().getValue()
+            - Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset)
+            + angle;
+
+    StatusCode turnMotorStatus = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
+      turnMotorStatus = getModule(moduleId).getSteerMotor().setPosition(newAngle / 360.0);
+      if (turnMotorStatus.isOK()) break;
+      if (RobotBase.isReal()) Timer.delay(0.02);
+    }
+
+    if (!turnMotorStatus.isOK()) {
+      System.out.println(
+          "Could not update Swerve Turn TalonFX Angle: "
+              + getModule(moduleId).getSteerMotor().getDeviceID()
+              + ". Error code: "
+              + turnMotorStatus);
+    } else {
+      // System.out.printf(
+      //     """
+      //                 Updated Turn Motor %2d Angle:
+      //                 Desired Angle: %.2f
+      //                 Turn Motor Angle: %.2f
+      //                 CANCoder Absolute Angle: %.2f
+      //                 CANCoder Offset: %.2f\n""",
+      //     m_turnMotor.getDeviceID(),
+      //     angle,
+      //     getTurnHeadingDeg(),
+      //     getTurnEncoderAbsHeading().getDegrees(),
+      //     m_angleOffset);
+    }
+  }
+
+  public void resetOdometry(Pose2d pose) {}
 
   public ChassisSpeeds getChassisSpeed() {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
+  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds) {
+    return applyFieldCentricDrive(chassisSpeeds, 0.02, 1.0);
+  }
+
+  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod) {
+    return applyFieldCentricDrive(chassisSpeeds, loopPeriod, 1.0);
+  }
+
+  public Command applyFieldCentricDrive(
+      Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, double driftRate) {
+    return applyRequest(
+        () -> {
+          m_futurePose =
+              new Pose2d(
+                  chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
+                  chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
+                  Rotation2d.fromRadians(
+                      chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
+
+          m_twistFromPose = new Pose2d().log(m_futurePose);
+
+          m_newChassisSpeeds =
+              new ChassisSpeeds(
+                  m_twistFromPose.dx / loopPeriod,
+                  m_twistFromPose.dy / loopPeriod,
+                  chassisSpeeds.get().omegaRadiansPerSecond);
+          return m_driveRequest
+              .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+        });
+  }
+  ;
+
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-    return run(() -> this.setControl(requestSupplier.get()));
+    var cmd = run(() -> setControl(requestSupplier.get()));
+    cmd.addRequirements(this);
+    return cmd;
+  }
+
+  public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds) {
+    setChassisSpeedControl(chassisSpeeds, 0.02, 1.0);
+  }
+
+  public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds, double loopPeriod) {
+    setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
+  }
+
+  /* Second-Order Kinematics
+  https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79
+
+   */
+  public void setChassisSpeedControl(
+      ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
+    m_futurePose =
+        new Pose2d(
+            chassisSpeeds.vxMetersPerSecond * loopPeriod,
+            chassisSpeeds.vyMetersPerSecond * loopPeriod,
+            Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * loopPeriod * driftRate));
+
+    m_twistFromPose = new Pose2d().log(m_futurePose);
+
+    m_newChassisSpeeds =
+        new ChassisSpeeds(
+            m_twistFromPose.dx / loopPeriod,
+            m_twistFromPose.dy / loopPeriod,
+            chassisSpeeds.omegaRadiansPerSecond);
+
+    setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
   }
 
   private void startSimThread() {
@@ -102,8 +243,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     System.out.println("Finished Initializing Drive Settings");
   }
 
-  public void resetGyro() {
-    getPigeon2().setYaw(0);
+  public void resetGyro(double angle) {
+    getPigeon2().setYaw(angle);
   }
 
   public void initTurnSysid() {
@@ -126,7 +267,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public void updateLog() {
-    Logger.recordOutput("Swerve/Gyro", getPigeon2().getAngle());
+    Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
+    Logger.recordOutput(
+        "Swerve/FRONTLEFTENCODER",
+        Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
+    Logger.recordOutput(
+        "Swerve/FRONTRIGHTENCODER",
+        Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
+    Logger.recordOutput(
+        "Swerve/BACKLEFTENCODER",
+        Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
+    Logger.recordOutput(
+        "Swerve/BACKRIGHTENCODER",
+        Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
   }
 
   @Override

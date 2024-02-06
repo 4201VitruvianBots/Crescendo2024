@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.8874039628421135
+        "x": 7.79,
+        "y": 0.78
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.118033988749893,
-        "y": 4.8874039628421135
+        "x": 7.831049477525456,
+        "y": 0.78
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.05,
-        "y": 4.89
+        "x": 3.5,
+        "y": 2.36
       },
       "prevControl": {
-        "x": 3.529309367425446,
-        "y": 4.89
+        "x": 3.5556072020900467,
+        "y": 2.37169415444244
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,11 +45,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -40.314100160497226,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "4peiceautofar",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

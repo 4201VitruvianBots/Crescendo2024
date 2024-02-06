@@ -105,7 +105,7 @@ public class TestSwerveModule implements AutoCloseable {
     Logger.start();
 
     /* create the TalonFX */
-    m_testModule = new SwerveModule(SWERVE.testConstants, CAN.rioCanbus);
+    m_testModule = new SwerveModule(SWERVE.FrontLeftConstants, CAN.drivebaseCanbus);
     m_turnMotorModel =
         new DCMotorSim(
             DCMotor.getFalcon500(1), SWERVE.MODULE.kTurnMotorGearRatio, SWERVE.MODULE.kTurnInertia);
@@ -150,7 +150,7 @@ public class TestSwerveModule implements AutoCloseable {
 
     var testState =
         new SwerveModuleState(
-            SWERVE.kMaxSpeedMetersPerSecond * 0.11, Rotation2d.fromDegrees(testAngle));
+            SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.11, Rotation2d.fromDegrees(testAngle));
 
     m_testModule.apply(testState, SwerveModule.DriveRequestType.Velocity);
     refreshAkitData();
