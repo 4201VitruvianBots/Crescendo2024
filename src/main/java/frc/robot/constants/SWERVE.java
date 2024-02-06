@@ -17,7 +17,7 @@ import java.util.Map;
 public final class SWERVE {
 
   public static final class DRIVE {
-    public static final double kTrackWidth = Units.inchesToMeters(24);
+    public static final double kTrackWidth = Units.inchesToMeters(26);
     public static final double kWheelBase = Units.inchesToMeters(24);
 
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
@@ -36,10 +36,10 @@ public final class SWERVE {
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
     // In rotations
-    public static double kFrontLeftEncoderOffset = -0.035888671875;
-    public static double kFrontRightEncoderOffset = 0.04296875;
-    public static double kBackLeftEncoderOffset = 0.483642578125;
-    public static double kBackRightEncoderOffset = 0.414306640625;
+    public static double kFrontLeftEncoderOffset = -0.169921875;
+    public static double kFrontRightEncoderOffset = 0.294189453125;
+    public static double kBackLeftEncoderOffset = 0.028564453125;
+    public static double kBackRightEncoderOffset = 0.3212890625;
 
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
