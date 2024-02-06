@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,7 +22,7 @@ public final class CtreUtils {
   public static void initPhoenixServer() {
     System.out.printf("Starting Phoenix Server at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
     if (RobotBase.isReal()) {
-      TalonFX dummy = new TalonFX(0);
+      TalonFX dummy = new TalonFX(0, CAN.drivebaseCanbus);
       Timer.delay(5);
       dummy = null;
     }
