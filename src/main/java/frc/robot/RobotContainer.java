@@ -7,8 +7,7 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,7 +35,6 @@ import frc.robot.commands.shooter.ToggleShooterTestMode;
 // import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
 // import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
-import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -46,7 +44,6 @@ import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
-  //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final CommandSwerveDrivetrain m_swerveDrive =
       new CommandSwerveDrivetrain(
           DrivetrainConstants,
@@ -55,7 +52,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+  //  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -66,18 +63,7 @@ public class RobotContainer {
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
-  private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-          .withRotationalDeadband(
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-  // driving in open loop
-
-  private final SuperStructureVisualizer m_visualizer =
-      new SuperStructureVisualizer(
-          m_intake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
+  private SuperStructureVisualizer m_visualizer;
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -96,42 +82,71 @@ public class RobotContainer {
     initAutoChooser();
 
     if (ROBOT.useSysID) initSysidChooser();
+
+    if (RobotBase.isSimulation()) {
+      m_visualizer = new SuperStructureVisualizer();
+      m_visualizer.registerIntake(m_intake);
+      m_visualizer.registerShooter(m_shooter);
+      m_visualizer.registerAmpShooter(m_ampShooter);
+      m_visualizer.registerArm(m_arm);
+      m_visualizer.registerClimber(m_climber);
+      //    m_visualizer.registerVision(m_vision);
+      m_visualizer.registerLedSubsystem(m_led);
+    }
   }
 
   private void initializeSubsystems() {
     if (RobotBase.isReal()) {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyRequest(
+          m_swerveDrive.applyFieldCentricDrive(
               () ->
-                  drive
-                      .withVelocityX(
-                          leftJoystick.getRawAxis(1)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-                      // negative Y (forward)
-                      .withVelocityY(
-                          leftJoystick.getRawAxis(0)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
-                      .withRotationalRate(
-                          rightJoystick.getRawAxis(0)
-                              * DRIVE
-                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
-      // negative X (left)
+                  new ChassisSpeeds(
+                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+      //      m_swerveDrive.setDefaultCommand(
+      //          m_swerveDrive.applyRequest(
+      //              () ->
+      //                  drive
+      //                      .withVelocityX(
+      //                          leftJoystick.getRawAxis(1)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+      //                      // negative Y (forward)
+      //                      .withVelocityY(
+      //                          leftJoystick.getRawAxis(0)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
+      // X (left)
+      //                      .withRotationalRate(
+      //                          rightJoystick.getRawAxis(0)
+      //                              * DRIVE
+      //                                  .kMaxRotationRadiansPerSecond))); // Drive
+      // counterclockwise with
+      //      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyRequest(
+          m_swerveDrive.applyFieldCentricDrive(
               () ->
-                  drive
-                      .withVelocityX(
-                          -m_testController.getRawAxis(1)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-                      // negative Y (forward)
-                      .withVelocityY(
-                          -m_testController.getRawAxis(0)
-                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative X (left)
-                      .withRotationalRate(
-                          -m_testController.getRawAxis(2)
-                              * DRIVE
-                                  .kMaxRotationRadiansPerSecond))); // Drive counterclockwise with
+                  new ChassisSpeeds(
+                      -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+      //      m_swerveDrive.setDefaultCommand(
+      //          m_swerveDrive.applyRequest(
+      //              () ->
+      //                  drive
+      //                      .withVelocityX(
+      //                          -m_testController.getRawAxis(1)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
+      //                      // negative Y (forward)
+      //                      .withVelocityY(
+      //                          -m_testController.getRawAxis(0)
+      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
+      // X (left)
+      //                      .withRotationalRate(
+      //                          -m_testController.getRawAxis(2)
+      //                              * DRIVE
+      //                                  .kMaxRotationRadiansPerSecond))); // Drive
+      // counterclockwise with
       // negative X (left)
     }
 
@@ -227,15 +242,16 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // TODO: Move this into the Vision subsystem
-    final var globalPose = m_vision.getEstimatedGlobalPose();
-    globalPose.ifPresent(
-        estimatedRobotPose ->
-            m_swerveDrive.addVisionMeasurement(
-                estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
+    // // TODO: Move this into the Vision subsystem
+    // final var globalPose = m_vision.getEstimatedGlobalPose();
+    // globalPose.ifPresent(
+    //     estimatedRobotPose ->
+    //         m_swerveDrive.addVisionMeasurement(
+    //             estimatedRobotPose.estimatedPose.toPose2d(),
+    // estimatedRobotPose.timestampSeconds));
 
     m_fieldSim.periodic();
-    m_visualizer.periodic();
+    if (m_visualizer != null) m_visualizer.periodic();
   }
 
   public void testInit() {
