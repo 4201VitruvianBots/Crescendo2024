@@ -41,7 +41,6 @@ import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
-  //  private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final CommandSwerveDrivetrain m_swerveDrive =
       new CommandSwerveDrivetrain(
           DrivetrainConstants,
@@ -50,7 +49,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+  //  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -61,9 +60,7 @@ public class RobotContainer {
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
-  private final SuperStructureVisualizer m_visualizer =
-      new SuperStructureVisualizer(
-          m_intake, m_shooter, m_ampShooter, m_arm, m_climber, m_vision, m_led);
+  private SuperStructureVisualizer m_visualizer;
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -82,6 +79,17 @@ public class RobotContainer {
     initAutoChooser();
 
     if (ROBOT.useSysID) initSysidChooser();
+
+    if (RobotBase.isSimulation()) {
+      m_visualizer = new SuperStructureVisualizer();
+      m_visualizer.registerIntake(m_intake);
+      m_visualizer.registerShooter(m_shooter);
+      m_visualizer.registerAmpShooter(m_ampShooter);
+      m_visualizer.registerArm(m_arm);
+      m_visualizer.registerClimber(m_climber);
+      //    m_visualizer.registerVision(m_vision);
+      m_visualizer.registerLedSubsystem(m_led);
+    }
   }
 
   private void initializeSubsystems() {
@@ -231,10 +239,11 @@ public class RobotContainer {
     // globalPose.ifPresent(
     //     estimatedRobotPose ->
     //         m_swerveDrive.addVisionMeasurement(
-    //             estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds));
+    //             estimatedRobotPose.estimatedPose.toPose2d(),
+    // estimatedRobotPose.timestampSeconds));
 
     m_fieldSim.periodic();
-    m_visualizer.periodic();
+    if (m_visualizer != null) m_visualizer.periodic();
   }
 
   public void testInit() {

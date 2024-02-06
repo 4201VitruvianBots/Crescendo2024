@@ -79,22 +79,7 @@ public class SuperStructureVisualizer {
       m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
 
-  public SuperStructureVisualizer(
-      Intake intake,
-      Shooter shooter,
-      AmpShooter ampShooter,
-      Arm arm,
-      Climber climber,
-      Vision vision,
-      LEDSubsystem led) {
-    m_intake = intake;
-    m_shooter = shooter;
-    m_ampShooter = ampShooter;
-    m_arm = arm;
-    m_climber = climber;
-    m_vision = vision;
-    m_led = led;
-
+  public SuperStructureVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
@@ -116,6 +101,34 @@ public class SuperStructureVisualizer {
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+  }
+
+  public void registerIntake(Intake intake) {
+    m_intake = intake;
+  }
+
+  public void registerShooter(Shooter shooter) {
+    m_shooter = shooter;
+  }
+
+  public void registerAmpShooter(AmpShooter ampShooter) {
+    m_ampShooter = ampShooter;
+  }
+
+  public void registerArm(Arm arm) {
+    m_arm = arm;
+  }
+
+  public void registerClimber(Climber climber) {
+    m_climber = climber;
+  }
+
+  public void registerVision(Vision vision) {
+    m_vision = vision;
+  }
+
+  public void registerLedSubsystem(LEDSubsystem led) {
+    m_led = led;
   }
 
   /* Function to visualize the speed of a particular motor. */
@@ -180,12 +193,12 @@ public class SuperStructureVisualizer {
   }
 
   public void periodic() {
-    updateIntake();
-    updateShooter();
-    updateAmpShooter();
-    updateArm();
-    updateClimber();
-    updateLimelight();
-    updateLED();
+    if (m_intake != null) updateIntake();
+    if (m_shooter != null) updateShooter();
+    if (m_ampShooter != null) updateAmpShooter();
+    if (m_arm != null) updateArm();
+    if (m_climber != null) updateClimber();
+    if (m_vision != null) updateLimelight();
+    if (m_led != null) updateLED();
   }
 }

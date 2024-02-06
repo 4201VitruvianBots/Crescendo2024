@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
@@ -43,6 +44,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
           .withDriveRequestType(
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
   // driving in open loop
+  private Pose2d m_futurePose = new Pose2d();
+  private Twist2d m_twistFromPose = new Twist2d();
+  private ChassisSpeeds m_newChassisSpeeds = new ChassisSpeeds();
 
   private final SwerveRequest.ApplyChassisSpeeds m_chassisSpeedRequest =
       new SwerveRequest.ApplyChassisSpeeds();
@@ -140,24 +144,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, double driftRate) {
     return applyRequest(
         () -> {
-          var futureRobotPose =
+          m_futurePose =
               new Pose2d(
                   chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
                   chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
                   Rotation2d.fromRadians(
                       chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
 
-          var twistFromPose = new Pose2d().log(futureRobotPose);
+          m_twistFromPose = new Pose2d().log(m_futurePose);
 
-          var updatedChassisSpeeds =
+          m_newChassisSpeeds =
               new ChassisSpeeds(
-                  twistFromPose.dx / loopPeriod,
-                  twistFromPose.dy / loopPeriod,
+                  m_twistFromPose.dx / loopPeriod,
+                  m_twistFromPose.dy / loopPeriod,
                   chassisSpeeds.get().omegaRadiansPerSecond);
           return m_driveRequest
-              .withVelocityX(updatedChassisSpeeds.vxMetersPerSecond)
-              .withVelocityY(updatedChassisSpeeds.vyMetersPerSecond)
-              .withRotationalRate(updatedChassisSpeeds.omegaRadiansPerSecond);
+              .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
         });
   }
   ;
@@ -182,21 +186,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
    */
   public void setChassisSpeedControl(
       ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
-    var futureRobotPose =
+    m_futurePose =
         new Pose2d(
             chassisSpeeds.vxMetersPerSecond * loopPeriod,
             chassisSpeeds.vyMetersPerSecond * loopPeriod,
             Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * loopPeriod * driftRate));
 
-    var twistFromPose = new Pose2d().log(futureRobotPose);
+    m_twistFromPose = new Pose2d().log(m_futurePose);
 
-    var updatedChassisSpeeds =
+    m_newChassisSpeeds =
         new ChassisSpeeds(
-            twistFromPose.dx / loopPeriod,
-            twistFromPose.dy / loopPeriod,
+            m_twistFromPose.dx / loopPeriod,
+            m_twistFromPose.dy / loopPeriod,
             chassisSpeeds.omegaRadiansPerSecond);
 
-    setControl(m_chassisSpeedRequest.withSpeeds(updatedChassisSpeeds));
+    setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
   }
 
   private void startSimThread() {
