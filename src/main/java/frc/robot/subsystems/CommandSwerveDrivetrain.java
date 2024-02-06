@@ -22,6 +22,9 @@ import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -35,6 +38,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private final Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
 
+  private Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
+  
   private final SwerveRequest.FieldCentric m_driveRequest =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -56,7 +61,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    System.out.println("Swerve Init at: " + Logger.getRealTimestamp());
+    m_alert.setText("Swerve Init at: " + Logger.getRealTimestamp());
+    m_alert.set(true);
   }
 
   public CommandSwerveDrivetrain(
@@ -84,7 +90,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    System.out.printf("Swerve Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
+    m_alert.setText("Swerve Init at: " + Logger.getTimestamp() * 1.0e-6);
+    m_alert.set(true);
   }
 
   public void setTurnAngle(int moduleId, double angle) {
@@ -101,11 +108,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     if (!turnMotorStatus.isOK()) {
-      System.out.println(
-          "Could not update Swerve Turn TalonFX Angle: "
-              + getModule(moduleId).getSteerMotor().getDeviceID()
-              + ". Error code: "
-              + turnMotorStatus);
+      var alert =
+          new Alert(
+              "Could not update Swerve Turn TalonFX Angle: "
+                  + getModule(moduleId).getSteerMotor().getDeviceID()
+                  + ". Error code: "
+                  + turnMotorStatus,
+              AlertType.ERROR);
+      alert.set(true);
     } else {
       // System.out.printf(
       //     """
@@ -236,7 +246,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
-    System.out.println("Finished Initializing Drive Settings");
+    m_alert.setText("Finished Initializing Drive Settings");
+    m_alert.set(true);
   }
 
   public void resetGyro(double angle) {
@@ -259,7 +270,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
-    System.out.println("Finished Initializing Drive Settings");
+    m_alert.setText("Finished Initializing Drive Settings");
+    m_alert.set(true);
   }
 
   public void updateLog() {

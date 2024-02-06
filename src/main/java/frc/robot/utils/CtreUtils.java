@@ -10,6 +10,9 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.SWERVE;
+
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
 
 public final class CtreUtils {
@@ -19,13 +22,14 @@ public final class CtreUtils {
    * set/applied properly.
    */
   public static void initPhoenixServer() {
-    System.out.printf("Starting Phoenix Server at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
+    var alert = new Alert("Starting Phoenix Server at: " + Logger.getTimestamp() * 1.0e-6, AlertType.INFO);
+    alert.set(true);
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0);
       Timer.delay(5);
       dummy = null;
     }
-    System.out.printf("Phoenix Server finished Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
+    alert.setText("Phoenix Server finished Init at: " + Logger.getTimestamp() * 1.0e-6);
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {
@@ -134,12 +138,14 @@ public final class CtreUtils {
       if (motorStatus.isOK()) break;
       if (RobotBase.isReal()) Timer.delay(0.02);
     }
-    if (!motorStatus.isOK())
-      System.out.println(
+    if (!motorStatus.isOK()) {
+      var alert = new Alert(
           "Could not apply configs to TalonFx ID: "
               + motor.getDeviceID()
               + ". Error code: "
-              + motorStatus);
+              + motorStatus, AlertType.ERROR);
+      alert.set(true);
+    }
     else System.out.println("TalonFX ID: " + motor.getDeviceID() + " - Successfully configured!");
 
     return motorStatus.isOK();
@@ -166,12 +172,14 @@ public final class CtreUtils {
       if (cancoderStatus.isOK()) break;
       if (RobotBase.isReal()) Timer.delay(0.02);
     }
-    if (!cancoderStatus.isOK())
-      System.out.println(
+    if (!cancoderStatus.isOK()) {
+      var alert = new Alert(
           "Could not apply configs to CANCoder ID: "
               + cancoder.getDeviceID()
               + ". Error code: "
-              + cancoderStatus);
+              + cancoderStatus, AlertType.ERROR);
+      alert.set(true);
+    }
     else
       System.out.println("CANCoder ID: " + cancoder.getDeviceID() + " - Successfully configured!");
     return cancoderStatus.isOK();
