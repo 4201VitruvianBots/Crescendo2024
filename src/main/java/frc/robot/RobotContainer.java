@@ -49,7 +49,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //  private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision(m_swerveDrive);
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -74,7 +74,6 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
-    m_vision.registerFieldSim(m_fieldSim);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
@@ -235,14 +234,6 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // // TODO: Move this into the Vision subsystem
-    // final var globalPose = m_vision.getEstimatedGlobalPose();
-    // globalPose.ifPresent(
-    //     estimatedRobotPose ->
-    //         m_swerveDrive.addVisionMeasurement(
-    //             estimatedRobotPose.estimatedPose.toPose2d(),
-    // estimatedRobotPose.timestampSeconds));
-
     m_fieldSim.periodic();
     if (m_visualizer != null) m_visualizer.periodic();
   }

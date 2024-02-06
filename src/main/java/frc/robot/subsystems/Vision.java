@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -13,55 +15,82 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
 
+  private CommandSwerveDrivetrain m_swerveDriveTrain;
+
+  public Vision(CommandSwerveDrivetrain swerveDrivetrain) {
+    m_swerveDriveTrain = swerveDrivetrain;
+  }
+
   private FieldSim m_fieldSim;
 
   public void registerFieldSim(FieldSim fieldSim) {
     m_fieldSim = fieldSim;
   }
 
-  PhotonCamera camera = new PhotonCamera("Limelight2");
-  PhotonPoseEstimator photonPoseEstimator =
+  public static PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("AprilTagLimelightCameraA");
+  PhotonPoseEstimator limelightPhotonPoseEstimatorA =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          camera,
+          aprilTagLimelightCameraA,
           VISION.robotToCam);
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    return photonPoseEstimator.update();
+  public static PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("AprilTagLimelightCameraB");
+  PhotonPoseEstimator limelightPhotonPoseEstimatorB =
+      new PhotonPoseEstimator(
+          VISION.aprilTagFieldLayout,
+          PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+          aprilTagLimelightCameraB,
+          VISION.robotToCam);
+
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
+    return photonEstimator.update();
   }
 
-  public boolean isCameraConnected() {
+  public boolean isCameraConnected(PhotonCamera camera) {
     return camera.isConnected();
   }
 
-  public boolean isAprilTagDetected() {
-    if (camera.isConnected()) {
-      var result = camera.getLatestResult();
-      return result.hasTargets();
-    } else {
-      return false;
-    }
+  public boolean isAprilTagDetected(PhotonCamera camera) {
+    var result = camera.getLatestResult();
+    return result.hasTargets();
   }
 
-  public String getTargets() {
-    if (camera.isConnected()) {
-      var result = camera.getLatestResult();
-      List<PhotonTrackedTarget> targets = result.getTargets();
-      return String.join(" ", targets.stream().map(PhotonTrackedTarget::toString).toList());
-    } else {
-      return "No targets";
-    }
+  public String getTargets(PhotonCamera camera) {
+    var result = camera.getLatestResult();
+    List<PhotonTrackedTarget> targets = result.getTargets();
+    return String.join(" ", targets.stream().map(PhotonTrackedTarget::toString).toList());
   }
 
   private void updateLog() {
-    Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
+    Logger.recordOutput("vision/isAprilTagLimelightAConnected", isCameraConnected(aprilTagLimelightCameraA));
+    Logger.recordOutput("vision/isAprilTagLimelightBConnected", isCameraConnected(aprilTagLimelightCameraB));
 
-    if (isCameraConnected()) {
-      Logger.recordOutput("vision/isAprilTagDetected", isAprilTagDetected());
-      Logger.recordOutput("vision/getTargets", getTargets());
+    if (isCameraConnected(aprilTagLimelightCameraA)) {
+      Logger.recordOutput("vision/isAprilTagDetectedLimelightA", isAprilTagDetected(aprilTagLimelightCameraA));
     }
+      if (isAprilTagDetected(aprilTagLimelightCameraA)) {
+        Logger.recordOutput("vision/aprilTagLimelightATargetsDetected", getTargets(aprilTagLimelightCameraA));
+      }
+    
+
+    if (isCameraConnected(aprilTagLimelightCameraB)) {
+      Logger.recordOutput("vision/isAprilTagDetectedLimelightB", isAprilTagDetected(aprilTagLimelightCameraB));
+    }
+      if (isAprilTagDetected(aprilTagLimelightCameraB)) {
+        Logger.recordOutput("vision/aprilTagLimelightBTargetsDetected", getTargets(aprilTagLimelightCameraB));
+      }
+    
   }
+
+  private void updateSwervePose(PhotonPoseEstimator photonPoseEstimator) {
+    final var globalPose = getEstimatedGlobalPose(photonPoseEstimator);
+    globalPose.ifPresent(
+        estimatedRobotPose ->
+            m_swerveDriveTrain.addVisionMeasurement(
+                estimatedRobotPose.estimatedPose.toPose2d(),
+    estimatedRobotPose.timestampSeconds));  
+    }
 
   private void smartDashboard() {
     // Implement the smartDashboard method here
@@ -70,13 +99,24 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // Pick which limelight to use for updating swerve pose
+    updateSwervePose(limelightPhotonPoseEstimatorA);
+
     updateLog();
     smartDashboard();
+  
     if (m_fieldSim != null) {
-      var pose = getEstimatedGlobalPose();
-      if (pose.isPresent()) {
-        m_fieldSim.updateVisionPose(pose.get().estimatedPose.toPose2d());
+      var limelightPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
+      if (limelightPoseB.isPresent()) {
+        m_fieldSim.updateVisionPose(limelightPoseB.get().estimatedPose.toPose2d());
+      }
+
+      var limelightPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
+      if (limelightPoseA.isPresent()) {
+        m_fieldSim.updateVisionPose(limelightPoseA.get().estimatedPose.toPose2d());
       }
     }
+
   }
 }
