@@ -115,7 +115,7 @@ public final class SWERVE {
   }
 
   public static final SwerveDrivetrainConstants DrivetrainConstants =
-      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.rioCanbus);
+      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.canivoreCanbus);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
       new SwerveModuleConstantsFactory()
