@@ -1,10 +1,9 @@
 package frc.robot.constants;
 
-import org.littletonrobotics.frc2023.util.Alert;
-import org.littletonrobotics.frc2023.util.Alert.AlertType;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
 public class ROBOT {
   public static String robotName = "";
@@ -104,7 +103,11 @@ public class ROBOT {
       alert.setText("Setting Robot Constants for Sim");
       initSim();
     } else {
-        alert = new Alert("WARN: Robot Serial Not Recognized! Current roboRIO Serial: " + RobotController.getSerialNumber(), AlertType.WARNING);
+      alert =
+          new Alert(
+              "WARN: Robot Serial Not Recognized! Current roboRIO Serial: "
+                  + RobotController.getSerialNumber(),
+              AlertType.WARNING);
     }
     alert.set(true);
   }

@@ -22,7 +22,6 @@ import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
@@ -39,7 +38,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
 
   private Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
-  
+
   private final SwerveRequest.FieldCentric m_driveRequest =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
