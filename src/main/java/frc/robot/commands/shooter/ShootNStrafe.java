@@ -17,8 +17,6 @@
 // import frc.robot.subsystems.Vision;
 // import java.util.function.DoubleSupplier;
 
-
-
 // import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 // import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 
@@ -29,12 +27,11 @@
 //   CommandSwerveDrivetrain m_swerveDrive;
 //   private double m_percentOutput;
 
-
 //   private double RPMThreshold = 1200.0;
 //   private double timerThreshold = 0.5;
 
 //   private double ChangeThisValue;
-  
+
 //   private final Timer m_timer = new Timer();
 //   private boolean timerStart = false;
 
@@ -42,15 +39,17 @@
 //   private double PoseX = m_swerveDrive.getState().Pose.getX();
 //   private double PoseY = m_swerveDrive.getState().Pose.getY();
 //   private double shootangle = m_shooter.shootangle(PoseX,PoseY);
-  
-//   private double displacementX = ChangeThisValue * Math.sin(shootangle); //TODO: Change this value
+
+//   private double displacementX = ChangeThisValue * Math.sin(shootangle); //TODO: Change this
+// value
 //   private double displacementY = ChangeThisValue * Math.cos(shootangle);
-  
-  
+
 //   private double VelocityY =
-//     m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond * m_swerveDrive.getState().Pose.getRotation().getSin();
+//     m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond *
+// m_swerveDrive.getState().Pose.getRotation().getSin();
 //   private double VelocityX =
-//       m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond * m_swerveDrive.getState().Pose.getRotation().getCos();
+//       m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond *
+// m_swerveDrive.getState().Pose.getRotation().getCos();
 //   private double VelocityShoot = 1.2; //TODO: Change after testing
 
 //   double m_headingOffset =
@@ -82,7 +81,6 @@
 //     m_strafeInput = strafeInput;
 //     m_rotationInput = rotationInput;
 //     m_percentOutput = percentOutput;
-    
 
 //     addRequirements(m_shooter);
 //   }
@@ -108,9 +106,8 @@
 //         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
 //             * Math.signum(m_rotationInput.getAsDouble());
 
+//   if (CorrectRange == true && m_shooter.getRPM() > RPMThreshold) {
 
-//   if (CorrectRange == true && m_shooter.getRPM() > RPMThreshold) { 
-      
 //       m_shooter.setRpmOutput(RPMThreshold);
 //       drive.withVelocityX(VelocityX)
 //         .withVelocityY(VelocityY)
@@ -135,9 +132,6 @@
 //       timerStart = false;
 //   }
 
-
-   
-   
 //   }
 
 //   // Called every time the scheduler runs while the command is scheduled.
@@ -148,7 +142,7 @@
 
 //     m_shooter.setPercentOutput(0);
 //     m_ampShooter.setPercentOutput(0);
-      
+
 //   }
 
 //   // Returns true when the command should end.

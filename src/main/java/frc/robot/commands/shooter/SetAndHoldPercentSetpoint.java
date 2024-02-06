@@ -11,8 +11,6 @@ public class SetAndHoldPercentSetpoint extends Command {
   Shooter m_shooter;
   double m_percentOutput;
 
-
-
   public SetAndHoldPercentSetpoint(Shooter shooter, double percentOutput) {
     m_shooter = shooter;
     m_percentOutput = percentOutput;
@@ -33,7 +31,7 @@ public class SetAndHoldPercentSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
     // m_shooter.setPercentOutput(0);
   }
 

@@ -29,7 +29,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   }
 
   public static boolean IsRedAlliance() {
-    return (allianceColor ==  DriverStation.Alliance.Red);
+    return (allianceColor == DriverStation.Alliance.Red);
   }
 
   public static boolean IsBlueAllaince() {

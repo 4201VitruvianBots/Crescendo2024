@@ -28,11 +28,9 @@ public final class FLYWHEEL {
       this.value = value;
     }
 
-     public double get() {
+    public double get() {
       return value;
     }
-
-  
   }
 
   public enum FLYWHEEL_STATE {
@@ -50,16 +48,15 @@ public final class FLYWHEEL {
     }
 
     public Object getPercentOutput() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPercentOutput'");
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'getPercentOutput'");
     }
   }
 
   public static final double NoteVelocity = 0; // add note velocity
 
-
   public static class SPEAKER {
-    
+
     public static final double BlueSpeakerTLY = 6.1478414;
     public static final double BlueSpeakerTLX = 0.464947;
 
@@ -72,8 +69,6 @@ public final class FLYWHEEL {
     public static final double BlueSpeakerBRY = 5.0232564;
     public static final double BlueSpeakerBRX = 0;
 
-
-    
     public static final double RedSpeakerTLY = 6.1478414;
     public static final double RedSpeakerTLX = 16.0697672;
 

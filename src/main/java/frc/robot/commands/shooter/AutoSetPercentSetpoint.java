@@ -14,7 +14,7 @@ public class AutoSetPercentSetpoint extends Command {
 
   public AutoSetPercentSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
     m_shooter = shooter;
-  m_state = state;
+    m_state = state;
 
     addRequirements(m_shooter);
   }

@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
@@ -33,6 +32,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 // import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetAndHoldPercentSetpoint;
+import frc.robot.commands.shooter.ToggleShooterTestMode;
 // import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
 // import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
@@ -150,11 +150,12 @@ public class RobotContainer {
     xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0.8)); // sbeaker
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
 
-
-//     xboxController
-//         .x()
-//         .whileTrue(
-//             new ShootNStrafe(m_swerveDrive, m_vision, m_ampShooter, () -> -m_testController.getRawAxis(1), () -> -m_testController.getRawAxis(0), () ->-m_testController.getRawAxis(0), 0.8));
+    //     xboxController
+    //         .x()
+    //         .whileTrue(
+    //             new ShootNStrafe(m_swerveDrive, m_vision, m_ampShooter, () ->
+    // -m_testController.getRawAxis(1), () -> -m_testController.getRawAxis(0), ()
+    // ->-m_testController.getRawAxis(0), 0.8));
   }
 
   public void initAutoChooser() {
@@ -178,6 +179,7 @@ public class RobotContainer {
   public void initSysidChooser() {
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
+    SmartDashboard.putData(new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
