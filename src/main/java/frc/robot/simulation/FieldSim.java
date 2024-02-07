@@ -63,6 +63,10 @@ private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new 
     double xVelocity = m_shooter.getMotorVelocityMetersPerSecond() * Math.cos(m_robotPose.getRotation().getRadians());
     double yVelocity = m_shooter.getMotorVelocityMetersPerSecond() * Math.sin(m_robotPose.getRotation().getRadians());
     
+    System.out.println("Shooter velocity: " + m_shooter.getMotorVelocityMetersPerSecond());
+    System.out.println("X velocity: " + xVelocity);
+    System.out.println("Y velocity: " + yVelocity);
+    
     m_noteXvelocities.add(xVelocity);
     m_noteYvelocities.add(yVelocity);
   }
@@ -83,15 +87,28 @@ private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new 
     for (int i = 0; i < m_notePoses.size(); i++) {
         double deltaTime = m_timer.get() - m_lastTime;
         m_lastTime = m_timer.get();
+        
+        if (deltaTime != 0.0) System.out.println("Updating note " + i);
+        if (deltaTime != 0.0) System.out.println("\tOld pose - X: " + m_notePoses.get(i).getX() + " Y:" + m_notePoses.get(i).getY());
+        
+        if (deltaTime != 0.0) System.out.println("\tDelta time: " + deltaTime);
 
         double xVelocity = m_noteXvelocities.get(i);
         double yVelocity = m_noteYvelocities.get(i);
 
+        if (deltaTime != 0.0) System.out.println("\tX velocity: " + xVelocity);
+        if (deltaTime != 0.0) System.out.println("\tY velocity: " + yVelocity);
+        
         double dxVelocity = xVelocity * deltaTime;
         double dyVelocity = yVelocity * deltaTime;
+        
+        if (deltaTime != 0.0) System.out.println("\tDelta X velocity: " + dxVelocity);
+        if (deltaTime != 0.0) System.out.println("\tDelta Y velocity: " + dyVelocity);
 
         Pose2d pose = m_notePoses.get(i);
         pose = pose.plus(new Transform2d(dxVelocity, dyVelocity, new Rotation2d()));
+        
+        if (deltaTime != 0.0) System.out.println("\tNew pose - X: " + pose.getX() + " Y:" + pose.getY());
     }
     
     m_field2d.getObject("Note").setPoses(m_notePoses);

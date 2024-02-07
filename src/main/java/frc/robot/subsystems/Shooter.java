@@ -46,7 +46,8 @@ public class Shooter extends SubsystemBase {
   
   // Gets the frictional flywheel velocity in meters per second
   public double getMotorVelocityMetersPerSecond() {
-    return (m_rpm / 60.0) * FLYWHEEL.kFlywheelDiameter * Math.PI;
+    //return (m_rpm / 60.0) * FLYWHEEL.kFlywheelDiameter * Math.PI;
+    return 2;
   }
 
   private void updateShuffleboard() {
