@@ -18,8 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled("To Fix after Swerve Code Updates")
-public class TestDriveStraightChoreoTest {
+public class TestPathPlanner {
   static final double DELTA = 0.02; // acceptable deviation range
 
   RobotTime m_robotTime;
@@ -56,18 +55,27 @@ public class TestDriveStraightChoreoTest {
 
   @Test
   public void testPathLoading() {
-    PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory("DriveStraightTest");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("DriveForwardTest");
 
-    var startPose = new Pose2d(2, 2, new Rotation2d());
-    var maxVel = 1.0;
+    var startPose = new Pose2d(2, 4.89, new Rotation2d());
 
     //        assertEquals(path.getGlobalConstraints().getMaxVelocityMps(), maxVel, DELTA);
     assertEquals(startPose, path.getPreviewStartingHolonomicPose());
+
+    var endPose = new Pose2d(5.05, 4.89, new Rotation2d());
+
+    //        assertEquals(path.getGlobalConstraints().getMaxVelocityMps(), maxVel, DELTA);
+    assertEquals(
+        endPose.getTranslation(),
+        path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).position);
+    assertEquals(
+        endPose.getRotation(),
+        path.getAllPathPoints().get(path.getAllPathPoints().size() - 1).rotationTarget.getTarget());
   }
 
-  @Test
-  public void testTestDriveStraightChoreoTestCommand() {
-    var command = new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim);
+  @Disabled
+  public void testDriveStraightCommand() {
+    var command = new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim);
 
     CommandScheduler.getInstance().enable();
     CommandScheduler.getInstance().registerSubsystem(m_swerveDrive);

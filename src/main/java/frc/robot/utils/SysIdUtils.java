@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
 
-public class SysidUtils {
+public class SysIdUtils {
   private static SysIdRoutine swerveDriveRoutine;
   private static SysIdRoutine swerveTurnRoutine;
 

@@ -4,8 +4,8 @@
 
 package frc.robot.commands.autos;
 
-import com.choreo.lib.Choreo;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,21 +17,22 @@ import frc.robot.utils.TrajectoryUtils;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveStraightChoreoTest extends SequentialCommandGroup {
+public class DriveStraightPathPlannerTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
-  public DriveStraightChoreoTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
+  public DriveStraightPathPlannerTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
 
-    var traj = Choreo.getTrajectory("44r4r");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("DriveForwardTest");
 
-    var m_ppCommand = TrajectoryUtils.generateChoreoCommand(swerveDrive, traj, 1.0, false);
+    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        // new PlotAutoPath(fieldSim, "44r4r", traj),
-        new InstantCommand(() -> swerveDrive.seedFieldRelative(traj.getInitialPose())),
+        new PlotAutoPath(fieldSim, "Drivefowardtest", path),
+        new InstantCommand(
+            () -> swerveDrive.seedFieldRelative(path.getPreviewStartingHolonomicPose())),
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)

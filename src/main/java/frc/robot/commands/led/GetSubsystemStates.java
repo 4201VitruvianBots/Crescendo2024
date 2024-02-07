@@ -6,25 +6,15 @@ package frc.robot.commands.led;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.CLIMBER;
 import frc.robot.constants.LED;
-import frc.robot.constants.CAN.INTAKE_STATE;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Uptake;
-import frc.robot.constants.CAN.UPTAKE_STATE;
-import frc.robot.constants.LED.ANIMATION_TYPE;
-import frc.robot.constants.LED.SUBSYSTEM_STATES;
-
-
+import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LEDSubsystem m_led;
-  private final Uptake m_uptake;
+
+  private final AmpShooter m_ampShooter;
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
@@ -37,32 +27,30 @@ public class GetSubsystemStates extends Command {
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Uptake uptake, Shooter shooter) {
+      LEDSubsystem led, Intake intake, Climber climber, AmpShooter ampShooter, Shooter shooter) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
-    m_uptake = uptake; 
+    m_ampShooter = ampShooter;
     m_shooter = shooter;
-    
+
     addRequirements(m_led);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isIntaking = m_intake.getIntakeState() == INTAKE_STATE.INTAKING;
-    isUptaking = m_uptake.getUptakeState() == UPTAKE_STATE.UPTAKING;
+    // isIntaking = m_intake.getIntakeState() == INTAKE_STATE.INTAKING;
+    // isUptaking = m_uptake.getUptakeState() == UPTAKE_STATE.UPTAKING;
     isDisabled = DriverStation.isDisabled();
     isEnabled = !isDisabled;
     // isClimbing = m_climber.getClimberState() == SUBSYSTEM_STATES.CLIMBING;
     // isScoringSpeaker = m_shooter.getShooterState() == SUBSYSTEM_STATES.SCORE_SPEAKER;
-    
+
     // the prioritized state to be expressed to the LEDs
     // set in order of priority to be expressed from the least priority to the
     // highest priority
@@ -79,9 +67,7 @@ public class GetSubsystemStates extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
- 
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

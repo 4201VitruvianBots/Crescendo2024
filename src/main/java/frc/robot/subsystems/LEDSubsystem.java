@@ -1,21 +1,14 @@
 /* Copyright (c) FIRST and other WPILib contributors.
-   Open Source Software; you can modify and/or share it under the terms of
-   the WPILib BSD license file in the root directory of this project. */
+Open Source Software; you can modify and/or share it under the terms of
+the WPILib BSD license file in the root directory of this project. */
 
 package frc.robot.subsystems;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.CTREJNIWrapper;
 import com.ctre.phoenix.led.CANdleStatusFrame;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
@@ -30,14 +23,19 @@ import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.LED.*;
 import frc.robot.constants.LED;
+import frc.robot.constants.LED.*;
 
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LED. */
-  
   private final CANdle m_candle = new CANdle(CAN.CANdle);
+
   private int red = 0;
   private int green = 0; // setting all LED colors to none: there is no color when robot activates
   private int blue = 0;
@@ -46,7 +44,7 @@ public class LEDSubsystem extends SubsystemBase {
   private Animation m_toAnimate = null;
 
   public LEDSubsystem(Controls controls) {
-    m_candle.configFactoryDefault(); 
+    m_candle.configFactoryDefault();
     // sets up LED strip
     CANdleConfiguration configAll = new CANdleConfiguration();
     configAll.statusLedOffWhenActive = true; // sets lights of when the LEDs are activated
@@ -66,6 +64,7 @@ public class LEDSubsystem extends SubsystemBase {
     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_6_BottomPixels, 255);
     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_7_TopPixels, 255);
   }
+
   // will create LED patterns
   public void setPattern(Color8Bit color, int white, double speed, ANIMATION_TYPE toChange) {
     int red = color.red;
@@ -117,6 +116,7 @@ public class LEDSubsystem extends SubsystemBase {
         break;
     }
   }
+
   // will set LEDs a coordinated color for an action
 
   // Will need to figure out what colors and animations the drivers want for the states
@@ -134,7 +134,7 @@ public class LEDSubsystem extends SubsystemBase {
           break;
         case CLIMBING:
           setPattern(null, 0, 0, null);
-          break;  
+          break;
         case SCORE_TRAP:
           setPattern(null, 0, 0, null);
           break;
@@ -153,6 +153,11 @@ public class LEDSubsystem extends SubsystemBase {
       currentRobotState = state;
     }
   }
+
+  public Color8Bit getColor() {
+    return new Color8Bit(red, green, blue);
+  }
+
   @Override
   public void periodic() {
     // null indicates that the animation is "Solid"
@@ -173,7 +178,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
   }
-  //@SuppressWarnings("RedundantThrows")
-  //@Override
-  //public void close() throws Exception {}
+  // @SuppressWarnings("RedundantThrows")
+  // @Override
+  // public void close() throws Exception {}
 }
