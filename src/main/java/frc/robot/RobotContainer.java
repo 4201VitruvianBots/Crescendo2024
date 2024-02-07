@@ -150,9 +150,10 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // amp
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 420.69)); // sbeaker
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // amp
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // sbeaker
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
+    xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
@@ -23,8 +25,12 @@ public class Intake extends SubsystemBase {
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
 
   public Intake() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor1, new TalonFXConfiguration());
-    CtreUtils.configureTalonFx(intakeMotor2, new TalonFXConfiguration());
+    CtreUtils.configureTalonFx(intakeMotor2, config);
+    
   }
 
   public void setSpeed(double speed1, double speed2) {
