@@ -66,6 +66,8 @@ public class ROBOT {
     SWERVE.DRIVE.kInvertLeftDrive = false;
     SWERVE.DRIVE.kInvertRightDrive = true;
     SWERVE.MODULE.kTurnInverted = true;
+
+    SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
   }
 
   public static void initBobot() {

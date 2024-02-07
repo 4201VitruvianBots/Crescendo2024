@@ -10,13 +10,13 @@ import frc.robot.subsystems.Intake;
 public class RunIntake extends Command {
   Intake m_intake;
   double m_speed;
-  double m_speed2; 
+  double m_speed2;
 
   /** Creates a new RunIntake. */
   public RunIntake(Intake intake, double speed, double speed2) {
     m_intake = intake;
     m_speed = speed;
-    m_speed2 = speed2; 
+    m_speed2 = speed2;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake);
   }
