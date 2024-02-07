@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.RobotTime;
+import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -26,6 +27,7 @@ public class TestChoreo {
   CommandSwerveDrivetrain m_swerveDrive;
   Telemetry m_telemetry;
   FieldSim m_fieldSim;
+  Shooter m_shooter;
 
   @BeforeEach
   public void constructDevices() {
@@ -41,7 +43,8 @@ public class TestChoreo {
             BackLeftConstants,
             BackRightConstants);
     m_telemetry = new Telemetry();
-    m_fieldSim = new FieldSim();
+    m_shooter = new Shooter();
+    m_fieldSim = new FieldSim(m_shooter);
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
 

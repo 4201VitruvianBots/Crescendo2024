@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.FLYWHEEL;
 
 public class Shooter extends SubsystemBase {
   private final TalonFX flywheelmotor1 = new TalonFX(CAN.flywheel1);
@@ -41,6 +42,11 @@ public class Shooter extends SubsystemBase {
 
   public double getRPM2() {
     return m_rpm * flywheelRPMRatio;
+  }
+  
+  // Gets the frictional flywheel velocity in meters per second
+  public double getMotorVelocityMetersPerSecond() {
+    return (m_rpm / 60.0) * FLYWHEEL.kFlywheelDiameter * Math.PI;
   }
 
   private void updateShuffleboard() {
