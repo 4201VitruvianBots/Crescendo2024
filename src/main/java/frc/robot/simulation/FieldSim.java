@@ -83,6 +83,7 @@ private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new 
     m_field2d.setRobotPose(m_robotPose);
     m_field2d.getObject("Swerve Modules").setPoses(m_swervePoses);
     
+    ArrayList<Pose2d> newNotePoses = new ArrayList<>();
     // Update the note poses
     for (int i = 0; i < m_notePoses.size(); i++) {
         double deltaTime = m_timer.get() - m_lastTime;
@@ -108,8 +109,12 @@ private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new 
         Pose2d pose = m_notePoses.get(i);
         pose = pose.plus(new Transform2d(dxVelocity, dyVelocity, new Rotation2d()));
         
+        newNotePoses.add(pose);
+        
         if (deltaTime != 0.0) System.out.println("\tNew pose - X: " + pose.getX() + " Y:" + pose.getY());
     }
+    
+    m_notePoses = newNotePoses;
     
     m_field2d.getObject("Note").setPoses(m_notePoses);
 
@@ -122,6 +127,7 @@ private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new 
             m_noteXvelocities.remove(i);
             m_noteYvelocities.remove(i);
             poseIterator.remove();
+            System.out.println("Removed note " + i);
         } else {
             i++;
         }
