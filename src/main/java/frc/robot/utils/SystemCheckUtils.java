@@ -10,13 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.ROBOT;
 
 /** Add your docs here. */
-public class TestUtils {
+public class SystemCheckUtils {
     private static class PrintSuccess extends InstantCommand {
         public PrintSuccess(String commandName) {
             super(() -> System.out.println(ROBOT.ANSI_GREEN + "✓  " + commandName + " ran successfully" + ROBOT.ANSI_RESET));
@@ -40,10 +39,9 @@ public class TestUtils {
         }
     }
     
-    
     public static ParallelRaceGroup runCheck(Command command, double timeout, BooleanSupplier aButton, BooleanSupplier bButton) {
         ParallelDeadlineGroup runCommand = new ParallelDeadlineGroup(new WaitCommand(timeout).andThen(new PrintFailure(command.getName(), timeout)), command.andThen(new PrintSuccess(command.getName())));
-        
+                
         // Print confirmation to ask the user whether they want to run the command, and then run the command if the user presses the confirm button
         // Run PrintConfirmation and then run the command if the user presses the confirm button, or deny the command if the user presses the deny button
         return new ParallelRaceGroup(

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.autos.system.*;
 import frc.robot.subsystems.*;
 import frc.robot.constants.ROBOT;
-import frc.robot.utils.TestUtils;
+import frc.robot.utils.SystemCheckUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -27,18 +27,16 @@ public SystemCheck(AmpShooter ampShooter, Arm arm, Climber climber, Intake intak
         new PrintCommand(ROBOT.ANSI_CYAN + "Please ensure that the robot and team members are in safe locations and that all subsystems are ready to be tested." + ROBOT.ANSI_RESET),
         
         // Check subsystems that don't require human interaction, i.e. LEDSubsystem, Vision, and Swerve
-        TestUtils.runCheck(new CheckSwerve(swerveDrivetrain), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckLEDSubsystem(ledSubsystem), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckVision(vision), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckSwerve(swerveDrivetrain), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckLEDSubsystem(ledSubsystem), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckVision(vision), 5, aButton, bButton),
         
         // Check subsystems that require human interaction to test full functionality, i.e. Arm, AmpShooter, Intake, Shooter, and Climber
-        TestUtils.runCheck(new CheckArm(arm), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckAmpShooter(ampShooter), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckIntake(intake), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckShooter(shooter), 5, aButton, bButton),
-        TestUtils.runCheck(new CheckClimber(climber), 5, aButton, bButton),
-        
-        new PrintCommand(ROBOT.ANSI_CYAN + "System check complete!" + ROBOT.ANSI_RESET)
+        SystemCheckUtils.runCheck(new CheckArm(arm), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckAmpShooter(ampShooter), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckIntake(intake), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckShooter(shooter), 5, aButton, bButton),
+        SystemCheckUtils.runCheck(new CheckClimber(climber), 5, aButton, bButton)
     );
 }
 }
