@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,8 +20,11 @@ public class Shooter extends SubsystemBase {
   /* Creates a new Intake. */
   public Shooter() {
     // flywheel motor 1
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    flywheelmotor1.getConfigurator().apply(config);
     flywheelmotor1.setInverted(true);
     // flywheel motor 2
+    flywheelmotor2.getConfigurator().apply(config);
     flywheelmotor2.setInverted(false);
   }
 
