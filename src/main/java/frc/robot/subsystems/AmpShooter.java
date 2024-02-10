@@ -7,6 +7,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
@@ -48,6 +49,6 @@ public class AmpShooter extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleboard();
-    updateLog();
+    if (!ROBOT.disableLogging) updateLog();
   }
 }

@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -43,8 +42,8 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
-
-// import frc.robot.visualizers.SuperStructureVisualizer;
+import frc.robot.visualizers.SuperStructureVisualizer;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
@@ -64,12 +63,14 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
+
   private final FieldSim m_fieldSim = new FieldSim();
+  private SuperStructureVisualizer m_visualizer;
 
-  // private SuperStructureVisualizer m_visualizer;
-
-  private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-  private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
+  private final LoggedDashboardChooser<Command> m_autoChooser =
+      new LoggedDashboardChooser<>("Auto Chooser");
+  private final LoggedDashboardChooser<Command> m_sysidChooser =
+      new LoggedDashboardChooser<>("SysID Chooser");
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
@@ -169,16 +170,16 @@ public class RobotContainer {
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5));
     xboxController.b().onTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
 
-    //     xboxController
-    //         .y()
-    //         .whileTrue(
-    //             new ShootNStrafe(m_swerveDrive, m_vision, m_ampShooter, () ->
-    // -m_testController.getRawAxis(1), () -> -m_testController.getRawAxis(0), ()
-    // ->-m_testController.getRawAxis(0), 0.8));
-  }
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // amp
+    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // sbeaker
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
+    xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
+    //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
+    //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
+    xboxController.y().whileTrue(new ArmForward(m_arm));
 
   public void initAutoChooser() {
-    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
@@ -190,9 +191,8 @@ public class RobotContainer {
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
-    //  m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
-    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_ampShooter));
-    SmartDashboard.putData("AutoChooser", m_autoChooser);
+    //    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+    //    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
   }
 
   public void initSysidChooser() {
@@ -236,14 +236,12 @@ public class RobotContainer {
     m_sysidChooser.addOption(
         "turnDynamicBackward",
         new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
-
-    SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if (ROBOT.useSysID) return m_sysidChooser.getSelected();
-    else return m_autoChooser.getSelected();
+    if (ROBOT.useSysID) return m_sysidChooser.get();
+    else return m_autoChooser.get();
   }
 
   public void periodic() {

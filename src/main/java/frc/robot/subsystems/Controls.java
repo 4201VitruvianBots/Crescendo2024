@@ -9,11 +9,11 @@ import org.littletonrobotics.junction.Logger;
 
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
-  private boolean isInit;
-  private static DriverStation.Alliance allianceColor = DriverStation.Alliance.Red;
+  private boolean m_initState;
+  private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
 
   public Controls() {
-    isInit = false;
+    m_initState = false;
 
     if (!ROBOT.disableLogging)
       Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
@@ -25,7 +25,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
    * @return Returns the current alliance color.
    */
   public static DriverStation.Alliance getAllianceColor() {
-    return allianceColor;
+    return m_allianceColor;
   }
 
   public static boolean IsRedAlliance() {
@@ -41,11 +41,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean getInitState() {
-    return isInit;
-  }
-
-  public void setInitState(boolean init) {
-    isInit = init;
+    return m_initState;
   }
 
   /**
@@ -56,7 +52,11 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private void updateAllianceColor() {
     var checkDsAlliance = DriverStation.getAlliance();
 
-    checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
+    checkDsAlliance.ifPresent(alliance -> m_allianceColor = alliance);
+  }
+
+  private void updateInitState() {
+    if (DriverStation.isDisabled()) {}
   }
 
   /** Sends values to SmartDashboard */
@@ -69,6 +69,8 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isSimulation() || (RobotBase.isReal() && DriverStation.isDisabled())) {
       updateAllianceColor();
     }
+    updateInitState();
+
     // This method will be called once per scheduler run
     if (!ROBOT.disableLogging) updateLogger();
   }

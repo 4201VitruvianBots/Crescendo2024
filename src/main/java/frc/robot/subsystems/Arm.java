@@ -182,7 +182,7 @@ public class Arm extends SubsystemBase {
         break;
     }
 
-    updateLogger();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 
   double m_last_time;
