@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,13 +41,6 @@ public class Intake extends SubsystemBase {
     return intakeMotor1.get();
   }
 
-  public void updateSmartDashboard() {}
-
-  public void updateLog() {
-    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
-  }
-
   public void setIntaking(boolean isIntaking) {
     m_isIntaking = isIntaking;
   }
@@ -63,10 +57,17 @@ public class Intake extends SubsystemBase {
     return m_state;
   }
 
+  public void updateSmartDashboard() {}
+
+  public void updateLogger() {
+    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }

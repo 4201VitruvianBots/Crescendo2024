@@ -25,11 +25,13 @@ import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.LED;
 import frc.robot.constants.LED.*;
+import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -118,34 +120,26 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   // will set LEDs a coordinated color for an action
-
-  // Will need to figure out what colors and animations the drivers want for the states
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
         case INTAKING:
-          setPattern(null, 0, 0, null);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Strobe);
           break;
         case SCORE_SPEAKER:
-          setPattern(null, 0, 0, null);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
           break;
-        case SCORE_AMP:
-          setPattern(null, 0, 0, null);
+        case SCORE_ARM: // For scoring amp or trap
+          setPattern(LED.white, 1, 0, ANIMATION_TYPE.Solid);
           break;
         case CLIMBING:
-          setPattern(null, 0, 0, null);
-          break;
-        case SCORE_TRAP:
-          setPattern(null, 0, 0, null);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Rainbow);
           break;
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
           break;
         case ENABLED:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Green
-          break;
-        case LOW_BATTERY:
-          setPattern(LED.yellow, 0, 1, ANIMATION_TYPE.Strobe); // Flashing Yellow
           break;
         default:
           break;
@@ -158,9 +152,9 @@ public class LEDSubsystem extends SubsystemBase {
     return new Color8Bit(red, green, blue);
   }
 
-  private void updateSmartdashboard() {}
+  private void updateSmartDashboard() {}
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
   }
 
@@ -174,6 +168,7 @@ public class LEDSubsystem extends SubsystemBase {
       setSolid = false;
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
+    SmartDashboard.putString("LED Mode", currentRobotState.toString());
 
     if (DriverStation.isDisabled()) {
       if (RobotController.getBatteryVoltage()
@@ -182,6 +177,6 @@ public class LEDSubsystem extends SubsystemBase {
       }
     }
 
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }

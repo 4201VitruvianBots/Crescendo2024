@@ -42,13 +42,13 @@ public class AmpShooter extends SubsystemBase {
     SmartDashboard.putNumber("ampShooterPercent", this.getPercentOutput());
   }
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("AmpShooter/Velocity", getVelocity());
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
-    if (!ROBOT.disableLogging) updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }
