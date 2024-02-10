@@ -10,7 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.SHOOTER.FLYWHEEL_STATE;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
@@ -22,7 +22,7 @@ import java.util.function.DoubleSupplier;
 public class ShootNStrafe extends Command {
   Shooter m_shooter;
   AmpShooter m_ampShooter;
-  FLYWHEEL_STATE m_state;
+  RPM_SETPOINT m_state;
   CommandSwerveDrivetrain m_swerveDrive;
   private double m_percentOutput;
 

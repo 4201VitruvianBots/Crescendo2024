@@ -35,13 +35,14 @@ public final class SHOOTER {
     }
   }
 
-  public enum FLYWHEEL_STATE {
-    NONE(0.01),
-    SPEAKER(1);
+  public enum RPM_SETPOINT {
+    NONE(0),
+    COOLVALUE(4201),
+    MAX(6000);
 
     private final double value;
 
-    FLYWHEEL_STATE(final double value) {
+    RPM_SETPOINT(final double value) {
       this.value = value;
     }
 
