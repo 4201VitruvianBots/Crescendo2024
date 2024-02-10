@@ -83,7 +83,8 @@ public class RobotContainer {
     configureBindings();
     initAutoChooser();
 
-    NamedCommands.registerCommand("AutoRunIntake", new AutoRunIntake(m_intake,INTAKE_STATE.INTAKING));
+    NamedCommands.registerCommand(
+        "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
     NamedCommands.registerCommand(
         "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, FLYWHEEL_STATE.SPEAKER));
 

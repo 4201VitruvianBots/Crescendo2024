@@ -10,9 +10,9 @@ import frc.robot.subsystems.Intake;
 
 public class AutoRunIntake extends Command {
   /** Creates a new AutoRunIntake. */
-Intake m_intake;
-INTAKE_STATE m_state;
+  Intake m_intake;
 
+  INTAKE_STATE m_state;
 
   public AutoRunIntake(Intake intake, INTAKE_STATE state) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,14 +28,12 @@ INTAKE_STATE m_state;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setSpeed(m_state.get(),m_state.get());
+    m_intake.setSpeed(m_state.get(), m_state.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

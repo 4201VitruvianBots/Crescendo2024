@@ -17,7 +17,7 @@ public final class INTAKE {
     INTAKING1(-0.85),
     INTAKINGSLOW(0.2);
     private final double value;
-    
+
     INTAKE_STATE(final double value) {
       this.value = value;
     }
