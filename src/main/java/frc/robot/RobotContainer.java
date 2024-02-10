@@ -23,6 +23,7 @@ import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
+import frc.robot.commands.autos.SystemCheck;
 import frc.robot.commands.autos.ThreePiecefar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -49,7 +50,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //  private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -176,6 +177,7 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
+    m_autoChooser.addOption("SystemCheck", new SystemCheck(m_ampShooter, m_arm, m_climber, m_intake, m_led, m_shooter, m_swerveDrive, m_vision, xboxController.a(), xboxController.b()));
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
