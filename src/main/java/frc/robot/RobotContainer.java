@@ -29,8 +29,13 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
-import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
+// import frc.robot.commands.shooter.ShootNStrafe;
+import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ToggleShooterTestMode;
+// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
+// import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -160,8 +165,16 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // amp
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // sbeaker
+    xboxController
+        .a()
+        .whileTrue(
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // slow sbeaker
+    xboxController
+        .b()
+        .whileTrue(
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // fast sbeaker
+    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
+
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
@@ -189,6 +202,8 @@ public class RobotContainer {
   public void initSysidChooser() {
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
+
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
