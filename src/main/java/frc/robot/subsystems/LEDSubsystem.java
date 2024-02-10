@@ -23,9 +23,9 @@ import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
@@ -128,7 +128,7 @@ public class LEDSubsystem extends SubsystemBase {
         case SCORE_SPEAKER:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
           break;
-        case SCORE_ARM:                                               // For scoring amp or trap
+        case SCORE_ARM: // For scoring amp or trap
           setPattern(LED.white, 1, 0, ANIMATION_TYPE.Solid);
           break;
         case CLIMBING:
