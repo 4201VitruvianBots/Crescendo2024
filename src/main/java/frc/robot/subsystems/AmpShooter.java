@@ -41,14 +41,14 @@ public class AmpShooter extends SubsystemBase {
     //    SmartDashboard.putNumber("ampShooterRPM", this.getRPM());
   }
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("AmpShooter/RPM", getRPM());
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
-    if (!ROBOT.disableLogging) updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }
 // TODO: Update this code as it doesn't work with new revrobotics libraries

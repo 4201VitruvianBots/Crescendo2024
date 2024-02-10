@@ -84,7 +84,7 @@ public class Vision extends SubsystemBase {
   //   return new Pose3d();
   // }
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
 
     if (isCameraConnected()) {
@@ -103,7 +103,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (!ROBOT.disableLogging) updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
     updateSmartDashboard();
   }
 }

@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.LED;
 import frc.robot.constants.LED.*;
+import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -151,9 +152,9 @@ public class LEDSubsystem extends SubsystemBase {
     return new Color8Bit(red, green, blue);
   }
 
-  private void updateSmartdashboard() {}
+  private void updateSmartDashboard() {}
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
   }
 
@@ -176,6 +177,6 @@ public class LEDSubsystem extends SubsystemBase {
       }
     }
 
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }

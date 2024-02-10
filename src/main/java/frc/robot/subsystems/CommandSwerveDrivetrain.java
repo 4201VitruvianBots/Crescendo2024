@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
@@ -277,7 +278,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_alert.set(true);
   }
 
-  private void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
         "Swerve/FrontLeftEncoder",
@@ -295,6 +296,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   @Override
   public void periodic() {
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }
