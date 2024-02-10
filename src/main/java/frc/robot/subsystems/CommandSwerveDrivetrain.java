@@ -277,19 +277,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_alert.set(true);
   }
 
-  public void updateLog() {
+  private void updateLog() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
-        "Swerve/FRONTLEFTENCODER",
+        "Swerve/FrontLeftEncoder",
         Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/FRONTRIGHTENCODER",
+        "Swerve/FrontRightEncoder",
         Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKLEFTENCODER",
+        "Swerve/BackLeftEncoder",
         Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKRIGHTENCODER",
+        "Swerve/BackRightEncoder",
         Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
   }
 

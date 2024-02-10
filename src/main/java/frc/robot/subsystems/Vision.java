@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import java.util.List;
 import java.util.Optional;
@@ -95,14 +96,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private void smartDashboard() {
+  private void updateSmartDashboard() {
     // Implement the smartDashboard method here
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateLog();
-    smartDashboard();
+    if (!ROBOT.disableLogging) updateLog();
+    updateSmartDashboard();
   }
 }

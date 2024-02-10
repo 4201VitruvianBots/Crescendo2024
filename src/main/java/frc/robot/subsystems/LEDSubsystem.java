@@ -24,11 +24,14 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.LED;
 import frc.robot.constants.LED.*;
+import org.littletonrobotics.junction.Logger;
 
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LED. */
@@ -148,6 +151,12 @@ public class LEDSubsystem extends SubsystemBase {
     return new Color8Bit(red, green, blue);
   }
 
+  private void updateSmartdashboard() {}
+
+  private void updateLog() {
+    Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
+  }
+
   @Override
   public void periodic() {
     // null indicates that the animation is "Solid"
@@ -159,8 +168,14 @@ public class LEDSubsystem extends SubsystemBase {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
+
+    if (DriverStation.isDisabled()) {
+      if (RobotController.getBatteryVoltage()
+          < 10) { // calling battery to let driver know that it is low
+        expressState(SUBSYSTEM_STATES.LOW_BATTERY);
+      }
+    }
+
+    updateLog();
   }
-  // @SuppressWarnings("RedundantThrows")
-  // @Override
-  // public void close() throws Exception {}
 }
