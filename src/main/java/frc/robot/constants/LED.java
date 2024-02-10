@@ -48,6 +48,7 @@ public final class LED {
     LOW_BATTERY,
     SCORE_AMP,
     SCORE_SPEAKER,
-    SCORE_TRAP
+    SCORE_TRAP,
+    SCORE_ARM
   }
 }
