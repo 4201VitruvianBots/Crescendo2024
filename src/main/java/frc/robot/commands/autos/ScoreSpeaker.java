@@ -12,7 +12,7 @@ public class ScoreSpeaker extends SequentialCommandGroup {
   public ScoreSpeaker(Shooter shooter, AmpShooter uptake) {
 
     addCommands(
-        new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.COOLVALUE.get())
+        new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.SPEAKER.get())
             .withTimeout(WAIT.WAIT_FOR_FLYWHEEL_SETPOINT.get()),
         new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.NONE.get())
         // TODO: Replace with Amp Rollers
