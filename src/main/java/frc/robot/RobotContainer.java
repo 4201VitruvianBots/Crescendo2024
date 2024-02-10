@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -28,9 +29,12 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
+import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
@@ -78,6 +82,10 @@ public class RobotContainer {
     configureBindings();
     initAutoChooser();
 
+    NamedCommands.registerCommand("AutoRunIntake", new AutoRunIntake(m_intake, -0.5, -0.85));
+    NamedCommands.registerCommand(
+        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, FLYWHEEL_STATE.SPEAKER));
+        
     if (ROBOT.useSysID) initSysidChooser();
 
     if (RobotBase.isSimulation()) {
