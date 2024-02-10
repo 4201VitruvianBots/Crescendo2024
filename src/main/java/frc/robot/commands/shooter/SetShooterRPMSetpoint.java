@@ -7,11 +7,11 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class SetAndHoldRPMSetpoint extends Command {
+public class SetShooterRPMSetpoint extends Command {
   Shooter m_shooter;
   double m_RPMOutput;
 
-  public SetAndHoldRPMSetpoint(Shooter shooter, double RPMOutput) {
+  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutput) {
     m_shooter = shooter;
     m_RPMOutput = RPMOutput;
     addRequirements(m_shooter);

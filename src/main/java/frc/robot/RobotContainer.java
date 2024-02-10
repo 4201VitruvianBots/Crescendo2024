@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
-import frc.robot.commands.autos.ScoreSpeaker;
 import frc.robot.commands.autos.ThreePiecefar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -30,8 +30,7 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 // import frc.robot.commands.shooter.ShootNStrafe;
-import frc.robot.commands.shooter.SetAndHoldPercentSetpoint;
-import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
+import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 // import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
 // import frc.robot.commands.uptake.RunUptake;
@@ -88,14 +87,14 @@ public class RobotContainer {
     if (ROBOT.useSysID) initSysidChooser();
 
     if (RobotBase.isSimulation()) {
-      // m_visualizer = new SuperStructureVisualizer();
-      // m_visualizer.registerIntake(m_intake);
-      // m_visualizer.registerShooter(m_shooter);
-      // m_visualizer.registerAmpShooter(m_ampShooter);
-      // m_visualizer.registerArm(m_arm);
-      // m_visualizer.registerClimber(m_climber);
-      // //    m_visualizer.registerVision(m_vision);
-      // m_visualizer.registerLedSubsystem(m_led);
+      m_visualizer = new SuperStructureVisualizer();
+      m_visualizer.registerIntake(m_intake);
+      m_visualizer.registerShooter(m_shooter);
+      m_visualizer.registerAmpShooter(m_ampShooter);
+      m_visualizer.registerArm(m_arm);
+      m_visualizer.registerClimber(m_climber);
+      //    m_visualizer.registerVision(m_vision);
+      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -164,19 +163,17 @@ public class RobotContainer {
     //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
-    xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 0.01)); // amp
-    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
-    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5));
-    xboxController.b().onTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
 
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // amp
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // sbeaker
+    xboxController.a().whileTrue(new SetShooterRPMSetpoint(m_shooter, 420.1)); // slow sbeaker
+    xboxController.b().whileTrue(new SetShooterRPMSetpoint(m_shooter, 1200)); // fast sbeaker
+    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
+
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));
+  }
 
   public void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
@@ -253,8 +250,8 @@ public class RobotContainer {
     //             estimatedRobotPose.estimatedPose.toPose2d(),
     // estimatedRobotPose.timestampSeconds));
 
-    //   m_fieldSim.periodic();
-    //   if (m_visualizer != null) m_visualizer.periodic();
+    m_fieldSim.periodic();
+    if (m_visualizer != null) m_visualizer.periodic();
   }
 
   public void testInit() {

@@ -1,18 +1,14 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
-public class AutoSetAndHoldRPMSetpoint extends Command {
+public class AutoSetRPMSetpoint extends Command {
   Shooter m_shooter;
   FLYWHEEL_STATE m_state;
 
-  public AutoSetAndHoldRPMSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
+  public AutoSetRPMSetpoint(Shooter shooter, FLYWHEEL_STATE state) {
     m_shooter = shooter;
     m_state = state;
 

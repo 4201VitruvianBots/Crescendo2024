@@ -16,7 +16,7 @@ public final class FLYWHEEL {
   public static final double kV = 0.0;
   public static final double kA = 0.0;
 
-  public static final double shooterangle = 35;
+  public static final double shooterangle = Units.degreesToRadians(35);
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 
@@ -47,11 +47,6 @@ public final class FLYWHEEL {
 
     public double get() {
       return value;
-    }
-
-    public Object getPercentOutput() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'getPercentOutput'");
     }
   }
 

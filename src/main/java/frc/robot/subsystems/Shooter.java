@@ -30,7 +30,6 @@ public class Shooter extends SubsystemBase {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
   };
 
-  private double flywheelPercentRatio = 1.0;
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 

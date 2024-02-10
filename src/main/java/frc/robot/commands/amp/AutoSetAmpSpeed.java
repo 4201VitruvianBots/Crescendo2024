@@ -9,14 +9,14 @@ import frc.robot.constants.ARM.AMP_STATE;
 import frc.robot.subsystems.AmpShooter;
 
 public class AutoSetAmpSpeed extends Command {
-  AmpShooter m_ampshooter;
+  AmpShooter m_ampShooter;
   AMP_STATE m_state;
 
   public AutoSetAmpSpeed(AmpShooter ampshooter, AMP_STATE state) {
-    m_ampshooter = ampshooter;
+    m_ampShooter = ampshooter;
     m_state = state;
 
-    addRequirements(m_ampshooter);
+    addRequirements(m_ampShooter);
   }
 
   // Called when the command is initially scheduled.
@@ -25,18 +25,20 @@ public class AutoSetAmpSpeed extends Command {
 
   @Override
   public void execute() {
-    m_ampshooter.setPercentOutput(m_state.get());
+    m_ampShooter.setPercentOutput(m_state.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_ampShooter.setPercentOutput(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
