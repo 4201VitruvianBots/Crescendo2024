@@ -51,8 +51,7 @@ public class FourPieceNearTest extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     pathsList.add(path1);
-
-    pathsList.add(path2);
+     pathsList.add(path2);
     pathsList.add(path3);
     pathsList.add(path4);
     pathsList.add(path5);

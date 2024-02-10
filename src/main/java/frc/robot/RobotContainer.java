@@ -35,6 +35,7 @@ import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
+import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
@@ -82,7 +83,7 @@ public class RobotContainer {
     configureBindings();
     initAutoChooser();
 
-    NamedCommands.registerCommand("AutoRunIntake", new AutoRunIntake(m_intake, -0.5, -0.85));
+    NamedCommands.registerCommand("AutoRunIntake", new AutoRunIntake(m_intake,INTAKE_STATE.INTAKING));
     NamedCommands.registerCommand(
         "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, FLYWHEEL_STATE.SPEAKER));
 

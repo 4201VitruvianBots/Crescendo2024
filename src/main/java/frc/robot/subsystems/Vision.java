@@ -84,12 +84,14 @@ public class Vision extends SubsystemBase {
   //   return new Pose3d();
   // }
 
-  // TODO implement acutally//
+  // TODO implement acutally (Bengi)//
+
   public boolean hasGamePieceTarget() {
     return false;
   }
 
-  // ToDO implement Acutally//
+  // TODO implement Acutally (Bengi)//
+
   public Rotation2d getRobotToGamePieceRotation() {
     return new Rotation2d();
   }
