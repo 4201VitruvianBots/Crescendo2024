@@ -116,7 +116,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (!ROBOT.disableLogging) updateLogger();
+    if (!ROBOT.disableLogging) updateLog();
     updateSmartDashboard();
   }
 }

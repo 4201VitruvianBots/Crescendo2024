@@ -37,7 +37,7 @@ public final class SHOOTER {
 
   public enum RPM_SETPOINT {
     NONE(0),
-    COOLVALUE(4201),
+    SPEAKER(4201),
     MAX(6000);
 
     private final double value;

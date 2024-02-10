@@ -34,7 +34,6 @@ import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -90,7 +89,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
     NamedCommands.registerCommand(
-        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, FLYWHEEL_STATE.SPEAKER));
+        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get()));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -175,11 +174,11 @@ public class RobotContainer {
     xboxController
         .a()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // slow sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // fast sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
