@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -63,8 +62,10 @@ public class RobotContainer {
 
   private SuperStructureVisualizer m_visualizer;
 
-  private final LoggedDashboardChooser<Command> m_autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
-  private final LoggedDashboardChooser<Command> m_sysidChooser = new LoggedDashboardChooser<>("SysID Chooser");
+  private final LoggedDashboardChooser<Command> m_autoChooser =
+      new LoggedDashboardChooser<>("Auto Chooser");
+  private final LoggedDashboardChooser<Command> m_sysidChooser =
+      new LoggedDashboardChooser<>("SysID Chooser");
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
@@ -183,7 +184,6 @@ public class RobotContainer {
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
     //    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
     //    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
-    SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
   public void initSysidChooser() {
@@ -225,8 +225,6 @@ public class RobotContainer {
     m_sysidChooser.addOption(
         "turnDynamicBackward",
         new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
-
-    SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 
   public Command getAutonomousCommand() {
