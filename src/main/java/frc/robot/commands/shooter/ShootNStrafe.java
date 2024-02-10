@@ -7,6 +7,7 @@ package frc.robot.commands.shooter;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,14 +37,15 @@ public class ShootNStrafe extends Command {
   private boolean timerStart = false;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
-  private double PoseX = m_swerveDrive.getState().Pose.getX();
-  private double PoseY = m_swerveDrive.getState().Pose.getY();
-  private double shootangle = m_shooter.getShootAngle(PoseX, PoseY);
+
+  // TODO: None of this will work if the math is out here and not in execute()
+  private Pose2d robotPose = m_swerveDrive.getState().Pose;
+  private double shootAngle = m_shooter.getShootAngle(robotPose);
   public int hehe = 69; // Mano's work
 
-  private double displacementX = ChangeThisValue * Math.sin(shootangle); // TODO: Change this
+  private double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
 
-  private double displacementY = ChangeThisValue * Math.cos(shootangle);
+  private double displacementY = ChangeThisValue * Math.cos(shootAngle);
 
   private double VelocityY =
       m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
@@ -94,7 +96,6 @@ public class ShootNStrafe extends Command {
 
   @Override
   public void execute() {
-
     m_shooter.setRpmOutput(RPMThreshold);
 
     double throttle =
@@ -107,7 +108,7 @@ public class ShootNStrafe extends Command {
         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
             * Math.signum(m_rotationInput.getAsDouble());
 
-    if (CorrectRange == true
+    if (CorrectRange
         && m_shooter.getRpmMaster() > RPMThreshold
         && m_shooter.getRpmFollower() > RPMThreshold) {
 
@@ -117,7 +118,7 @@ public class ShootNStrafe extends Command {
       m_timer.start();
       timerStart = true;
 
-      if (timerStart == true && m_timer.hasElapsed(timerThreshold)) {
+      if (timerStart && m_timer.hasElapsed(timerThreshold)) {
         isFinished();
       }
     } else {

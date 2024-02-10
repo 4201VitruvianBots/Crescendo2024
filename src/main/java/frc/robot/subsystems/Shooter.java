@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
@@ -19,7 +20,6 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-
   private double m_rpm;
   private boolean m_testMode = false;
   private double m_headingOffset;
@@ -32,13 +32,12 @@ public class Shooter extends SubsystemBase {
 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  private final VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
+  private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
 
   private final SimpleMotorFeedforward m_feedForward =
       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
-
-  VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
-  VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
@@ -51,7 +50,7 @@ public class Shooter extends SubsystemBase {
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
-    configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
+    configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
     configTop.Slot0.kV = SHOOTER.kV;
     configTop.Slot0.kP = SHOOTER.kP;
     configTop.Slot0.kI = SHOOTER.kI;
@@ -78,42 +77,40 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShootNStrafeAngle(
-      double RobotPoseX, double RobotPoseY, double RobotVelocityX, double RobotVelocityY) {
+      Pose2d robotPose, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(
-        (SHOOTER.NoteVelocity * Math.sin(this.getShootAngle(RobotPoseX, RobotPoseY))
-            - RobotVelocityY),
-        (SHOOTER.NoteVelocity * Math.cos(this.getShootAngle(RobotPoseX, RobotPoseY))
-            - RobotVelocityX));
+        (SHOOTER.NoteVelocity * Math.sin(getShootAngle(robotPose)) - RobotVelocityY),
+        (SHOOTER.NoteVelocity * Math.cos(getShootAngle(robotPose)) - RobotVelocityX));
   }
 
-  public double getShootAngle(Double RobotPoseX, double RobotPoseY) {
+  public double getShootAngle(Pose2d robotPose) {
     if (Controls.IsBlueAllaince()) {
       return (Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTLY - RobotPoseY),
-                  (SHOOTER.SPEAKER.BlueSpeakerTLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerTLY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.BlueSpeakerTLX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTRY - RobotPoseY),
-                  (SHOOTER.SPEAKER.BlueSpeakerTRX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerTRY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.BlueSpeakerTRX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBLY - RobotPoseY),
-                  (SHOOTER.SPEAKER.BlueSpeakerBLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerBLY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.BlueSpeakerBLX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBRY - RobotPoseY),
-                  (SHOOTER.SPEAKER.BlueSpeakerBRX - RobotPoseX)))
+                  (SHOOTER.SPEAKER.BlueSpeakerBRY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.BlueSpeakerBRX - robotPose.getX())))
           / 4;
     } else {
       return (Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTLY - RobotPoseY),
-                  (SHOOTER.SPEAKER.RedSpeakerTLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerTLY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.RedSpeakerTLX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTRY - RobotPoseY),
-                  (SHOOTER.SPEAKER.RedSpeakerTRX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerTRY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.RedSpeakerTRX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBLY - RobotPoseY),
-                  (SHOOTER.SPEAKER.RedSpeakerBLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerBLY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.RedSpeakerBLX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBRY - RobotPoseY),
-                  (SHOOTER.SPEAKER.RedSpeakerBRX - RobotPoseX)))
+                  (SHOOTER.SPEAKER.RedSpeakerBRY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.RedSpeakerBRX - robotPose.getX())))
           / 4;
     }
   }
@@ -156,7 +153,7 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
 
   private void updateLogger() {
-    Logger.recordOutput("Flywheel/DesiredPercentOutput", m_desiredPercentOutput);
+    Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
     Logger.recordOutput("Shooter/MasterPercentOutput", m_shooterMotors[0].get());
     Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());

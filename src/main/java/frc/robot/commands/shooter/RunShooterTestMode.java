@@ -19,8 +19,8 @@ public class RunShooterTestMode extends Command {
   private double testKP, testKI, testKD, testKG, testKV, testKA;
 
   /** Creates a new RunShooterTestMode. */
-  public RunShooterTestMode(Shooter flywheel) {
-    m_shooter = flywheel;
+  public RunShooterTestMode(Shooter shooter) {
+    m_shooter = shooter;
 
     addRequirements(m_shooter);
 
@@ -62,7 +62,7 @@ public class RunShooterTestMode extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DriverStation.reportWarning("USING FLYWHEEL TEST MODE!", false);
+    DriverStation.reportWarning("USING SHOOTER TEST MODE!", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

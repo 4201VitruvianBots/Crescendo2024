@@ -21,7 +21,6 @@ public class Intake extends SubsystemBase {
   private INTAKE_STATE m_state = INTAKE_STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
-
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
 
   public Intake() {
