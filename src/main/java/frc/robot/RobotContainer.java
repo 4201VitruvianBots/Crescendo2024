@@ -58,8 +58,8 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
-  private final FieldSim m_fieldSim = new FieldSim();
 
+  private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
   private final LoggedDashboardChooser<Command> m_autoChooser =

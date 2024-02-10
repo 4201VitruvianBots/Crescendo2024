@@ -36,10 +36,6 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     return isInit;
   }
 
-  public void setInitState(boolean init) {
-    isInit = init;
-  }
-
   /**
    * Periodically check the DriverStation to get the Alliance color. This mainly runs when the robot
    * is disabled to avoid a bug where the robot tries to get the alliance color before it is
@@ -49,6 +45,10 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     var checkDsAlliance = DriverStation.getAlliance();
 
     checkDsAlliance.ifPresent(alliance -> allianceColor = alliance);
+  }
+
+  private void updateRobotInitState() {
+    if (DriverStation.isDisabled()) {}
   }
 
   /** Sends values to SmartDashboard */
@@ -61,6 +61,8 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isSimulation() || (RobotBase.isReal() && DriverStation.isDisabled())) {
       updateAllianceColor();
     }
+    updateRobotInitState();
+
     // This method will be called once per scheduler run
     if (!ROBOT.disableLogging) updateLogger();
   }
