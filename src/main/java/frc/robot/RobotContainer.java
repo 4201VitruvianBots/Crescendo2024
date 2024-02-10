@@ -85,7 +85,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoRunIntake", new AutoRunIntake(m_intake, -0.5, -0.85));
     NamedCommands.registerCommand(
         "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, FLYWHEEL_STATE.SPEAKER));
-        
+
     if (ROBOT.useSysID) initSysidChooser();
 
     if (RobotBase.isSimulation()) {
