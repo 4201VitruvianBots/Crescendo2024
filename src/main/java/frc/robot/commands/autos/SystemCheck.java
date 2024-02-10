@@ -36,7 +36,9 @@ public SystemCheck(AmpShooter ampShooter, Arm arm, Climber climber, Intake intak
         SystemCheckUtils.runCheck(new CheckAmpShooter(ampShooter), 5, aButton, bButton),
         SystemCheckUtils.runCheck(new CheckIntake(intake), 5, aButton, bButton),
         SystemCheckUtils.runCheck(new CheckShooter(shooter), 5, aButton, bButton),
-        SystemCheckUtils.runCheck(new CheckClimber(climber), 5, aButton, bButton)
+        SystemCheckUtils.runCheck(new CheckClimber(climber), 5, aButton, bButton),
+        
+        new PrintCommand(ROBOT.ANSI_CYAN + "System check complete!" + ROBOT.ANSI_RESET)
     );
 }
 }
