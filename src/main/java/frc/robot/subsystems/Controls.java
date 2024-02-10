@@ -47,6 +47,10 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     checkDsAlliance.ifPresent(alliance -> m_allianceColor = alliance);
   }
 
+  /**
+   * TODO: Implement this 1. Check that arm is initialized 2. Check that robot position is close to
+   * selected auto position 3.
+   */
   private void updateInitState() {
     if (DriverStation.isDisabled()) {}
   }
