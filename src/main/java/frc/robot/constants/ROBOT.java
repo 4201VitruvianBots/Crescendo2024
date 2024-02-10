@@ -2,6 +2,8 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
 public class ROBOT {
   public static String robotName = "";
@@ -89,22 +91,26 @@ public class ROBOT {
   }
 
   public static void initConstants() {
+    var alert = new Alert("Initializing Robot Constants...", AlertType.INFO);
     if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
-      System.out.println("Setting Robot Constants for ALPABOT");
+      alert.setText("Setting Robot Constants for ALPABOT");
       initAlphaBot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
-      System.out.println("Setting Robot Constants for Gridlock");
+      alert.setText("Setting Robot Constants for Gridlock");
       initGridlock();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.BOBOT.getSerial())) {
-      System.out.println("Setting Robot Constants for Bobot");
+      alert.setText("Setting Robot Constants for Bobot");
       initBobot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.SIM.getSerial())) {
-      System.out.println("Setting Robot Constants for Sim");
+      alert.setText("Setting Robot Constants for Sim");
       initSim();
     } else {
-      System.out.printf(
-          "WARN: Robot Serial Not Recognized! Current roboRIO Serial: %s\n",
-          RobotController.getSerialNumber());
+      alert =
+          new Alert(
+              "WARN: Robot Serial Not Recognized! Current roboRIO Serial: "
+                  + RobotController.getSerialNumber(),
+              AlertType.WARNING);
     }
+    alert.set(true);
   }
 }
