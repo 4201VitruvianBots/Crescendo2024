@@ -2,8 +2,8 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.shooter.AutoSetPercentSetpoint;
-import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
-import frc.robot.constants.FLYWHEEL.WAIT;
+import frc.robot.constants.SHOOTER.FLYWHEEL_STATE;
+import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Shooter;
 

@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.util.Units;
 
-public final class FLYWHEEL {
+public final class SHOOTER {
   public static double gearRatioBottom = 1.0;
   public static double gearRatioTop = 1.0;
 
@@ -16,7 +16,7 @@ public final class FLYWHEEL {
   public static final double kV = 0.0;
   public static final double kA = 0.0;
 
-  public static final double shooterangle = Units.degreesToRadians(35);
+  public static final double kShooterAngle = Units.degreesToRadians(35);
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 

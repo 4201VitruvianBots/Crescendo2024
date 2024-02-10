@@ -6,7 +6,7 @@ import frc.robot.commands.amp.AutoArmSetpoints;
 import frc.robot.commands.amp.AutoSetAmpSpeed;
 import frc.robot.constants.ARM.AMP_STATE;
 import frc.robot.constants.ARM.ARM_SETPOINT;
-import frc.robot.constants.FLYWHEEL.WAIT;
+import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Arm;
 

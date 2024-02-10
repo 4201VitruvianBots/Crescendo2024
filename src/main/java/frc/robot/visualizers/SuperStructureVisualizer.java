@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
-import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER;
 import frc.robot.constants.VISION;
 import frc.robot.subsystems.*;
 
@@ -41,7 +41,7 @@ public class SuperStructureVisualizer {
   MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
           "Shooter",
-          ROBOT.drivebaseLength * 0.5 + FLYWHEEL.kDistanceFromIntake,
+          ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
 
   MechanismLigament2d m_drivebase2d =
@@ -163,7 +163,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getRPMFollower(), m_shooter2d_originalColor);
+    updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
   }
 
   public void updateAmpShooter() {

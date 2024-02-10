@@ -5,16 +5,13 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
-public class ToggleShooterTestMode extends CommandBase {
+public class ToggleShooterTestMode extends Command {
   /** Creates a new ToggleElevatorTestMode. */
   private final Shooter m_shooter;
 
   private final Command m_defaultCommand;
-
-  private boolean m_testMode = false;
 
   public ToggleShooterTestMode(Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,13 +30,11 @@ public class ToggleShooterTestMode extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_testMode = !m_testMode;
-
-    m_shooter.setTestMode(m_testMode);
-
-    if (m_testMode) {
+    if (!m_shooter.getTestMode()) {
+      m_shooter.setTestMode(true);
       m_shooter.setDefaultCommand(new RunShooterTestMode(m_shooter));
     } else {
+      m_shooter.setTestMode(false);
       m_shooter.setDefaultCommand(m_defaultCommand);
     }
   }

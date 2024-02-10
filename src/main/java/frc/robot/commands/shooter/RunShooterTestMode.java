@@ -9,7 +9,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.FLYWHEEL;
+import frc.robot.constants.SHOOTER;
 import frc.robot.subsystems.Shooter;
 
 public class RunShooterTestMode extends Command {
@@ -31,13 +31,13 @@ public class RunShooterTestMode extends Command {
     try {
       shooterNtTab.getDoubleTopic("SetpointRPM").publish().set(0);
 
-      shooterNtTab.getDoubleTopic("kP").publish().set(FLYWHEEL.kP);
-      shooterNtTab.getDoubleTopic("kI").publish().set(FLYWHEEL.kI);
-      shooterNtTab.getDoubleTopic("kD").publish().set(FLYWHEEL.kD);
+      shooterNtTab.getDoubleTopic("kP").publish().set(SHOOTER.kP);
+      shooterNtTab.getDoubleTopic("kI").publish().set(SHOOTER.kI);
+      shooterNtTab.getDoubleTopic("kD").publish().set(SHOOTER.kD);
 
-      shooterNtTab.getDoubleTopic("kG").publish().set(FLYWHEEL.kS);
-      shooterNtTab.getDoubleTopic("kV").publish().set(FLYWHEEL.kV);
-      shooterNtTab.getDoubleTopic("kA").publish().set(FLYWHEEL.kA);
+      shooterNtTab.getDoubleTopic("kG").publish().set(SHOOTER.kS);
+      shooterNtTab.getDoubleTopic("kV").publish().set(SHOOTER.kV);
+      shooterNtTab.getDoubleTopic("kA").publish().set(SHOOTER.kA);
     } catch (Exception m_ignored) {
 
     }
@@ -45,13 +45,13 @@ public class RunShooterTestMode extends Command {
     kSetpointSub = shooterNtTab.getDoubleTopic("SetpointRPM").subscribe(0);
 
     kFSub = shooterNtTab.getDoubleTopic("kF").subscribe(0);
-    kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(FLYWHEEL.kP);
-    kISub = shooterNtTab.getDoubleTopic("kI").subscribe(FLYWHEEL.kI);
-    kDSub = shooterNtTab.getDoubleTopic("kD").subscribe(FLYWHEEL.kD);
+    kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(SHOOTER.kP);
+    kISub = shooterNtTab.getDoubleTopic("kI").subscribe(SHOOTER.kI);
+    kDSub = shooterNtTab.getDoubleTopic("kD").subscribe(SHOOTER.kD);
 
-    kGSub = shooterNtTab.getDoubleTopic("kG").subscribe(FLYWHEEL.kS);
-    kVSub = shooterNtTab.getDoubleTopic("kV").subscribe(FLYWHEEL.kV);
-    kASub = shooterNtTab.getDoubleTopic("kA").subscribe(FLYWHEEL.kA);
+    kGSub = shooterNtTab.getDoubleTopic("kG").subscribe(SHOOTER.kS);
+    kVSub = shooterNtTab.getDoubleTopic("kV").subscribe(SHOOTER.kV);
+    kASub = shooterNtTab.getDoubleTopic("kA").subscribe(SHOOTER.kA);
   }
 
   @Override
@@ -71,13 +71,13 @@ public class RunShooterTestMode extends Command {
     double newSetpoint = (kSetpointSub.get(0));
 
     double newKF = kFSub.get(0);
-    double newKP = kPSub.get(FLYWHEEL.kP);
-    double newKI = kISub.get(FLYWHEEL.kI);
-    double newKD = kDSub.get(FLYWHEEL.kD);
+    double newKP = kPSub.get(SHOOTER.kP);
+    double newKI = kISub.get(SHOOTER.kI);
+    double newKD = kDSub.get(SHOOTER.kD);
 
-    double newKG = kGSub.get(FLYWHEEL.kS);
-    double newKV = kVSub.get(FLYWHEEL.kV);
-    double newKA = kASub.get(FLYWHEEL.kA);
+    double newKG = kGSub.get(SHOOTER.kS);
+    double newKV = kVSub.get(SHOOTER.kV);
+    double newKA = kASub.get(SHOOTER.kA);
 
     if (testKV != newKV || testKP != newKP || testKI != newKI || testKD != newKD) {
       m_shooter.setPidValues(newKV, newKP, newKI, newKD);

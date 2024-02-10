@@ -1,7 +1,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
+import frc.robot.constants.SHOOTER.FLYWHEEL_STATE;
 import frc.robot.subsystems.Shooter;
 
 public class AutoSetRPMSetpoint extends Command {

@@ -11,10 +11,10 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.FLYWHEEL;
+import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
   private boolean m_testMode = false;
   private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
-  private double m_percentOutput;
+  private double m_desiredPercentOutput;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -34,33 +34,29 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
   private final SimpleMotorFeedforward m_feedForward =
-      new SimpleMotorFeedforward(FLYWHEEL.kS, FLYWHEEL.kV, FLYWHEEL.kA);
+      new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
-  VelocityTorqueCurrentFOC FOCcontrolBottom = new VelocityTorqueCurrentFOC(0);
-
-  VelocityTorqueCurrentFOC FOCcontrolTop = new VelocityTorqueCurrentFOC(0);
+  VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
+  VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
-
-    configBottom.Feedback.SensorToMechanismRatio = FLYWHEEL.gearRatioBottom;
+    configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
+    configBottom.Slot0.kP = SHOOTER.kP;
+    configBottom.Slot0.kI = SHOOTER.kI;
+    configBottom.Slot0.kD = SHOOTER.kD;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
-    configBottom.Feedback.SensorToMechanismRatio = FLYWHEEL.gearRatioTop;
+    configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
+    configTop.Slot0.kV = SHOOTER.kV;
+    configTop.Slot0.kP = SHOOTER.kP;
+    configTop.Slot0.kI = SHOOTER.kI;
+    configTop.Slot0.kD = SHOOTER.kD;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
-
-    configBottom.Slot0.kP = FLYWHEEL.kP;
-    configBottom.Slot0.kI = FLYWHEEL.kI;
-    configBottom.Slot0.kD = FLYWHEEL.kD;
-
-    configTop.Slot0.kV = FLYWHEEL.kV;
-    configTop.Slot0.kP = FLYWHEEL.kP;
-    configTop.Slot0.kI = FLYWHEEL.kI;
-    configTop.Slot0.kD = FLYWHEEL.kD;
 
     m_shooterMotors[0].setInverted(true);
     // flywheel motor 1
@@ -71,68 +67,63 @@ public class Shooter extends SubsystemBase {
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
 
-    m_percentOutput = percentOutput;
-  }
-
-  public double getPercentOutput() {
-    return m_percentOutput;
+    m_desiredPercentOutput = percentOutput;
   }
 
   public void setRpmOutput(double rpm) {
     // Phoenix 6 uses rotations per second for velocity control
-
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(
-        FOCcontrolTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+        m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
   }
 
-  public double ShootNStrafeAngle(
+  public double getShootNStrafeAngle(
       double RobotPoseX, double RobotPoseY, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(
-        (FLYWHEEL.NoteVelocity * Math.sin(this.shootangle(RobotPoseX, RobotPoseY))
+        (SHOOTER.NoteVelocity * Math.sin(this.getShootAngle(RobotPoseX, RobotPoseY))
             - RobotVelocityY),
-        (FLYWHEEL.NoteVelocity * Math.cos(this.shootangle(RobotPoseX, RobotPoseY))
+        (SHOOTER.NoteVelocity * Math.cos(this.getShootAngle(RobotPoseX, RobotPoseY))
             - RobotVelocityX));
   }
 
-  public double shootangle(Double RobotPoseX, double RobotPoseY) {
+  public double getShootAngle(Double RobotPoseX, double RobotPoseY) {
     if (Controls.IsBlueAllaince()) {
       return (Math.atan2(
-                  (FLYWHEEL.SPEAKER.BlueSpeakerTLY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.BlueSpeakerTLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerTLY - RobotPoseY),
+                  (SHOOTER.SPEAKER.BlueSpeakerTLX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.BlueSpeakerTRY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.BlueSpeakerTRX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerTRY - RobotPoseY),
+                  (SHOOTER.SPEAKER.BlueSpeakerTRX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.BlueSpeakerBLY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.BlueSpeakerBLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.BlueSpeakerBLY - RobotPoseY),
+                  (SHOOTER.SPEAKER.BlueSpeakerBLX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.BlueSpeakerBRY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.BlueSpeakerBRX - RobotPoseX)))
+                  (SHOOTER.SPEAKER.BlueSpeakerBRY - RobotPoseY),
+                  (SHOOTER.SPEAKER.BlueSpeakerBRX - RobotPoseX)))
           / 4;
     } else {
       return (Math.atan2(
-                  (FLYWHEEL.SPEAKER.RedSpeakerTLY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.RedSpeakerTLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerTLY - RobotPoseY),
+                  (SHOOTER.SPEAKER.RedSpeakerTLX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.RedSpeakerTRY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.RedSpeakerTRX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerTRY - RobotPoseY),
+                  (SHOOTER.SPEAKER.RedSpeakerTRX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.RedSpeakerBLY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.RedSpeakerBLX - RobotPoseX))
+                  (SHOOTER.SPEAKER.RedSpeakerBLY - RobotPoseY),
+                  (SHOOTER.SPEAKER.RedSpeakerBLX - RobotPoseX))
               + Math.atan2(
-                  (FLYWHEEL.SPEAKER.RedSpeakerBRY - RobotPoseY),
-                  (FLYWHEEL.SPEAKER.RedSpeakerBRX - RobotPoseX)))
+                  (SHOOTER.SPEAKER.RedSpeakerBRY - RobotPoseY),
+                  (SHOOTER.SPEAKER.RedSpeakerBRX - RobotPoseX)))
           / 4;
     }
   }
 
   // values that we are pulling
-  public double getRPMMaster() {
+  public double getRpmMaster() {
     return m_shooterMotors[0].getVelocity().getValueAsDouble() * 60.0;
   }
 
-  public double getRPMFollower() {
+  public double getRpmFollower() {
     return m_shooterMotors[1].getVelocity().getValueAsDouble() * 60.0;
   }
 
@@ -152,39 +143,29 @@ public class Shooter extends SubsystemBase {
     m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
+  public boolean getTestMode() {
+    return m_testMode;
+  }
+
   public void setTestMode(boolean mode) {
     m_testMode = mode;
   }
 
-  private void updateShuffleboard() {
-    SmartDashboard.putNumber("Flywheel/PercentOutputPredicted", m_percentOutput);
-    SmartDashboard.putNumber(
-        "Flywheel/MasterPercentOutputActual",
-        m_shooterMotors[0].getVelocity().getValueAsDouble() / 51.1998046875 / 2);
-    SmartDashboard.putNumber(
-        "Flywheel/FollowerPercentOutputActual",
-        m_shooterMotors[1].getVelocity().getValueAsDouble() / 51.1998046875 / 2);
-    SmartDashboard.putNumber("Flywheel/RPMMaster", getRPMMaster());
-    SmartDashboard.putNumber("Flywheel/RPMFollower", getRPMFollower());
-  }
+  private void updateShuffleboard() {}
 
   // values that we are pulling
 
   private void updateLogger() {
-    Logger.recordOutput("Flywheel/PercentOutputPredicted", getPercentOutput());
-    Logger.recordOutput(
-        "Flywheel/MasterPercentOutputActual",
-        m_shooterMotors[0].getVelocity().getValueAsDouble() / 512);
-    Logger.recordOutput(
-        "Flywheel/FollowerPercentOutputActual",
-        m_shooterMotors[1].getVelocity().getValueAsDouble() / 512);
-    Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
-    Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
+    Logger.recordOutput("Flywheel/DesiredPercentOutput", m_desiredPercentOutput);
+    Logger.recordOutput("Shooter/MasterPercentOutput", m_shooterMotors[0].get());
+    Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
+    Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
+    Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
-    updateLogger();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }

@@ -10,7 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
+import frc.robot.constants.SHOOTER.FLYWHEEL_STATE;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
@@ -38,7 +38,7 @@ public class ShootNStrafe extends Command {
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
   private double PoseX = m_swerveDrive.getState().Pose.getX();
   private double PoseY = m_swerveDrive.getState().Pose.getY();
-  private double shootangle = m_shooter.shootangle(PoseX, PoseY);
+  private double shootangle = m_shooter.getShootAngle(PoseX, PoseY);
   public int hehe = 69; // Mano's work
 
   private double displacementX = ChangeThisValue * Math.sin(shootangle); // TODO: Change this
@@ -108,8 +108,8 @@ public class ShootNStrafe extends Command {
             * Math.signum(m_rotationInput.getAsDouble());
 
     if (CorrectRange == true
-        && m_shooter.getRPMMaster() > RPMThreshold
-        && m_shooter.getRPMFollower() > RPMThreshold) {
+        && m_shooter.getRpmMaster() > RPMThreshold
+        && m_shooter.getRpmFollower() > RPMThreshold) {
 
       drive.withVelocityX(VelocityX).withVelocityY(VelocityY).withRotationalRate(m_headingOffset);
       m_ampShooter.setPercentOutput(0.8);
