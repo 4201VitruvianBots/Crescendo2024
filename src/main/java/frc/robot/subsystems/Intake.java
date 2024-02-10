@@ -21,8 +21,6 @@ public class Intake extends SubsystemBase {
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
 
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
-  
-  
 
   public Intake() {
     CtreUtils.configureTalonFx(intakeMotor1, new TalonFXConfiguration());

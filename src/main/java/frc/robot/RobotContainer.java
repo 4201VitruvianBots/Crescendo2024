@@ -32,6 +32,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 // import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetAndHoldPercentSetpoint;
+import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 // import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
 // import frc.robot.commands.uptake.RunUptake;
@@ -42,6 +43,7 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
+
 // import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
@@ -161,10 +163,11 @@ public class RobotContainer {
     //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
-xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
-    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0.01)); // amp
+    xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
+    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 0.01)); // amp
     xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5));
+    xboxController.b().onTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
 
     //     xboxController
     //         .y()
@@ -187,8 +190,8 @@ xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
-      //  m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
-       m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_ampShooter));
+    //  m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_ampShooter));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
@@ -252,8 +255,8 @@ xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
     //             estimatedRobotPose.estimatedPose.toPose2d(),
     // estimatedRobotPose.timestampSeconds));
 
-  //   m_fieldSim.periodic();
-  //   if (m_visualizer != null) m_visualizer.periodic();
+    //   m_fieldSim.periodic();
+    //   if (m_visualizer != null) m_visualizer.periodic();
   }
 
   public void testInit() {

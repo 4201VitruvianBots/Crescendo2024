@@ -4,22 +4,20 @@
 
 package frc.robot.commands.shooter;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FLYWHEEL.FLYWHEEL_STATE;
-import frc.robot.constants.SWERVE.DRIVE;
-import frc.robot.RobotContainer;
 import frc.robot.constants.SWERVE;
-import frc.robot.subsystems.Shooter;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 
 public class ShootNStrafe extends Command {
   Shooter m_shooter;
@@ -40,27 +38,27 @@ public class ShootNStrafe extends Command {
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
   private double PoseX = m_swerveDrive.getState().Pose.getX();
   private double PoseY = m_swerveDrive.getState().Pose.getY();
-  private double shootangle = m_shooter.shootangle(PoseX,PoseY);
-  public int hehe = 69; //Mano's work
+  private double shootangle = m_shooter.shootangle(PoseX, PoseY);
+  public int hehe = 69; // Mano's work
 
-  private double displacementX = ChangeThisValue * Math.sin(shootangle); //TODO: Change this
+  private double displacementX = ChangeThisValue * Math.sin(shootangle); // TODO: Change this
 
   private double displacementY = ChangeThisValue * Math.cos(shootangle);
 
   private double VelocityY =
-    m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond *
-m_swerveDrive.getState().Pose.getRotation().getSin();
+      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
+          * m_swerveDrive.getState().Pose.getRotation().getSin();
   private double VelocityX =
-      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond *
-m_swerveDrive.getState().Pose.getRotation().getCos();
-  private double VelocityShoot = 1.2; //TODO: Change after testing
+      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
+          * m_swerveDrive.getState().Pose.getRotation().getCos();
+  private double VelocityShoot = 1.2; // TODO: Change after testing
 
   double m_headingOffset =
       Math.asin(
           Math.abs(
               (displacementY * VelocityX - displacementX * VelocityY)
                   / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
-                  * VelocityShoot)));
+                      * VelocityShoot)));
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -92,13 +90,12 @@ m_swerveDrive.getState().Pose.getRotation().getCos();
   @Override
   public void initialize() {
     timerStart = false;
-
   }
 
   @Override
   public void execute() {
 
-    m_shooter.setRpmOutput(m_percentOutput);
+    m_shooter.setRpmOutput(RPMThreshold);
 
     double throttle =
         MathUtil.applyDeadband(Math.abs(m_throttleInput.getAsDouble()), 0.05)
@@ -110,33 +107,29 @@ m_swerveDrive.getState().Pose.getRotation().getCos();
         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
             * Math.signum(m_rotationInput.getAsDouble());
 
-  if (CorrectRange == true && m_shooter.getRPMMaster() > RPMThreshold && m_shooter.getRPMFollower() > RPMThreshold) {
+    if (CorrectRange == true
+        && m_shooter.getRPMMaster() > RPMThreshold
+        && m_shooter.getRPMFollower() > RPMThreshold) {
 
-      m_shooter.setRpmOutput(RPMThreshold);
-      drive.withVelocityX(VelocityX)
-        .withVelocityY(VelocityY)
-          .withRotationalRate(m_headingOffset);
-            m_ampShooter.setPercentOutput(0.8);
-            m_timer.reset();
-            m_timer.start();
-            timerStart = true;
+      drive.withVelocityX(VelocityX).withVelocityY(VelocityY).withRotationalRate(m_headingOffset);
+      m_ampShooter.setPercentOutput(0.8);
+      m_timer.reset();
+      m_timer.start();
+      timerStart = true;
 
-    if(timerStart == true && m_timer.hasElapsed(timerThreshold) ){
-      isFinished();
-    }
-  }
-
-  else {
-    m_shooter.setRpmOutput(RPMThreshold);
-    m_swerveDrive.setControl(
-      drive.withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
-            .withVelocityY((strafe)* DRIVE.kMaxSpeedMetersPerSecond)
-            .withRotationalRate(m_headingOffset));
+      if (timerStart == true && m_timer.hasElapsed(timerThreshold)) {
+        isFinished();
+      }
+    } else {
+      m_swerveDrive.setControl(
+          drive
+              .withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
+              .withVelocityY((strafe) * DRIVE.kMaxSpeedMetersPerSecond)
+              .withRotationalRate(m_headingOffset));
       m_timer.reset();
       m_timer.stop();
       timerStart = false;
-  }
-
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -145,10 +138,10 @@ m_swerveDrive.getState().Pose.getRotation().getCos();
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setPercentOutput(0);
+    m_shooter.setRpmOutput(0);
     m_ampShooter.setPercentOutput(0);
 
-        double throttle =
+    double throttle =
         MathUtil.applyDeadband(Math.abs(m_throttleInput.getAsDouble()), 0.05)
             * Math.signum(m_throttleInput.getAsDouble());
     double strafe =
@@ -158,14 +151,13 @@ m_swerveDrive.getState().Pose.getRotation().getCos();
         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
             * Math.signum(m_rotationInput.getAsDouble());
 
-          m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyFieldCentricDrive(
-              () ->
-                  new ChassisSpeeds(
-                      throttle * DRIVE.kMaxSpeedMetersPerSecond,
-                      strafe * DRIVE.kMaxSpeedMetersPerSecond,
-                      rotation * DRIVE.kMaxRotationRadiansPerSecond)));
-
+    m_swerveDrive.setDefaultCommand(
+        m_swerveDrive.applyFieldCentricDrive(
+            () ->
+                new ChassisSpeeds(
+                    throttle * DRIVE.kMaxSpeedMetersPerSecond,
+                    strafe * DRIVE.kMaxSpeedMetersPerSecond,
+                    rotation * DRIVE.kMaxRotationRadiansPerSecond)));
   }
 
   // Returns true when the command should end.

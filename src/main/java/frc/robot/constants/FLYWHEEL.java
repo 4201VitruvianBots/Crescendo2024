@@ -3,7 +3,9 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public final class FLYWHEEL {
-  public static double gearRatio = 1.0;
+  public static double gearRatioBottom = 1.0;
+  public static double gearRatioTop = 1.0;
+
   public static final int kSlotIdx = 0;
 
   public static final double kP = 10;

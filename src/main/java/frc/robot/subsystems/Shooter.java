@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,7 +27,7 @@ public class Shooter extends SubsystemBase {
   private double m_percentOutput;
 
   private final TalonFX[] m_shooterMotors = {
-    new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)
+    new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
   };
 
   private double flywheelPercentRatio = 1.0;
@@ -37,20 +38,34 @@ public class Shooter extends SubsystemBase {
       new SimpleMotorFeedforward(FLYWHEEL.kS, FLYWHEEL.kV, FLYWHEEL.kA);
   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
+  VelocityTorqueCurrentFOC FOCcontrolBottom = new VelocityTorqueCurrentFOC(0);
+
+  VelocityTorqueCurrentFOC FOCcontrolTop = new VelocityTorqueCurrentFOC(0);
+
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kV = FLYWHEEL.kV;
-    config.Slot0.kP = FLYWHEEL.kP;
-    config.Slot0.kI = FLYWHEEL.kI;
-    config.Slot0.kD = FLYWHEEL.kD;
-    CtreUtils.configureTalonFx(m_shooterMotors[0], config);
+    TalonFXConfiguration configBottom = new TalonFXConfiguration();
+
+    configBottom.Feedback.SensorToMechanismRatio = FLYWHEEL.gearRatioBottom;
+    CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
+
+    TalonFXConfiguration configTop = new TalonFXConfiguration();
+    configBottom.Feedback.SensorToMechanismRatio = FLYWHEEL.gearRatioTop;
+    CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
+
+    configBottom.Slot0.kP = FLYWHEEL.kP;
+    configBottom.Slot0.kI = FLYWHEEL.kI;
+    configBottom.Slot0.kD = FLYWHEEL.kD;
+
+    configTop.Slot0.kV = FLYWHEEL.kV;
+    configTop.Slot0.kP = FLYWHEEL.kP;
+    configTop.Slot0.kI = FLYWHEEL.kI;
+    configTop.Slot0.kD = FLYWHEEL.kD;
+
     m_shooterMotors[0].setInverted(true);
     // flywheel motor 1
     m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
-
-    
   }
 
   // values that we set
@@ -60,15 +75,16 @@ public class Shooter extends SubsystemBase {
     m_percentOutput = percentOutput;
   }
 
-  public double getPercentOutput(){
+  public double getPercentOutput() {
     return m_percentOutput;
   }
 
   public void setRpmOutput(double rpm) {
     // Phoenix 6 uses rotations per second for velocity control
+
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(
-        m_velocityRequest.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+        FOCcontrolTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
   }
 
   public double ShootNStrafeAngle(
@@ -142,20 +158,27 @@ public class Shooter extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-     SmartDashboard.putNumber("Flywheel/PercentOutputPredicted", m_percentOutput);
-    SmartDashboard.putNumber("Flywheel/MasterPercentOutputActual", m_shooterMotors[0].getVelocity().getValueAsDouble()/51.1998046875/2);
-    SmartDashboard.putNumber("Flywheel/FollowerPercentOutputActual", m_shooterMotors[1].getVelocity().getValueAsDouble()/51.1998046875/2);
+    SmartDashboard.putNumber("Flywheel/PercentOutputPredicted", m_percentOutput);
+    SmartDashboard.putNumber(
+        "Flywheel/MasterPercentOutputActual",
+        m_shooterMotors[0].getVelocity().getValueAsDouble() / 51.1998046875 / 2);
+    SmartDashboard.putNumber(
+        "Flywheel/FollowerPercentOutputActual",
+        m_shooterMotors[1].getVelocity().getValueAsDouble() / 51.1998046875 / 2);
     SmartDashboard.putNumber("Flywheel/RPMMaster", getRPMMaster());
     SmartDashboard.putNumber("Flywheel/RPMFollower", getRPMFollower());
   }
 
   // values that we are pulling
 
-
   private void updateLogger() {
     Logger.recordOutput("Flywheel/PercentOutputPredicted", getPercentOutput());
-    Logger.recordOutput("Flywheel/MasterPercentOutputActual", m_shooterMotors[0].getVelocity().getValueAsDouble()/512);
-    Logger.recordOutput("Flywheel/FollowerPercentOutputActual", m_shooterMotors[1].getVelocity().getValueAsDouble()/512);
+    Logger.recordOutput(
+        "Flywheel/MasterPercentOutputActual",
+        m_shooterMotors[0].getVelocity().getValueAsDouble() / 512);
+    Logger.recordOutput(
+        "Flywheel/FollowerPercentOutputActual",
+        m_shooterMotors[1].getVelocity().getValueAsDouble() / 512);
     Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
     Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
   }

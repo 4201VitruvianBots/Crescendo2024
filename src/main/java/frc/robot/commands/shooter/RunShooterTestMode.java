@@ -4,7 +4,6 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -30,7 +29,7 @@ public class RunShooterTestMode extends Command {
 
     // initialize Test Values
     try {
-      shooterNtTab.getDoubleTopic("SetpointPercent").publish().set(0);
+      shooterNtTab.getDoubleTopic("SetpointRPM").publish().set(0);
 
       shooterNtTab.getDoubleTopic("kP").publish().set(FLYWHEEL.kP);
       shooterNtTab.getDoubleTopic("kI").publish().set(FLYWHEEL.kI);
@@ -43,7 +42,7 @@ public class RunShooterTestMode extends Command {
 
     }
 
-    kSetpointSub = shooterNtTab.getDoubleTopic("SetpointPercent").subscribe(0);
+    kSetpointSub = shooterNtTab.getDoubleTopic("SetpointRPM").subscribe(0);
 
     kFSub = shooterNtTab.getDoubleTopic("kF").subscribe(0);
     kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(FLYWHEEL.kP);
@@ -69,7 +68,7 @@ public class RunShooterTestMode extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double newSetpoint = Units.inchesToMeters(kSetpointSub.get(0));
+    double newSetpoint = (kSetpointSub.get(0));
 
     double newKF = kFSub.get(0);
     double newKP = kPSub.get(FLYWHEEL.kP);
@@ -95,7 +94,7 @@ public class RunShooterTestMode extends Command {
       testKA = newKA;
     }
 
-    m_shooter.setPercentOutput(newSetpoint);
+    m_shooter.setRpmOutput(newSetpoint);
   }
 
   // Called once the command ends or is interrupted.
