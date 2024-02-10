@@ -46,6 +46,8 @@ public class TestUtils {
         
         // Print confirmation to ask the user whether they want to run the command, and then run the command if the user presses the confirm button
         // Run PrintConfirmation and then run the command if the user presses the confirm button, or deny the command if the user presses the deny button
-        return new ParallelRaceGroup(new PrintConfirmation(command.getName()).andThen(new WaitUntilCommand(aButton)).andThen(new PrintStart(command.getName())).andThen(runCommand), new WaitUntilCommand(bButton).andThen(new PrintFailure(command.getName(), 0)));
+        return new ParallelRaceGroup(
+            new PrintConfirmation(command.getName()).andThen(new WaitCommand(0.5)).andThen(new WaitUntilCommand(aButton)).andThen(new PrintStart(command.getName())).andThen(runCommand),
+            new WaitCommand(0.5).andThen(new WaitUntilCommand(bButton)).andThen(new PrintFailure(command.getName(), 0)));
     }
 }
