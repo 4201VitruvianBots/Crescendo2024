@@ -45,7 +45,7 @@ public class LEDSubsystem extends SubsystemBase {
   private boolean setSolid;
   private Animation m_toAnimate = null;
 
-  public LEDSubsystem(Controls controls) {
+  public LEDSubsystem() {
     m_candle.configFactoryDefault();
     // sets up LED strip
     CANdleConfiguration configAll = new CANdleConfiguration();

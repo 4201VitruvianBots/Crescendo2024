@@ -24,8 +24,8 @@ public class Telemetry {
   private final Pose2d[] m_swerveModulePoses = {
     new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
   };
-  private Transform2d[] m_moduleTransforms = new Transform2d[4];
-  private double[] m_moduleAngles = new double[4];
+  private final Transform2d[] m_moduleTransforms = new Transform2d[4];
+  private final double[] m_moduleAngles = new double[4];
 
   /** Construct a telemetry object */
   public Telemetry() {}
@@ -38,7 +38,7 @@ public class Telemetry {
   private Pose2d m_lastPose = new Pose2d();
   private double lastTime = Utils.getCurrentTimeSeconds();
 
-  /* Accept the swerve drive state and telemeterize it to smartdashboard */
+  /* Accept the swerve drive state and telemeterize it to SmartDashboard */
   public void telemeterize(SwerveDriveState state) {
     Pose2d pose = state.Pose;
     /* Telemeterize the robot's general speeds */

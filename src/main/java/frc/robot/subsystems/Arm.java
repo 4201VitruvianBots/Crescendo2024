@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
 
   private TalonFXSimState m_simState = m_armMotor.getSimState();
 
-  private StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
+  private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
 
   private final PositionVoltage m_position = new PositionVoltage(0);
 

@@ -36,7 +36,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
-  private final Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
 
   private Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
@@ -136,8 +135,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-  public void resetOdometry(Pose2d pose) {}
-
   public ChassisSpeeds getChassisSpeed() {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
@@ -174,7 +171,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
               .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
         });
   }
-  ;
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
     var cmd = run(() -> setControl(requestSupplier.get()));
