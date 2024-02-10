@@ -49,9 +49,6 @@ public final class CLIMBER {
     public static final double kPercentOutputMultiplier = 0.2;
     public static final double kLimitedPercentOutputMultiplier = 0.1;
 
-    public static final TrapezoidProfile.Constraints m_Constraints =
-        new TrapezoidProfile.Constraints(kMaxVel, kMaxAccel);
-
     public enum CLIMBER_SETPOINT {
       FULL_RETRACT(Units.inchesToMeters(0.0)),
       EXTEND(Units.inchesToMeters(10.0));

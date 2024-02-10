@@ -9,7 +9,9 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -33,8 +35,11 @@ public class Climber extends SubsystemBase {
   private final PositionDutyCycle position = new PositionDutyCycle(getHeightEncoderCounts());
 
   // Trapezoid profile setup
-  private TrapezoidProfile m_currentProfile;
-  private TrapezoidProfile.Constraints m_currentConstraints = CLIMBER.m_Constraints;
+  public final PositionVoltage m_position = new PositionVoltage(0);
+  public TrapezoidProfile.Constraints m_constraints =
+        new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
+  private final TrapezoidProfile m_currentProfile = new TrapezoidProfile(m_constraints);
+
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
   private final SimpleMotorFeedforward m_feedForward =
@@ -47,9 +52,7 @@ public class Climber extends SubsystemBase {
   private double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
 
   private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
-  private double m_elevatorDesiredSetpointMeters;
   private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
-  private NeutralModeValue m_NeutralMode = NeutralModeValue.Brake;
   // Controlled by open loop
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
@@ -95,6 +98,10 @@ public class Climber extends SubsystemBase {
     return elevatorClimbSate;
   }
 
+  public double getPercentOutput() {
+    return elevatorClimbMotors[0].getDutyCycle().getValueAsDouble();
+  }
+
   //sets the percent ourput of the elevator based on its position
   public void setPercentOutput(double output, boolean enforceLimits) {
     if (enforceLimits){
@@ -108,26 +115,20 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[0].set(output);
   }
 
-  // // Sets the calculated trapezoid state of the motors
-  // public void setSetpointTrapezoidState(TrapezoidProfile.State state) {
-  //   // TODO: Find out why feedforward is no longer needed?
-  //   elevatorClimbMotors[0].setControl(
-  //       ControlMode.Position,
-  //       state.position / CLIMBER.encoderCountsToMeters,
-  //       DemandType.ArbitraryFeedForward,
-  //       //        calculateFeedforward(state)
-  //       0);
-  //   elevatorClimbMotors[1].set(ControlMode.PercentOutput);
-  // }
+  // Sets the calculated trapezoid state of the motors
+  public void setSetpointTrapezoidState(double rotations) {
+    m_desiredPositionMeters = rotations;
+    m_goal = new TrapezoidProfile.State(m_desiredPositionMeters, 0);
+  }
 
-  // private double calculateFeedforward(TrapezoidProfile.State state) {
-  //   return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
-  // }
+  private double calculateFeedforward(TrapezoidProfile.State state) {
+    return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
+  }
 
-  // // Sets the setpoint to our current height, effectively keeping the elevator in place.
-  // public void resetTrapezoidState() {
-  //   m_setpoint = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
-  // }
+  // Sets the setpoint to our current height, effectively keeping the elevator in place.
+  public void resetTrapezoidState() {
+    m_setpoint = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
+  }
 
   public double getVelocityMetersPerSecond() {
     return elevatorClimbMotors[0].getRotorVelocity().getValueAsDouble() * CLIMBER.encoderCountsToMeters *10;
@@ -158,7 +159,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void setCLimberDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
-    m_elevatorDesiredSetpointMeters = desiredSetpoint.getClimberSetpointMeters();
+    desiredSetpoint.getClimberSetpointMeters();
   }
 
   public void setDesiredPositionMeters(double meters) {
@@ -193,6 +194,10 @@ public class Climber extends SubsystemBase {
     m_limitJoystickInput = limit;
   }
 
+  public void setJoystickY(double m_joystickY) {
+    m_joystickInput = m_joystickY;
+  }
+
   public boolean isUserControlled() {
     return m_joystickInput != 0 && !m_userSetpoint;
   }
@@ -216,7 +221,6 @@ public class Climber extends SubsystemBase {
   }
 
   public void setClimberNeutralMode(NeutralModeValue mode) {
-    m_NeutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
     elevatorClimbMotors[1].setNeutralMode(mode);
 
@@ -236,15 +240,13 @@ public class Climber extends SubsystemBase {
       break;
       default:
       case CLOSED_LOOP:
-      // // Updates our trapezoid profile state based on the time since our last periodic and our
-      //   // recorded change in height
-      //   m_goal = new TrapezoidProfile.State(m_desiredPositionMeters, 0);
-      //   m_currentProfile = new TrapezoidProfile(m_currentConstraints, m_goal, m_setpoint);
-      //   m_currentTimestamp = m_timer.get();
-      //   m_setpoint = m_currentProfile.calculate(m_currentTimestamp - m_lastTimestamp);
-      //   m_lastTimestamp = m_currentTimestamp;
+      // Updates our trapezoid profile state based on the time since our last periodic and our
+        // recorded change in height
+        m_setpoint = m_currentProfile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
+        m_position.Position = m_setpoint.position;
+        m_position.Velocity = m_setpoint.velocity;
 
-      //   setSetpointTrapezoidState(m_setpoint);
+        elevatorClimbMotors[0].setControl(m_position);
       break;
     }
   }
