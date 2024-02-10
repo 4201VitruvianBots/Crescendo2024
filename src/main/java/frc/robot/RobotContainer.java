@@ -39,6 +39,7 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
@@ -62,8 +63,8 @@ public class RobotContainer {
 
   private SuperStructureVisualizer m_visualizer;
 
-  private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-  private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
+  private final LoggedDashboardChooser<Command> m_autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
+  private final LoggedDashboardChooser<Command> m_sysidChooser = new LoggedDashboardChooser<>("SysID Chooser");
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
@@ -168,7 +169,7 @@ public class RobotContainer {
   }
 
   public void initAutoChooser() {
-    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
@@ -230,8 +231,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if (ROBOT.useSysID) return m_sysidChooser.getSelected();
-    else return m_autoChooser.getSelected();
+    if (ROBOT.useSysID) return m_sysidChooser.get();
+    else return m_autoChooser.get();
   }
 
   public void periodic() {
