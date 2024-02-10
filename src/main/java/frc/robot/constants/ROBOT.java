@@ -70,6 +70,7 @@ public class ROBOT {
     SWERVE.MODULE.kTurnInverted = true;
 
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
+    CAN.drivebaseCanbus = CAN.rioCanbus;
   }
 
   public static void initBobot() {
