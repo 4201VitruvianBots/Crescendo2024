@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
@@ -299,24 +300,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_alert.set(true);
   }
 
-  public void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
-        "Swerve/FRONTLEFTENCODER",
+        "Swerve/FrontLeftEncoder",
         Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/FRONTRIGHTENCODER",
+        "Swerve/FrontRightEncoder",
         Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKLEFTENCODER",
+        "Swerve/BackLeftEncoder",
         Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKRIGHTENCODER",
+        "Swerve/BackRightEncoder",
         Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
   }
 
   @Override
   public void periodic() {
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 }
