@@ -23,7 +23,7 @@ public class SetAndHoldPercentSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setPercentOutput(-m_percentOutput);
+    m_shooter.setPercentOutput(m_percentOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,12 +32,12 @@ public class SetAndHoldPercentSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    // m_shooter.setPercentOutput(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

@@ -22,7 +22,7 @@ public class RunIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setSpeed(m_speed, m_speed);
+    m_intake.setSpeed(m_speed, -m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

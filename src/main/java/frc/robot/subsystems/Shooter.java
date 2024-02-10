@@ -23,12 +23,12 @@ public class Shooter extends SubsystemBase {
   private boolean m_testMode = false;
   private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
+  private double m_percentOutput;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2)
   };
 
-  private double m_percentOutput;
   private double flywheelPercentRatio = 1.0;
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
@@ -46,14 +46,22 @@ public class Shooter extends SubsystemBase {
     config.Slot0.kI = FLYWHEEL.kI;
     config.Slot0.kD = FLYWHEEL.kD;
     CtreUtils.configureTalonFx(m_shooterMotors[0], config);
-
+    m_shooterMotors[0].setInverted(true);
     // flywheel motor 1
     m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
+
+    
   }
 
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
+
+    m_percentOutput = percentOutput;
+  }
+
+  public double getPercentOutput(){
+    return m_percentOutput;
   }
 
   public void setRpmOutput(double rpm) {
@@ -134,18 +142,20 @@ public class Shooter extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("PercentOutput1", this.getPercentOutput());
-    Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
-    Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
+     SmartDashboard.putNumber("Flywheel/PercentOutputPredicted", m_percentOutput);
+    SmartDashboard.putNumber("Flywheel/MasterPercentOutputActual", m_shooterMotors[0].getVelocity().getValueAsDouble()/51.1998046875/2);
+    SmartDashboard.putNumber("Flywheel/FollowerPercentOutputActual", m_shooterMotors[1].getVelocity().getValueAsDouble()/51.1998046875/2);
+    SmartDashboard.putNumber("Flywheel/RPMMaster", getRPMMaster());
+    SmartDashboard.putNumber("Flywheel/RPMFollower", getRPMFollower());
   }
 
   // values that we are pulling
-  public double getPercentOutput() {
-    return m_percentOutput;
-  }
+
 
   private void updateLogger() {
-    Logger.recordOutput("Flywheel/PercentOutput", getPercentOutput());
+    Logger.recordOutput("Flywheel/PercentOutputPredicted", getPercentOutput());
+    Logger.recordOutput("Flywheel/MasterPercentOutputActual", m_shooterMotors[0].getVelocity().getValueAsDouble()/512);
+    Logger.recordOutput("Flywheel/FollowerPercentOutputActual", m_shooterMotors[1].getVelocity().getValueAsDouble()/512);
     Logger.recordOutput("Flywheel/RPMMaster", getRPMMaster());
     Logger.recordOutput("Flywheel/RPMFollower", getRPMFollower());
   }

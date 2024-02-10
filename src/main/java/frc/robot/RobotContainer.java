@@ -22,6 +22,7 @@ import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
+import frc.robot.commands.autos.ScoreSpeaker;
 import frc.robot.commands.autos.ThreePiecefar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -41,7 +42,7 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
-import frc.robot.visualizers.SuperStructureVisualizer;
+// import frc.robot.visualizers.SuperStructureVisualizer;
 
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
@@ -63,7 +64,7 @@ public class RobotContainer {
   private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
   private final FieldSim m_fieldSim = new FieldSim();
 
-  private SuperStructureVisualizer m_visualizer;
+  // private SuperStructureVisualizer m_visualizer;
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
@@ -84,14 +85,14 @@ public class RobotContainer {
     if (ROBOT.useSysID) initSysidChooser();
 
     if (RobotBase.isSimulation()) {
-      m_visualizer = new SuperStructureVisualizer();
-      m_visualizer.registerIntake(m_intake);
-      m_visualizer.registerShooter(m_shooter);
-      m_visualizer.registerAmpShooter(m_ampShooter);
-      m_visualizer.registerArm(m_arm);
-      m_visualizer.registerClimber(m_climber);
-      //    m_visualizer.registerVision(m_vision);
-      m_visualizer.registerLedSubsystem(m_led);
+      // m_visualizer = new SuperStructureVisualizer();
+      // m_visualizer.registerIntake(m_intake);
+      // m_visualizer.registerShooter(m_shooter);
+      // m_visualizer.registerAmpShooter(m_ampShooter);
+      // m_visualizer.registerArm(m_arm);
+      // m_visualizer.registerClimber(m_climber);
+      // //    m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -160,13 +161,13 @@ public class RobotContainer {
     //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
-
-    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0.6)); // amp
-    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0.8)); // sbeaker
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+xboxController.x().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0));
+    xboxController.a().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, 0.01)); // amp
+    xboxController.b().whileTrue(new SetAndHoldPercentSetpoint(m_shooter, .8)); // sbeaker
+    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5));
 
     //     xboxController
-    //         .x()
+    //         .y()
     //         .whileTrue(
     //             new ShootNStrafe(m_swerveDrive, m_vision, m_ampShooter, () ->
     // -m_testController.getRawAxis(1), () -> -m_testController.getRawAxis(0), ()
@@ -186,15 +187,16 @@ public class RobotContainer {
     // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
     // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
     // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
-    //    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
-    //    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
+      //  m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
+       m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_ampShooter));
     SmartDashboard.putData("AutoChooser", m_autoChooser);
   }
 
   public void initSysidChooser() {
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
-    SmartDashboard.putData(new ToggleShooterTestMode(m_shooter));
+
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
@@ -250,8 +252,8 @@ public class RobotContainer {
     //             estimatedRobotPose.estimatedPose.toPose2d(),
     // estimatedRobotPose.timestampSeconds));
 
-    m_fieldSim.periodic();
-    if (m_visualizer != null) m_visualizer.periodic();
+  //   m_fieldSim.periodic();
+  //   if (m_visualizer != null) m_visualizer.periodic();
   }
 
   public void testInit() {

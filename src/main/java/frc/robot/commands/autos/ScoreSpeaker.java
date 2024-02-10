@@ -13,8 +13,9 @@ public class ScoreSpeaker extends SequentialCommandGroup {
   public ScoreSpeaker(Shooter shooter, AmpShooter uptake) {
 
     addCommands(
-        new AutoSetPercentSetpoint(shooter, FLYWHEEL_STATE.SPEAKER),
-        new WaitCommand(WAIT.WAIT_FOR_FLYWHEEL_SETPOINT.get())
+        new AutoSetPercentSetpoint(shooter, FLYWHEEL_STATE.SPEAKER).withTimeout(WAIT.WAIT_FOR_FLYWHEEL_SETPOINT.get()),
+
+        new AutoSetPercentSetpoint(shooter, FLYWHEEL_STATE.NONE)
         // TODO: Replace with Amp Rollers
         // new AutoRunUptake(uptake, UPTAKE_STATE.DOWNTAKE)
         );
