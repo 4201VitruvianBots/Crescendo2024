@@ -25,23 +25,23 @@ public class FourPieceNear extends SequentialCommandGroup {
     PathPlannerPath path1 = PathPlannerPath.fromPathFile("fourpiecept1");
     var m_ppCommand1 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path1, path1.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path1, path1.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path2 = PathPlannerPath.fromPathFile("fourpiecept2");
     var m_ppCommand2 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path2, path2.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path2, path2.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path3 = PathPlannerPath.fromPathFile("fourpiecept3");
     var m_ppCommand3 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path3, path3.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path3, path3.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path4 = PathPlannerPath.fromPathFile("fourpiecept4");
     var m_ppCommand4 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path4, path4.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path4, path4.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path5 = PathPlannerPath.fromPathFile("fourpiecept5");
     var m_ppCommand5 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path5, path5.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path5, path5.getGlobalConstraints().getMaxVelocityMps(), true);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
