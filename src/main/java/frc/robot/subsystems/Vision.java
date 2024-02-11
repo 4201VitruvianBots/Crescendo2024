@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -102,6 +101,7 @@ public class Vision extends SubsystemBase {
 
     // Pick which limelight to use for updating swerve pose
     updateSwervePose(limelightPhotonPoseEstimatorA);
+    updateSwervePose(limelightPhotonPoseEstimatorB);
 
     updateLog();
     smartDashboard();
