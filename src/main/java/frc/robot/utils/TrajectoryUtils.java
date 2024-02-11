@@ -34,6 +34,12 @@ public class TrajectoryUtils {
   }
 
   public static FollowPathHolonomic generatePPHolonomicCommand(
+      CommandSwerveDrivetrain swerveDrive, PathPlannerPath path, double maxSpeed) {
+
+    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, false);
+  }
+
+  public static FollowPathHolonomic generatePPHolonomicCommand(
       CommandSwerveDrivetrain swerveDrive,
       PathPlannerPath path,
       double maxSpeed,

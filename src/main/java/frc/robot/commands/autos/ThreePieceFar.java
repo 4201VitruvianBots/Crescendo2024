@@ -7,6 +7,7 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -21,50 +22,38 @@ import java.util.ArrayList;
 public class ThreePieceFar extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
   public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile("3piece2Pt1");
-    var m_ppCommand1 =
-        TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path1, path1.getGlobalConstraints().getMaxVelocityMps(), true);
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile("3piece2Pt2");
-    var m_ppCommand2 =
-        TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path2, path2.getGlobalConstraints().getMaxVelocityMps(), true);
-    PathPlannerPath path3 = PathPlannerPath.fromPathFile("3piece2Pt3");
-    var m_ppCommand3 =
-        TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path3, path3.getGlobalConstraints().getMaxVelocityMps(), true);
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile("3piece2Pt4");
-    var m_ppCommand4 =
-        TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path4, path4.getGlobalConstraints().getMaxVelocityMps(), true);
-    PathPlannerPath path5 = PathPlannerPath.fromPathFile("3piece2Pt5");
-    var m_ppCommand5 =
-        TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path5, path5.getGlobalConstraints().getMaxVelocityMps(), true);
+    String[] pathFiles = {
+      "3piece2Pt1", "3piece2Pt2", "3piece2Pt3", "3piece2Pt4", "3piece2Pt5",
+    };
+    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
+    ArrayList<Command> commandList = new ArrayList<>();
+
+    for (var filename : pathFiles) {
+      var path = PathPlannerPath.fromPathFile(filename);
+      var command =
+          TrajectoryUtils.generatePPHolonomicCommand(
+              swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
+      pathsList.add(path);
+      commandList.add(command);
+    }
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
-
-    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
-    pathsList.add(path1);
-    pathsList.add(path2);
-    pathsList.add(path3);
-    pathsList.add(path4);
-    pathsList.add(path5);
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new InstantCommand(
-            () -> swerveDrive.seedFieldRelative(path1.getPreviewStartingHolonomicPose())),
+            () ->
+                swerveDrive.seedFieldRelative(pathsList.get(1).getPreviewStartingHolonomicPose())),
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)
             .alongWith(new WaitCommand(1)),
-        m_ppCommand1,
-        m_ppCommand2,
-        m_ppCommand3,
-        m_ppCommand4,
-        m_ppCommand5.andThen(() -> swerveDrive.setControl(stopRequest)));
+        commandList.get(1),
+        commandList.get(2),
+        commandList.get(3),
+        commandList.get(4),
+        commandList.get(5).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
