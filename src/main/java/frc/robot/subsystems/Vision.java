@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
@@ -27,6 +30,8 @@ public class Vision extends SubsystemBase {
   public void registerFieldSim(FieldSim fieldSim) {
     m_fieldSim = fieldSim;
   }
+
+  NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("NoteDetectionLimelight");
 
   public static PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("AprilTagLimelightCameraA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =
@@ -63,16 +68,19 @@ public class Vision extends SubsystemBase {
     return String.join(" ", targets.stream().map(PhotonTrackedTarget::toString).toList());
   }
 
-  public boolean hasGamePieceTarget() {
-    return false;
+  public Boolean hasGamePieceTarget() {
+    NetworkTableEntry tv = NoteDetectionLimelight.getEntry("tv");
+    return tv.getDouble(0.0) == 1;
   }
-  // TODO implement acutally (Bengi)//
-
-
-  // TODO implement Acutally (Bengi)//
 
   public Rotation2d getRobotToGamePieceRotation() {
-    return new Rotation2d();
+    Rotation2d rotation = new Rotation2d();
+    if (hasGamePieceTarget()) {
+      NetworkTableEntry tx = NoteDetectionLimelight.getEntry("tx");
+      double x = tx.getDouble(0.0);
+      rotation = Rotation2d.fromDegrees(x);
+    }
+    return rotation;
   }
 
   private void updateLog() {
