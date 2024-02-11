@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.AUTO.AUTO_POSE_MAP;
 
+import java.nio.BufferOverflowException;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -101,7 +103,12 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   /** Sends values to SmartDashboard */
   private void updateLogger() {
     Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
-    Logger.recordOutput("Controls/StartPose", getStartPose());
+    try {
+        Logger.recordOutput("Controls/StartPose", getStartPose());
+    } catch (BufferOverflowException e) {
+      System.out.println("Failed to record StartPose");
+    }
+    
   }
 
   @Override

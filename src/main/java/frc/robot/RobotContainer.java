@@ -64,7 +64,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
+  private final LEDSubsystem m_led = new LEDSubsystem();
   private final FieldSim m_fieldSim = new FieldSim(m_shooter);
 
   private SuperStructureVisualizer m_visualizer;
