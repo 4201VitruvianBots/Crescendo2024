@@ -27,7 +27,6 @@ public final class LED {
     TwinkleOff,
     Solid
   }
-}
 
   // These color are channels passed in the setPattern() method in the LED subsystem
   public static final Color8Bit red = new Color8Bit(255, 0, 0);
