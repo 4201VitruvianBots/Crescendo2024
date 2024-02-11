@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
@@ -28,6 +29,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
@@ -75,6 +77,8 @@ public class RobotContainer {
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
+  private final Trigger trigger = new Trigger(
+    true, () -> xboxController.leftStick().getAsBoolean() && xboxController.rightStick().getAsBoolean());
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
@@ -163,6 +167,8 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
+    //toggles the climb sequence when presses and cuts the command when pressed again
+    xboxController.().toggleOnTrue(new ClimbFinal(m_ampShooter, m_arm, m_climber));
     //switch between open loop and close loop
     xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
     

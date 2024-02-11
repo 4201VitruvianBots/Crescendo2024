@@ -4,17 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -22,7 +18,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
@@ -32,7 +29,6 @@ public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)};
   private final StaticBrake brake = new StaticBrake();
   private final Follower follower = new Follower(0, false);
-  private final PositionDutyCycle position = new PositionDutyCycle(getHeightEncoderCounts());
 
   // Trapezoid profile setup
   public final PositionVoltage m_position = new PositionVoltage(0);
@@ -44,8 +40,6 @@ public class Climber extends SubsystemBase {
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
   private final SimpleMotorFeedforward m_feedForward =
       new SimpleMotorFeedforward(CLIMBER.kG, CLIMBER.kV, CLIMBER.kA);
-  private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
-
   private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
 
   private double m_upperLimitMeters = CLIMBER.upperLimitMeters;
@@ -58,17 +52,22 @@ public class Climber extends SubsystemBase {
   private boolean m_limitJoystickInput;
   private boolean m_userSetpoint;
 
-  private final Timer m_timer = new Timer();
-  private double m_lastTimestamp = 0;
-  private double m_currentTimestamp = 0;
-
   private boolean elevatorClimbSate;
   private double holdPosition;
 
+  private TalonFXSimState m_simState = elevatorClimbMotors[0].getSimState();
    // Testing value for mech2d
   public double m_mechHeight = 0.1;
 
   public DoubleSubscriber m_mechHeightSub;
+  public double m_simEncoderSign = 1;
+  public final ElevatorSim elevatorSim =
+    new ElevatorSim(null, 
+    CLIMBER.gearbox, 
+    CLIMBER.lowerLimitMeters, 
+    CLIMBER.upperLimitMeters,
+    true, 
+    CLIMBER.lowerLimitMeters);
 
   NetworkTable climberNtTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Climber");
@@ -79,7 +78,7 @@ public class Climber extends SubsystemBase {
     climberNtTab.getDoubleTopic("Climber Sim Test Height").publish().set(m_mechHeight);
     m_mechHeightSub =
       climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
-
+    
 
     for (TalonFX motor : elevatorClimbMotors)
     motor.setControl(brake);
@@ -88,6 +87,8 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[0].setInverted(true);
     elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[1].setControl(follower);
+
+    m_simEncoderSign = elevatorClimbMotors[0].getInverted() ? -1 : 1;
   }
 
   public void setClimbState(boolean state) {
@@ -249,5 +250,14 @@ public class Climber extends SubsystemBase {
         elevatorClimbMotors[0].setControl(m_position);
       break;
     }
+  }
+  
+  @Override
+  public void simulationPeriodic() {
+    elevatorSim.setInput(MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValueAsDouble(), -12, 12));
+
+    m_simState.setRawRotorPosition(
+      elevatorSim.getPositionMeters() * CLIMBER.gearRatio
+    );
   }
 }

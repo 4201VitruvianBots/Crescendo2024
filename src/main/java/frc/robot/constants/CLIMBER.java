@@ -21,7 +21,7 @@ public final class CLIMBER {
     public static final double upperLimitMeters = Units.inchesToMeters(22.00);
     public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 
-    // public static final DCMotor gearbox = DCMotor.getFalcon500(2);
+    public static final DCMotor gearbox = DCMotor.getKrakenX60(1);
     public static final double gearRatio = 0.07575757576;
     // public static final double massKg = 4.0; will be under 125lbs
     public static final double drumRadiusMeters = Units.inchesToMeters(1.185);
