@@ -23,13 +23,13 @@ public class RunIntake extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_intake.setSpeed(m_speed, m_speed2);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_intake.setSpeed(m_speed, m_speed2);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
