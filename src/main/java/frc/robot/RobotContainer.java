@@ -9,6 +9,7 @@ import static frc.robot.constants.SWERVE.*;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -23,7 +24,7 @@ import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
-import frc.robot.commands.autos.ThreePiecefar;
+import frc.robot.commands.autos.ThreePieceFar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -194,7 +195,7 @@ public class RobotContainer {
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim));
-    m_autoChooser.addOption("ThreePiecefar", new ThreePiecefar(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
@@ -262,6 +263,10 @@ public class RobotContainer {
     //         m_swerveDrive.addVisionMeasurement(
     //             estimatedRobotPose.estimatedPose.toPose2d(),
     // estimatedRobotPose.timestampSeconds));
+
+    if (DriverStation.isDisabled()) {
+      m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
+    }
 
     m_fieldSim.periodic();
     if (m_visualizer != null) m_visualizer.periodic();

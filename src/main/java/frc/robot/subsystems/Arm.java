@@ -185,8 +185,6 @@ public class Arm extends SubsystemBase {
     if (!ROBOT.disableLogging) updateLogger();
   }
 
-  double m_last_time;
-
   @Override
   public void simulationPeriodic() {
     //    // Set supply voltage of flipper motor

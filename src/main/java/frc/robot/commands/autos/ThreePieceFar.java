@@ -18,29 +18,29 @@ import java.util.ArrayList;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreePiecefar extends SequentialCommandGroup {
-  /** Creates a new ThreePiecefar. */
-  public ThreePiecefar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
+public class ThreePieceFar extends SequentialCommandGroup {
+  /** Creates a new ThreePieceFar. */
+  public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     PathPlannerPath path1 = PathPlannerPath.fromPathFile("3piece2Pt1");
     var m_ppCommand1 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path1, path1.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path1, path1.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path2 = PathPlannerPath.fromPathFile("3piece2Pt2");
     var m_ppCommand2 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path2, path2.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path2, path2.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path3 = PathPlannerPath.fromPathFile("3piece2Pt3");
     var m_ppCommand3 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path3, path3.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path3, path3.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path4 = PathPlannerPath.fromPathFile("3piece2Pt4");
     var m_ppCommand4 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path4, path4.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path4, path4.getGlobalConstraints().getMaxVelocityMps(), true);
     PathPlannerPath path5 = PathPlannerPath.fromPathFile("3piece2Pt5");
     var m_ppCommand5 =
         TrajectoryUtils.generatePPHolonomicCommand(
-            swerveDrive, path5, path5.getGlobalConstraints().getMaxVelocityMps(), false);
+            swerveDrive, path5, path5.getGlobalConstraints().getMaxVelocityMps(), true);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
