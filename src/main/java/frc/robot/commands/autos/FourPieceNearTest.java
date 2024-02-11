@@ -13,13 +13,15 @@ import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FourPieceNear extends SequentialCommandGroup {
+public class FourPieceNearTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
-  public FourPieceNear(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
+  public FourPieceNearTest(
+      CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim, BooleanSupplier booleanSupplier) {
     String[] pathFiles = {
       "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
     };
@@ -52,9 +54,13 @@ public class FourPieceNear extends SequentialCommandGroup {
                 swerveDrive)
             .alongWith(new WaitCommand(1)),
         commandList.get(0),
+        new WaitCommand(30).unless(booleanSupplier),
         commandList.get(1),
+        new WaitCommand(30).unless(booleanSupplier),
         commandList.get(2),
+        new WaitCommand(30).unless(booleanSupplier),
         commandList.get(3),
+        new WaitCommand(30).unless(booleanSupplier),
         commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }

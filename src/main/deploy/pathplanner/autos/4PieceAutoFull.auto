@@ -8,31 +8,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept1"
+            "pathName": "FourPiecePt1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept2"
+            "pathName": "FourPiecePt2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept3"
+            "pathName": "FourPiecePt3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept4"
+            "pathName": "FourPiecePt4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "fourpiecept5"
+            "pathName": "FourPiecePt5"
           }
         }
       ]

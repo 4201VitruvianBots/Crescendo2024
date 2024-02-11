@@ -15,21 +15,35 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 
 public class TrajectoryUtils {
 
   public static FollowPathHolonomic generatePPHolonomicCommand(
-      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
+      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, flipPath);
+    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, false);
+  }
+
+  public static FollowPathHolonomic generatePPHolonomicCommand(
+      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean manualFlip) {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, manualFlip);
+  }
+
+  public static FollowPathHolonomic generatePPHolonomicCommand(
+      CommandSwerveDrivetrain swerveDrive, PathPlannerPath path, double maxSpeed) {
+
+    return generatePPHolonomicCommand(swerveDrive, path, maxSpeed, false);
   }
 
   public static FollowPathHolonomic generatePPHolonomicCommand(
       CommandSwerveDrivetrain swerveDrive,
       PathPlannerPath path,
       double maxSpeed,
-      boolean flipPath) {
+      boolean manualFlip) {
     return new FollowPathHolonomic(
         path,
         () -> swerveDrive.getState().Pose,
@@ -41,7 +55,7 @@ public class TrajectoryUtils {
             maxSpeed,
             0.86210458762,
             new ReplanningConfig(false, false, 1.0, 0.25)),
-        () -> flipPath,
+        () -> !manualFlip && Controls.isRedAlliance(),
         swerveDrive);
   }
 

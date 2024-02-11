@@ -5,19 +5,19 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.subsystems.Intake;
 
-public class RunIntake extends Command {
+public class AutoRunIntake extends Command {
+  /** Creates a new AutoRunIntake. */
   Intake m_intake;
-  double m_speed;
-  double m_speed2;
 
-  /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, double speed, double speed2) {
-    m_intake = intake;
-    m_speed = speed;
-    m_speed2 = speed2;
+  INTAKE_STATE m_state;
+
+  public AutoRunIntake(Intake intake, INTAKE_STATE state) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_intake = intake;
+    m_state = state;
     addRequirements(m_intake);
   }
 
@@ -28,18 +28,16 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setSpeed(m_speed, m_speed2);
+    m_intake.setSpeed(m_state.get(), m_state.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intake.setSpeed(0.0, 0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
