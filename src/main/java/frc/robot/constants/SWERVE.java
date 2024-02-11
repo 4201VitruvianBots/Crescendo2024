@@ -89,9 +89,9 @@ public final class SWERVE {
         new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
 
     private static final SwerveModule.ClosedLoopOutputType turnClosedLoopOutput =
-        SwerveModule.ClosedLoopOutputType.TorqueCurrentFOC;
+        SwerveModule.ClosedLoopOutputType.Voltage;
     private static final SwerveModule.ClosedLoopOutputType driveClosedLoopOutput =
-        SwerveModule.ClosedLoopOutputType.TorqueCurrentFOC;
+        SwerveModule.ClosedLoopOutputType.Voltage;
 
     //    public static final double ksDriveVoltsRotation = 0.11286;
     //    public static final double kvDriveVoltSecondsPerRotation = 0.10079;

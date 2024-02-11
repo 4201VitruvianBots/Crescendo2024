@@ -7,11 +7,9 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
@@ -23,7 +21,7 @@ public class FourPieceNear extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
   public FourPieceNear(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     String[] pathFiles = {
-      "fourpiecept1", "fourpiecept2", "fourpiecept3", "fourpiecept4", "fourpiecept5",
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
@@ -45,15 +43,18 @@ public class FourPieceNear extends SequentialCommandGroup {
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new InstantCommand(
             () ->
-                swerveDrive.seedFieldRelative(pathsList.get(1).getPreviewStartingHolonomicPose())),
+                swerveDrive.seedFieldRelative(
+                    SimConstants.pathPlannerFlip(
+                        pathsList.get(0).getPreviewStartingHolonomicPose())),
+            swerveDrive),
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)
             .alongWith(new WaitCommand(1)),
+        commandList.get(0),
         commandList.get(1),
         commandList.get(2),
         commandList.get(3),
-        commandList.get(4),
-        commandList.get(5).andThen(() -> swerveDrive.setControl(stopRequest)));
+        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
