@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShootAngle(Pose2d robotPose) {
-    if (Controls.IsBlueAllaince()) {
+    if (Controls.isBlueAllaince()) {
       return (Math.atan2(
                   (SHOOTER.SPEAKER.BlueSpeakerTLY - robotPose.getY()),
                   (SHOOTER.SPEAKER.BlueSpeakerTLX - robotPose.getX()))
