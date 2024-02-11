@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 
@@ -61,6 +63,18 @@ public class Vision extends SubsystemBase {
     return String.join(" ", targets.stream().map(PhotonTrackedTarget::toString).toList());
   }
 
+  public boolean hasGamePieceTarget() {
+    return false;
+  }
+  // TODO implement acutally (Bengi)//
+
+
+  // TODO implement Acutally (Bengi)//
+
+  public Rotation2d getRobotToGamePieceRotation() {
+    return new Rotation2d();
+  }
+
   private void updateLog() {
     Logger.recordOutput("vision/isAprilTagLimelightAConnected", isCameraConnected(aprilTagLimelightCameraA));
     Logger.recordOutput("vision/isAprilTagLimelightBConnected", isCameraConnected(aprilTagLimelightCameraB));
@@ -82,41 +96,14 @@ public class Vision extends SubsystemBase {
     
   }
 
-  private void updateSwervePose(PhotonPoseEstimator photonPoseEstimator) {
-    final var globalPose = getEstimatedGlobalPose(photonPoseEstimator);
-    globalPose.ifPresent(
-        estimatedRobotPose ->
-            m_swerveDriveTrain.addVisionMeasurement(
-                estimatedRobotPose.estimatedPose.toPose2d(),
-    estimatedRobotPose.timestampSeconds));  
-    }
-
-  private void smartDashboard() {
+  private void updateSmartDashboard() {
     // Implement the smartDashboard method here
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    // Pick which limelight to use for updating swerve pose
-    updateSwervePose(limelightPhotonPoseEstimatorA);
-    updateSwervePose(limelightPhotonPoseEstimatorB);
-
-    updateLog();
-    smartDashboard();
-  
-    if (m_fieldSim != null) {
-      var limelightPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
-      if (limelightPoseB.isPresent()) {
-        m_fieldSim.updateVisionPose(limelightPoseB.get().estimatedPose.toPose2d());
-      }
-
-      var limelightPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
-      if (limelightPoseA.isPresent()) {
-        m_fieldSim.updateVisionPose(limelightPoseA.get().estimatedPose.toPose2d());
-      }
-    }
-
+    if (!ROBOT.disableLogging) updateLog();
+    updateSmartDashboard();
   }
 }

@@ -13,8 +13,9 @@ public final class INTAKE {
   public enum INTAKE_STATE {
     // Units are in Percent Output
     NONE(0),
-    INTAKING(0.6);
-
+    INTAKING(-0.6),
+    INTAKING1(-0.85),
+    INTAKINGSLOW(0.2);
     private final double value;
 
     INTAKE_STATE(final double value) {
