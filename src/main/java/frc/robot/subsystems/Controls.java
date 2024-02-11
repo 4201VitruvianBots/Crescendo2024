@@ -28,6 +28,14 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     return m_allianceColor;
   }
 
+  public static boolean IsRedAlliance() {
+    return (m_allianceColor == DriverStation.Alliance.Red);
+  }
+
+  public static boolean IsBlueAllaince() {
+    return (m_allianceColor == DriverStation.Alliance.Blue);
+  }
+
   public void setPDHChannel(boolean on) {
     // pdh.setSwitchableChannel(on);
   }
@@ -47,6 +55,10 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     checkDsAlliance.ifPresent(alliance -> m_allianceColor = alliance);
   }
 
+  /**
+   * TODO: Implement this 1. Check that arm is initialized 2. Check that robot position is close to
+   * selected auto position 3.
+   */
   private void updateInitState() {
     if (DriverStation.isDisabled()) {}
   }

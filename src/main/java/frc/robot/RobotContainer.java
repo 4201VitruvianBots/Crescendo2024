@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -27,10 +28,15 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
-import frc.robot.commands.shooter.SetAndHoldRPMSetpoint;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
+import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ToggleShooterTestMode;
+import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -57,7 +63,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
+  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -79,6 +85,11 @@ public class RobotContainer {
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
+
+    NamedCommands.registerCommand(
+        "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
+    NamedCommands.registerCommand(
+        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get()));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -160,8 +171,16 @@ public class RobotContainer {
     //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // amp
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, .95)); // sbeaker
+    xboxController
+        .a()
+        .whileTrue(
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // slow sbeaker
+    xboxController
+        .b()
+        .whileTrue(
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
+
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
@@ -189,6 +208,8 @@ public class RobotContainer {
   public void initSysidChooser() {
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
+
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
