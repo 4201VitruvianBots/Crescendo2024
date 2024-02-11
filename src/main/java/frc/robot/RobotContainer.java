@@ -7,7 +7,9 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -22,18 +24,18 @@ import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
-import frc.robot.commands.autos.ThreePiecefar;
+import frc.robot.commands.autos.ThreePieceFar;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
-// import frc.robot.commands.shooter.ShootNStrafe;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
-// import frc.robot.commands.uptake.RunUptake;
+import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -62,7 +64,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LEDSubsystem m_led = new LEDSubsystem(m_controls);
+  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -81,9 +83,16 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
+    m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerArm(m_arm);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
+
+    NamedCommands.registerCommand(
+        "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
+    NamedCommands.registerCommand(
+        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get()));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -168,14 +177,14 @@ public class RobotContainer {
     xboxController
         .a()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // slow sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.COOLVALUE.get())); // fast sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.55, -0.85));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
@@ -188,7 +197,7 @@ public class RobotContainer {
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim));
-    m_autoChooser.addOption("ThreePiecefar", new ThreePiecefar(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
@@ -256,6 +265,10 @@ public class RobotContainer {
     //         m_swerveDrive.addVisionMeasurement(
     //             estimatedRobotPose.estimatedPose.toPose2d(),
     // estimatedRobotPose.timestampSeconds));
+
+    if (DriverStation.isDisabled()) {
+      m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
+    }
 
     m_fieldSim.periodic();
     if (m_visualizer != null) m_visualizer.periodic();

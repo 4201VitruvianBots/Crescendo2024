@@ -23,7 +23,7 @@ public class DriveStraightPathPlannerTest extends SequentialCommandGroup {
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("DriveForwardTest");
 
-    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, false);
+    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1.0, true);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
