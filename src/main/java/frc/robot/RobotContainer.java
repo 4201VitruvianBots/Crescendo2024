@@ -77,8 +77,7 @@ public class RobotContainer {
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
-  private final Trigger trigger = new Trigger(
-    true, () -> xboxController.leftStick().getAsBoolean() && xboxController.rightStick().getAsBoolean());
+  private final Trigger trigger = new Trigger(() -> xboxController.leftStick().getAsBoolean() && xboxController.rightStick().getAsBoolean());
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
@@ -168,9 +167,10 @@ public class RobotContainer {
     //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
 
     //toggles the climb sequence when presses and cuts the command when pressed again
-    xboxController.().toggleOnTrue(new ClimbFinal(m_ampShooter, m_arm, m_climber));
+    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    trigger.onFalse(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
     //switch between open loop and close loop
-    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     
     xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // amp
     xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // sbeaker
