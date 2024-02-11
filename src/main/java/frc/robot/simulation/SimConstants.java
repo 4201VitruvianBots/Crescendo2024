@@ -70,9 +70,10 @@ public final class SimConstants {
 
   public static Pose2d pathPlannerFlip(Pose2d pose) {
     if (Controls.isRedAlliance()) {
-      return new Pose2d(fieldLength - pose.getX(),
-              pose.getY(),
-              new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
+      return new Pose2d(
+          fieldLength - pose.getX(),
+          pose.getY(),
+          new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
     } else {
       return pose;
     }

@@ -103,8 +103,13 @@ public class TestPathPlanner {
 
     var flippedStartPoint = SimConstants.pathPlannerFlip(path.getPreviewStartingHolonomicPose());
 
-    assertEquals(flippedPath.getPreviewStartingHolonomicPose().getX(), flippedStartPoint.getX(), DELTA);
-    assertEquals(flippedPath.getPreviewStartingHolonomicPose().getY(), flippedStartPoint.getY(), DELTA);
-    assertEquals(flippedPath.getPreviewStartingHolonomicPose().getRotation().getDegrees(), flippedStartPoint.getRotation().getDegrees(), DELTA);
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getX(), flippedStartPoint.getX(), DELTA);
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getY(), flippedStartPoint.getY(), DELTA);
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getRotation().getDegrees(),
+        flippedStartPoint.getRotation().getDegrees(),
+        DELTA);
   }
 }
