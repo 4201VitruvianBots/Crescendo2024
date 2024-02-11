@@ -9,23 +9,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.SWERVE;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-
-import static frc.robot.simulation.SimConstants.kMotorResistance;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -38,17 +30,12 @@ public class Intake extends SubsystemBase {
   private final TalonFXSimState m_intakeMotor1SimState = intakeMotor1.getSimState();
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
   private final TalonFXSimState m_intakeMotor2SimState = intakeMotor2.getSimState();
-  
-  private DCMotorSim m_intakeMotor1Sim=  
-      new DCMotorSim(
-         INTAKE.intake1Gearbox,
-         INTAKE.gearRatio,
-         INTAKE.Inertia);
-  private DCMotorSim m_intakeMotor2Sim=  
-      new DCMotorSim(
-         INTAKE.intake2Gearbox,
-         INTAKE.gearRatio,
-         INTAKE.Inertia);
+
+  private DCMotorSim m_intakeMotor1Sim =
+      new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
+  private DCMotorSim m_intakeMotor2Sim =
+      new DCMotorSim(INTAKE.intake2Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
+
   public Intake() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kP = INTAKE.kP;
@@ -85,22 +72,19 @@ public class Intake extends SubsystemBase {
   public INTAKE_STATE getIntakeState() {
     return m_state;
   }
-  public void simulationPeriodic() {
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(
-            m_intakeMotor1Sim.getCurrentDrawAmps(), m_intakeMotor1Sim.getCurrentDrawAmps()));
 
-    m_intakeMotor1SimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_intakeMotor1Sim.getCurrentDrawAmps() * kMotorResistance);
-    m_intakeMotor2SimState.setSupplyVoltage(
-        RobotController.getBatteryVoltage()
-            - m_intakeMotor2Sim.getCurrentDrawAmps() * kMotorResistance);
+  @Override
+  public void simulationPeriodic() {
+    m_intakeMotor1SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_intakeMotor2SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     m_intakeMotor2Sim.setInputVoltage(
         MathUtil.clamp(m_intakeMotor2SimState.getMotorVoltage(), -12, 12));
-    m_intakeMotor1Sim.setInputVoltage(MathUtil.clamp(m_intakeMotor1SimState.getMotorVoltage(), -12, 12));
+    m_intakeMotor1Sim.setInputVoltage(
+        MathUtil.clamp(m_intakeMotor1SimState.getMotorVoltage(), -12, 12));
 
+    m_intakeMotor2Sim.update(RobotTime.getTimeDelta());
+    m_intakeMotor1Sim.update(RobotTime.getTimeDelta());
     //    System.out.printf("DT: %.2f\tDrive Rotations: %.2f\tDrive RPM: %.2f\n", dt,
     // m_intakeMotor2Sim.getAngularPositionRotations(), m_intakeMotor2Sim.getAngularVelocityRPM());
 
@@ -113,6 +97,14 @@ public class Intake extends SubsystemBase {
     m_intakeMotor1SimState.setRotorVelocity(
         m_intakeMotor1Sim.getAngularVelocityRPM() * INTAKE.gearRatio / 60.0);
   }
+
+  public void updateSmartDashboard() {}
+
+  public void updateLogger() {
+    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

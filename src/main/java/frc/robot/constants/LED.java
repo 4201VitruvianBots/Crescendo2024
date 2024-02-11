@@ -49,6 +49,5 @@ public final class LED {
     SCORE_ARM,
     SCORE_SPEAKER,
     SCORE_TRAP,
-    SCORE_ARM
   }
 }
