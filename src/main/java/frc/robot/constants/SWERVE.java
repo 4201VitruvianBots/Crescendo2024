@@ -17,7 +17,7 @@ import java.util.Map;
 public final class SWERVE {
 
   public static final class DRIVE {
-    public static final double kTrackWidth = Units.inchesToMeters(24);
+    public static double kTrackWidth = Units.inchesToMeters(26);
     public static final double kWheelBase = Units.inchesToMeters(24);
 
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
@@ -36,10 +36,10 @@ public final class SWERVE {
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
     // In rotations
-    public static double kFrontLeftEncoderOffset = -0.035888671875;
-    public static double kFrontRightEncoderOffset = 0.04296875;
-    public static double kBackLeftEncoderOffset = 0.483642578125;
-    public static double kBackRightEncoderOffset = 0.414306640625;
+    public static double kFrontLeftEncoderOffset = 0.021240234375;
+    public static double kFrontRightEncoderOffset = 0.325439453125;
+    public static double kBackLeftEncoderOffset = 0.2958984375;
+    public static double kBackRightEncoderOffset = -0.16796875;
 
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
@@ -89,9 +89,9 @@ public final class SWERVE {
         new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
 
     private static final SwerveModule.ClosedLoopOutputType turnClosedLoopOutput =
-        SwerveModule.ClosedLoopOutputType.Voltage;
+        SwerveModule.ClosedLoopOutputType.TorqueCurrentFOC;
     private static final SwerveModule.ClosedLoopOutputType driveClosedLoopOutput =
-        SwerveModule.ClosedLoopOutputType.Voltage;
+        SwerveModule.ClosedLoopOutputType.TorqueCurrentFOC;
 
     //    public static final double ksDriveVoltsRotation = 0.11286;
     //    public static final double kvDriveVoltSecondsPerRotation = 0.10079;
@@ -115,7 +115,7 @@ public final class SWERVE {
   }
 
   public static final SwerveDrivetrainConstants DrivetrainConstants =
-      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.rioCanbus);
+      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.drivebaseCanbus);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
       new SwerveModuleConstantsFactory()

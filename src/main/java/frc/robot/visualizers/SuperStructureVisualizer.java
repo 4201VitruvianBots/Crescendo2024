@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
-import frc.robot.constants.FLYWHEEL;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER;
 import frc.robot.constants.VISION;
 import frc.robot.subsystems.*;
 
@@ -41,7 +41,7 @@ public class SuperStructureVisualizer {
   MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
           "Shooter",
-          ROBOT.drivebaseLength * 0.5 + FLYWHEEL.kDistanceFromIntake,
+          ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
 
   MechanismLigament2d m_drivebase2d =
@@ -79,22 +79,7 @@ public class SuperStructureVisualizer {
       m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
 
-  public SuperStructureVisualizer(
-      Intake intake,
-      Shooter shooter,
-      AmpShooter ampShooter,
-      Arm arm,
-      Climber climber,
-      Vision vision,
-      LEDSubsystem led) {
-    m_intake = intake;
-    m_shooter = shooter;
-    m_ampShooter = ampShooter;
-    m_arm = arm;
-    m_climber = climber;
-    m_vision = vision;
-    m_led = led;
-
+  public SuperStructureVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
@@ -116,6 +101,34 @@ public class SuperStructureVisualizer {
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+  }
+
+  public void registerIntake(Intake intake) {
+    m_intake = intake;
+  }
+
+  public void registerShooter(Shooter shooter) {
+    m_shooter = shooter;
+  }
+
+  public void registerAmpShooter(AmpShooter ampShooter) {
+    m_ampShooter = ampShooter;
+  }
+
+  public void registerArm(Arm arm) {
+    m_arm = arm;
+  }
+
+  public void registerClimber(Climber climber) {
+    m_climber = climber;
+  }
+
+  public void registerVision(Vision vision) {
+    m_vision = vision;
+  }
+
+  public void registerLedSubsystem(LEDSubsystem led) {
+    m_led = led;
   }
 
   /* Function to visualize the speed of a particular motor. */
@@ -150,11 +163,11 @@ public class SuperStructureVisualizer {
   }
 
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getRPM1(), m_shooter2d_originalColor);
+    updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
   }
 
   public void updateAmpShooter() {
-    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
+    updateMotorColor(m_ampShooter2d, m_ampShooter.getVelocity(), m_ampShooter2d_originalColor);
   }
 
   public void updateArm() {
@@ -180,12 +193,12 @@ public class SuperStructureVisualizer {
   }
 
   public void periodic() {
-    updateIntake();
-    updateShooter();
-    updateAmpShooter();
-    updateArm();
-    updateClimber();
-    updateLimelight();
-    updateLED();
+    if (m_intake != null) updateIntake();
+    if (m_shooter != null) updateShooter();
+    if (m_ampShooter != null) updateAmpShooter();
+    if (m_arm != null) updateArm();
+    if (m_climber != null) updateClimber();
+    if (m_vision != null) updateLimelight();
+    if (m_led != null) updateLED();
   }
 }

@@ -24,6 +24,8 @@ public class Telemetry {
   private final Pose2d[] m_swerveModulePoses = {
     new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
   };
+  private final Transform2d[] m_moduleTransforms = new Transform2d[4];
+  private final double[] m_moduleAngles = new double[4];
 
   /** Construct a telemetry object */
   public Telemetry() {}
@@ -36,7 +38,7 @@ public class Telemetry {
   private Pose2d m_lastPose = new Pose2d();
   private double lastTime = Utils.getCurrentTimeSeconds();
 
-  /* Accept the swerve drive state and telemeterize it to smartdashboard */
+  /* Accept the swerve drive state and telemeterize it to SmartDashboard */
   public void telemeterize(SwerveDriveState state) {
     Pose2d pose = state.Pose;
     /* Telemeterize the robot's general speeds */
@@ -55,22 +57,19 @@ public class Telemetry {
     Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
     Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
     Logger.recordOutput("Swerve/Module States", state.ModuleStates);
-    Logger.recordOutput(
-        "Swerve/Module Angles",
-        new double[] {
-          state.ModuleStates[0].angle.getDegrees(),
-          state.ModuleStates[1].angle.getDegrees(),
-          state.ModuleStates[2].angle.getDegrees(),
-          state.ModuleStates[3].angle.getDegrees()
-        });
+    m_moduleAngles[0] = state.ModuleStates[0].angle.getDegrees();
+    m_moduleAngles[1] = state.ModuleStates[1].angle.getDegrees();
+    m_moduleAngles[2] = state.ModuleStates[2].angle.getDegrees();
+    m_moduleAngles[3] = state.ModuleStates[3].angle.getDegrees();
+    Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
 
     if (m_fieldSim != null) {
       for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
         m_moduleVisualizer[i.ordinal()].update(state.ModuleStates[i.ordinal()]);
-        var moduleTransform =
+        m_moduleTransforms[i.ordinal()] =
             new Transform2d(
                 SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
-        m_swerveModulePoses[i.ordinal()] = pose.transformBy(moduleTransform);
+        m_swerveModulePoses[i.ordinal()] = pose.transformBy(m_moduleTransforms[i.ordinal()]);
       }
 
       m_fieldSim.updateRobotPose(pose);
