@@ -4,12 +4,16 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public final class INTAKE {
   public static final double intakeLength = Units.inchesToMeters(4);
   public static final double gearRatio = 1.0 / 1.0; 
+  public static final DCMotor intake1Gearbox = DCMotor.getKrakenX60(1);
+  public static final DCMotor intake2Gearbox = DCMotor.getKrakenX60(1);
+  public static final double Inertia = 0.001;
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
   public static final double kP = 0.085;
