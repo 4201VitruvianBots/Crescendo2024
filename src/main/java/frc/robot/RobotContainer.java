@@ -181,7 +181,7 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.55, -0.85));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.50, -0.85));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
