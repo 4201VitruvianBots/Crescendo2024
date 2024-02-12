@@ -31,9 +31,9 @@ public class Intake extends SubsystemBase {
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
   private final TalonFXSimState m_intakeMotor2SimState = intakeMotor2.getSimState();
 
-  private DCMotorSim m_intakeMotor1Sim =
+  private final DCMotorSim m_intakeMotor1Sim =
       new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
-  private DCMotorSim m_intakeMotor2Sim =
+  private final DCMotorSim m_intakeMotor2Sim =
       new DCMotorSim(INTAKE.intake2Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
 
   public Intake() {

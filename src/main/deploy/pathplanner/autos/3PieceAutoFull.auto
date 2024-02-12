@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.4,
-      "y": 2.36
+      "y": 4.147982164914437
     },
     "rotation": 0
   },
@@ -14,31 +14,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3Piece2Pt1"
+            "pathName": "3piece2Pt1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3Piece2Pt2"
+            "pathName": "3piece2Pt2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3Piece2Pt3"
+            "pathName": "3piece2Pt3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3Piece2Pt4"
+            "pathName": "3piece2Pt4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3Piece2Pt5"
+            "pathName": "3piece2Pt5"
           }
         }
       ]

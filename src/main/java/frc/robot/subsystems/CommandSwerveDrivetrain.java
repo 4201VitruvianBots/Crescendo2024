@@ -40,7 +40,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private double m_lastSimTime;
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
   private double m_desiredHeadingRadians;
-  private Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
+  private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
   private Vision m_vision;
   private final SwerveRequest.FieldCentric m_driveRequest =
       new SwerveRequest.FieldCentric()
@@ -65,7 +65,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
     m_vision = vision;
-    resetGyro(0);
+
     if (Utils.isSimulation()) {
       startSimThread();
     }
@@ -77,24 +77,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
 
-    // for (int i = 0; i < modules.length; i++) {
-    //   m_constants[i] = modules[i];
-    //   var encoderConfigs = CtreUtils.generateCanCoderConfig();
-    //   // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
-    //   CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
-
-    //   var turnConfigs = CtreUtils.generateTurnMotorConfig();
-    //   // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
-    //   CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
-    //   setTurnAngle(i, 0);
-
-    //   var driveConfigs = CtreUtils.generateDriveMotorConfig();
-    //   // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive :
-    // InvertedValue.CounterClockwise_Positive;
-    //   CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
-    // }
-    resetGyro(0);
-
     if (Utils.isSimulation()) {
       startSimThread();
     }
@@ -102,7 +84,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_alert.set(true);
   }
 
-  public void RegisterVisionSubsytem(Vision vision) {
+  public void registerVisionSubsystem(Vision vision) {
     m_vision = vision;
   }
 
@@ -129,18 +111,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
               AlertType.ERROR);
       alert.set(true);
     } else {
-      // System.out.printf(
-      //     """
-      //                 Updated Turn Motor %2d Angle:
-      //                 Desired Angle: %.2f
-      //                 Turn Motor Angle: %.2f
-      //                 CANCoder Absolute Angle: %.2f
-      //                 CANCoder Offset: %.2f\n""",
-      //     m_turnMotor.getDeviceID(),
-      //     angle,
-      //     getTurnHeadingDeg(),
-      //     getTurnEncoderAbsHeading().getDegrees(),
-      //     m_angleOffset);
+      System.out.printf(
+          """
+                       Updated Turn Motor %2d Angle:
+                       Desired Angle: %.2f
+                       Turn Motor Angle: %.2f
+                       CANCoder Absolute Angle: %.2f
+                       CANCoder Offset: %.2f
+                       """,
+          getModule(moduleId).getSteerMotor().getDeviceID(),
+          angle,
+          Units.rotationsToDegrees(getModule(moduleId).getSteerMotor().getPosition().getValue()),
+          getModule(moduleId).getCANcoder().getAbsolutePosition().getValue(),
+          Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset));
     }
   }
 
@@ -195,9 +178,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
   }
 
-  /* Second-Order Kinematics
-  https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79
-
+  /**
+   * Second-Order Kinematics <a
+   * href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79">...</a>
    */
   public void setChassisSpeedControl(
       ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
