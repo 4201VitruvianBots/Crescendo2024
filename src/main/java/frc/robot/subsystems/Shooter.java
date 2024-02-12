@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -56,8 +57,8 @@ public class Shooter extends SubsystemBase {
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
-    configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
     configBottom.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
     configBottom.Slot0.kV = SHOOTER.kV;
     configBottom.Slot0.kP = SHOOTER.kP;
     configBottom.Slot0.kI = SHOOTER.kI;
@@ -65,8 +66,9 @@ public class Shooter extends SubsystemBase {
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
-    configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
     configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    configTop.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
     configTop.Slot0.kV = SHOOTER.kV;
     configTop.Slot0.kP = SHOOTER.kP;
     configTop.Slot0.kI = SHOOTER.kI;
