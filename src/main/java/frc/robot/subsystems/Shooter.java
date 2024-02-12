@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -45,7 +46,6 @@ public class Shooter extends SubsystemBase {
   private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
 
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
-
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
 
   private final SimpleMotorFeedforward m_feedForward =
@@ -57,6 +57,8 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
     configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
+    configBottom.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    configBottom.Slot0.kV = SHOOTER.kV;
     configBottom.Slot0.kP = SHOOTER.kP;
     configBottom.Slot0.kI = SHOOTER.kI;
     configBottom.Slot0.kD = SHOOTER.kD;
@@ -64,6 +66,7 @@ public class Shooter extends SubsystemBase {
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
+    configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Slot0.kV = SHOOTER.kV;
     configTop.Slot0.kP = SHOOTER.kP;
     configTop.Slot0.kI = SHOOTER.kI;
@@ -72,12 +75,13 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotors[0].setInverted(true);
     // flywheel motor 1
-    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
+    //    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
   }
 
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
+    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
 
     m_desiredPercentOutput = percentOutput;
   }
@@ -86,6 +90,8 @@ public class Shooter extends SubsystemBase {
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(
+        m_focControlBottom.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+    m_shooterMotors[1].setControl(
         m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
   }
 
@@ -153,13 +159,6 @@ public class Shooter extends SubsystemBase {
     m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
-  public void reachGoal(double rpm) {
-
-    var rps = rpm / 60.0;
-    m_shooterMotors[0].setControl(
-        m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
-  }
-
   public boolean getTestMode() {
     return m_testMode;
   }
@@ -178,6 +177,12 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
+    Logger.recordOutput(
+        "Shooter/RPMMasterSetpoint", m_shooterMotors[0].getClosedLoopReference().getValue() * 60);
+    Logger.recordOutput(
+        "Shooter/RPMFollowerSetpoint", m_shooterMotors[1].getClosedLoopReference().getValue() * 60);
+    Logger.recordOutput(
+        "Shooter/FollowerControlMode", m_shooterMotors[0].getControlMode().getValue());
   }
 
   @Override
@@ -188,24 +193,24 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    m_shooterMotorTopSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_shooterMotorBottomSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_shooterMotorTopSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    m_shooterMotorSim[1].setInputVoltage(
-        MathUtil.clamp(m_shooterMotorTopSimState.getMotorVoltage(), -12, 12));
     m_shooterMotorSim[0].setInputVoltage(
         MathUtil.clamp(m_shooterMotorBottomSimState.getMotorVoltage(), -12, 12));
+    m_shooterMotorSim[1].setInputVoltage(
+        MathUtil.clamp(m_shooterMotorTopSimState.getMotorVoltage(), -12, 12));
 
-    m_shooterMotorSim[1].update(RobotTime.getTimeDelta());
     m_shooterMotorSim[0].update(RobotTime.getTimeDelta());
+    m_shooterMotorSim[1].update(RobotTime.getTimeDelta());
 
-    m_shooterMotorTopSimState.setRawRotorPosition(
-        m_shooterMotorSim[1].getAngularPositionRotations() * SHOOTER.gearRatioTop);
-    m_shooterMotorTopSimState.setRotorVelocity(
-        m_shooterMotorSim[1].getAngularVelocityRPM() * SHOOTER.gearRatioTop / 60.0);
     m_shooterMotorBottomSimState.setRawRotorPosition(
         m_shooterMotorSim[0].getAngularPositionRotations() * SHOOTER.gearRatioBottom);
     m_shooterMotorBottomSimState.setRotorVelocity(
         m_shooterMotorSim[0].getAngularVelocityRPM() * SHOOTER.gearRatioBottom / 60.0);
+    m_shooterMotorTopSimState.setRawRotorPosition(
+        m_shooterMotorSim[1].getAngularPositionRotations() * SHOOTER.gearRatioTop);
+    m_shooterMotorTopSimState.setRotorVelocity(
+        m_shooterMotorSim[1].getAngularVelocityRPM() * SHOOTER.gearRatioTop / 60.0);
   }
 }
