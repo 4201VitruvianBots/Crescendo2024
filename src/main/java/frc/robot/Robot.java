@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ROBOT;
 import java.io.File;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -39,7 +41,8 @@ public class Robot extends LoggedRobot {
       try {
         Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
       } catch (Exception e) {
-        System.out.println("\nAdvantageKit - Failed to log to USB Drive!");
+        var alert = new Alert("\nAdvantageKit - Failed to log to USB Drive!", AlertType.WARNING);
+        alert.set(true);
         e.printStackTrace();
 
         var tempLogDir = new File("/home/lvuser/logs");
@@ -77,7 +80,8 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
 
-    System.out.println("AdvantageKit Logging Started!");
+    var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
+    alert.set(true);
     // Update robot constants based off of robot used
     ROBOT.initConstants();
     // CtreUtils.initPhoenixServer();

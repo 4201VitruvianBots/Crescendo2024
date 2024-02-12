@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import java.util.List;
 import java.util.Optional;
@@ -83,6 +85,18 @@ public class Vision extends SubsystemBase {
   //   return new Pose3d();
   // }
 
+  // TODO implement acutally (Bengi)//
+
+  public boolean hasGamePieceTarget() {
+    return false;
+  }
+
+  // TODO implement Acutally (Bengi)//
+
+  public Rotation2d getRobotToGamePieceRotation() {
+    return new Rotation2d();
+  }
+
   private void updateLog() {
     Logger.recordOutput("vision/isCameraConnected", isCameraConnected());
 
@@ -95,14 +109,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private void smartDashboard() {
+  private void updateSmartDashboard() {
     // Implement the smartDashboard method here
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateLog();
-    smartDashboard();
+    if (!ROBOT.disableLogging) updateLog();
+    updateSmartDashboard();
   }
 }

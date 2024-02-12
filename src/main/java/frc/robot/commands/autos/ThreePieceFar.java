@@ -17,11 +17,11 @@ import java.util.ArrayList;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FourPieceNear extends SequentialCommandGroup {
-  /** Creates a new DriveStraightTest. */
-  public FourPieceNear(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
+public class ThreePieceFar extends SequentialCommandGroup {
+  /** Creates a new ThreePieceFar. */
+  public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
+      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4", "3Piece2Pt5",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();

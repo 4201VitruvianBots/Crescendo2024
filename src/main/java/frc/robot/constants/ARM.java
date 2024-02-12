@@ -50,7 +50,7 @@ public final class ARM {
     }
   }
 
-  public static final DCMotor gearBox = DCMotor.getFalcon500(1);
+  public static final DCMotor gearBox = DCMotor.getKrakenX60(1);
 
   // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
   public static final double gearRatio = 140.0 / 1.0;
