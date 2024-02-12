@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -63,7 +62,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
-  
+
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
@@ -81,7 +80,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
-m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     initializeSubsystems();
     configureBindings();

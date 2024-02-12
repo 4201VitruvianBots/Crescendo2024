@@ -39,14 +39,14 @@ public class ShootNStrafe extends Command {
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
   public int hehe = 69; // Mano's work
-  
+
   private final SwerveRequest.FieldCentric drive =
-        new SwerveRequest.FieldCentric()
-            .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-            .withRotationalDeadband(
-                SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   public ShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
@@ -67,8 +67,8 @@ public class ShootNStrafe extends Command {
     addRequirements(m_shooter);
 
     // TODO: None of this will work if the math is out here and not in execute()
-    
-}
+
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -80,8 +80,6 @@ public class ShootNStrafe extends Command {
   public void execute() {
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
-
-    
 
     double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
 
@@ -102,9 +100,6 @@ public class ShootNStrafe extends Command {
                     / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                         * VelocityShoot)));
 
-    
-
-                
     m_shooter.setRpmOutput(RPMThreshold);
 
     double throttle =

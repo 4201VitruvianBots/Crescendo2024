@@ -11,7 +11,6 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,21 +35,18 @@ public class Shooter extends SubsystemBase {
   };
 
   private DCMotorSim[] m_shooterMotorSim = {
-  new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia), 
-  new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)};
+    new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia),
+    new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
+  };
 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
   private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
-  
+
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
-  
+
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
-
-  
-
-  
 
   private final SimpleMotorFeedforward m_feedForward =
       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
@@ -65,10 +61,6 @@ public class Shooter extends SubsystemBase {
     configBottom.Slot0.kI = SHOOTER.kI;
     configBottom.Slot0.kD = SHOOTER.kD;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
-    
-
-
-    
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
@@ -161,14 +153,11 @@ public class Shooter extends SubsystemBase {
     m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
-
   public void reachGoal(double rpm) {
 
- var rps = rpm / 60.0;
+    var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(
         m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
- 
-
   }
 
   public boolean getTestMode() {
@@ -196,6 +185,7 @@ public class Shooter extends SubsystemBase {
     updateShuffleboard();
     if (!ROBOT.disableLogging) updateLogger();
   }
+
   @Override
   public void simulationPeriodic() {
     m_shooterMotorTopSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
@@ -208,7 +198,7 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotorSim[1].update(RobotTime.getTimeDelta());
     m_shooterMotorSim[0].update(RobotTime.getTimeDelta());
-    
+
     m_shooterMotorTopSimState.setRawRotorPosition(
         m_shooterMotorSim[1].getAngularPositionRotations() * SHOOTER.gearRatioTop);
     m_shooterMotorTopSimState.setRotorVelocity(
