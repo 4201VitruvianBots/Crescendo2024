@@ -185,8 +185,14 @@ public class SuperStructureVisualizer {
   }
 
   public void updateLimelights() {
-    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA), m_limelight2d_originalColor);
-    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB), m_limelight2d_originalColor);
+    updateLimelightColor(
+        m_limelight2d,
+        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
+        m_limelight2d_originalColor);
+    updateLimelightColor(
+        m_limelight2d,
+        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
+        m_limelight2d_originalColor);
   }
 
   public void updateLED() {

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
-
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -31,9 +30,11 @@ public class Vision extends SubsystemBase {
     m_fieldSim = fieldSim;
   }
 
-  NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("NoteDetectionLimelight");
+  NetworkTable NoteDetectionLimelight =
+      NetworkTableInstance.getDefault().getTable("limelight");
 
-  public static PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("AprilTagLimelightCameraA");
+  public static PhotonCamera aprilTagLimelightCameraA =
+      new PhotonCamera("AprilTagLimelightCameraA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -41,7 +42,8 @@ public class Vision extends SubsystemBase {
           aprilTagLimelightCameraA,
           VISION.robotToCam);
 
-  public static PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("AprilTagLimelightCameraB");
+  public static PhotonCamera aprilTagLimelightCameraB =
+      new PhotonCamera("AprilTagLimelightCameraB");
   PhotonPoseEstimator limelightPhotonPoseEstimatorB =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -73,35 +75,45 @@ public class Vision extends SubsystemBase {
     return tv.getDouble(0.0) == 1;
   }
 
-  public Rotation2d getRobotToGamePieceRotation() {
-    Rotation2d rotation = new Rotation2d();
+  public double getRobotToGamePieceDegrees() {
+    double degreesRotation = 0.0;
     if (hasGamePieceTarget()) {
       NetworkTableEntry tx = NoteDetectionLimelight.getEntry("tx");
-      double x = tx.getDouble(0.0);
-      rotation = Rotation2d.fromDegrees(x);
+      degreesRotation = tx.getDouble(0.0);
     }
-    return rotation;
+    return degreesRotation;
+  }
+
+  public Rotation2d getRobotToGamePieceRotation() {
+    return Rotation2d.fromDegrees(getRobotToGamePieceDegrees());
   }
 
   private void updateLog() {
-    Logger.recordOutput("vision/isAprilTagLimelightAConnected", isCameraConnected(aprilTagLimelightCameraA));
-    Logger.recordOutput("vision/isAprilTagLimelightBConnected", isCameraConnected(aprilTagLimelightCameraB));
+    Logger.recordOutput("vision/isNoteDetected", hasGamePieceTarget());
+    Logger.recordOutput("vision/robotToGamePieceRotation", getRobotToGamePieceDegrees());
+
+    Logger.recordOutput(
+        "vision/isAprilTagLimelightAConnected", isCameraConnected(aprilTagLimelightCameraA));
+    Logger.recordOutput(
+        "vision/isAprilTagLimelightBConnected", isCameraConnected(aprilTagLimelightCameraB));
 
     if (isCameraConnected(aprilTagLimelightCameraA)) {
-      Logger.recordOutput("vision/isAprilTagDetectedLimelightA", isAprilTagDetected(aprilTagLimelightCameraA));
+      Logger.recordOutput(
+          "vision/isAprilTagDetectedLimelightA", isAprilTagDetected(aprilTagLimelightCameraA));
     }
-      if (isAprilTagDetected(aprilTagLimelightCameraA)) {
-        Logger.recordOutput("vision/aprilTagLimelightATargetsDetected", getTargets(aprilTagLimelightCameraA));
-      }
-    
+    if (isAprilTagDetected(aprilTagLimelightCameraA)) {
+      Logger.recordOutput(
+          "vision/aprilTagLimelightATargetsDetected", getTargets(aprilTagLimelightCameraA));
+    }
 
     if (isCameraConnected(aprilTagLimelightCameraB)) {
-      Logger.recordOutput("vision/isAprilTagDetectedLimelightB", isAprilTagDetected(aprilTagLimelightCameraB));
+      Logger.recordOutput(
+          "vision/isAprilTagDetectedLimelightB", isAprilTagDetected(aprilTagLimelightCameraB));
     }
-      if (isAprilTagDetected(aprilTagLimelightCameraB)) {
-        Logger.recordOutput("vision/aprilTagLimelightBTargetsDetected", getTargets(aprilTagLimelightCameraB));
-      }
-    
+    if (isAprilTagDetected(aprilTagLimelightCameraB)) {
+      Logger.recordOutput(
+          "vision/aprilTagLimelightBTargetsDetected", getTargets(aprilTagLimelightCameraB));
+    }
   }
 
   private void updateSmartDashboard() {
