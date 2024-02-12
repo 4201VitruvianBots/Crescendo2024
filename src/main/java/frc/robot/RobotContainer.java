@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+// import frc.robot.commands.RestOdometry;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
@@ -211,7 +212,7 @@ public class RobotContainer {
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
 
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-
+    // SmartDashboard.putData(new RestOdometry(m_swerveDrive));
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
     SmartDashboard.putData(
