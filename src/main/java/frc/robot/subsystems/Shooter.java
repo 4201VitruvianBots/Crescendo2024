@@ -74,7 +74,7 @@ public class Shooter extends SubsystemBase {
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
     // flywheel motor 1
-//    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
+    //    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
   }
 
   // values that we set
@@ -91,7 +91,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[0].setControl(
         m_focControlBottom.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
     m_shooterMotors[1].setControl(
-            m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+        m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
   }
 
   public double getShootNStrafeAngle(
@@ -176,9 +176,12 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
-    Logger.recordOutput("Shooter/RPMMasterSetpoint", m_shooterMotors[0].getClosedLoopReference().getValue() * 60.0);
-    Logger.recordOutput("Shooter/RPMFollowerSetpoint", m_shooterMotors[1].getClosedLoopReference().getValue() * 60.0);
-    Logger.recordOutput("Shooter/RPMFollowerControlMode", m_shooterMotors[1].getControlMode().getValue());
+    Logger.recordOutput(
+        "Shooter/RPMMasterSetpoint", m_shooterMotors[0].getClosedLoopReference().getValue() * 60);
+    Logger.recordOutput(
+        "Shooter/RPMFollowerSetpoint", m_shooterMotors[1].getClosedLoopReference().getValue() * 60);
+    Logger.recordOutput(
+        "Shooter/FollowerControlMode", m_shooterMotors[0].getControlMode().getValue());
   }
 
   @Override
