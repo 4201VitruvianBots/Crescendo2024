@@ -21,6 +21,7 @@ import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class ShootNStrafe extends Command {
+
   Shooter m_shooter;
   AmpShooter m_ampShooter;
   RPM_SETPOINT m_state;
@@ -37,38 +38,15 @@ public class ShootNStrafe extends Command {
   private boolean timerStart = false;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
-
-  // TODO: None of this will work if the math is out here and not in execute()
-  private Pose2d robotPose = m_swerveDrive.getState().Pose;
-  private double shootAngle = m_shooter.getShootAngle(robotPose);
   public int hehe = 69; // Mano's work
-
-  private double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
-
-  private double displacementY = ChangeThisValue * Math.cos(shootAngle);
-
-  private double VelocityY =
-      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
-          * m_swerveDrive.getState().Pose.getRotation().getSin();
-  private double VelocityX =
-      m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
-          * m_swerveDrive.getState().Pose.getRotation().getCos();
-  private double VelocityShoot = 1.2; // TODO: Change after testing
-
-  double m_headingOffset =
-      Math.asin(
-          Math.abs(
-              (displacementY * VelocityX - displacementX * VelocityY)
-                  / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
-                      * VelocityShoot)));
-
+  
   private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-          .withRotationalDeadband(
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+        new SwerveRequest.FieldCentric()
+            .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+            .withRotationalDeadband(
+                SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+            .withDriveRequestType(
+                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   public ShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
@@ -78,6 +56,7 @@ public class ShootNStrafe extends Command {
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
       double percentOutput) {
+
     m_swerveDrive = swerveDrive;
     m_ampShooter = ampShooter;
     m_throttleInput = throttleInput;
@@ -86,7 +65,10 @@ public class ShootNStrafe extends Command {
     m_percentOutput = percentOutput;
 
     addRequirements(m_shooter);
-  }
+
+    // TODO: None of this will work if the math is out here and not in execute()
+    
+}
 
   // Called when the command is initially scheduled.
   @Override
@@ -96,6 +78,33 @@ public class ShootNStrafe extends Command {
 
   @Override
   public void execute() {
+    Pose2d robotPose = m_swerveDrive.getState().Pose;
+    double shootAngle = m_shooter.getShootAngle(robotPose);
+
+    
+
+    double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
+
+    double displacementY = ChangeThisValue * Math.cos(shootAngle);
+
+    double VelocityY =
+        m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
+            * m_swerveDrive.getState().Pose.getRotation().getSin();
+    double VelocityX =
+        m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
+            * m_swerveDrive.getState().Pose.getRotation().getCos();
+    double VelocityShoot = 1.2; // TODO: Change after testing
+
+    double m_headingOffset =
+        Math.asin(
+            Math.abs(
+                (displacementY * VelocityX - displacementX * VelocityY)
+                    / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
+                        * VelocityShoot)));
+
+    
+
+                
     m_shooter.setRpmOutput(RPMThreshold);
 
     double throttle =

@@ -9,6 +9,7 @@ package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Controls;
 
 /**
@@ -35,7 +36,7 @@ public final class SimConstants {
    * rightmost point on the BLUE ALLIANCE wall.
    */
   public static Translation2d allianceFlip(Translation2d translation) {
-    if (Controls.isRedAlliance()) {
+    if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
       return new Translation2d(fieldLength - translation.getX(), translation.getY());
     } else {
       return translation;
@@ -58,7 +59,7 @@ public final class SimConstants {
    * point on the BLUE ALLIANCE wall.
    */
   public static Pose2d allianceFlip(Pose2d pose) {
-    if (Controls.isRedAlliance()) {
+    if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
       return new Pose2d(
           fieldLength - pose.getX(),
           pose.getY(),
@@ -69,11 +70,8 @@ public final class SimConstants {
   }
 
   public static Pose2d pathPlannerFlip(Pose2d pose) {
-    if (Controls.isRedAlliance()) {
-      return new Pose2d(
-          fieldLength - pose.getX(),
-          pose.getY(),
-          new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
+    if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
+      return new Pose2d(pose.getX(), fieldWidth - pose.getY(), pose.getRotation());
     } else {
       return pose;
     }

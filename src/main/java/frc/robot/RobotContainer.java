@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,9 +34,12 @@ import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
+// import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
+// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
+// import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -65,7 +69,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
-
+  
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
@@ -83,13 +87,13 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
-    m_controls.registerDriveTrain(m_swerveDrive);
+m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
 
-    NamedCommands.registerCommand(
+NamedCommands.registerCommand(
         "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
     NamedCommands.registerCommand(
         "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get()));
