@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Controls;
 import java.util.ArrayList;
 
 public class PlotAutoPath extends Command {
@@ -20,6 +21,10 @@ public class PlotAutoPath extends Command {
     var pathPoints = new ArrayList<Trajectory.State>();
 
     for (var path : paths) {
+      if (Controls.isRedAlliance()) {
+        path = path.flipPath();
+      }
+
       var trajectory =
           path.getTrajectory(
               new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
@@ -45,6 +50,9 @@ public class PlotAutoPath extends Command {
   }
 
   public PlotAutoPath(FieldSim fieldSim, String pathName, PathPlannerPath path) {
+    if (Controls.isRedAlliance()) {
+      path = path.flipPath();
+    }
     var trajectory =
         path.getTrajectory(
             new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());

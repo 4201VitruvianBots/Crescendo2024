@@ -20,18 +20,19 @@ public class Vision extends SubsystemBase {
 
   private CommandSwerveDrivetrain m_swerveDriveTrain;
 
-  public Vision(CommandSwerveDrivetrain swerveDrivetrain) {
-    m_swerveDriveTrain = swerveDrivetrain;
-  }
-
   private FieldSim m_fieldSim;
+
+  public Vision() {}
+
+  public void registerSwerveDrive(CommandSwerveDrivetrain swerveDriveTrain) {
+    m_swerveDriveTrain = swerveDriveTrain;
+  }
 
   public void registerFieldSim(FieldSim fieldSim) {
     m_fieldSim = fieldSim;
   }
 
-  NetworkTable NoteDetectionLimelight =
-      NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("limelight");
 
   public static PhotonCamera aprilTagLimelightCameraA =
       new PhotonCamera("AprilTagLimelightCameraA");
@@ -122,6 +123,21 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (m_swerveDriveTrain != null) {
+      final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
+      globalPoseA.ifPresent(
+          estimatedRobotPose ->
+              m_swerveDriveTrain.addVisionMeasurement(
+                  estimatedRobotPose.estimatedPose.toPose2d(),
+                  estimatedRobotPose.timestampSeconds));
+
+      final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
+      globalPoseB.ifPresent(
+          estimatedRobotPose ->
+              m_swerveDriveTrain.addVisionMeasurement(
+                  estimatedRobotPose.estimatedPose.toPose2d(),
+                  estimatedRobotPose.timestampSeconds));
+    }
     // This method will be called once per scheduler run
     if (!ROBOT.disableLogging) updateLog();
     updateSmartDashboard();

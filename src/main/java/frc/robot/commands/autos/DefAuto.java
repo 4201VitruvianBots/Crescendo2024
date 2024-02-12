@@ -19,7 +19,7 @@ public class DefAuto extends SequentialCommandGroup {
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("DefAuto");
 
-    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1, false);
+    var m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(swerveDrive, path, 1, true);
 
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 

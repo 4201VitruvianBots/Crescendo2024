@@ -12,7 +12,7 @@ public class RobotTime extends SubsystemBase {
   private static double m_dt;
   private static TIME_MODE m_timeMode = TIME_MODE.REAL_TIME;
 
-  public static enum TIME_MODE {
+  public enum TIME_MODE {
     REAL_TIME,
     ROBORIO_TIMESTEP,
     CTRE_TIME,
