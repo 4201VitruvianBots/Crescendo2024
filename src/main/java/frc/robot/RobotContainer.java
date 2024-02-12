@@ -53,7 +53,7 @@ public class RobotContainer {
           BackLeftConstants,
           BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //  private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -80,6 +80,8 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
+    m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerArm(m_arm);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
@@ -94,7 +96,7 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      //    m_visualizer.registerVision(m_vision);
+      m_visualizer.registerVision(m_vision);
       m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -161,10 +163,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //    xboxController.b().whileTrue(new SetIntakePercentOutput(m_intake, -0.85, -0.85));
-    //    xboxController.a().whileTrue(new SetIntakePercentOutput(m_intake, -0.75, -0.75));
-    //    xboxController.y().whileTrue(new SetIntakePercentOutput(m_intake, -1.0, -1.0));
-
     xboxController
         .a()
         .whileTrue(
@@ -191,12 +189,6 @@ public class RobotContainer {
     m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
-    // m_autoChooser.addOption("Minimalauto1", new Minimalauto1(m_swerveDrive));
-    // m_autoChooser.addOption("Minimalauto2", new Minimalauto2(m_swerveDrive));
-    // m_autoChooser.addOption("Minimalauto3", new Minimalauto3(m_swerveDrive));
-    // m_autoChooser.addOption("DefAuto", new DefAuto(m_swerveDrive));
-    //    m_autoChooser.addOption("Amp Test", new ScoreAmp(m_flipper, m_ampshooter));
-    //    m_autoChooser.addOption("Speaker Test", new ScoreSpeaker(m_shooter, m_uptake));
   }
 
   public void initSysidChooser() {
