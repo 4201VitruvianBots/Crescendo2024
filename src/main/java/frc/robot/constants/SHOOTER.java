@@ -21,7 +21,7 @@ public final class SHOOTER {
 
   public static final double gearRatioBottom = 1.0 / 1.0;
   public static final DCMotor ShooterBottomGearbox = DCMotor.getFalcon500Foc(1);
-  
+
   public static final DCMotor ShooterTopGearbox = DCMotor.getFalcon500Foc(1);
   public static final double gearRatioTop = 1.0 / 1.0;
 
