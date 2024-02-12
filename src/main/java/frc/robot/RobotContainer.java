@@ -242,19 +242,10 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // // TODO: Move this into the Vision subsystem
-    // final var globalPose = m_vision.getEstimatedGlobalPose();
-    // globalPose.ifPresent(
-    //     estimatedRobotPose ->
-    //         m_swerveDrive.addVisionMeasurement(
-    //             estimatedRobotPose.estimatedPose.toPose2d(),
-    // estimatedRobotPose.timestampSeconds));
-
     if (DriverStation.isDisabled()) {
       m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
     }
 
-    m_fieldSim.periodic();
     if (m_visualizer != null) m_visualizer.periodic();
   }
 
