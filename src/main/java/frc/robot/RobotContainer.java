@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.RestOdometry;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
@@ -85,7 +85,8 @@ public class RobotContainer {
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
-    SmartDashboard.putData("ResetGyro", new RestOdometry(m_swerveDrive));
+
+    SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
 
     if (ROBOT.useSysID) initSysidChooser();
 

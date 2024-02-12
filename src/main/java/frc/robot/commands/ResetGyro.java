@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
 
-public class RestOdometry extends Command {
+public class ResetGyro extends Command {
   /** Creates a new RestGyro. */
-  CommandSwerveDrivetrain m_swervedrive;
+  CommandSwerveDrivetrain m_swerveDrive;
 
-  public RestOdometry(CommandSwerveDrivetrain swervedrive) {
-    m_swervedrive = swervedrive;
+  public ResetGyro(CommandSwerveDrivetrain swerveDrive) {
+    m_swerveDrive = swerveDrive;
 
-    addRequirements(m_swervedrive);
+    addRequirements(m_swerveDrive);
   }
 
   @Override
@@ -27,9 +27,9 @@ public class RestOdometry extends Command {
   @Override
   public void initialize() {
     if (Controls.isRedAlliance()) {
-      m_swervedrive.resetGyro(180);
+      m_swerveDrive.resetGyro(180);
     } else {
-      m_swervedrive.resetGyro(0);
+      m_swerveDrive.resetGyro(0);
     }
   }
 
@@ -44,6 +44,6 @@ public class RestOdometry extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
