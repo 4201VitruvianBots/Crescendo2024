@@ -14,9 +14,8 @@ import org.littletonrobotics.junction.Logger;
 public class AmpShooter extends SubsystemBase {
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
 
-
   public AmpShooter() {
-  TalonFXConfiguration config = new TalonFXConfiguration();
+    TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kP = INTAKE.kP;
     config.Slot0.kI = INTAKE.kI;
     config.Slot0.kD = INTAKE.kD;
@@ -26,8 +25,8 @@ public class AmpShooter extends SubsystemBase {
     CtreUtils.configureTalonFx(ampMotor, config);
   }
 
-  public void setSpeed(double speed1, double speed2) {
-    ampMotor.set(speed1);
+  public void setPercentOutput(double speed) {
+    ampMotor.set(speed);
   }
 
   public double getSpeed() {
@@ -36,7 +35,7 @@ public class AmpShooter extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
-    Logger.recordOutput("AmpShooterPercentage", getSpeed());
+    Logger.recordOutput("AmpShooter/Percentage", getSpeed());
   }
 
   @Override
