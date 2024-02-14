@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.LED.SUBSYSTEM_STATES;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
-  private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+  private SUBSYSTEM_STATES m_state = SUBSYSTEM_STATES.INTAKING;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
   private final TalonFXSimState m_intakeMotor1SimState = intakeMotor1.getSimState();
@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
   //     m_state = speed;
   //   }
 
-  public INTAKE_STATE getIntakeState() {
+  public SUBSYSTEM_STATES getIntakeState() {
     return m_state;
   }
 
