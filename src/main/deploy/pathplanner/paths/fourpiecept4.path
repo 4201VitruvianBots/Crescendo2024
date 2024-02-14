@@ -48,18 +48,7 @@
       }
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.65,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -72,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4peiceautonear",
+  "folder": "4PieceAutoNear",
   "previewStartingState": {
     "rotation": 30.0,
     "velocity": 0

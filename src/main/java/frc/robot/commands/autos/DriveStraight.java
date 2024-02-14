@@ -86,7 +86,7 @@ public class DriveStraight extends Command {
     m_fieldSim.setTrajectory(new Trajectory(pathPoints));
     m_swerveDrive.seedFieldRelative(startPoint);
 
-    m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(m_swerveDrive, path, maxVel, false);
+    m_ppCommand = TrajectoryUtils.generatePPHolonomicCommand(m_swerveDrive, path, maxVel, true);
     m_ppCommand.initialize();
   }
 

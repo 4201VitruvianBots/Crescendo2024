@@ -46,9 +46,8 @@ public final class LED {
     DISABLED,
     UPTAKING,
     LOW_BATTERY,
-    SCORE_AMP,
+    SCORE_ARM,
     SCORE_SPEAKER,
     SCORE_TRAP,
-    SCORE_ARM
   }
 }
