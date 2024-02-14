@@ -14,9 +14,8 @@ import org.littletonrobotics.junction.Logger;
 public class AmpShooter extends SubsystemBase {
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
 
-
   public AmpShooter() {
-  TalonFXConfiguration config = new TalonFXConfiguration();
+    TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kP = INTAKE.kP;
     config.Slot0.kI = INTAKE.kI;
     config.Slot0.kD = INTAKE.kD;
