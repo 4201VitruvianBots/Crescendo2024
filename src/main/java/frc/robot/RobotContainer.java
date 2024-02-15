@@ -93,10 +93,6 @@ m_controls.registerDriveTrain(m_swerveDrive);
     configureBindings();
     initAutoChooser();
 
-NamedCommands.registerCommand(
-        "AutoRunIntake", new AutoRunIntake(m_intake, INTAKE_STATE.INTAKING));
-    NamedCommands.registerCommand(
-        "AutoSetRPMSetpoint", new AutoSetRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get()));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -177,11 +173,11 @@ NamedCommands.registerCommand(
     xboxController
         .a()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // slow sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
     xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.55, -0.85));
@@ -189,6 +185,8 @@ NamedCommands.registerCommand(
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));
+
+ 
   }
 
   public void initAutoChooser() {

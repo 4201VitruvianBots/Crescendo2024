@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,13 +17,23 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
+import frc.robot.visualizers.SuperStructureVisualizer;
+
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -30,6 +42,7 @@ public class Shooter extends SubsystemBase {
   private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
   private double m_desiredPercentOutput;
+  
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -43,10 +56,12 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
   private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
-  
+
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
-  
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
+
+  double HEIGHT = 1; // Controls the height of the mech2d SmartDashboard
+    double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
 
   
 
@@ -65,10 +80,6 @@ public class Shooter extends SubsystemBase {
     configBottom.Slot0.kI = SHOOTER.kI;
     configBottom.Slot0.kD = SHOOTER.kD;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
-    
-
-
-    
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
@@ -79,15 +90,24 @@ public class Shooter extends SubsystemBase {
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
     m_shooterMotors[0].setInverted(true);
+     m_shooterMotors[1].setInverted(false);
     // flywheel motor 1
-    m_shooterMotors[1].setControl(new Follower(m_shooterMotors[0].getDeviceID(), true));
+
+
+  
+
   }
 
+
+   
+
+   
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
 
     m_desiredPercentOutput = percentOutput;
+    
   }
 
   public void setRpmOutput(double rpm) {
@@ -95,6 +115,10 @@ public class Shooter extends SubsystemBase {
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(
         m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
+        
+
+        
+    m_shooterMotors[1].setControl(new StrictFollower(m_shooterMotors[0].getDeviceID()));
   }
 
   public double getShootNStrafeAngle(
@@ -139,6 +163,8 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
   public double getRpmMaster() {
     return m_shooterMotors[0].getVelocity().getValueAsDouble() * 60.0;
+    
+    
   }
 
   public double getRpmFollower() {
@@ -161,16 +187,6 @@ public class Shooter extends SubsystemBase {
     m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
-
-  public void reachGoal(double rpm) {
-
- var rps = rpm / 60.0;
-    m_shooterMotors[0].setControl(
-        m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
- 
-
-  }
-
   public boolean getTestMode() {
     return m_testMode;
   }
@@ -179,7 +195,9 @@ public class Shooter extends SubsystemBase {
     m_testMode = mode;
   }
 
-  private void updateShuffleboard() {}
+  private void updateShuffleboard() {
+    
+  }
 
   // values that we are pulling
 
@@ -189,18 +207,23 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
+    
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
     if (!ROBOT.disableLogging) updateLogger();
+
+    
   }
-  @Override
+@Override
   public void simulationPeriodic() {
     m_shooterMotorTopSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_shooterMotorBottomSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    
 
+    
     m_shooterMotorSim[1].setInputVoltage(
         MathUtil.clamp(m_shooterMotorTopSimState.getMotorVoltage(), -12, 12));
     m_shooterMotorSim[0].setInputVoltage(
