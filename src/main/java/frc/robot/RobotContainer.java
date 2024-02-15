@@ -7,7 +7,6 @@ package frc.robot;
 import static frc.robot.constants.SWERVE.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
@@ -30,7 +30,6 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
@@ -93,6 +92,7 @@ m_controls.registerDriveTrain(m_swerveDrive);
     configureBindings();
     initAutoChooser();
 
+    SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -250,19 +250,10 @@ m_controls.registerDriveTrain(m_swerveDrive);
   }
 
   public void periodic() {
-    // // TODO: Move this into the Vision subsystem
-    // final var globalPose = m_vision.getEstimatedGlobalPose();
-    // globalPose.ifPresent(
-    //     estimatedRobotPose ->
-    //         m_swerveDrive.addVisionMeasurement(
-    //             estimatedRobotPose.estimatedPose.toPose2d(),
-    // estimatedRobotPose.timestampSeconds));
-
     if (DriverStation.isDisabled()) {
       m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
     }
 
-    m_fieldSim.periodic();
     if (m_visualizer != null) m_visualizer.periodic();
   }
 

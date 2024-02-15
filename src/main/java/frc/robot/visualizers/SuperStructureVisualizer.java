@@ -213,8 +213,6 @@ public class SuperStructureVisualizer {
 
   public void updateAmpShooter() {
     updateMotorColor(m_ampShooter2d, m_ampShooter.getVelocity(), m_ampShooter2d_originalColor);
-    
- 
   }
 
   public void updateArm() {
@@ -232,8 +230,15 @@ public class SuperStructureVisualizer {
     m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
   }
 
-  public void updateLimelight() {
-    updateLimelightColor(m_limelight2d, m_vision.isCameraConnected(), m_limelight2d_originalColor);
+  public void updateLimelights() {
+    updateLimelightColor(
+        m_limelight2d,
+        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
+        m_limelight2d_originalColor);
+    updateLimelightColor(
+        m_limelight2d,
+        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
+        m_limelight2d_originalColor);
   }
 
 
@@ -248,7 +253,7 @@ public class SuperStructureVisualizer {
     if (m_ampShooter != null) updateAmpShooter();
     if (m_arm != null) updateArm();
     if (m_climber != null) updateClimber();
-    if (m_vision != null) updateLimelight();
+    if (m_vision != null) updateLimelights();
     if (m_led != null) updateLED();
   }
 }
