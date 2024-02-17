@@ -26,7 +26,6 @@ import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import frc.robot.visualizers.ArmVisualizer;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {

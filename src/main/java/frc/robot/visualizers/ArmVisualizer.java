@@ -41,7 +41,7 @@ public class ArmVisualizer implements AutoCloseable {
   }
 
   public void displayVisualization() {
-    m_arm2d = new MechanismLigament2d( "m_"+ m_name , ARM.length, 0);
+    m_arm2d = new MechanismLigament2d("m_" + m_name, ARM.length, 0);
     m_mechanismRoot2d.append(m_arm2d);
     SmartDashboard.putData(m_name, m_armDisplay);
   }

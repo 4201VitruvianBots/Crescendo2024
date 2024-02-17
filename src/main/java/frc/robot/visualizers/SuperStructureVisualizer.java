@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
@@ -185,7 +184,7 @@ public class SuperStructureVisualizer {
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
-    if(RobotBase.isSimulation()) m_armVisualizer.displayVisualization();
+    if (RobotBase.isSimulation()) m_armVisualizer.displayVisualization();
   }
 
   public void registerIntake(Intake intake) {
