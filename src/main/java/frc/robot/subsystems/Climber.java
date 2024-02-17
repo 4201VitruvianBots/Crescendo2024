@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
+  private boolean isClimbing = false;
 
   // Testing value for mech2d
   public double m_mechHeight = 0.1;
@@ -25,6 +26,14 @@ public class Climber extends SubsystemBase {
     climberNtTab.getDoubleTopic("Climber Sim Test Height").publish().set(m_mechHeight);
     m_mechHeightSub =
         climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
+  }
+
+  public boolean getClimberState() {
+    return isClimbing;
+  }
+
+  public void setClimberState(boolean state) {
+    isClimbing = state;
   }
 
   public double getHeightMeters() {

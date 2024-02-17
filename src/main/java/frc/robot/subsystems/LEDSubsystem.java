@@ -126,10 +126,10 @@ public class LEDSubsystem extends SubsystemBase {
         case INTAKING:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Strobe);
           break;
-        case SCORE_SPEAKER:
+        case SHOOTING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
           break;
-        case SCORE_ARM: // For scoring amp or trap
+        case ARMSCORING: // For scoring amp or trap
           setPattern(LED.white, 1, 0, ANIMATION_TYPE.Solid);
           break;
         case CLIMBING:
@@ -169,13 +169,6 @@ public class LEDSubsystem extends SubsystemBase {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
-
-    if (DriverStation.isDisabled()) {
-      if (RobotController.getBatteryVoltage()
-          < 10) { // calling battery to let driver know that it is low
-        expressState(SUBSYSTEM_STATES.LOW_BATTERY);
-      }
-    }
 
     if (!ROBOT.disableLogging) updateLogger();
   }

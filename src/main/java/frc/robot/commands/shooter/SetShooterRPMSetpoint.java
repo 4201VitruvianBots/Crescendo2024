@@ -19,7 +19,9 @@ public class SetShooterRPMSetpoint extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_shooter.setShooterState(true);
+  }
 
   @Override
   public void execute() {
@@ -33,6 +35,7 @@ public class SetShooterRPMSetpoint extends Command {
   public void end(boolean interrupted) {
 
     m_shooter.setRpmOutput(0);
+    m_shooter.setShooterState(false);
   }
 
   // Returns true when the command should end.

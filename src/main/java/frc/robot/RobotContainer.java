@@ -31,6 +31,7 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
+import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.ROBOT;
@@ -161,6 +162,7 @@ public class RobotContainer {
         new SetIntakePercentOutput(
             m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_arm, m_shooter));
   }
 
   private void configureBindings() {

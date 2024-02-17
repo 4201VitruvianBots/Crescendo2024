@@ -23,6 +23,7 @@ public class ArmForward extends Command {
   @Override
   public void initialize() {
     m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.FORWARD.get());
+    m_arm.setArmState(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,6 +34,7 @@ public class ArmForward extends Command {
   @Override
   public void end(boolean interrupted) {
     m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
+    m_arm.setArmState(false);
   }
 
   // Returns true when the command should end.

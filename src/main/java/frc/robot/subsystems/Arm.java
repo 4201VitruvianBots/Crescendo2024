@@ -32,6 +32,7 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
+  private boolean isMoving = false;
   private TalonFXSimState m_simState = m_armMotor.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
@@ -89,6 +90,14 @@ public class Arm extends SubsystemBase {
 
     m_armMotor.setPosition(Units.degreesToRotations(ARM.minAngleDegrees));
     setDesiredSetpointRotations(Units.degreesToRotations(ARM.minAngleDegrees));
+  }
+
+  public boolean getArmState() {
+    return isMoving;
+  }
+
+  public void setArmState(boolean state) {
+    isMoving = state;
   }
 
   // Get the percent output of the arm motor.
