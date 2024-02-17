@@ -31,9 +31,10 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
+import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
@@ -42,11 +43,7 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
-import frc.robot.constants.CLIMBER;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.RobotTime;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
@@ -85,7 +82,8 @@ public class RobotContainer {
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
-  private final Trigger trigger = new Trigger(() -> xboxController.leftStick().getAsBoolean() && xboxController.rightStick().getAsBoolean());
+  private final Trigger trigger =
+      new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
@@ -170,10 +168,12 @@ public class RobotContainer {
       // negative X (left)
     }
 
-    m_intake.setDefaultCommand(
-        new SetIntakePercentOutput(
-            m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+    // m_intake.setDefaultCommand(
+    //     new SetIntakePercentOutput(
+    //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    m_climber.setDefaultCommand(
+        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
   }
 
   private void configureBindings() {
@@ -187,15 +187,16 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
-    //toggles the climb sequence when presses and cuts the command when pressed again
+    // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    trigger.onFalse(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    //switch between open loop and close loop
+    // switch between open loop and close loop
+    // xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
-    
-    xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // amp
-    xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // sbeaker
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
+    // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
+
+    // xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // amp
+    // xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // sbeaker
+    // xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));

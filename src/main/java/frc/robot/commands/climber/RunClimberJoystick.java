@@ -25,17 +25,15 @@ public class RunClimberJoystick extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+  public void initialize() {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
     if (joystickYDeadbandOutput != 0.0) {
       m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
       m_climber.setJoystickY(-joystickYDeadbandOutput);
+      m_climber.setClimbState(true);
+
     }
     if (joystickYDeadbandOutput == 0
         && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
@@ -44,9 +42,15 @@ public class RunClimberJoystick extends Command {
     }
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_climber.setClimbState(false);
+  }
 
   // Returns true when the command should end.
   @Override

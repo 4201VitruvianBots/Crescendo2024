@@ -22,7 +22,7 @@ public class SetClimbState extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climber.setClimbState(m_climbState); 
+    m_climber.setClimbState(m_climbState);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
