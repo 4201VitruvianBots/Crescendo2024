@@ -33,7 +33,6 @@ public class RunClimberJoystick extends Command {
       m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
       m_climber.setJoystickY(-joystickYDeadbandOutput);
       m_climber.setClimbState(true);
-
     }
     if (joystickYDeadbandOutput == 0
         && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {

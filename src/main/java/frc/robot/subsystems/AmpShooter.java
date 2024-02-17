@@ -1,54 +1,45 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.AMP;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
+import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
-  private final CANSparkMax ampMotor = new CANSparkMax(CAN.ampShooter, MotorType.kBrushless);
-  private final SparkPIDController pidController = ampMotor.getPIDController();
-  private final RelativeEncoder encoder = ampMotor.getEncoder();
+  private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
 
   public AmpShooter() {
-    ampMotor.restoreFactoryDefaults();
-    encoder.setVelocityConversionFactor(0);
-    pidController.setFeedbackDevice(encoder);
-    pidController.setP(0.6);
-    pidController.setI(0);
-    pidController.setD(0);
-    pidController.setFF(0);
-    pidController.setOutputRange(0, 0);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Slot0.kP = AMP.kP;
+    config.Slot0.kI = AMP.kI;
+    config.Slot0.kD = AMP.kD;
+    config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    CtreUtils.configureTalonFx(ampMotor, config);
   }
 
-  public void setPercentOutput(double m_speed) {
-    pidController.setReference(m_speed, CANSparkMax.ControlType.kVelocity);
+  public void setPercentOutput(double percentOutput) {
+    ampMotor.set(percentOutput);
   }
 
-  public double getVelocity() {
-    return encoder.getVelocity();
-  }
-
-  public double getPercentOutput() {
+  public double getSpeed() {
     return ampMotor.get();
   }
 
-  private void updateShuffleboard() {
-    SmartDashboard.putNumber("ampShooterPercent", this.getPercentOutput());
-  }
-
   private void updateLogger() {
-    Logger.recordOutput("AmpShooter/Velocity", getVelocity());
+    Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
+    Logger.recordOutput("AmpShooter/Percentage", ampMotor.get());
   }
 
   @Override
   public void periodic() {
-    updateShuffleboard();
     if (!ROBOT.disableLogging) updateLogger();
   }
 }

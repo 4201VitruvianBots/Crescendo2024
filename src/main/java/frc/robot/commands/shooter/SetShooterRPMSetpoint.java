@@ -32,7 +32,7 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setRpmOutput(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.

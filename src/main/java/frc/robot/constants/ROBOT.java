@@ -89,12 +89,15 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
     SWERVE.DRIVE.kBackLeftEncoderOffset = 0;
     SWERVE.DRIVE.kBackRightEncoderOffset = 0;
+
+    // Different gear ratios seem to break SimpleJointedArmSim
+    //    ARM.gearRatio = 1.0;
   }
 
   public static void initConstants() {
     var alert = new Alert("Initializing Robot Constants...", AlertType.INFO);
     if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
-      alert.setText("Setting Robot Constants for ALPABOT");
+      alert.setText("Setting Robot Constants for ALPHABOT");
       initAlphaBot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
       alert.setText("Setting Robot Constants for Gridlock");

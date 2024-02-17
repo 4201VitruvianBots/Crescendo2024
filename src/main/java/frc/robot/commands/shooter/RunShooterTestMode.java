@@ -31,9 +31,9 @@ public class RunShooterTestMode extends Command {
     try {
       shooterNtTab.getDoubleTopic("SetpointRPM").publish().set(0);
 
-      shooterNtTab.getDoubleTopic("kP").publish().set(SHOOTER.kP);
-      shooterNtTab.getDoubleTopic("kI").publish().set(SHOOTER.kI);
-      shooterNtTab.getDoubleTopic("kD").publish().set(SHOOTER.kD);
+      shooterNtTab.getDoubleTopic("kP").publish().set(SHOOTER.topkP);
+      shooterNtTab.getDoubleTopic("kI").publish().set(SHOOTER.topkI);
+      shooterNtTab.getDoubleTopic("kD").publish().set(SHOOTER.topkD);
 
       shooterNtTab.getDoubleTopic("kG").publish().set(SHOOTER.kS);
       shooterNtTab.getDoubleTopic("kV").publish().set(SHOOTER.kV);
@@ -45,9 +45,9 @@ public class RunShooterTestMode extends Command {
     kSetpointSub = shooterNtTab.getDoubleTopic("SetpointRPM").subscribe(0);
 
     kFSub = shooterNtTab.getDoubleTopic("kF").subscribe(0);
-    kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(SHOOTER.kP);
-    kISub = shooterNtTab.getDoubleTopic("kI").subscribe(SHOOTER.kI);
-    kDSub = shooterNtTab.getDoubleTopic("kD").subscribe(SHOOTER.kD);
+    kPSub = shooterNtTab.getDoubleTopic("kP").subscribe(SHOOTER.topkP);
+    kISub = shooterNtTab.getDoubleTopic("kI").subscribe(SHOOTER.topkI);
+    kDSub = shooterNtTab.getDoubleTopic("kD").subscribe(SHOOTER.topkD);
 
     kGSub = shooterNtTab.getDoubleTopic("kG").subscribe(SHOOTER.kS);
     kVSub = shooterNtTab.getDoubleTopic("kV").subscribe(SHOOTER.kV);
@@ -71,9 +71,9 @@ public class RunShooterTestMode extends Command {
     double newSetpoint = (kSetpointSub.get(0));
 
     double newKF = kFSub.get(0);
-    double newKP = kPSub.get(SHOOTER.kP);
-    double newKI = kISub.get(SHOOTER.kI);
-    double newKD = kDSub.get(SHOOTER.kD);
+    double newKP = kPSub.get(SHOOTER.topkP);
+    double newKI = kISub.get(SHOOTER.topkI);
+    double newKD = kDSub.get(SHOOTER.topkD);
 
     double newKG = kGSub.get(SHOOTER.kS);
     double newKV = kVSub.get(SHOOTER.kV);

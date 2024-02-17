@@ -50,7 +50,7 @@ public class Climber extends SubsystemBase {
   private double m_upperLimitMeters = CLIMBER.upperLimitMeters;
   private double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
   private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
-  
+
   private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
   // Controlled by open loop
   private double m_joystickInput;

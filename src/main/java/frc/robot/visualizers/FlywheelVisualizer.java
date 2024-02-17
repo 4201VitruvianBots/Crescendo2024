@@ -5,13 +5,13 @@
 package frc.robot.visualizers;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
@@ -21,7 +21,7 @@ import frc.robot.constants.VISION;
 import frc.robot.subsystems.*;
 
 /** A class to visualize the state of all mechanisms on the robot. */
-public class SuperStructureVisualizer {
+public class FlywheelVisualizer {
   Intake m_intake;
   Shooter m_shooter;
   AmpShooter m_ampShooter;
@@ -36,6 +36,9 @@ public class SuperStructureVisualizer {
 
   MechanismRoot2d m_drivebaseRoot2d =
       m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
+
+  MechanismRoot2d m_goalBaseRoot2d =
+      m_mech2d.getRoot("GoalBase", Units.inchesToMeters(126.664), ROBOT.drivebaseWidth * 0.5);
   MechanismRoot2d m_climberRoot2d =
       m_mech2d.getRoot(
           "Climber",
@@ -51,6 +54,8 @@ public class SuperStructureVisualizer {
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
   MechanismLigament2d m_limelight2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
+  MechanismLigament2d m_goalBase2d =
+      m_goalBaseRoot2d.append(new MechanismLigament2d("GoalBase", Units.inchesToMeters(99.131), 0));
   MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
@@ -58,9 +63,10 @@ public class SuperStructureVisualizer {
       m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
-
-  ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2D");
-  MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
+  MechanismLigament2d m_arm2d =
+      m_shooter2d.append(
+          new MechanismLigament2d(
+              "Arm", ARM.length, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
   MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
@@ -162,8 +168,9 @@ public class SuperStructureVisualizer {
       m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
 
-  public SuperStructureVisualizer() {
+  public FlywheelVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
+    m_goalBase2d.setColor(new Color8Bit(235, 235, 52));
     m_limelight2d.setColor(new Color8Bit(53, 235, 52));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
@@ -184,7 +191,6 @@ public class SuperStructureVisualizer {
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
-    if (RobotBase.isSimulation()) m_armVisualizer.displayVisualization();
   }
 
   public void registerIntake(Intake intake) {
@@ -207,79 +213,16 @@ public class SuperStructureVisualizer {
     m_climber = climber;
   }
 
-  public void registerVision(Vision vision) {
-    m_vision = vision;
-  }
-
-  public void registerLedSubsystem(LEDSubsystem led) {
-    m_led = led;
-  }
-
   /* Function to visualize the speed of a particular motor. */
-  public void updateMotorColor(
-      MechanismLigament2d ligament, double motorSpeed, Color8Bit originalColor) {
-    double deltaBrightness = Math.abs(motorSpeed) * 75;
-
-    Color8Bit newColor =
-        new Color8Bit(
-            originalColor.red + (int) deltaBrightness,
-            originalColor.green + (int) deltaBrightness,
-            originalColor.blue + (int) deltaBrightness);
-
-    ligament.setColor(newColor);
-  }
 
   /* Function to visualize the state of a limelight. */
-  public void updateLimelightColor(
-      MechanismLigament2d ligament, boolean isActive, Color8Bit originalColor) {
-
-    Color8Bit newColor =
-        new Color8Bit(
-            originalColor.red + (isActive ? 75 : 0),
-            originalColor.green + (isActive ? 75 : 0),
-            originalColor.blue + (isActive ? 75 : 0));
-
-    ligament.setColor(newColor);
-  }
-
-  public void updateIntake() {
-    updateMotorColor(m_intake2d, m_intake.getSpeed(), m_intake2d_originalColor);
-  }
 
   public void updateShooter() {
-    updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
+    // updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
 
     m_bottomFlywheel.setAngle(
         m_bottomFlywheel.getAngle() - 360 * m_shooter.getRpmMaster() / 60 * 0.2);
     m_topFlywheel.setAngle(m_topFlywheel.getAngle() + 360 * m_shooter.getRpmFollower() / 60 * 0.2);
-  }
-
-  public void updateAmpShooter() {
-    updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
-  }
-
-  public void updateArm() {
-    m_armVisualizer.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
-  }
-
-  public void updateClimber() {
-    updateMotorColor(m_climber2d, m_climber.getPercentOutput(), m_climber2d_originalColor);
-    updateMotorColor(
-        m_climberHook1_2d, m_climber.getPercentOutput(), m_climberHook1_2d_originalColor);
-    updateMotorColor(
-        m_climberHook2_2d, m_climber.getPercentOutput(), m_climberHook2_2d_originalColor);
-    m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
-  }
-
-  public void updateLimelights() {
-    updateLimelightColor(
-        m_limelight2d,
-        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
-        m_limelight2d_originalColor);
-    updateLimelightColor(
-        m_limelight2d,
-        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
-        m_limelight2d_originalColor);
   }
 
   public void updateLED() {
@@ -287,12 +230,7 @@ public class SuperStructureVisualizer {
   }
 
   public void periodic() {
-    if (m_intake != null) updateIntake();
     if (m_shooter != null) updateShooter();
-    if (m_ampShooter != null) updateAmpShooter();
-    if (m_arm != null) updateArm();
-    if (m_climber != null) updateClimber();
-    if (m_vision != null) updateLimelights();
     if (m_led != null) updateLED();
   }
 }
