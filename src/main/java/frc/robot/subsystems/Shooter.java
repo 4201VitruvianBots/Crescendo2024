@@ -6,8 +6,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -40,6 +42,8 @@ public class Shooter extends SubsystemBase {
   };
 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0);
+  private final TorqueCurrentFOC m_focCurrentRequest = new TorqueCurrentFOC(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
   private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
@@ -85,8 +89,19 @@ public class Shooter extends SubsystemBase {
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
+    m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
 
     m_desiredPercentOutput = percentOutput;
+  }
+
+  public void setVoltageOutput(double voltageOut) {
+    m_shooterMotors[0].setControl(m_voltageRequest.withOutput(voltageOut));
+    m_shooterMotors[1].setControl(m_voltageRequest.withOutput(voltageOut));
+  }
+
+  public void setFocCurrentOutput(double currentOut) {
+    m_shooterMotors[0].setControl(m_focCurrentRequest.withOutput(currentOut));
+    m_shooterMotors[1].setControl(m_focCurrentRequest.withOutput(currentOut));
   }
 
   public void setRpmOutput(double rpm) {
