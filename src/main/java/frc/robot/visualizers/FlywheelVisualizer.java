@@ -52,8 +52,10 @@ public class FlywheelVisualizer {
 
   MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
-  MechanismLigament2d m_limelight2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
+  MechanismLigament2d m_limelightA2d =
+      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+  MechanismLigament2d m_limelightB2d =
+      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightB", VISION.aprilTagLimelightCameraBDistanceFromGroundZ, 90));
   MechanismLigament2d m_goalBase2d =
       m_goalBaseRoot2d.append(new MechanismLigament2d("GoalBase", Units.inchesToMeters(99.131), 0));
   MechanismLigament2d m_intake2d =
@@ -171,7 +173,8 @@ public class FlywheelVisualizer {
   public FlywheelVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_goalBase2d.setColor(new Color8Bit(235, 235, 52));
-    m_limelight2d.setColor(new Color8Bit(53, 235, 52));
+    m_limelightA2d.setColor(new Color8Bit(45, 235, 60));
+    m_limelightB2d.setColor(new Color8Bit(45, 235, 60));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
     m_climberHook1_2d.setColor(new Color8Bit(52, 212, 235));
@@ -181,7 +184,8 @@ public class FlywheelVisualizer {
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
-    m_limelight2d_originalColor = m_limelight2d.getColor();
+    m_limelight2d_originalColor = m_limelightA2d.getColor();
+    m_limelight2d_originalColor = m_limelightB2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
     m_climber2d_originalColor = m_climber2d.getColor();
     m_climberHook1_2d_originalColor = m_climberHook1_2d.getColor();
