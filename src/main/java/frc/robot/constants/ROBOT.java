@@ -89,6 +89,9 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
     SWERVE.DRIVE.kBackLeftEncoderOffset = 0;
     SWERVE.DRIVE.kBackRightEncoderOffset = 0;
+
+    // Different gear ratios seem to break SimpleJointedArmSim
+    //    ARM.gearRatio = 1.0;
   }
 
   public static void initConstants() {

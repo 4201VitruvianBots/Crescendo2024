@@ -110,7 +110,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
       // Check if the robot arm was initialized
       if (m_arm != null) {
         // TODO: Check if this is valid
-        if (m_arm.getAngleDegrees() == ARM.startingAngleDegrees) {
+        if (m_arm.getCurrentAngle() == ARM.startingAngleDegrees) {
           m_initState = false;
           m_initArmAlert.setText("Robot Arm is not initialized!");
           m_initArmAlert.set(true);
@@ -132,16 +132,18 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public void updateStartPose(String autoName) {
     if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
-      m_startPose = AUTO_POSE_MAP.get(autoName).get();
+      m_startPose = SimConstants.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
     }
-
-    m_startPose = SimConstants.allianceFlip(m_startPose);
   }
 
   /** Sends values to SmartDashboard */
   private void updateLogger() {
-    Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
-    Logger.recordOutput("Controls/StartPose", getStartPose());
+    try {
+      Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
+      Logger.recordOutput("Controls/StartPose", getStartPose());
+    } catch (Exception e) {
+      System.out.println("Controls failed to update AdvantageKit");
+    }
   }
 
   @Override

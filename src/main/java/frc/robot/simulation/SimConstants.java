@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Controls;
+import java.util.function.BooleanSupplier;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are in meters, and sets
@@ -70,8 +71,19 @@ public final class SimConstants {
   }
 
   public static Pose2d pathPlannerFlip(Pose2d pose) {
-    if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
-      return new Pose2d(pose.getX(), fieldWidth - pose.getY(), pose.getRotation());
+    return pathPlannerFlip(pose, false);
+  }
+
+  public static Pose2d pathPlannerFlip(Pose2d pose, BooleanSupplier flipSupplier) {
+    return pathPlannerFlip(pose, flipSupplier.getAsBoolean());
+  }
+
+  public static Pose2d pathPlannerFlip(Pose2d pose, boolean forceFlip) {
+    if (forceFlip || Controls.getAllianceColor() == DriverStation.Alliance.Red) {
+      return new Pose2d(
+          fieldLength - pose.getX(),
+          pose.getY(),
+          new Rotation2d(Math.PI).minus(pose.getRotation()));
     } else {
       return pose;
     }

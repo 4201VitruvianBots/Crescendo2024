@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ResetGyro;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
@@ -29,6 +28,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
@@ -144,7 +144,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
@@ -169,6 +169,7 @@ public class RobotContainer {
         new SetIntakePercentOutput(
             m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    //    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
   }
 
   private void configureBindings() {

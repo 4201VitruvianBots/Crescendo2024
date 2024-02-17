@@ -5,13 +5,13 @@
 package frc.robot.visualizers;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.LED;
@@ -58,10 +58,9 @@ public class SuperStructureVisualizer {
       m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
-  MechanismLigament2d m_arm2d =
-      m_shooter2d.append(
-          new MechanismLigament2d(
-              "Arm", ARM.length, ARM.startingAngleDegrees + ARM.mountingAngleDegrees));
+
+  ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2D");
+  MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
   MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
@@ -185,6 +184,7 @@ public class SuperStructureVisualizer {
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+    if (RobotBase.isSimulation()) m_armVisualizer.displayVisualization();
   }
 
   public void registerIntake(Intake intake) {
@@ -259,8 +259,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateArm() {
-    updateMotorColor(m_arm2d, m_arm.getPercentOutput(), m_arm2d_originalColor);
-    m_arm2d.setAngle(90 - m_arm.getAngleDegrees());
+    m_armVisualizer.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
   }
 
   public void updateClimber() {
