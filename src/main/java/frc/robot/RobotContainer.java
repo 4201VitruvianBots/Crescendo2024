@@ -167,6 +167,7 @@ public class RobotContainer {
         new SetIntakePercentOutput(
             m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    //    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
   }
 
   private void configureBindings() {

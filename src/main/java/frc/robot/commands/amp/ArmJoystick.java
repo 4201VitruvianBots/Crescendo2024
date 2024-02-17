@@ -16,6 +16,8 @@ public class ArmJoystick extends Command {
 
   public ArmJoystick(Arm arm, DoubleSupplier output) {
     m_arm = arm;
+    m_output = output;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_arm);
   }
