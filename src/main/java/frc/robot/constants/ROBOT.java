@@ -94,7 +94,7 @@ public class ROBOT {
   public static void initConstants() {
     var alert = new Alert("Initializing Robot Constants...", AlertType.INFO);
     if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
-      alert.setText("Setting Robot Constants for ALPABOT");
+      alert.setText("Setting Robot Constants for ALPHABOT");
       initAlphaBot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {
       alert.setText("Setting Robot Constants for Gridlock");

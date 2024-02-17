@@ -7,11 +7,11 @@ package frc.robot.commands.amp;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 
-public class SetAmpSpeed extends Command {
+public class RunAmp extends Command {
   AmpShooter m_ampShooter;
   double m_percentOutput;
 
-  public SetAmpSpeed(AmpShooter ampShooter, double percentOutput) {
+  public RunAmp(AmpShooter ampShooter, double percentOutput) {
     m_ampShooter = ampShooter;
     addRequirements(m_ampShooter);
 

@@ -18,7 +18,7 @@ import org.littletonrobotics.junction.Logger;
 public class Controls extends SubsystemBase implements AutoCloseable {
   private CommandSwerveDrivetrain m_swerveDrive;
   private Arm m_arm;
-  private Pose2d m_startPose = new Pose2d();
+  private Pose2d m_startPose = new Pose2d(-1, -1, new Rotation2d());
   private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
 
   private boolean m_initState;
@@ -131,12 +131,9 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   }
 
   public void updateStartPose(String autoName) {
-    m_startPose =
-        AUTO_POSE_MAP.get(autoName) == null
-            ? new Pose2d(-1, -1, new Rotation2d())
-            : AUTO_POSE_MAP.get(autoName).get();
-
-    m_startPose = SimConstants.allianceFlip(m_startPose);
+    if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
+      m_startPose = SimConstants.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
+    }
   }
 
   /** Sends values to SmartDashboard */

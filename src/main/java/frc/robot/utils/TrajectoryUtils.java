@@ -55,7 +55,7 @@ public class TrajectoryUtils {
             maxSpeed,
             0.86210458762,
             new ReplanningConfig(false, false, 1.0, 0.25)),
-        () -> !manualFlip && Controls.isRedAlliance(),
+        () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
   }
 

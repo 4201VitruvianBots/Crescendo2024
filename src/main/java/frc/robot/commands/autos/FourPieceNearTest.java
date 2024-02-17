@@ -8,8 +8,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
@@ -43,12 +43,7 @@ public class FourPieceNearTest extends SequentialCommandGroup {
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
-        new InstantCommand(
-            () ->
-                swerveDrive.seedFieldRelative(
-                    SimConstants.pathPlannerFlip(
-                        pathsList.get(0).getPreviewStartingHolonomicPose())),
-            swerveDrive),
+        new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)

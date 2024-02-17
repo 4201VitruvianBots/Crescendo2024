@@ -46,7 +46,7 @@ public final class ARM {
     }
 
     public double get() {
-      return angle * 4; // Temporary fix, TODO: remove
+      return angle;
     }
   }
 
@@ -57,8 +57,7 @@ public final class ARM {
 
   public static final double length = Units.inchesToMeters(21.5);
 
-  // TOOD: Find actual mass of arm
-  public static final double mass = Units.lbsToKilograms(20.0);
+  public static final double mass = Units.lbsToKilograms(7.0);
 
   public static final double minAngleDegrees = -70;
 
