@@ -46,7 +46,7 @@ public final class ARM {
     }
 
     public double get() {
-      return angle; // Temporary fix, TODO: remove
+      return angle;
     }
   }
 
@@ -56,7 +56,7 @@ public final class ARM {
   public static final double gearRatio = 140.0 / 1.0;
 
   public static final double length = Units.inchesToMeters(21.5);
-  
+
   public static final double mass = Units.lbsToKilograms(7.0);
 
   public static final double minAngleDegrees = -70;
