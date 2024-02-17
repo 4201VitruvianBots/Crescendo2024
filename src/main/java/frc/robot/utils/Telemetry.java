@@ -21,6 +21,7 @@ public class Telemetry {
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_RIGHT.name(), m_maxSpeed)
   };
 
+  Pose2d m_robotPose = new Pose2d();
   private final Pose2d[] m_swerveModulePoses = {
     new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
   };
@@ -40,17 +41,24 @@ public class Telemetry {
 
   /* Accept the swerve drive state and telemeterize it to SmartDashboard */
   public void telemeterize(SwerveDriveState state) {
-    Pose2d pose = state.Pose;
+    try {
+    if(state.Pose != null)
+      m_robotPose = state.Pose;
+  }
+  catch(Exception e){
+
+  }; 
+
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTime;
     lastTime = currentTime;
-    Translation2d distanceDiff = pose.minus(m_lastPose).getTranslation();
-    m_lastPose = pose;
+    Translation2d distanceDiff = m_robotPose.minus(m_lastPose).getTranslation();
+    m_lastPose = m_robotPose;
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    // Logger.recordOutput("Swerve/Pose", pose);
+    Logger.recordOutput("Swerve/Pose", m_robotPose);
     Logger.recordOutput("Swerve/Speed", velocities.getNorm());
     Logger.recordOutput("Swerve/Velocity X", velocities.getX());
     Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
@@ -69,10 +77,10 @@ public class Telemetry {
         m_moduleTransforms[i.ordinal()] =
             new Transform2d(
                 SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
-        m_swerveModulePoses[i.ordinal()] = pose.transformBy(m_moduleTransforms[i.ordinal()]);
+        m_swerveModulePoses[i.ordinal()] = m_robotPose.transformBy(m_moduleTransforms[i.ordinal()]);
       }
 
-      m_fieldSim.updateRobotPose(pose);
+      m_fieldSim.updateRobotPose(m_robotPose);
       m_fieldSim.updateSwervePoses(m_swerveModulePoses);
     }
   }
