@@ -37,7 +37,6 @@ public class RunClimberJoystick extends Command {
     if (joystickYDeadbandOutput == 0
         && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
-      m_climber.resetTrapezoidState();
     }
   }
 
@@ -48,6 +47,7 @@ public class RunClimberJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
     m_climber.setClimbState(false);
   }
 

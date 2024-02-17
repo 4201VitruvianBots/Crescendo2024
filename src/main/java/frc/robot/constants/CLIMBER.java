@@ -21,6 +21,7 @@ public final class CLIMBER {
   public static final DCMotor gearbox = DCMotor.getKrakenX60(1);
   public static final double gearRatio = 0.07575757576;
   public static final double drumRadiusMeters = Units.inchesToMeters(1.185);
+  public static final double drumRotationsToMeters = drumRadiusMeters * 2 * Math.PI;
   // public static final double centerOffset = Units.inchesToMeters(14);
   // public static final double kMaxReverseOutput = -0.45;
 
@@ -30,9 +31,6 @@ public final class CLIMBER {
   // public static final int kSlotIdx = 0;
   // public static final int kPIDLoopIdx = 0;
   // public static final int kTimeoutMs = 0;
-
-  public static final double encoderCountsToMeters =
-      (drumRadiusMeters * 2 * Math.PI) / (kFalconSensorUnitsPerRotation * gearRatio);
 
   public static final double kG = 0.02;
   public static final double kV = 20.0; // 12.57;

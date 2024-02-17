@@ -20,11 +20,14 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
+import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
@@ -58,14 +61,12 @@ public class Climber extends SubsystemBase {
   private boolean m_userSetpoint;
 
   private boolean elevatorClimbSate;
-  private double holdPosition;
 
-  private TalonFXSimState m_simState = elevatorClimbMotors[0].getSimState();
   // Testing value for mech2d
   public double m_mechHeight = 0.5;
 
   public DoubleSubscriber m_mechHeightSub;
-  public double m_simEncoderSign = 1;
+
   public final ElevatorSim elevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
@@ -76,6 +77,8 @@ public class Climber extends SubsystemBase {
           CLIMBER.upperLimitMeters,
           true,
           CLIMBER.lowerLimitMeters);
+  private TalonFXSimState m_simState = elevatorClimbMotors[0].getSimState();
+  private TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
   NetworkTable climberNtTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Climber");
@@ -94,12 +97,13 @@ public class Climber extends SubsystemBase {
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
 
-    elevatorClimbMotors[0].getConfigurator().apply(new TalonFXConfiguration());
+    CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
+    CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
     elevatorClimbMotors[0].setInverted(true);
     elevatorClimbMotors[1].setInverted(true);
-    elevatorClimbMotors[1].setControl(follower);
+    elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()));
 
-    m_simEncoderSign = elevatorClimbMotors[0].getInverted() ? -1 : 1;
+    SmartDashboard.putData(this);
   }
 
   public void setClimbState(boolean state) {
@@ -111,30 +115,57 @@ public class Climber extends SubsystemBase {
   }
 
   public double getPercentOutput() {
-    return elevatorClimbMotors[0].getDutyCycle().getValueAsDouble();
+    return elevatorClimbMotors[0].get();
   }
 
-  // sets the percent ourput of the elevator based on its position
+  // sets the percent output of the elevator based on its position
   public void setPercentOutput(double output, boolean enforceLimits) {
     if (enforceLimits) {
-      if (getHeightMeters() > getUpperLimitMeters() - Units.inchesToMeters(1.2))
+      if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
         output = Math.min(output, 0);
 
-      if (getHeightMeters() < getLowerLimitMeters() + Units.inchesToMeters(0.05))
+      if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
         output = Math.max(output, 0);
     }
 
     elevatorClimbMotors[0].set(output);
   }
 
-  // Sets the calculated trapezoid state of the motors
-  public void setSetpointTrapezoidState(double rotations) {
-    m_desiredPositionMeters = rotations;
-    m_goal = new TrapezoidProfile.State(m_desiredPositionMeters, 0);
+  // gets the position of the climber in meters
+  public double getHeightMeters() {
+    return getMotorRotations() * CLIMBER.drumRotationsToMeters;
   }
 
-  private double calculateFeedforward(TrapezoidProfile.State state) {
-    return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
+  // gets the position of the climber in encoder counts
+  public double getMotorRotations() {
+    return elevatorClimbMotors[0].getRotorPosition().getValue();
+  }
+
+  // sets position in meters
+  public void setSensorPosition(double meters) {
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.drumRotationsToMeters);
+  }
+
+  public double getVelocityMetersPerSecond() {
+    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.drumRotationsToMeters;
+  }
+
+  public void holdClimber() {
+    setDesiredPositionMeters(getHeightMeters());
+  }
+
+  public void setDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
+    setDesiredPositionMeters(m_desiredSetpoint.getClimberSetpointMeters());
+  }
+
+  public void setDesiredPositionMeters(double setpoint) {
+    m_desiredPositionMeters = setpoint;
+    m_desiredPositionMeters = m_desiredSetpoint.getClimberSetpointMeters();
+    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.drumRotationsToMeters);
+  }
+
+  public double getDesiredPostionMeters() {
+    return m_desiredPositionMeters;
   }
 
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
@@ -142,62 +173,17 @@ public class Climber extends SubsystemBase {
     m_setpoint = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
   }
 
-  public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors[0].getRotorVelocity().getValueAsDouble()
-        * CLIMBER.encoderCountsToMeters
-        * 10;
+  // Sets the calculated trapezoid state of the motors
+  public void setSetpointTrapezoidState(double rotations) {
+    m_goal = new TrapezoidProfile.State(rotations, 0);
   }
 
-  // gets the position of the climber in meters
-  public double getHeightMeters() {
-    return getHeightEncoderCounts() * CLIMBER.encoderCountsToMeters;
-  }
-
-  // gets the position of the climber in encoder counts
-  public double getHeightEncoderCounts() {
-    return elevatorClimbMotors[0].getRotorPosition().getValueAsDouble();
-  }
-
-  // sets position in meters
-  public void setSensorPosition(double meters) {
-    elevatorClimbMotors[0].setPosition(meters / CLIMBER.encoderCountsToMeters);
-  }
-
-  public void holdClimber() {
-    elevatorClimbMotors[0].set(holdPosition);
-  }
-
-  public void setDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
-    m_desiredSetpoint = desiredSetpoint;
-    setCLimberDesiredSetpoint(desiredSetpoint);
-  }
-
-  public void setCLimberDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
-    desiredSetpoint.getClimberSetpointMeters();
-  }
-
-  public void setDesiredPositionMeters(double meters) {
-    m_desiredPositionMeters = meters;
-  }
-
-  public double getDesiredPostionMeters(double meters) {
-    return m_desiredPositionMeters;
-  }
-
-  public void setHoldPosition(double position) {
-    holdPosition = position;
-  }
-
-  public void setLowerLimitMeters(double meters) {
-    m_lowerLimitMeters = meters;
+  private double calculateFeedforward(TrapezoidProfile.State state) {
+    return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
   }
 
   public double getLowerLimitMeters() {
     return m_lowerLimitMeters;
-  }
-
-  public void setUpperLimitMeters(double meters) {
-    m_upperLimitMeters = meters;
   }
 
   public double getUpperLimitMeters() {
@@ -242,14 +228,15 @@ public class Climber extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Climber/CONTROL_MODE", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
-    Logger.recordOutput("Climber/Height Encoder Counts", getHeightEncoderCounts());
+    Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPostionMeters());
+    Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
+    Logger.recordOutput("Climber/Motor Output", getPercentOutput());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
     switch (m_controlMode) {
       case OPEN_LOOP:
         double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
@@ -270,12 +257,11 @@ public class Climber extends SubsystemBase {
         elevatorClimbMotors[0].setControl(m_position);
         break;
     }
-    updateLogger();
+    if (!ROBOT.disableLogging) updateLogger();
   }
 
   @Override
   public void simulationPeriodic() {
-
     m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     elevatorSim.setInputVoltage(
@@ -283,10 +269,11 @@ public class Climber extends SubsystemBase {
 
     elevatorSim.update(RobotTime.getTimeDelta());
 
-    elevatorSim.update(RobotTime.getTimeDelta());
-
-    m_simState.setRotorVelocity(elevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio);
-
-    m_simState.setRawRotorPosition(elevatorSim.getPositionMeters() * CLIMBER.gearRatio);
+    m_simState.setRotorVelocity(
+        elevatorSim.getVelocityMetersPerSecond()
+            * CLIMBER.gearRatio
+            / CLIMBER.drumRotationsToMeters);
+    m_simState.setRawRotorPosition(
+        elevatorSim.getPositionMeters() * CLIMBER.gearRatio / CLIMBER.drumRotationsToMeters);
   }
 }
