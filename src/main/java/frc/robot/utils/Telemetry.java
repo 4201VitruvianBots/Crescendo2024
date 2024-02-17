@@ -50,7 +50,7 @@ public class Telemetry {
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    Logger.recordOutput("Swerve/Pose", pose);
+    // Logger.recordOutput("Swerve/Pose", pose);
     Logger.recordOutput("Swerve/Speed", velocities.getNorm());
     Logger.recordOutput("Swerve/Velocity X", velocities.getX());
     Logger.recordOutput("Swerve/Velocity Y", velocities.getY());

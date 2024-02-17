@@ -30,6 +30,7 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.Runfull;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
@@ -174,8 +175,8 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.55, -0.85));
-    xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
+    xboxController.rightBumper().whileTrue(new Runfull(m_intake, -0.55, -0.85, m_ampShooter, 0.5));
+    xboxController.leftBumper().whileTrue(new Runfull(m_intake, 0.50, 0.85, m_ampShooter, -0.5));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController.y().whileTrue(new ArmForward(m_arm));
