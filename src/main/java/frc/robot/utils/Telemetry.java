@@ -42,12 +42,11 @@ public class Telemetry {
   /* Accept the swerve drive state and telemeterize it to SmartDashboard */
   public void telemeterize(SwerveDriveState state) {
     try {
-    if(state.Pose != null)
-      m_robotPose = state.Pose;
-  }
-  catch(Exception e){
+      if (state.Pose != null) m_robotPose = state.Pose;
+    } catch (Exception e) {
 
-  }; 
+    }
+    ;
 
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
