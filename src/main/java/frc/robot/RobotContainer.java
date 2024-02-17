@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
@@ -32,11 +31,11 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.SetIntakePercentOutput;
-import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 // import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.AMP;
 // import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
 // import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
@@ -68,7 +67,7 @@ public class RobotContainer {
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
-  
+
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
@@ -86,7 +85,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
-m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     initializeSubsystems();
     configureBindings();
@@ -172,21 +171,32 @@ m_controls.registerDriveTrain(m_swerveDrive);
   private void configureBindings() {
     xboxController
         .a()
-        .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // slow sbeaker
+        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // fast sbeaker
+            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, -0.55, -0.85));
+    xboxController.rightBumper().whileTrue(new RunAmp(m_ampShooter, 0.5));
     xboxController.leftBumper().whileTrue(new RunIntake(m_intake, 0.50, 0.85));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new ArmForward(m_arm));
+    xboxController
+        .y()
+        .whileTrue(
+            new ShootNStrafe(
+                m_swerveDrive,
+                m_ampShooter,
+                m_shooter,
+                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> -rightJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                4201));
 
- 
+    xboxController
+        .povDown()
+        .whileTrue(new RunAmp(m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get()));
   }
 
   public void initAutoChooser() {

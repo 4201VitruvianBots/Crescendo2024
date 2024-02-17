@@ -17,7 +17,6 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class ShootNStrafe extends Command {
@@ -26,9 +25,9 @@ public class ShootNStrafe extends Command {
   AmpShooter m_ampShooter;
   RPM_SETPOINT m_state;
   CommandSwerveDrivetrain m_swerveDrive;
-  private double m_percentOutput;
+  private double m_RPMOutput;
 
-  private double RPMThreshold = 1200.0;
+  private double RPMThreshold = m_RPMOutput;
   private double timerThreshold = 0.5;
   private boolean CorrectRange = true;
 
@@ -39,36 +38,38 @@ public class ShootNStrafe extends Command {
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
   public int hehe = 69; // Mano's work
-  
+
   private final SwerveRequest.FieldCentric drive =
-        new SwerveRequest.FieldCentric()
-            .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-            .withRotationalDeadband(
-                SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   public ShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
-      Vision vision,
       AmpShooter ampShooter,
+      Shooter shooter,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
-      double percentOutput) {
+      double RPMOutput) {
 
     m_swerveDrive = swerveDrive;
+
+    m_shooter = shooter;
     m_ampShooter = ampShooter;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    m_percentOutput = percentOutput;
+    m_RPMOutput = RPMOutput;
 
-    addRequirements(m_shooter);
+    addRequirements(m_swerveDrive);
 
     // TODO: None of this will work if the math is out here and not in execute()
-    
-}
+
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -80,8 +81,6 @@ public class ShootNStrafe extends Command {
   public void execute() {
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
-
-    
 
     double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
 
@@ -102,9 +101,6 @@ public class ShootNStrafe extends Command {
                     / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                         * VelocityShoot)));
 
-    
-
-                
     m_shooter.setRpmOutput(RPMThreshold);
 
     double throttle =

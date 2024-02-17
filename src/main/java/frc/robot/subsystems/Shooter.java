@@ -4,36 +4,23 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
-import frc.robot.visualizers.SuperStructureVisualizer;
-
-import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -42,15 +29,15 @@ public class Shooter extends SubsystemBase {
   private double m_headingOffset;
   private double flywheelRPMRatio = 1.0;
   private double m_desiredPercentOutput;
-  
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
   };
 
   private DCMotorSim[] m_shooterMotorSim = {
-  new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia), 
-  new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)};
+    new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia),
+    new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
+  };
 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
@@ -61,11 +48,7 @@ public class Shooter extends SubsystemBase {
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
 
   double HEIGHT = 1; // Controls the height of the mech2d SmartDashboard
-    double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
-
-  
-
-  
+  double WIDTH = 1; // Controls the height of the mech2d SmartDashboard
 
   private final SimpleMotorFeedforward m_feedForward =
       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
@@ -75,50 +58,43 @@ public class Shooter extends SubsystemBase {
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
+    configBottom.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
-    configBottom.Slot0.kP = SHOOTER.kP;
-    configBottom.Slot0.kI = SHOOTER.kI;
-    configBottom.Slot0.kD = SHOOTER.kD;
+    configBottom.Slot0.kP = SHOOTER.bottomkP;
+    configBottom.Slot0.kI = SHOOTER.bottomkI;
+    configBottom.Slot0.kD = SHOOTER.bottomkD;
+    configBottom.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
-
+   
     TalonFXConfiguration configTop = new TalonFXConfiguration();
+    configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
     configTop.Slot0.kV = SHOOTER.kV;
-    configTop.Slot0.kP = SHOOTER.kP;
-    configTop.Slot0.kI = SHOOTER.kI;
-    configTop.Slot0.kD = SHOOTER.kD;
+    configTop.Slot0.kP = SHOOTER.topkP;
+    configTop.Slot0.kI = SHOOTER.topkI;
+    configTop.Slot0.kD = SHOOTER.topkD;
+    configTop.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
     m_shooterMotors[0].setInverted(true);
-     m_shooterMotors[1].setInverted(false);
+    m_shooterMotors[1].setInverted(false);
     // flywheel motor 1
-
-
-  
 
   }
 
-
-   
-
-   
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
 
     m_desiredPercentOutput = percentOutput;
-    
   }
 
   public void setRpmOutput(double rpm) {
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
-    m_shooterMotors[0].setControl(
-        m_focControlTop.withVelocity(rps).withFeedForward(m_currentFeedForward.calculate(rps)));
-        
-
-        
-    m_shooterMotors[1].setControl(new StrictFollower(m_shooterMotors[0].getDeviceID()));
+    m_rpm = rpm;
+    m_shooterMotors[0].setControl(m_focControlTop.withVelocity(rps).withFeedForward(0));
+    m_shooterMotors[1].setControl(m_focControlBottom.withVelocity(rps).withFeedForward(0));
   }
 
   public double getShootNStrafeAngle(
@@ -163,8 +139,6 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
   public double getRpmMaster() {
     return m_shooterMotors[0].getVelocity().getValueAsDouble() * 60.0;
-    
-    
   }
 
   public double getRpmFollower() {
@@ -195,9 +169,7 @@ public class Shooter extends SubsystemBase {
     m_testMode = mode;
   }
 
-  private void updateShuffleboard() {
-    
-  }
+  private void updateShuffleboard() {}
 
   // values that we are pulling
 
@@ -206,24 +178,21 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/MasterPercentOutput", m_shooterMotors[0].get());
     Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
+    Logger.recordOutput("Shooter/rpmsetpoint", m_rpm);
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
-    
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
     if (!ROBOT.disableLogging) updateLogger();
-
-    
   }
-@Override
+
+  @Override
   public void simulationPeriodic() {
     m_shooterMotorTopSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_shooterMotorBottomSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    
 
-    
     m_shooterMotorSim[1].setInputVoltage(
         MathUtil.clamp(m_shooterMotorTopSimState.getMotorVoltage(), -12, 12));
     m_shooterMotorSim[0].setInputVoltage(
@@ -231,7 +200,7 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotorSim[1].update(RobotTime.getTimeDelta());
     m_shooterMotorSim[0].update(RobotTime.getTimeDelta());
-    
+
     m_shooterMotorTopSimState.setRawRotorPosition(
         m_shooterMotorSim[1].getAngularPositionRotations() * SHOOTER.gearRatioTop);
     m_shooterMotorTopSimState.setRotorVelocity(
