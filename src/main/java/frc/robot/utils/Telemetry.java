@@ -64,10 +64,11 @@ public class Telemetry {
       m_moduleAngles[2] = state.ModuleStates[2].angle.getDegrees();
       m_moduleAngles[3] = state.ModuleStates[3].angle.getDegrees();
       Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
-    
+
     } catch (Exception e) {
-      System.out.println("Advantagekit could not update Odometry"); 
-    };
+      System.out.println("Advantagekit could not update Odometry");
+    }
+    ;
 
     if (m_fieldSim != null) {
       for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {

@@ -39,8 +39,8 @@ public class PlotAutoPath extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pathPoints  = new ArrayList<>();
-    
+    m_pathPoints = new ArrayList<>();
+
     for (var path : m_paths) {
       if (Controls.isRedAlliance()) {
         path = path.flipPath();
