@@ -21,7 +21,6 @@ public class Telemetry {
     new SwerveModuleVisualizer(ModuleMap.MODULE_POSITION.BACK_RIGHT.name(), m_maxSpeed)
   };
 
-  Pose2d m_robotPose = new Pose2d();
   private final Pose2d[] m_swerveModulePoses = {
     new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(),
   };
@@ -41,34 +40,34 @@ public class Telemetry {
 
   /* Accept the swerve drive state and telemeterize it to SmartDashboard */
   public void telemeterize(SwerveDriveState state) {
-    try {
-      if (state.Pose != null) m_robotPose = state.Pose;
-    } catch (Exception e) {
-
-    }
-    ;
+    Pose2d pose = state.Pose;
 
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTime;
     lastTime = currentTime;
-    Translation2d distanceDiff = m_robotPose.minus(m_lastPose).getTranslation();
-    m_lastPose = m_robotPose;
+    Translation2d distanceDiff = pose.minus(m_lastPose).getTranslation();
+    m_lastPose = pose;
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    Logger.recordOutput("Swerve/Pose", m_robotPose);
-    Logger.recordOutput("Swerve/Speed", velocities.getNorm());
-    Logger.recordOutput("Swerve/Velocity X", velocities.getX());
-    Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
-    Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
-    Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
-    Logger.recordOutput("Swerve/Module States", state.ModuleStates);
-    m_moduleAngles[0] = state.ModuleStates[0].angle.getDegrees();
-    m_moduleAngles[1] = state.ModuleStates[1].angle.getDegrees();
-    m_moduleAngles[2] = state.ModuleStates[2].angle.getDegrees();
-    m_moduleAngles[3] = state.ModuleStates[3].angle.getDegrees();
-    Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
+    try {
+      Logger.recordOutput("Swerve/Pose", pose);
+      Logger.recordOutput("Swerve/Speed", velocities.getNorm());
+      Logger.recordOutput("Swerve/Velocity X", velocities.getX());
+      Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
+      Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
+      Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
+      Logger.recordOutput("Swerve/Module States", state.ModuleStates);
+      m_moduleAngles[0] = state.ModuleStates[0].angle.getDegrees();
+      m_moduleAngles[1] = state.ModuleStates[1].angle.getDegrees();
+      m_moduleAngles[2] = state.ModuleStates[2].angle.getDegrees();
+      m_moduleAngles[3] = state.ModuleStates[3].angle.getDegrees();
+      Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
+    
+    } catch (Exception e) {
+      System.out.println("Advantagekit could not update Odometry"); 
+    };
 
     if (m_fieldSim != null) {
       for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
@@ -76,10 +75,10 @@ public class Telemetry {
         m_moduleTransforms[i.ordinal()] =
             new Transform2d(
                 SWERVE.DRIVE.kModuleTranslations.get(i), state.ModuleStates[i.ordinal()].angle);
-        m_swerveModulePoses[i.ordinal()] = m_robotPose.transformBy(m_moduleTransforms[i.ordinal()]);
+        m_swerveModulePoses[i.ordinal()] = pose.transformBy(m_moduleTransforms[i.ordinal()]);
       }
 
-      m_fieldSim.updateRobotPose(m_robotPose);
+      m_fieldSim.updateRobotPose(pose);
       m_fieldSim.updateSwervePoses(m_swerveModulePoses);
     }
   }

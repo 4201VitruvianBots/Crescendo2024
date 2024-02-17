@@ -14,13 +14,34 @@ import java.util.ArrayList;
 
 public class PlotAutoPath extends Command {
   private final FieldSim m_fieldSim;
-  private final Trajectory m_trajectory;
+  private final ArrayList<PathPlannerPath> m_paths = new ArrayList<>();
+  private ArrayList<Trajectory.State> m_pathPoints;
   private final String m_pathName;
 
   public PlotAutoPath(FieldSim fieldSim, String pathName, ArrayList<PathPlannerPath> paths) {
-    var pathPoints = new ArrayList<Trajectory.State>();
+    m_fieldSim = fieldSim;
+    m_pathName = pathName;
+    m_paths.addAll(paths);
 
-    for (var path : paths) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_fieldSim);
+  }
+
+  public PlotAutoPath(FieldSim fieldSim, String pathName, PathPlannerPath path) {
+    m_fieldSim = fieldSim;
+    m_pathName = pathName;
+    m_paths.add(path);
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_fieldSim);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    m_pathPoints  = new ArrayList<>();
+    
+    for (var path : m_paths) {
       if (Controls.isRedAlliance()) {
         path = path.flipPath();
       }
@@ -28,7 +49,7 @@ public class PlotAutoPath extends Command {
       var trajectory =
           path.getTrajectory(
               new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
-      pathPoints.addAll(
+      m_pathPoints.addAll(
           trajectory.getStates().stream()
               .map(
                   (state) ->
@@ -41,46 +62,9 @@ public class PlotAutoPath extends Command {
               .toList());
     }
 
-    m_fieldSim = fieldSim;
-    m_pathName = pathName;
-    m_trajectory = new Trajectory(pathPoints);
+    var trajectory = new Trajectory(m_pathPoints);
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_fieldSim);
-  }
-
-  public PlotAutoPath(FieldSim fieldSim, String pathName, PathPlannerPath path) {
-    if (Controls.isRedAlliance()) {
-      path = path.flipPath();
-    }
-    var trajectory =
-        path.getTrajectory(
-            new ChassisSpeeds(), path.getPreviewStartingHolonomicPose().getRotation());
-    var pathPoints =
-        new ArrayList<>(
-            trajectory.getStates().stream()
-                .map(
-                    (state) ->
-                        new Trajectory.State(
-                            state.timeSeconds,
-                            state.velocityMps,
-                            state.accelerationMpsSq,
-                            state.getTargetHolonomicPose(),
-                            state.curvatureRadPerMeter))
-                .toList());
-
-    m_fieldSim = fieldSim;
-    m_pathName = pathName;
-    m_trajectory = new Trajectory(pathPoints);
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_fieldSim);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_fieldSim.setTrajectory(m_trajectory);
+    m_fieldSim.setTrajectory(trajectory);
   }
 
   @Override

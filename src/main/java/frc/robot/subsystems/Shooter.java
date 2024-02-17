@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
     configBottom.Slot0.kD = SHOOTER.bottomkD;
     configBottom.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
-   
+
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
