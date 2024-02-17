@@ -10,9 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Controls;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
 

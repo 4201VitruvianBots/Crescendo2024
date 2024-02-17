@@ -80,7 +80,10 @@ public final class SimConstants {
 
   public static Pose2d pathPlannerFlip(Pose2d pose, boolean forceFlip) {
     if (forceFlip || Controls.getAllianceColor() == DriverStation.Alliance.Red) {
-      return new Pose2d(fieldLength - pose.getX(), pose.getY(), new Rotation2d(Math.PI).minus(pose.getRotation()));
+      return new Pose2d(
+          fieldLength - pose.getX(),
+          pose.getY(),
+          new Rotation2d(Math.PI).minus(pose.getRotation()));
     } else {
       return pose;
     }

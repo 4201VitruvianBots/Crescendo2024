@@ -9,26 +9,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
-
 import java.util.function.BooleanSupplier;
 
 public class SetRobotPose extends Command {
   /** Creates a new RestGyro. */
   CommandSwerveDrivetrain m_swerveDrive;
+
   Pose2d m_pose;
   BooleanSupplier m_booleanSupplier;
 
   public SetRobotPose(CommandSwerveDrivetrain swerveDrive, Pose2d pose) {
     this(swerveDrive, pose, Controls::isRedAlliance);
   }
-  public SetRobotPose(CommandSwerveDrivetrain swerveDrive, Pose2d pose, BooleanSupplier manualFlip) {
+
+  public SetRobotPose(
+      CommandSwerveDrivetrain swerveDrive, Pose2d pose, BooleanSupplier manualFlip) {
     m_swerveDrive = swerveDrive;
     m_pose = pose;
     m_booleanSupplier = manualFlip;
 
     addRequirements(m_swerveDrive);
   }
-
 
   @Override
   public boolean runsWhenDisabled() {
