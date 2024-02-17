@@ -47,9 +47,13 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
   MechanismLigament2d m_limelightA2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
-    MechanismLigament2d m_limelightB2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+  MechanismLigament2d m_limelightB2d =
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
   MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
@@ -170,9 +174,9 @@ public class SuperStructureVisualizer {
     updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
   }
 
-  public void updateAmpShooter() {
-    updateMotorColor(m_ampShooter2d, m_ampShooter.getVelocity(), m_ampShooter2d_originalColor);
-  }
+  // public void updateAmpShooter() {
+  //   updateMotorColor(m_ampShooter2d, m_ampShooter.getVelocity(), m_ampShooter2d_originalColor);
+  // }
 
   public void updateArm() {
     updateMotorColor(m_arm2d, m_arm.getPercentOutput(), m_arm2d_originalColor);
@@ -206,7 +210,7 @@ public class SuperStructureVisualizer {
   public void periodic() {
     if (m_intake != null) updateIntake();
     if (m_shooter != null) updateShooter();
-    if (m_ampShooter != null) updateAmpShooter();
+    // if (m_ampShooter != null) updateAmpShooter();
     if (m_arm != null) updateArm();
     if (m_climber != null) updateClimber();
     if (m_vision != null) updateLimelights();

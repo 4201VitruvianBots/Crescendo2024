@@ -53,9 +53,13 @@ public class FlywheelVisualizer {
   MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
   MechanismLigament2d m_limelightA2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
   MechanismLigament2d m_limelightB2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("LimelightB", VISION.aprilTagLimelightCameraBDistanceFromGroundZ, 90));
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightB", VISION.aprilTagLimelightCameraBDistanceFromGroundZ, 90));
   MechanismLigament2d m_goalBase2d =
       m_goalBaseRoot2d.append(new MechanismLigament2d("GoalBase", Units.inchesToMeters(99.131), 0));
   MechanismLigament2d m_intake2d =
