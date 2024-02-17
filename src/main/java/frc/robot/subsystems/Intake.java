@@ -108,8 +108,8 @@ public class Intake extends SubsystemBase {
   public void updateSmartDashboard() {}
 
   public void updateLogger() {
-    Logger.recordOutput("Intake/Motor1 Speed", intakeMotor1.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor2 Speed", intakeMotor2.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
   }
 
   @Override

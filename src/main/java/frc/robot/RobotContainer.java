@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
@@ -32,8 +32,13 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.Runfull;
 import frc.robot.commands.intake.SetIntakePercentOutput;
+// import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
+import frc.robot.constants.AMP;
+// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
+// import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
@@ -167,8 +172,7 @@ public class RobotContainer {
   private void configureBindings() {
     xboxController
         .a()
-        .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // slow sbeaker
+        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
@@ -179,7 +183,21 @@ public class RobotContainer {
     xboxController.leftBumper().whileTrue(new Runfull(m_intake, 0.50, 0.85, m_ampShooter, -0.5));
     //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
     //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
-    xboxController.y().whileTrue(new ArmForward(m_arm));
+    xboxController
+        .y()
+        .whileTrue(
+            new ShootNStrafe(
+                m_swerveDrive,
+                m_ampShooter,
+                m_shooter,
+                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> -rightJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                4201));
+
+    xboxController
+        .povDown()
+        .whileTrue(new RunAmp(m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get()));
   }
 
   public void initAutoChooser() {

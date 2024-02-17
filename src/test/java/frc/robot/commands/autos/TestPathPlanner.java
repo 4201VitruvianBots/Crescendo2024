@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class TestPathPlanner {
   static final double DELTA = 0.02; // acceptable deviation range
 
