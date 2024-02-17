@@ -132,10 +132,8 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public void updateStartPose(String autoName) {
     if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
-      m_startPose = AUTO_POSE_MAP.get(autoName).get();
+      m_startPose = SimConstants.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
     }
-
-    m_startPose = SimConstants.allianceFlip(m_startPose);
   }
 
   /** Sends values to SmartDashboard */

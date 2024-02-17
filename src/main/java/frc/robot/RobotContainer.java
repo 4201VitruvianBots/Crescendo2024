@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ResetGyro;
+import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
@@ -142,7 +142,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
