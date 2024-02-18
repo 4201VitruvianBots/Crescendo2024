@@ -95,6 +95,7 @@ public class RobotContainer {
     initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -240,8 +241,6 @@ public class RobotContainer {
 
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
-
-    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
