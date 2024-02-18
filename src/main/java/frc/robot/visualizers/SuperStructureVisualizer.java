@@ -42,10 +42,10 @@ public class SuperStructureVisualizer {
           ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
   MechanismRoot2d m_climberPostRoot2d =
-          m_mech2d.getRoot(
-                  "ClimberPost",
-                  ROBOT.drivebaseLength * 0.6 + CLIMBER.kDistanceFromIntake,
-                  ROBOT.drivebaseWidth * 0.5);
+      m_mech2d.getRoot(
+          "ClimberPost",
+          ROBOT.drivebaseLength * 0.6 + CLIMBER.kDistanceFromIntake,
+          ROBOT.drivebaseWidth * 0.5);
   MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
           "Shooter",

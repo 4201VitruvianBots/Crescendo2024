@@ -25,8 +25,7 @@ public class RunClimberJoystick extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -40,7 +39,7 @@ public class RunClimberJoystick extends Command {
       m_climber.setClimbState(true);
     }
     if (joystickYDeadbandOutput == 0
-            && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
+        && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
     }
   }

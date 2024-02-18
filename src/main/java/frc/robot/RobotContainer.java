@@ -172,10 +172,10 @@ public class RobotContainer {
     //     new SetIntakePercentOutput(
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
-//    m_climber.setDefaultCommand(
-//        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
+    //    m_climber.setDefaultCommand(
+    //        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
     m_climber.setDefaultCommand(
-            new RunClimberJoystick(m_climber, () -> leftJoystick.getRawAxis(1)));
+        new RunClimberJoystick(m_climber, () -> leftJoystick.getRawAxis(1)));
   }
 
   private void configureBindings() {

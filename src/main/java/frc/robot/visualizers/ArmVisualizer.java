@@ -53,7 +53,7 @@ public class ArmVisualizer implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    if(m_root2d != null) {
+    if (m_root2d != null) {
       m_arm2d.close();
       m_root2d.close();
       m_display.close();
