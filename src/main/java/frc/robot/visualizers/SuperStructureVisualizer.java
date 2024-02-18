@@ -85,7 +85,11 @@ public class SuperStructureVisualizer {
               (ROBOT.drivebaseWidth * 0.5) + Units.inchesToMeters(11.3125))
           .append(
               new MechanismLigament2d(
-                  "flywheelArmBottom", Units.inchesToMeters(1.7), 0, 0, new Color8Bit(Color.kAliceBlue)));
+                  "flywheelArmBottom",
+                  Units.inchesToMeters(1.7),
+                  0,
+                  0,
+                  new Color8Bit(Color.kAliceBlue)));
 
   MechanismLigament2d side1 =
       m_bottomFlywheel.append(
@@ -123,7 +127,11 @@ public class SuperStructureVisualizer {
               (ROBOT.drivebaseWidth * 0.5) + Units.inchesToMeters(15.3125))
           .append(
               new MechanismLigament2d(
-                  "flywheelArmTop", Units.inchesToMeters(1.7), 0, 0, new Color8Bit(Color.kAliceBlue)));
+                  "flywheelArmTop",
+                  Units.inchesToMeters(1.7),
+                  0,
+                  0,
+                  new Color8Bit(Color.kAliceBlue)));
 
   MechanismLigament2d Upperside1 =
       m_topFlywheel.append(
