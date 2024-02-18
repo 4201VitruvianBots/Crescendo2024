@@ -73,7 +73,6 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
-    configTop.Slot0.kV = SHOOTER.kV;
     configTop.Slot0.kP = SHOOTER.topkP;
     configTop.Slot0.kI = SHOOTER.topkI;
     configTop.Slot0.kD = SHOOTER.topkD;
