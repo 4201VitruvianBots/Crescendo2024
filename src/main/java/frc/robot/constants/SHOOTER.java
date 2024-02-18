@@ -23,7 +23,7 @@ public final class SHOOTER {
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 
-  public static final double gearRatioBottom = 28.0/20.0;
+  public static final double gearRatioBottom = 28.0 / 20.0;
   public static final DCMotor ShooterBottomGearbox = DCMotor.getFalcon500Foc(1);
 
   public static final DCMotor ShooterTopGearbox = DCMotor.getFalcon500Foc(1);
