@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     config.Slot0.kD = INTAKE.kD;
     config.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor1, config);
     TalonFXConfiguration configback = new TalonFXConfiguration();
     configback.Slot0.kP = INTAKE.kP;
@@ -51,7 +51,7 @@ public class Intake extends SubsystemBase {
     configback.Slot0.kD = INTAKE.kD;
     configback.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
     configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configback.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor2, configback);
   }
 

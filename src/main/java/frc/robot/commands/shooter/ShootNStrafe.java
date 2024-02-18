@@ -114,11 +114,10 @@ public class ShootNStrafe extends Command {
             * Math.signum(m_rotationInput.getAsDouble());
 
     if (CorrectRange
-        && m_shooter.getRpmMaster() > RPMThreshold
-        && m_shooter.getRpmFollower() > RPMThreshold) {
+        && m_shooter.getRpmMaster() >= RPMThreshold
+        && m_shooter.getRpmFollower() >= RPMThreshold) {
 
       drive.withVelocityX(VelocityX).withVelocityY(VelocityY).withRotationalRate(m_headingOffset);
-      m_ampShooter.setPercentOutput(0.8);
       m_timer.reset();
       m_timer.start();
       timerStart = true;
@@ -144,7 +143,7 @@ public class ShootNStrafe extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setRpmOutput(0);
+    m_shooter.setPercentOutput(0);
     m_ampShooter.setPercentOutput(0);
 
     double throttle =
