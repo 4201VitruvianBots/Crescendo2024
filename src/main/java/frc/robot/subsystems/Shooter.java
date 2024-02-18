@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut m_voltageRequest = new VoltageOut(0);
-  private final TorqueCurrentFOC m_focCurrentRequest = new TorqueCurrentFOC(0);
+  private final TorqueCurrentFOC m_TorqueCurrentFOC = new TorqueCurrentFOC(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final VelocityTorqueCurrentFOC m_focControlBottom = new VelocityTorqueCurrentFOC(0);
   private final VelocityTorqueCurrentFOC m_focControlTop = new VelocityTorqueCurrentFOC(0);
@@ -100,8 +100,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFocCurrentOutput(double currentOut) {
-    m_shooterMotors[0].setControl(m_focCurrentRequest.withOutput(currentOut));
-    m_shooterMotors[1].setControl(m_focCurrentRequest.withOutput(currentOut));
+    m_shooterMotors[0].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
+    m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
   public void setRpmOutput(double rpm) {

@@ -235,6 +235,7 @@ public class RobotContainer {
   }
 
   public void initSysidChooser() {
+    SignalLogger.setPath("/media/sda1/");
     var shooterSysId = SysIdShooterUtils.createShooterRoutines(m_shooter);
 
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
