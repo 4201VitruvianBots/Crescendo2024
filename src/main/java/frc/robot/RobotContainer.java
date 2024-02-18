@@ -33,21 +33,21 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
+import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.Runfull;
-// import frc.robot.commands.shooter.ShootNStrafe;
+import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.AMP;
-// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
-// import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
+import frc.robot.constants.SHOOTER;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
+import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
@@ -98,6 +98,7 @@ public class RobotContainer {
     initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -184,7 +185,6 @@ public class RobotContainer {
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
-    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, -0.5, -0.5));
 
     xboxController.rightBumper().whileTrue(new Runfull(m_intake, -0.55, -0.85, m_ampShooter, 0.5));
     xboxController.leftBumper().whileTrue(new Runfull(m_intake, 0.50, 0.85, m_ampShooter, -0.5));
@@ -208,13 +208,38 @@ public class RobotContainer {
                 m_ampShooter,
                 m_shooter,
                 () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                () -> -rightJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                4201));
+                () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                SHOOTER.RPM_SETPOINT.SPEAKER.get()));
+
+    xboxController
+        .rightTrigger()
+        .whileTrue(
+            new AmpTake(
+                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+    xboxController
+        .leftTrigger()
+        .whileTrue(
+            new AmpTake(
+                m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
+    xboxController
+        .rightBumper()
+        .whileTrue(new RunIntake(m_intake, 0.55, 0.85)); // Intake Note with Only Intake
+    xboxController
+        .leftBumper()
+        .whileTrue(new RunIntake(m_intake, -0.55, -0.85)); // Outtake Note with Only Intake
+
+    xboxController
+        .povUp()
+        .whileTrue(
+            new RunAmp(
+                m_ampShooter, AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povDown()
-        .whileTrue(new RunAmp(m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get()));
+        .whileTrue(
+            new RunAmp(
+                m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
   }
 
   public void initAutoChooser() {
@@ -229,10 +254,11 @@ public class RobotContainer {
   }
 
   public void initSysidChooser() {
+    SignalLogger.setPath("/media/sda1/");
+    var shooterSysId = SysIdShooterUtils.createShooterRoutines(m_shooter);
+
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
-
-    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
@@ -269,6 +295,18 @@ public class RobotContainer {
     m_sysidChooser.addOption(
         "turnDynamicBackward",
         new SwerveTurnDynamic(m_swerveDrive, SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "ShooterDynamicForward", shooterSysId.dynamic(SysIdRoutine.Direction.kForward));
+
+    m_sysidChooser.addOption(
+        "ShooterDynamicReverse", shooterSysId.dynamic(SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "ShooterQuasistaticForward", shooterSysId.quasistatic(SysIdRoutine.Direction.kForward));
+
+    m_sysidChooser.addOption(
+        "ShooterQuasistaticReverse", shooterSysId.quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command getAutonomousCommand() {
