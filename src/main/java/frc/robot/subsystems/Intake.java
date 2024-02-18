@@ -111,7 +111,6 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
     SmartDashboard.putData(this);
-
   }
 
   @Override

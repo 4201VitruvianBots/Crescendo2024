@@ -5,15 +5,12 @@
 package frc.robot.visualizers;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.CLIMBER;
-import frc.robot.constants.INTAKE;
 // import frc.robot.constants.LED;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
@@ -27,8 +24,8 @@ public class SuperStructureVisualizer {
   AmpShooter m_ampShooter;
   Arm m_arm;
   Climber m_climber;
-//   Vision m_vision;
-//   LEDSubsystem m_led;
+  //   Vision m_vision;
+  //   LEDSubsystem m_led;
 
   private final double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
@@ -53,21 +50,21 @@ public class SuperStructureVisualizer {
           ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
 
-//   private final MechanismLigament2d m_drivebase2d =
-//       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
-//   private final MechanismLigament2d m_limelightA2d =
-//       m_drivebaseRoot2d.append(
-//           new MechanismLigament2d(
-//               "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
-//   private final MechanismLigament2d m_limelightB2d =
-//       m_drivebaseRoot2d.append(
-//           new MechanismLigament2d(
-//               "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
-//   private final MechanismLigament2d m_intake2d =
-//       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
+  //   private final MechanismLigament2d m_drivebase2d =
+  //       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
+  //   private final MechanismLigament2d m_limelightA2d =
+  //       m_drivebaseRoot2d.append(
+  //           new MechanismLigament2d(
+  //               "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+  //   private final MechanismLigament2d m_limelightB2d =
+  //       m_drivebaseRoot2d.append(
+  //           new MechanismLigament2d(
+  //               "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
+  //   private final MechanismLigament2d m_intake2d =
+  //       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
-//   private final MechanismLigament2d m_led2d =
-    //   m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
+  //   private final MechanismLigament2d m_led2d =
+  //   m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   private final MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
 
@@ -171,36 +168,36 @@ public class SuperStructureVisualizer {
           new MechanismLigament2d(
               "Upperside8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
 
-//   private final Color8Bit m_drivebase2d_originalColor,
-//       m_limelightA2d_originalColor,
-//       m_limelightB2d_originalColor,
-//       m_intake2d_originalColor,
-//       m_shooter2d_originalColor,
-//       m_ampShooter2d_originalColor;
+  //   private final Color8Bit m_drivebase2d_originalColor,
+  //       m_limelightA2d_originalColor,
+  //       m_limelightB2d_originalColor,
+  //       m_intake2d_originalColor,
+  //       m_shooter2d_originalColor,
+  //       m_ampShooter2d_originalColor;
 
-//   public SuperStructureVisualizer() {
-    // m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
-    // m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
-    // m_limelightB2d.setColor(new Color8Bit(60, 235, 60));
-    // // m_intake2d.setColor(new Color8Bit(235, 229, 52));
-    // m_climber2d.setColor(new Color8Bit(52, 212, 235));
-    // m_shooter2d.setColor(new Color8Bit(189, 189, 189));
-    // m_arm2d.setColor(new Color8Bit(235, 137, 52));
-    // m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
+  //   public SuperStructureVisualizer() {
+  // m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
+  // m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
+  // m_limelightB2d.setColor(new Color8Bit(60, 235, 60));
+  // // m_intake2d.setColor(new Color8Bit(235, 229, 52));
+  // m_climber2d.setColor(new Color8Bit(52, 212, 235));
+  // m_shooter2d.setColor(new Color8Bit(189, 189, 189));
+  // m_arm2d.setColor(new Color8Bit(235, 137, 52));
+  // m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
-    // m_drivebase2d_originalColor = m_drivebase2d.getColor();
-    // m_limelightA2d_originalColor = m_limelightA2d.getColor();
-    // m_limelightB2d_originalColor = m_limelightB2d.getColor();
-    // m_intake2d_originalColor = m_intake2d.getColor();
-    // m_shooter2d_originalColor = m_shooter2d.getColor();
-    // m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
+  // m_drivebase2d_originalColor = m_drivebase2d.getColor();
+  // m_limelightA2d_originalColor = m_limelightA2d.getColor();
+  // m_limelightB2d_originalColor = m_limelightB2d.getColor();
+  // m_intake2d_originalColor = m_intake2d.getColor();
+  // m_shooter2d_originalColor = m_shooter2d.getColor();
+  // m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
-    // SmartDashboard.putData("SuperStructure Sim", m_mech2d);
-    // if (RobotBase.isSimulation()) {
-    //   m_armVisualizer.displayVisualization();
-    //   m_climberVisualizer.displayVisualization();
-    // }
-//   }
+  // SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+  // if (RobotBase.isSimulation()) {
+  //   m_armVisualizer.displayVisualization();
+  //   m_climberVisualizer.displayVisualization();
+  // }
+  //   }
 
   public void registerIntake(Intake intake) {
     m_intake = intake;
@@ -222,13 +219,13 @@ public class SuperStructureVisualizer {
     m_climber = climber;
   }
 
-//   public void registerVision(Vision vision) {
-//     m_vision = vision;
-//   }
+  //   public void registerVision(Vision vision) {
+  //     m_vision = vision;
+  //   }
 
-//   public void registerLedSubsystem(LEDSubsystem led) {
-//     m_led = led;
-//   }
+  //   public void registerLedSubsystem(LEDSubsystem led) {
+  //     m_led = led;
+  //   }
 
   /* Function to visualize the speed of a particular motor. */
   public void updateMotorColor(
@@ -281,20 +278,20 @@ public class SuperStructureVisualizer {
     m_climberVisualizer.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
   }
 
-//   public void updateLimelights() {
-//     updateLimelightColor(
-//         m_limelightA2d,
-//         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
-//         m_limelightA2d_originalColor);
-//     updateLimelightColor(
-//         m_limelightB2d,
-//         // m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
-//         m_limelightB2d_originalColor);
-//   }
+  //   public void updateLimelights() {
+  //     updateLimelightColor(
+  //         m_limelightA2d,
+  //         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
+  //         m_limelightA2d_originalColor);
+  //     updateLimelightColor(
+  //         m_limelightB2d,
+  //         // m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
+  //         m_limelightB2d_originalColor);
+  //   }
 
-//   public void updateLED() {
-//     m_led2d.setColor(m_led.getColor());
-//   }
+  //   public void updateLED() {
+  //     m_led2d.setColor(m_led.getColor());
+  //   }
 
   public void periodic() {
     if (m_intake != null) updateIntake();

@@ -39,7 +39,8 @@
 //   private final CANdle m_candle = new CANdle(CAN.CANdle);
 
 //   private int red = 0;
-//   private int green = 0; // setting all LED colors to none: there is no color when robot activates
+//   private int green = 0; // setting all LED colors to none: there is no color when robot
+// activates
 //   private int blue = 0;
 //   private SUBSYSTEM_STATES currentRobotState = SUBSYSTEM_STATES.DISABLED;
 //   private boolean setSolid;
@@ -60,10 +61,12 @@
 //     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_2_Startup, 255);
 //     m_candle.setStatusFramePeriod(
 //         CANdleStatusFrame.CANdleStatusFrame_Status_3_FirmwareApiStatus, 255);
-//     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_4_ControlTelem, 255);
+//     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_4_ControlTelem,
+// 255);
 //     m_candle.setStatusFramePeriod(
 //         CANdleStatusFrame.CANdleStatusFrame_Status_5_PixelPulseTrain, 255);
-//     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_6_BottomPixels, 255);
+//     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_6_BottomPixels,
+// 255);
 //     m_candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_7_TopPixels, 255);
 //   }
 
@@ -75,14 +78,16 @@
 //     switch (toChange) {
 //       case ColorFlow: // stripe of color flowing through the LED strip
 //         m_toAnimate =
-//             new ColorFlowAnimation(red, green, blue, white, speed, LED.LEDcount, Direction.Forward);
+//             new ColorFlowAnimation(red, green, blue, white, speed, LED.LEDcount,
+// Direction.Forward);
 //         break;
 //       case Fire: // red and orange LEDs flaming up and down the LED strip
 //         m_toAnimate = new FireAnimation(0.5, 0.7, LED.LEDcount, 0.7, 0.5);
 //         break;
 //       case Larson: // a line bouncing back and forth with its width determined by size
 //         m_toAnimate =
-//             new LarsonAnimation(red, green, blue, white, speed, LED.LEDcount, BounceMode.Front, 7);
+//             new LarsonAnimation(red, green, blue, white, speed, LED.LEDcount, BounceMode.Front,
+// 7);
 //         break;
 //       case Rainbow: // neon cat type beat
 //         m_toAnimate = new RainbowAnimation(1, speed, LED.LEDcount);
