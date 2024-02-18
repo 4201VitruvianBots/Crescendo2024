@@ -69,15 +69,15 @@ public class Climber extends SubsystemBase {
           false,
           CLIMBER.lowerLimitMeters);
   public final ElevatorSim rightElevatorSim =
-          new ElevatorSim(
-                  CLIMBER.gearbox,
-                  CLIMBER.gearRatio,
-                  3.0,
-                  CLIMBER.sprocketRadiusMeters,
-                  CLIMBER.lowerLimitMeters,
-                  CLIMBER.upperLimitMeters,
-                  false,
-                  CLIMBER.lowerLimitMeters);
+      new ElevatorSim(
+          CLIMBER.gearbox,
+          CLIMBER.gearRatio,
+          3.0,
+          CLIMBER.sprocketRadiusMeters,
+          CLIMBER.lowerLimitMeters,
+          CLIMBER.upperLimitMeters,
+          false,
+          CLIMBER.lowerLimitMeters);
   private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
   private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
@@ -261,21 +261,26 @@ public class Climber extends SubsystemBase {
     leftElevatorSim.setInputVoltage(
         MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
     rightElevatorSim.setInputVoltage(
-            MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
+        MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
 
     m_simState1.setRotorVelocity(
         leftElevatorSim.getVelocityMetersPerSecond()
-            * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRotorVelocity(
-            rightElevatorSim.getVelocityMetersPerSecond()
+        rightElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
             / CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
-            rightElevatorSim.getPositionMeters() * CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            / CLIMBER.sprocketRotationsToMeters);
   }
 }

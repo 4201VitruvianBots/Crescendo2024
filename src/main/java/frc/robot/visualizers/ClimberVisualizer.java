@@ -23,14 +23,13 @@ public class ClimberVisualizer implements AutoCloseable {
   public ClimberVisualizer(String name) {
     m_name = name;
 
-
     // Create lines to represent the climber post
-    m_post2dShared = new MechanismLigament2d("m_" +  m_name + "Post", CLIMBER.kPostHeight, 90);
+    m_post2dShared = new MechanismLigament2d("m_" + m_name + "Post", CLIMBER.kPostHeight, 90);
 
     // Create lines to represent the climber hook
     // We will use this to show its current position
-    m_climber2dShared = new MechanismLigament2d("m_" +  m_name, CLIMBER.kHookHeight, 90);
-    m_hook2dShared = new MechanismLigament2d("m_" +  m_name + "Hook", CLIMBER.kHookLength, 90);
+    m_climber2dShared = new MechanismLigament2d("m_" + m_name, CLIMBER.kHookHeight, 90);
+    m_hook2dShared = new MechanismLigament2d("m_" + m_name + "Hook", CLIMBER.kHookLength, 90);
     m_climber2dShared.append(m_hook2dShared);
   }
 
@@ -81,7 +80,7 @@ public class ClimberVisualizer implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    if(m_root2d != null) {
+    if (m_root2d != null) {
       m_post2d.close();
       m_climber2d.close();
       m_hook2d.close();
