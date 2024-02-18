@@ -87,19 +87,15 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
+    m_vision.registerSwerveDrive(m_swerveDrive);
+    initializeSubsystems();
+    configureBindings();
+    if (ROBOT.useSysID) initSysidChooser();
+    else initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-
-    if (RobotBase.isSimulation()) {
-      m_vision.registerSwerveDrive(m_swerveDrive);
-    }
-    initializeSubsystems();
-    configureBindings();
-    initAutoChooser();
-
-    if (ROBOT.useSysID) initSysidChooser();
-
+    
     if (RobotBase.isSimulation()) {
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
