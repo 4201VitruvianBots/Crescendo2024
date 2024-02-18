@@ -95,7 +95,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-    
+
     if (RobotBase.isSimulation()) {
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
