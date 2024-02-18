@@ -54,10 +54,10 @@ public class Arm extends SubsystemBase {
           ARM.gearRatio,
           SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
           ARM.length,
-          Units.degreesToRadians(ARM.minAngleDegrees + 90.0),
-          Units.degreesToRadians(ARM.maxAngleDegrees + 90.0),
+          Units.degreesToRadians(ARM.minAngleDegrees),
+          Units.degreesToRadians(ARM.maxAngleDegrees),
           false,
-          Units.degreesToRadians(ARM.startingAngleDegrees + 90.0));
+          Units.degreesToRadians(ARM.startingAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
 
@@ -74,21 +74,21 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Slot0.kS = ARM.kS;
     config.Slot0.kV = ARM.kV;
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
-    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
     SmartDashboard.putData(this);
 
-    m_armMotor.setPosition(Units.degreesToRotations(ARM.minAngleDegrees));
-    setDesiredSetpointRotations(Units.degreesToRotations(ARM.minAngleDegrees));
+    //    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    setDesiredSetpointRotations(getCurrentRotation());
   }
 
   // Get the percent output of the arm motor.
@@ -109,9 +109,13 @@ public class Arm extends SubsystemBase {
     return m_desiredRotations;
   }
 
-  public double getAngleDegrees() {
+  public double getCurrentRotation() {
     m_positionSignal.refresh();
-    return Units.rotationsToDegrees(m_positionSignal.getValue());
+    return m_positionSignal.getValue();
+  }
+
+  public double getCurrentAngle() {
+    return Units.rotationsToDegrees(getCurrentRotation());
   }
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
@@ -124,8 +128,8 @@ public class Arm extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/CurrentAngle", getAngleDegrees());
-    Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_setpoint.position));
+    Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
+    Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
 
