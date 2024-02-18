@@ -3,6 +3,7 @@ package frc.robot.utils;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -42,7 +43,7 @@ public class SysIdUtils {
                 null, null, null, (state) -> SignalLogger.writeString("state", state.toString())),
             new Mechanism(
                 (Measure<Voltage> volts) -> {
-                  var voltageControl = new VoltageOut(0);
+                  var voltageControl = new TorqueCurrentFOC(0);
                   module.getSteerMotor().setControl(voltageControl.withOutput(volts.in(Volts)));
                 },
                 null,

@@ -42,7 +42,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
   private double m_desiredHeadingRadians;
   private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
-  private Vision m_vision;
+  // private Vision m_vision;
   private final SwerveRequest.FieldCentric m_driveRequest =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -62,12 +62,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
-      Vision vision,
+      // Vision vision,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
-    m_vision = vision;
+    // m_vision = vision;
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -87,9 +87,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_alert.set(true);
   }
 
-  public void registerVisionSubsystem(Vision vision) {
-    m_vision = vision;
-  }
+  // public void registerVisionSubsystem(Vision vision) {
+  //   m_vision = vision;
+  // }
 
   public void setTurnAngle(int moduleId, double angle) {
     var newAngle =
@@ -261,13 +261,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public Optional<Rotation2d> getRotationTargetOverride() {
     // Some condition that should decide if we want to override rotation
-    if (m_vision != null) {
-      if (m_vision.hasGamePieceTarget()) {
-        // Return an optional containing the rotation override (this should be a field relative
-        // rotation)
-        return Optional.of(m_vision.getRobotToGamePieceRotation());
-      }
-    }
+    // if (m_vision != null) {
+    //   if (m_vision.hasGamePieceTarget()) {
+    //     // Return an optional containing the rotation override (this should be a field relative
+    //     // rotation)
+    //     return Optional.of(m_vision.getRobotToGamePieceRotation());
+    //   }
+    // }
     // return an empty optional when we don't want to override the path's rotation
     return Optional.empty();
   }
