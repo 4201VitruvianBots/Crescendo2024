@@ -13,7 +13,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class VISION {
   public static final double aprilTagLimelightCameraADistanceFromCenterX =
-      Units.inchesToMeters(7.590951);
+      Units.inchesToMeters(-7.590951);
   public static final double aprilTagLimelightCameraADistanceFromCenterY =
       Units.inchesToMeters(-9.541729);
   public static final double aprilTagLimelightCameraADistanceFromGroundZ =
@@ -23,10 +23,10 @@ public final class VISION {
   public static final double aprilTagLimelightCameraAOffsetInRadiansPitch =
       Units.degreesToRadians(6.172091);
   public static final double aprilTagLimelightCameraAOffsetInRadiansYaw =
-      Units.degreesToRadians(-35.497717);
+      Units.degreesToRadians(-145.513393);
 
   public static final double aprilTagLimelightCameraBDistanceFromCenterX =
-      Units.inchesToMeters(7.590951);
+      Units.inchesToMeters(-7.590951);
   public static final double aprilTagLimelightCameraBDistanceFromCenterY =
       Units.inchesToMeters(9.541729);
   public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
@@ -36,10 +36,10 @@ public final class VISION {
   public static final double aprilTagLimelightCameraBOffsetInRadiansPitch =
       Units.degreesToRadians(6.172091);
   public static final double aprilTagLimelightCameraBOffsetInRadiansYaw =
-      Units.degreesToRadians(35.497717);
+      Units.degreesToRadians(145.513393);
 
   public static final double noteDetectionLimelightCameraDistanceFromCenterX =
-      Units.inchesToMeters(-12.125);
+      Units.inchesToMeters(12.125);
   public static final double noteDetectionLimelightCameraDistanceFromCenterY =
       Units.inchesToMeters(0);
   public static final double noteDetectionLimelightCameraDistanceFromGroundZ =

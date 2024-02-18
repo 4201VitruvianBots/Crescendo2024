@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
   NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("limelight");
 
   public static PhotonCamera aprilTagLimelightCameraA =
-      new PhotonCamera("AprilTagLimelightCameraA");
+      new PhotonCamera("LimelightA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -44,7 +44,7 @@ public class Vision extends SubsystemBase {
           VISION.robotToAprilTagLimelightCameraA);
 
   public static PhotonCamera aprilTagLimelightCameraB =
-      new PhotonCamera("AprilTagLimelightCameraB");
+      new PhotonCamera("LimelightB");
   PhotonPoseEstimator limelightPhotonPoseEstimatorB =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
