@@ -84,7 +84,6 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
     m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
-
   }
 
   public void setVoltageOutput(double voltageOut) {
