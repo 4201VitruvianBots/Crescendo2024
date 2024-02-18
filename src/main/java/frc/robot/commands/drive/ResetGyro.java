@@ -10,7 +10,7 @@ import frc.robot.subsystems.Controls;
 
 public class ResetGyro extends Command {
   /** Creates a new RestGyro. */
-  CommandSwerveDrivetrain m_swerveDrive;
+  private final CommandSwerveDrivetrain m_swerveDrive;
 
   public ResetGyro(CommandSwerveDrivetrain swerveDrive) {
     m_swerveDrive = swerveDrive;

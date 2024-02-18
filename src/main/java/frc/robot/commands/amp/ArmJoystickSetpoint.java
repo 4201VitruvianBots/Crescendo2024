@@ -13,9 +13,9 @@ import java.util.function.DoubleSupplier;
 
 public class ArmJoystickSetpoint extends Command {
   /** Creates a new ArmForward. */
-  Arm m_arm;
+  private final Arm m_arm;
 
-  private DoubleSupplier m_output;
+  private final DoubleSupplier m_output;
 
   public ArmJoystickSetpoint(Arm arm, DoubleSupplier output) {
     m_arm = arm;

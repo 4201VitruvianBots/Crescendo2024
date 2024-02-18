@@ -10,9 +10,9 @@ import frc.robot.subsystems.Intake;
 
 public class AutoRunIntake extends Command {
   /** Creates a new AutoRunIntake. */
-  Intake m_intake;
+  private final Intake m_intake;
 
-  INTAKE_STATE m_state;
+  private final INTAKE_STATE m_state;
 
   public AutoRunIntake(Intake intake, INTAKE_STATE state) {
     // Use addRequirements() here to declare subsystem dependencies.

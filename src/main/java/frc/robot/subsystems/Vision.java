@@ -20,12 +20,11 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-
   private CommandSwerveDrivetrain m_swerveDriveTrain;
 
-  NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("limelight");
+  private final NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  public static PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
+  public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -33,7 +32,7 @@ public class Vision extends SubsystemBase {
           aprilTagLimelightCameraA,
           VISION.robotToAprilTagLimelightCameraA);
 
-  public static PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("LimelightB");
+  public static final PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("LimelightB");
   PhotonPoseEstimator limelightPhotonPoseEstimatorB =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,

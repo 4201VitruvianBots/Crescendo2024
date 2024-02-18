@@ -11,7 +11,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utils.ModuleMap;
 import frc.robot.utils.ModuleMap.MODULE_POSITION;
-import java.awt.*;
 import java.util.Map;
 
 public final class SWERVE {
@@ -44,7 +43,7 @@ public final class SWERVE {
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
 
-    public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
+    public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
@@ -57,9 +56,9 @@ public final class SWERVE {
     public static final double kD_X = 0.0;
 
     // Rotation
-    public static double kP_Theta = 8.0;
-    public static double kI_Theta = 0.0;
-    public static double kD_Theta = 0.5;
+    public static final double kP_Theta = 8.0;
+    public static final double kI_Theta = 0.0;
+    public static final double kD_Theta = 0.5;
   }
 
   public static class MODULE {

@@ -53,7 +53,7 @@ public final class ARM {
   public static final DCMotor gearBox = DCMotor.getKrakenX60(1);
 
   // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
-  public static double gearRatio = 140.0;
+  public final static double gearRatio = 140.0 / 1.0;
 
   public static final double length = Units.inchesToMeters(21.5);
 

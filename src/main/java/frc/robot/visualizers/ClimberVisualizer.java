@@ -17,7 +17,7 @@ public class ClimberVisualizer implements AutoCloseable {
   private final MechanismLigament2d m_post2dShared;
   private final MechanismLigament2d m_climber2dShared;
   private final MechanismLigament2d m_hook2dShared;
-  private Color8Bit m_ligamentColor = new Color8Bit(52, 212, 235);
+  private final Color8Bit m_ligamentColor = new Color8Bit(52, 212, 235);
   private final String m_name;
 
   public ClimberVisualizer(String name) {

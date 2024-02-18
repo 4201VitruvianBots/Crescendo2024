@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
   };
 
-  private DCMotorSim[] m_shooterMotorSim = {
+  private final DCMotorSim[] m_shooterMotorSim = {
     new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia),
     new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
   };

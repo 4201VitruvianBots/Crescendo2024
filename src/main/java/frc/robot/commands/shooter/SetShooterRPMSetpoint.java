@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class SetShooterRPMSetpoint extends Command {
-  Shooter m_shooter;
-  double m_RPMOutput;
+  private final Shooter m_shooter;
+  private final double m_RPMOutput;
 
   public SetShooterRPMSetpoint(Shooter shooter, double RPMOutput) {
     m_shooter = shooter;

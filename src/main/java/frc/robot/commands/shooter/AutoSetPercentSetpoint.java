@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoSetPercentSetpoint extends Command {
-  Shooter m_shooter;
-  double m_percentOutput;
+  private final Shooter m_shooter;
+  private final double m_percentOutput;
 
   public AutoSetPercentSetpoint(Shooter shooter, double percentOutput) {
     m_shooter = shooter;

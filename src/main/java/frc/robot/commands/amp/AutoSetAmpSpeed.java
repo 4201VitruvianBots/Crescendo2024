@@ -9,8 +9,8 @@ import frc.robot.constants.ARM.AMP_STATE;
 import frc.robot.subsystems.AmpShooter;
 
 public class AutoSetAmpSpeed extends Command {
-  AmpShooter m_ampShooter;
-  AMP_STATE m_state;
+  private final AmpShooter m_ampShooter;
+  private final AMP_STATE m_state;
 
   public AutoSetAmpSpeed(AmpShooter ampshooter, AMP_STATE state) {
     m_ampShooter = ampshooter;

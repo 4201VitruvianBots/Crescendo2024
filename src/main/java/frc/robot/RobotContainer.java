@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.constants.SWERVE.*;
-
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,12 +36,8 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-import frc.robot.constants.AMP;
-import frc.robot.constants.ROBOT;
-import frc.robot.constants.SHOOTER;
+import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SWERVE.DRIVE;
-import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdShooterUtils;
@@ -55,11 +49,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
       new CommandSwerveDrivetrain(
-          DrivetrainConstants,
-          FrontLeftConstants,
-          FrontRightConstants,
-          BackLeftConstants,
-          BackRightConstants);
+          SWERVE.DrivetrainConstants,
+          SWERVE.FrontLeftConstants,
+          SWERVE.FrontRightConstants,
+          SWERVE.BackLeftConstants,
+          SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();

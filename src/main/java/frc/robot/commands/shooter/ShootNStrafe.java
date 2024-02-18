@@ -21,23 +21,24 @@ import java.util.function.DoubleSupplier;
 
 public class ShootNStrafe extends Command {
 
-  Shooter m_shooter;
-  AmpShooter m_ampShooter;
-  RPM_SETPOINT m_state;
-  CommandSwerveDrivetrain m_swerveDrive;
-  private double m_RPMOutput;
+  private final CommandSwerveDrivetrain m_swerveDrive;
+  private final Shooter m_shooter;
+  private final AmpShooter m_ampShooter;
 
-  private double RPMThreshold = m_RPMOutput;
-  private double timerThreshold = 0.5;
+  private final double timerThreshold = 0.5;
   private boolean CorrectRange = true;
-
-  private double ChangeThisValue;
 
   private final Timer m_timer = new Timer();
   private boolean timerStart = false;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
-  public int hehe = 69; // Mano's work
+
+  private RPM_SETPOINT mstate;
+  private double m_RPMOutput;
+  private double RPMThreshold = m_RPMOutput;
+  private double ChangeThisValue;
+
+  public final int hehe = 69; // Mano's work
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()

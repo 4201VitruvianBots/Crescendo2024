@@ -12,8 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 public class TestControls {
-
-  Controls m_controls = new Controls();
+  private final Controls m_controls = new Controls();
 
   @BeforeEach
   public void constructDevices() {

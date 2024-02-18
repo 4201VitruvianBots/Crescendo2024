@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoSetRPMSetpoint extends Command {
-  Shooter m_shooter;
-  double m_RPM;
+  private final Shooter m_shooter;
+  private final double m_RPM;
 
   public AutoSetRPMSetpoint(Shooter shooter, double RPM) {
     m_shooter = shooter;

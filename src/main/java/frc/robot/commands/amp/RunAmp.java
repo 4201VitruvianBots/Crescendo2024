@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 
 public class RunAmp extends Command {
-  AmpShooter m_ampShooter;
-  double m_percentOutput;
+  private final AmpShooter m_ampShooter;
+  private final double m_percentOutput;
 
   public RunAmp(AmpShooter ampShooter, double percentOutput) {
     m_ampShooter = ampShooter;

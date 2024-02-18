@@ -9,7 +9,7 @@ import frc.robot.subsystems.Climber;
 
 public class SetClimbState extends Command {
   private final Climber m_climber;
-  private boolean m_climbState;
+  private final boolean m_climbState;
 
   /** Creates a new SetClimbState. */
   public SetClimbState(Climber climber, boolean climbState) {

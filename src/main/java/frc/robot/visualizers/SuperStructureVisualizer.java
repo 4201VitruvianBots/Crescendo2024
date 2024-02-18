@@ -30,56 +30,56 @@ public class SuperStructureVisualizer {
   Vision m_vision;
   LEDSubsystem m_led;
 
-  double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
+  private final double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
-  Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
+  private final Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
 
-  MechanismRoot2d m_drivebaseRoot2d =
+  private final MechanismRoot2d m_drivebaseRoot2d =
       m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_climberRoot2d =
+  private final MechanismRoot2d m_climberRoot2d =
       m_mech2d.getRoot(
           "Climber",
           ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_climberPostRoot2d =
+  private final MechanismRoot2d m_climberPostRoot2d =
       m_mech2d.getRoot(
           "ClimberPost",
           ROBOT.drivebaseLength * 0.6 + CLIMBER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
-  MechanismRoot2d m_shooterRoot2d =
+  private final MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
           "Shooter",
           ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
 
-  MechanismLigament2d m_drivebase2d =
+  private final MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
-  MechanismLigament2d m_limelightA2d =
+  private final MechanismLigament2d m_limelightA2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
               "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
-  MechanismLigament2d m_limelightB2d =
+  private final MechanismLigament2d m_limelightB2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
               "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
-  MechanismLigament2d m_intake2d =
+  private final MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
-  MechanismLigament2d m_led2d =
+  private final MechanismLigament2d m_led2d =
       m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
-  MechanismLigament2d m_shooter2d =
+  private final MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
 
-  ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2d");
-  MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
-  MechanismLigament2d m_ampShooter2d =
+  private final ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2d");
+  private final MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
+  private final MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
-  ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("Climber2d");
-  MechanismLigament2d m_climber2d = m_climberRoot2d.append(m_climberVisualizer.getLigament());
-  MechanismLigament2d m_climberPost = m_climberRoot2d.append(m_climberVisualizer.getPost());
+  private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("Climber2d");
+  private final MechanismLigament2d m_climber2d = m_climberRoot2d.append(m_climberVisualizer.getLigament());
+  private final MechanismLigament2d m_climberPost = m_climberRoot2d.append(m_climberVisualizer.getPost());
 
-  MechanismLigament2d m_bottomFlywheel =
+  private final MechanismLigament2d m_bottomFlywheel =
       m_mech2d
           .getRoot(
               "pivotPoint",
@@ -93,35 +93,35 @@ public class SuperStructureVisualizer {
                   0,
                   new Color8Bit(Color.kAliceBlue)));
 
-  MechanismLigament2d side1 =
+  private final MechanismLigament2d side1 =
       m_bottomFlywheel.append(
           new MechanismLigament2d("side1", FlywheelSize, 112.5, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side2 =
+  private final MechanismLigament2d side2 =
       side1.append(
           new MechanismLigament2d("side2", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side3 =
+  private final MechanismLigament2d side3 =
       side2.append(
           new MechanismLigament2d("side3", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side4 =
+  private final MechanismLigament2d side4 =
       side3.append(
           new MechanismLigament2d("side4", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side5 =
+  private final MechanismLigament2d side5 =
       side4.append(
           new MechanismLigament2d("side5", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side6 =
+  private final MechanismLigament2d side6 =
       side5.append(
           new MechanismLigament2d("side6", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side7 =
+  private final MechanismLigament2d side7 =
       side6.append(
           new MechanismLigament2d("side7", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d side8 =
+  private final MechanismLigament2d side8 =
       side7.append(
           new MechanismLigament2d("side8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
 
   // Velocity
 
   // Position
-  MechanismLigament2d m_topFlywheel =
+  private final MechanismLigament2d m_topFlywheel =
       m_mech2d
           .getRoot(
               "UpperPivotPoint",
@@ -135,51 +135,50 @@ public class SuperStructureVisualizer {
                   0,
                   new Color8Bit(Color.kAliceBlue)));
 
-  MechanismLigament2d Upperside1 =
+  private final MechanismLigament2d Upperside1 =
       m_topFlywheel.append(
           new MechanismLigament2d(
               "Upperside1", FlywheelSize, 112.5, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside2 =
+  private final MechanismLigament2d Upperside2 =
       Upperside1.append(
           new MechanismLigament2d(
               "Upperside2", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside3 =
+  private final MechanismLigament2d Upperside3 =
       Upperside2.append(
           new MechanismLigament2d(
               "Upperside3", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside4 =
+  private final MechanismLigament2d Upperside4 =
       Upperside3.append(
           new MechanismLigament2d(
               "Upperside4", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside5 =
+  private final MechanismLigament2d Upperside5 =
       Upperside4.append(
           new MechanismLigament2d(
               "Upperside5", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside6 =
+  private final MechanismLigament2d Upperside6 =
       Upperside5.append(
           new MechanismLigament2d(
               "Upperside6", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside7 =
+  private final MechanismLigament2d Upperside7 =
       Upperside6.append(
           new MechanismLigament2d(
               "Upperside7", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  MechanismLigament2d Upperside8 =
+  private final MechanismLigament2d Upperside8 =
       Upperside7.append(
           new MechanismLigament2d(
               "Upperside8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
 
-  Color8Bit m_drivebase2d_originalColor,
-      m_limelight2d_originalColor,
+  private final Color8Bit m_drivebase2d_originalColor,
+      m_limelightA2d_originalColor,
+      m_limelightB2d_originalColor,
       m_intake2d_originalColor,
-      m_climber2d_originalColor,
       m_shooter2d_originalColor,
-      m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
 
   public SuperStructureVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
-    m_limelightA2d.setColor(new Color8Bit(60, 235, 60));
+    m_limelightB2d.setColor(new Color8Bit(60, 235, 60));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
     m_shooter2d.setColor(new Color8Bit(189, 189, 189));
@@ -187,12 +186,10 @@ public class SuperStructureVisualizer {
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
-    m_limelight2d_originalColor = m_limelightA2d.getColor();
-    m_limelight2d_originalColor = m_limelightB2d.getColor();
+    m_limelightA2d_originalColor = m_limelightA2d.getColor();
+    m_limelightB2d_originalColor = m_limelightB2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
-    m_climber2d_originalColor = m_climber2d.getColor();
     m_shooter2d_originalColor = m_shooter2d.getColor();
-    m_arm2d_originalColor = m_arm2d.getColor();
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
@@ -285,11 +282,11 @@ public class SuperStructureVisualizer {
     updateLimelightColor(
         m_limelightA2d,
         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
-        m_limelight2d_originalColor);
+        m_limelightA2d_originalColor);
     updateLimelightColor(
         m_limelightB2d,
         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
-        m_limelight2d_originalColor);
+        m_limelightB2d_originalColor);
   }
 
   public void updateLED() {

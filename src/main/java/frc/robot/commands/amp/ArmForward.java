@@ -9,7 +9,7 @@ import frc.robot.constants.ARM;
 import frc.robot.subsystems.Arm;
 
 public class ArmForward extends Command {
-  Arm m_arm;
+  private final Arm m_arm;
 
   /** Creates a new ArmForward. */
   public ArmForward(Arm arm) {
