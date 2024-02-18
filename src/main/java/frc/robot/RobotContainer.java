@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
@@ -28,17 +29,16 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.climber.ClimbFinal;
+import frc.robot.commands.climber.RunClimberJoystick;
+import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.SetIntakePercentOutput;
-// import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.AMP;
-// import frc.robot.commands.shooter.SetAndHoldPercentOutputSetpoint;
-// import frc.robot.commands.uptake.RunUptake;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -84,6 +84,8 @@ public class RobotContainer {
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final PS4Controller m_testController = new PS4Controller(USB.testController);
+  private final Trigger trigger =
+      new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
@@ -95,6 +97,7 @@ public class RobotContainer {
     initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
+    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     if (ROBOT.useSysID) initSysidChooser();
 
@@ -165,11 +168,14 @@ public class RobotContainer {
       // negative X (left)
     }
 
-    m_intake.setDefaultCommand(
-        new SetIntakePercentOutput(
-            m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+    // m_intake.setDefaultCommand(
+    //     new SetIntakePercentOutput(
+    //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
-    //    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    //    m_climber.setDefaultCommand(
+    //        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
+    m_climber.setDefaultCommand(
+        new RunClimberJoystick(m_climber, () -> leftJoystick.getRawAxis(1)));
   }
 
   private void configureBindings() {
@@ -180,6 +186,14 @@ public class RobotContainer {
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+
+    // toggles the climb sequence when presses and cuts the command when pressed again
+    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+
+    // switch between open loop and close loop
+    // xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
+    // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
     xboxController
         .y()
@@ -240,8 +254,6 @@ public class RobotContainer {
 
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
-
-    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     SmartDashboard.putData(
         "Start Logging", new InstantCommand(SignalLogger::start).ignoringDisable(true));
