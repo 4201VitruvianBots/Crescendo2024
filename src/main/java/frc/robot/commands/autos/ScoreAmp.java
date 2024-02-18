@@ -18,7 +18,8 @@ public class ScoreAmp extends SequentialCommandGroup {
   public ScoreAmp(Arm flipper, AmpShooter AmpShooter, Intake intake, INTAKE_STATE state) {
 
     addCommands(
-        new AutoRunIntake(intake, INTAKE_STATE.INTAKING),
+        new AutoRunIntake(
+            intake, INTAKE_STATE.FRONT_ROLLER_INTAKING, INTAKE_STATE.BACK_ROLLER_INTAKING),
         new AutoArmSetpoints(flipper, ARM_SETPOINT.FORWARD),
         new AutoSetAmpSpeed(AmpShooter, AMP_STATE.SCORE),
         new WaitCommand(WAIT.WAIT_FOR_AMP_SCORE.get()),

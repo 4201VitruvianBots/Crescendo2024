@@ -141,7 +141,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     // variables passed into lambdas must be final
     Rotation2d finalAngle = angle;
-    return applyRequest(() -> m_turnRequest.withTargetDirection(finalAngle));
+    return applyRequest(() -> m_turnRequest.withTargetDirection(finalAngle))
+        .onlyWhile(
+            () ->
+                Math.abs(
+                        finalAngle
+                            .minus(Rotation2d.fromDegrees(getPigeon2().getYaw().getValue()))
+                            .getDegrees())
+                    > 1.0)
+        .withTimeout(0.25);
   }
 
   public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds) {

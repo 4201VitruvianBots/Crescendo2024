@@ -20,7 +20,7 @@ public class AutoSetRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setRpmOutput(m_RPM);
+    m_shooter.setRPMOutput(m_RPM);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -28,7 +28,7 @@ public class AutoSetRPMSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setRpmOutput(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.
