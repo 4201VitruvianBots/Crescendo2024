@@ -92,6 +92,7 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
+    if (RobotBase.isSimulation()) m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     initAutoChooser();
@@ -172,8 +173,6 @@ public class RobotContainer {
     //     new SetIntakePercentOutput(
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
-    //    m_climber.setDefaultCommand(
-    //        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> leftJoystick.getRawAxis(1)));
   }
