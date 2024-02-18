@@ -14,6 +14,7 @@ import java.util.function.BooleanSupplier;
 public class SetRobotPose extends Command {
   /** Creates a new RestGyro. */
   private final CommandSwerveDrivetrain m_swerveDrive;
+
   private final Pose2d m_pose;
   private final BooleanSupplier m_booleanSupplier;
 

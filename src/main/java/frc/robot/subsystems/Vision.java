@@ -22,7 +22,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
 
-  private final NetworkTable NoteDetectionLimelight = NetworkTableInstance.getDefault().getTable("limelight");
+  private final NetworkTable NoteDetectionLimelight =
+      NetworkTableInstance.getDefault().getTable("limelight");
 
   public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =

@@ -32,7 +32,8 @@ public class SuperStructureVisualizer {
 
   private final double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
-  private final Mechanism2d m_mech2d = new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
+  private final Mechanism2d m_mech2d =
+      new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
 
   private final MechanismRoot2d m_drivebaseRoot2d =
       m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
@@ -76,8 +77,10 @@ public class SuperStructureVisualizer {
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
   private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("Climber2d");
-  private final MechanismLigament2d m_climber2d = m_climberRoot2d.append(m_climberVisualizer.getLigament());
-  private final MechanismLigament2d m_climberPost = m_climberRoot2d.append(m_climberVisualizer.getPost());
+  private final MechanismLigament2d m_climber2d =
+      m_climberRoot2d.append(m_climberVisualizer.getLigament());
+  private final MechanismLigament2d m_climberPost =
+      m_climberRoot2d.append(m_climberVisualizer.getPost());
 
   private final MechanismLigament2d m_bottomFlywheel =
       m_mech2d
