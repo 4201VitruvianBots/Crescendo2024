@@ -35,7 +35,6 @@ import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
@@ -173,8 +172,10 @@ public class RobotContainer {
     //     new SetIntakePercentOutput(
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+//    m_climber.setDefaultCommand(
+//        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
     m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
+            new RunClimberJoystick(m_climber, () -> leftJoystick.getRawAxis(1)));
   }
 
   private void configureBindings() {
@@ -186,20 +187,14 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
 
-    xboxController.rightBumper().whileTrue(new Runfull(m_intake, -0.55, -0.85, m_ampShooter, 0.5));
-    xboxController.leftBumper().whileTrue(new Runfull(m_intake, 0.50, 0.85, m_ampShooter, -0.5));
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+
     // switch between open loop and close loop
     // xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
-    // xboxController.a().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // amp
-    // xboxController.b().whileTrue(new SetAndHoldRPMSetpoint(m_shooter, 1)); // sbeaker
-    // xboxController.rightBumper().whileTrue(new RunIntake(m_intake, 0.5));
-    //    xboxController.povDown().whileTrue(new RunUptake(m_uptake, -0.5));
-    //    xboxController.povUp().whileTrue(new RunUptake(m_uptake, 0.5));
     xboxController
         .y()
         .whileTrue(

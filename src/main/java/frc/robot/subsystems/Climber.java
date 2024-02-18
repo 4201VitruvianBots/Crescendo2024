@@ -15,9 +15,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,15 +40,14 @@ public class Climber extends SubsystemBase {
   public TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
   private final TrapezoidProfile m_currentProfile = new TrapezoidProfile(m_constraints);
-
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
   private final SimpleMotorFeedforward m_feedForward =
       new SimpleMotorFeedforward(CLIMBER.kG, CLIMBER.kV, CLIMBER.kA);
 
   private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
-  private double m_upperLimitMeters = CLIMBER.upperLimitMeters;
-  private double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
+  private final double m_upperLimitMeters = CLIMBER.upperLimitMeters;
+  private final double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
   private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
 
   private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
@@ -62,44 +58,42 @@ public class Climber extends SubsystemBase {
 
   private boolean elevatorClimbSate;
 
-  // Testing value for mech2d
-  public double m_mechHeight = 0.5;
-
-  public DoubleSubscriber m_mechHeightSub;
-
-  public final ElevatorSim elevatorSim =
+  public final ElevatorSim leftElevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
           3.0,
-          CLIMBER.drumRadiusMeters,
+          CLIMBER.sprocketRadiusMeters,
           CLIMBER.lowerLimitMeters,
           CLIMBER.upperLimitMeters,
-          true,
+          false,
           CLIMBER.lowerLimitMeters);
-  private TalonFXSimState m_simState = elevatorClimbMotors[0].getSimState();
-  private TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
-
-  NetworkTable climberNtTab =
-      NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Climber");
+  public final ElevatorSim rightElevatorSim =
+          new ElevatorSim(
+                  CLIMBER.gearbox,
+                  CLIMBER.gearRatio,
+                  3.0,
+                  CLIMBER.sprocketRadiusMeters,
+                  CLIMBER.lowerLimitMeters,
+                  CLIMBER.upperLimitMeters,
+                  false,
+                  CLIMBER.lowerLimitMeters);
+  private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
+  private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
   /** Creates a new climberMechanism. */
   public Climber() {
     // Initialize Test Values
-    climberNtTab.getDoubleTopic("Climber Sim Test Height").publish().set(m_mechHeight);
-    m_mechHeightSub =
-        climberNtTab.getDoubleTopic("Climber Sim Test Height").subscribe(m_mechHeight);
-
-    for (TalonFX motor : elevatorClimbMotors) motor.setControl(brake);
     TalonFXConfiguration config = new TalonFXConfiguration();
-
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.Feedback.SensorToMechanismRatio = CLIMBER.gearRatio;
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
-    elevatorClimbMotors[0].setInverted(true);
+    elevatorClimbMotors[0].setInverted(false);
     elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()));
 
@@ -133,7 +127,7 @@ public class Climber extends SubsystemBase {
 
   // gets the position of the climber in meters
   public double getHeightMeters() {
-    return getMotorRotations() * CLIMBER.drumRotationsToMeters;
+    return getMotorRotations() * CLIMBER.sprocketRotationsToMeters;
   }
 
   // gets the position of the climber in encoder counts
@@ -143,11 +137,11 @@ public class Climber extends SubsystemBase {
 
   // sets position in meters
   public void setSensorPosition(double meters) {
-    elevatorClimbMotors[0].setPosition(meters / CLIMBER.drumRotationsToMeters);
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.sprocketRotationsToMeters);
   }
 
   public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.drumRotationsToMeters;
+    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.sprocketRotationsToMeters;
   }
 
   public void holdClimber() {
@@ -155,16 +149,15 @@ public class Climber extends SubsystemBase {
   }
 
   public void setDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
-    setDesiredPositionMeters(m_desiredSetpoint.getClimberSetpointMeters());
+    setDesiredPositionMeters(m_desiredSetpoint.getSetpointMeters());
   }
 
   public void setDesiredPositionMeters(double setpoint) {
     m_desiredPositionMeters = setpoint;
-    m_desiredPositionMeters = m_desiredSetpoint.getClimberSetpointMeters();
-    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.drumRotationsToMeters);
+    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.sprocketRotationsToMeters);
   }
 
-  public double getDesiredPostionMeters() {
+  public double getDesiredPositionMeters() {
     return m_desiredPositionMeters;
   }
 
@@ -228,7 +221,7 @@ public class Climber extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Climber/CONTROL_MODE", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
-    Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPostionMeters());
+    Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPositionMeters());
     Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
@@ -262,18 +255,27 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_simState1.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_simState2.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    elevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValueAsDouble(), -12, 12));
+    leftElevatorSim.setInputVoltage(
+        MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
+    rightElevatorSim.setInputVoltage(
+            MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
 
-    elevatorSim.update(RobotTime.getTimeDelta());
+    leftElevatorSim.update(RobotTime.getTimeDelta());
+    rightElevatorSim.update(RobotTime.getTimeDelta());
 
-    m_simState.setRotorVelocity(
-        elevatorSim.getVelocityMetersPerSecond()
+    m_simState1.setRotorVelocity(
+        leftElevatorSim.getVelocityMetersPerSecond()
+            * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+    m_simState1.setRawRotorPosition(
+        leftElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+    m_simState2.setRotorVelocity(
+            rightElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
-            / CLIMBER.drumRotationsToMeters);
-    m_simState.setRawRotorPosition(
-        elevatorSim.getPositionMeters() * CLIMBER.gearRatio / CLIMBER.drumRotationsToMeters);
+            / CLIMBER.sprocketRotationsToMeters);
+    m_simState2.setRawRotorPosition(
+            rightElevatorSim.getPositionMeters() * CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
   }
 }
