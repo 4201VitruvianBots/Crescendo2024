@@ -23,7 +23,7 @@ public class SetShooterRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setRpmOutput(m_RPMOutput);
+    m_shooter.setRPMOutput(m_RPMOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
