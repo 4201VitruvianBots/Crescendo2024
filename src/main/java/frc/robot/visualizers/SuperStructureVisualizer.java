@@ -41,6 +41,11 @@ public class SuperStructureVisualizer {
           "Climber",
           ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
+  MechanismRoot2d m_climberPostRoot2d =
+          m_mech2d.getRoot(
+                  "ClimberPost",
+                  ROBOT.drivebaseLength * 0.6 + CLIMBER.kDistanceFromIntake,
+                  ROBOT.drivebaseWidth * 0.5);
   MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
           "Shooter",
@@ -65,17 +70,14 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
 
-  ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2D");
+  ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2d");
   MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
   MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
-  MechanismLigament2d m_climber2d =
-      m_climberRoot2d.append(new MechanismLigament2d("Climber", CLIMBER.kUnextendedLength, 90));
-  MechanismLigament2d m_climberHook1_2d =
-      m_climber2d.append(new MechanismLigament2d("Hook 1", Units.inchesToMeters(3), -90));
-  MechanismLigament2d m_climberHook2_2d =
-      m_climberHook1_2d.append(new MechanismLigament2d("Hook 2", Units.inchesToMeters(3), -90));
+  ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("Climber2d");
+  MechanismLigament2d m_climber2d = m_climberRoot2d.append(m_climberVisualizer.getLigament());
+  MechanismLigament2d m_climberPost = m_climberRoot2d.append(m_climberVisualizer.getPost());
 
   MechanismLigament2d m_bottomFlywheel =
       m_mech2d
@@ -122,7 +124,7 @@ public class SuperStructureVisualizer {
   MechanismLigament2d m_topFlywheel =
       m_mech2d
           .getRoot(
-              "UpperpivotPoint",
+              "UpperPivotPoint",
               ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake - Units.inchesToMeters(2),
               (ROBOT.drivebaseWidth * 0.5) + Units.inchesToMeters(15.3125))
           .append(
@@ -170,8 +172,6 @@ public class SuperStructureVisualizer {
       m_limelight2d_originalColor,
       m_intake2d_originalColor,
       m_climber2d_originalColor,
-      m_climberHook1_2d_originalColor,
-      m_climberHook2_2d_originalColor,
       m_shooter2d_originalColor,
       m_arm2d_originalColor,
       m_ampShooter2d_originalColor;
@@ -182,8 +182,6 @@ public class SuperStructureVisualizer {
     m_limelightA2d.setColor(new Color8Bit(60, 235, 60));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
-    m_climberHook1_2d.setColor(new Color8Bit(52, 212, 235));
-    m_climberHook2_2d.setColor(new Color8Bit(52, 212, 235));
     m_shooter2d.setColor(new Color8Bit(189, 189, 189));
     m_arm2d.setColor(new Color8Bit(235, 137, 52));
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
@@ -193,14 +191,15 @@ public class SuperStructureVisualizer {
     m_limelight2d_originalColor = m_limelightB2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
     m_climber2d_originalColor = m_climber2d.getColor();
-    m_climberHook1_2d_originalColor = m_climberHook1_2d.getColor();
-    m_climberHook2_2d_originalColor = m_climberHook2_2d.getColor();
     m_shooter2d_originalColor = m_shooter2d.getColor();
     m_arm2d_originalColor = m_arm2d.getColor();
     m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
-    if (RobotBase.isSimulation()) m_armVisualizer.displayVisualization();
+    if (RobotBase.isSimulation()) {
+      m_armVisualizer.displayVisualization();
+      m_climberVisualizer.displayVisualization();
+    }
   }
 
   public void registerIntake(Intake intake) {
@@ -279,12 +278,7 @@ public class SuperStructureVisualizer {
   }
 
   public void updateClimber() {
-    updateMotorColor(m_climber2d, m_climber.getPercentOutput(), m_climber2d_originalColor);
-    updateMotorColor(
-        m_climberHook1_2d, m_climber.getPercentOutput(), m_climberHook1_2d_originalColor);
-    updateMotorColor(
-        m_climberHook2_2d, m_climber.getPercentOutput(), m_climberHook2_2d_originalColor);
-    m_climber2d.setLength(CLIMBER.kUnextendedLength + m_climber.getHeightMeters());
+    m_climberVisualizer.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
   }
 
   public void updateLimelights() {
