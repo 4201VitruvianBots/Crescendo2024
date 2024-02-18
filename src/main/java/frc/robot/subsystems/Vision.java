@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase {
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           aprilTagLimelightCameraA,
-          VISION.robotToCam);
+          VISION.robotToAprilTagLimelightCameraA);
 
   public static PhotonCamera aprilTagLimelightCameraB =
       new PhotonCamera("AprilTagLimelightCameraB");
@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase {
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           aprilTagLimelightCameraB,
-          VISION.robotToCam);
+          VISION.robotToAprilTagLimelightCameraB);
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
     return photonEstimator.update();

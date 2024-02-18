@@ -49,8 +49,14 @@ public class SuperStructureVisualizer {
 
   MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
-  MechanismLigament2d m_limelight2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Limelight", VISION.limelightHeight, 90));
+  MechanismLigament2d m_limelightA2d =
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+  MechanismLigament2d m_limelightB2d =
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d(
+              "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
   MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
@@ -164,7 +170,8 @@ public class SuperStructureVisualizer {
 
   public SuperStructureVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
-    m_limelight2d.setColor(new Color8Bit(53, 235, 52));
+    m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
+    m_limelightA2d.setColor(new Color8Bit(60, 235, 60));
     m_intake2d.setColor(new Color8Bit(235, 229, 52));
     m_climber2d.setColor(new Color8Bit(52, 212, 235));
     m_climberHook1_2d.setColor(new Color8Bit(52, 212, 235));
@@ -174,7 +181,8 @@ public class SuperStructureVisualizer {
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
     m_drivebase2d_originalColor = m_drivebase2d.getColor();
-    m_limelight2d_originalColor = m_limelight2d.getColor();
+    m_limelight2d_originalColor = m_limelightA2d.getColor();
+    m_limelight2d_originalColor = m_limelightB2d.getColor();
     m_intake2d_originalColor = m_intake2d.getColor();
     m_climber2d_originalColor = m_climber2d.getColor();
     m_climberHook1_2d_originalColor = m_climberHook1_2d.getColor();
@@ -273,11 +281,11 @@ public class SuperStructureVisualizer {
 
   public void updateLimelights() {
     updateLimelightColor(
-        m_limelight2d,
+        m_limelightA2d,
         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
         m_limelight2d_originalColor);
     updateLimelightColor(
-        m_limelight2d,
+        m_limelightB2d,
         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
         m_limelight2d_originalColor);
   }
