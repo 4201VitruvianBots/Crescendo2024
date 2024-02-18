@@ -90,31 +90,16 @@ public class Vision extends SubsystemBase {
   }
 
   private void updateLog() {
-    Logger.recordOutput("vision/isNoteDetected", hasGamePieceTarget());
-    Logger.recordOutput("vision/robotToGamePieceRotation", getRobotToGamePieceDegrees());
+    Logger.recordOutput("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
+    Logger.recordOutput("vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
 
-    Logger.recordOutput(
-        "vision/isAprilTagLimelightAConnected", isCameraConnected(aprilTagLimelightCameraA));
-    Logger.recordOutput(
-        "vision/isAprilTagLimelightBConnected", isCameraConnected(aprilTagLimelightCameraB));
+    Logger.recordOutput("vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));
+    Logger.recordOutput("vision/LimelightA - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraA));
+    Logger.recordOutput("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
 
-    if (isCameraConnected(aprilTagLimelightCameraA)) {
-      Logger.recordOutput(
-          "vision/isAprilTagDetectedLimelightA", isAprilTagDetected(aprilTagLimelightCameraA));
-    }
-    if (isAprilTagDetected(aprilTagLimelightCameraA)) {
-      Logger.recordOutput(
-          "vision/aprilTagLimelightATargetsDetected", getTargets(aprilTagLimelightCameraA));
-    }
-
-    if (isCameraConnected(aprilTagLimelightCameraB)) {
-      Logger.recordOutput(
-          "vision/isAprilTagDetectedLimelightB", isAprilTagDetected(aprilTagLimelightCameraB));
-    }
-    if (isAprilTagDetected(aprilTagLimelightCameraB)) {
-      Logger.recordOutput(
-          "vision/aprilTagLimelightBTargetsDetected", getTargets(aprilTagLimelightCameraB));
-    }
+    Logger.recordOutput("vision/LimelightB - isCameraConnected", isCameraConnected(aprilTagLimelightCameraB));
+    Logger.recordOutput("vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
+    Logger.recordOutput("vision/limelightB - targets", getTargets(aprilTagLimelightCameraB));
   }
 
   private void updateSmartDashboard() {
