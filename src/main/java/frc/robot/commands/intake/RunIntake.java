@@ -41,6 +41,9 @@ public class RunIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
+      return true;
+    }
     return false;
   }
 }
