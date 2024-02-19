@@ -79,6 +79,12 @@ public class Intake extends SubsystemBase {
   public INTAKE_STATE getIntakeState() {
     return m_state;
   }
+  
+  // Nathan implement this method pls
+  public boolean sensorTriggered() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sensorTriggered'");
+  }
 
   @Override
   public void simulationPeriodic() {
@@ -117,5 +123,7 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLogger();
+    
+    setIntaking(MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0 || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
   }
 }
