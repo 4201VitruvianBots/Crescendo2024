@@ -12,8 +12,8 @@ public final class CLIMBER {
   public static final double kPostHeight = Units.inchesToMeters(22);
   public static final double kHookHeight = Units.inchesToMeters(5);
   public static final double kHookLength = Units.inchesToMeters(2);
-
-  public static final double upperLimitMeters = Units.inchesToMeters(22.00);
+  
+  public static final double upperLimitMeters = Units.inchesToMeters(21.50);
   public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 
   public static final DCMotor gearbox = DCMotor.getKrakenX60(1);
@@ -43,7 +43,7 @@ public final class CLIMBER {
 
   public enum CLIMBER_SETPOINT {
     FULL_RETRACT(Units.inchesToMeters(0.0)),
-    EXTEND(Units.inchesToMeters(10.0));
+    EXTEND(Units.inchesToMeters(21.25));
 
     private final double setpointMeters;
 
