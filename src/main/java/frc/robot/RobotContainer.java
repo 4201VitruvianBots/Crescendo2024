@@ -31,7 +31,6 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
-import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
@@ -203,14 +202,16 @@ public class RobotContainer {
     xboxController
         .rightTrigger()
         .whileTrue(
-            new RunIntake(
-                m_intake, 0.55, 0.85).alongWith(new RunAmp(m_ampShooter, m_intake, 0.5))); // Intake Note with Intake And Amp
+            new RunIntake(m_intake, 0.55, 0.85)
+                .alongWith(
+                    new RunAmp(m_ampShooter, m_intake, 0.5))); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
-            new RunIntake(
-                m_intake, -0.50, -0.85).alongWith(new RunAmp(m_ampShooter, m_intake, -0.5))); // Outtake Note with Intake And Amp
-    
+            new RunIntake(m_intake, -0.50, -0.85)
+                .alongWith(
+                    new RunAmp(m_ampShooter, m_intake, -0.5))); // Outtake Note with Intake And Amp
+
     xboxController
         .rightBumper()
         .whileTrue(new RunIntake(m_intake, 0.55, 0.85)); // Intake Note with Only Intake
@@ -222,13 +223,17 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, m_intake, AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+                m_ampShooter,
+                m_intake,
+                AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povDown()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, m_intake, AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+                m_ampShooter,
+                m_intake,
+                AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
   }
 
   public void initAutoChooser() {

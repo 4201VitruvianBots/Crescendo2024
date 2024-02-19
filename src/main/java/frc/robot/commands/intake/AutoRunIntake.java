@@ -4,8 +4,6 @@
 
 package frc.robot.commands.intake;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.FloatArraySerializer;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.subsystems.Intake;
