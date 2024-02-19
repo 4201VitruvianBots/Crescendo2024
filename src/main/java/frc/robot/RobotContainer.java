@@ -63,7 +63,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LEDSubsystem m_led = new LEDSubsystem();
+  //  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -103,7 +103,7 @@ public class RobotContainer {
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
       m_visualizer.registerVision(m_vision);
-      m_visualizer.registerLedSubsystem(m_led);
+      //      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
