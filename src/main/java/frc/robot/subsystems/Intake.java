@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +25,8 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
+  DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
+  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
   private INTAKE_STATE m_state = INTAKE_STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
@@ -80,6 +83,14 @@ public class Intake extends SubsystemBase {
     return m_state;
   }
 
+  public boolean getSensorInput1() {
+    return distanceSensorDigitalInput.get();
+  }
+
+  public boolean getSensorInput2() {
+    return distanceSensorDigitalInput2.get();
+  }
+
   @Override
   public void simulationPeriodic() {
     m_intakeMotor1SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
@@ -117,5 +128,9 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLogger();
+
+    setIntaking(
+        MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0
+            || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
   }
 }

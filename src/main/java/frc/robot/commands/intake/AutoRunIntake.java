@@ -43,6 +43,6 @@ public class AutoRunIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return m_intake.getSensorInput1() || m_intake.getSensorInput1();
   }
 }
