@@ -4,8 +4,6 @@
 
 package frc.robot.commands.intake;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.FloatArraySerializer;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.subsystems.Intake;
@@ -45,9 +43,6 @@ public class AutoRunIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_intake.getSensorInput1() || m_intake.getSensorInput1()) {
-      return true;
-    }
-    return false;
+    return m_intake.getSensorInput1() || m_intake.getSensorInput1();
   }
 }
