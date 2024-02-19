@@ -31,8 +31,17 @@ public final class INTAKE {
 
     // Units are in Percent Output
     NONE(0),
-    INTAKING(-0.6),
-    INTAKING1(-0.85),
+
+    FRONT_SLOW_INTAKING(0.25),
+    BACK_SLOW_INTAKING(0.25),
+    FRONT_SLOW_REVERSE(-0.25),
+    BACK_SLOW_REVERSE(-0.25),
+
+    FRONT_ROLLER_INTAKING(0.55),
+    BACK_ROLLER_INTAKING(0.85),
+    FRONT_ROLLER_REVERSE(-0.50),
+    BACK_ROLLER_REVERSE(-0.85),
+
     INTAKINGSLOW(0.2);
     private final double value;
 

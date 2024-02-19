@@ -96,7 +96,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
-  public void setRpmOutput(double rpm) {
+  public void setRPMOutput(double rpm) {
     m_rpm = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control

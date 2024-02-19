@@ -102,7 +102,7 @@ public class ShootNStrafe extends Command {
                     / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                         * VelocityShoot)));
 
-    m_shooter.setRpmOutput(RPMThreshold);
+    m_shooter.setRPMOutput(RPMThreshold);
 
     double throttle =
         MathUtil.applyDeadband(Math.abs(m_throttleInput.getAsDouble()), 0.05)

@@ -94,7 +94,7 @@ public class RunShooterTestMode extends Command {
       testKA = newKA;
     }
 
-    m_shooter.setRpmOutput(newSetpoint);
+    m_shooter.setRPMOutput(newSetpoint);
   }
 
   // Called once the command ends or is interrupted.
