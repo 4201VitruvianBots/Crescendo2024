@@ -21,7 +21,7 @@ public final class AMP {
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 13.0;
 
-  public enum INTAKE_STATE {
+  public enum AMP_STATE {
 
     // Units are in Percent Output
 
@@ -33,7 +33,7 @@ public final class AMP {
     INTAKING1(0.85);
     private final double value;
 
-    INTAKE_STATE(final double value) {
+    AMP_STATE(final double value) {
       this.value = value;
     }
 

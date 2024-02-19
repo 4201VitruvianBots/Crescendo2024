@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
+import frc.robot.commands.autos.AutoScoreTest;
 import frc.robot.commands.autos.DriveStraightChoreoTest;
 import frc.robot.commands.autos.DriveStraightPathPlannerTest;
 import frc.robot.commands.autos.FourPieceNear;
@@ -37,6 +38,8 @@ import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
+import frc.robot.constants.AMP.AMP_STATE;
+import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -221,13 +224,13 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+                m_ampShooter, AMP.AMP_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povDown()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+                m_ampShooter, AMP.AMP_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
   }
 
   public void initAutoChooser() {
@@ -239,6 +242,16 @@ public class RobotContainer {
     m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+        "AutoScoreTest",
+        new AutoScoreTest(
+            m_shooter,
+            m_ampShooter,
+            m_intake,
+            AMP_STATE.INTAKING.get(),
+            RPM_SETPOINT.SPEAKER.get(),
+            INTAKE_STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE_STATE.BACK_ROLLER_INTAKING.get()));
   }
 
   public void initSysidChooser() {

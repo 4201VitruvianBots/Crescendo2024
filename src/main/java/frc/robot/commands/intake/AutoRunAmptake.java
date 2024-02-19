@@ -5,21 +5,26 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
-public class AutoRunIntake extends Command {
+public class AutoRunAmptake extends Command {
   /** Creates a new AutoRunIntake. */
-  private final Intake m_intake;
+  Intake m_intake;
 
-  private final INTAKE_STATE m_frontState;
-  private final INTAKE_STATE m_backState;
+  double m_speed;
+  double m_speed2;
+  AmpShooter m_ampShooter;
+  double m_ampspeed;
 
-  public AutoRunIntake(Intake intake, INTAKE_STATE frontState, INTAKE_STATE backState) {
+  public AutoRunAmptake(
+      Intake intake, AmpShooter ampShooter, double speed, double speed2, double ampspeed) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-    m_frontState = frontState;
-    m_backState = backState;
+    m_speed = speed;
+    m_speed2 = speed2;
+    m_ampspeed = ampspeed;
+    m_ampShooter = ampShooter;
     addRequirements(m_intake);
   }
 
@@ -30,7 +35,8 @@ public class AutoRunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setSpeed(m_frontState.get(), m_backState.get());
+    m_intake.setSpeed(m_speed, m_speed2);
+    m_ampShooter.setPercentOutput(m_ampspeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -38,11 +44,12 @@ public class AutoRunIntake extends Command {
   public void end(boolean interrupted) {
 
     m_intake.setSpeed(0, 0);
+    m_ampShooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

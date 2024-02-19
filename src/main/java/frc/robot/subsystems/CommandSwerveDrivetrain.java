@@ -222,6 +222,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
   }
 
+  public void setChassisSpeedControlNormal(ChassisSpeeds chassisSpeeds) {
+
+    setControl(m_chassisSpeedRequest.withSpeeds(chassisSpeeds));
+  }
+
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
 
