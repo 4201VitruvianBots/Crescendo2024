@@ -4,8 +4,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class CLIMBER {
-  public static final int climbMotor1 = 31;
-  public static final int climbMotor2 = 32;
+  public static final int climbMotor1 = 60;
+  public static final int climbMotor2 = 61;
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(17);
 

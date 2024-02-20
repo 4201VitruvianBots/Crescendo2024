@@ -23,6 +23,7 @@ public class SetShooterRPMSetpoint extends Command {
 
   @Override
   public void execute() {
+    // m_shooter.setRPMOutputFOC(m_RPMOutput);
     m_shooter.setRPMOutput(m_RPMOutput);
   }
 

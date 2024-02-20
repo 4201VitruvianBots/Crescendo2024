@@ -24,7 +24,7 @@ public class AmpTake extends Command {
     m_ampspeed = ampspeed;
     m_ampShooter = ampShooter;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake);
+    addRequirements(m_intake,m_ampShooter);
   }
 
   // Called when the command is initially scheduled.
