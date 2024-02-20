@@ -10,21 +10,21 @@ import frc.robot.subsystems.Intake;
 
 public class AmpTake extends Command {
   Intake m_intake;
+  AmpShooter m_ampShooter;
   double m_speed;
   double m_speed2;
-  AmpShooter m_ampShooter;
-  double m_ampspeed;
+  double m_ampSpeed;
 
   /** Creates a new RunIntake. */
   public AmpTake(
-      Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampspeed) {
+      Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
     m_intake = intake;
+    m_ampShooter = ampShooter;
     m_speed = speed;
     m_speed2 = speed2;
-    m_ampspeed = ampspeed;
-    m_ampShooter = ampShooter;
+    m_ampSpeed = ampSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake,m_ampShooter);
+    addRequirements(m_intake, m_ampShooter);
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +35,7 @@ public class AmpTake extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
-    m_ampShooter.setPercentOutput(m_ampspeed);
+    m_ampShooter.setPercentOutput(m_ampSpeed);
   }
 
   // Called once the command ends or is interrupted.

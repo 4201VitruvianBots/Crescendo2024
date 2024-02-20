@@ -16,9 +16,10 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 // import frc.robot.constants.VISION;
 import frc.robot.subsystems.*;
+import java.util.ArrayList;
 
 /** A class to visualize the state of all mechanisms on the robot. */
-public class SuperStructureVisualizer {
+public class SuperStructureVisualizer implements AutoCloseable {
   Intake m_intake;
   Shooter m_shooter;
   AmpShooter m_ampShooter;
@@ -68,16 +69,16 @@ public class SuperStructureVisualizer {
   private final MechanismLigament2d m_shooter2d =
       m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
 
-  private final ArmVisualizer m_armVisualizer = new ArmVisualizer("Arm2d");
+  private final ArmVisualizer m_armVisualizer = new ArmVisualizer("m_arm2d");
   private final MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
   private final MechanismLigament2d m_ampShooter2d =
       m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
 
-  private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("Climber2d");
+  private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("m_climber2d");
   private final MechanismLigament2d m_climber2d =
       m_climberRoot2d.append(m_climberVisualizer.getLigament());
   private final MechanismLigament2d m_climberPost =
-      m_climberRoot2d.append(m_climberVisualizer.getPost());
+      m_climberPostRoot2d.append(m_climberVisualizer.getPost());
 
   private final MechanismLigament2d m_bottomFlywheel =
       m_mech2d
@@ -175,15 +176,19 @@ public class SuperStructureVisualizer {
   //       m_shooter2d_originalColor,
   //       m_ampShooter2d_originalColor;
 
-  //   public SuperStructureVisualizer() {
-  // m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
-  // m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
-  // m_limelightB2d.setColor(new Color8Bit(60, 235, 60));
-  // // m_intake2d.setColor(new Color8Bit(235, 229, 52));
-  // m_climber2d.setColor(new Color8Bit(52, 212, 235));
-  // m_shooter2d.setColor(new Color8Bit(189, 189, 189));
-  // m_arm2d.setColor(new Color8Bit(235, 137, 52));
-  // m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
+  private final ArrayList<VisualizerUtils.MechanismDisplay> m_displays = new ArrayList<>();
+  private ArmVisualizer m_armVisualizer2;
+  private ClimberVisualizer m_climberVisualizer2;
+
+  public SuperStructureVisualizer() {
+    m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
+    m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
+    m_limelightB2d.setColor(new Color8Bit(60, 235, 60));
+    m_intake2d.setColor(new Color8Bit(235, 229, 52));
+    m_climber2d.setColor(new Color8Bit(52, 212, 235));
+    m_shooter2d.setColor(new Color8Bit(189, 189, 189));
+    m_arm2d.setColor(new Color8Bit(235, 137, 52));
+    m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
   // m_drivebase2d_originalColor = m_drivebase2d.getColor();
   // m_limelightA2d_originalColor = m_limelightA2d.getColor();
@@ -192,12 +197,22 @@ public class SuperStructureVisualizer {
   // m_shooter2d_originalColor = m_shooter2d.getColor();
   // m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
-  // SmartDashboard.putData("SuperStructure Sim", m_mech2d);
-  // if (RobotBase.isSimulation()) {
-  //   m_armVisualizer.displayVisualization();
-  //   m_climberVisualizer.displayVisualization();
-  // }
-  //   }
+    SmartDashboard.putData("SuperStructure Sim", m_mech2d);
+    if (RobotBase.isSimulation()) {
+      m_armVisualizer2 = new ArmVisualizer("Arm2d");
+      var armDisplay =
+          new VisualizerUtils.MechanismDisplay(0.5, 0.5, m_armVisualizer2.getLigament());
+      m_displays.add(armDisplay);
+
+      m_climberVisualizer2 = new ClimberVisualizer("Climber2d");
+      var climberDisplay =
+          new VisualizerUtils.MechanismDisplay(0.6, 0.25, m_climberVisualizer2.getLigament());
+      climberDisplay.addLigament(0.7, 0.25, m_climberVisualizer2.getPost());
+      m_displays.add(climberDisplay);
+
+      for (var display : m_displays) display.addSmartDashboardDisplay();
+    }
+  }
 
   public void registerIntake(Intake intake) {
     m_intake = intake;
@@ -301,5 +316,12 @@ public class SuperStructureVisualizer {
     if (m_climber != null) updateClimber();
     // if (m_vision != null) updateLimelights();
     // if (m_led != null) updateLED();
+  }
+
+  @Override
+  public void close() throws Exception {
+    for (var display : m_displays) display.close();
+    m_armVisualizer2.close();
+    m_climberVisualizer2.close();
   }
 }
