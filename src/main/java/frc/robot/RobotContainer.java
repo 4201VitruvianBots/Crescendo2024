@@ -36,6 +36,7 @@ import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
@@ -253,7 +254,12 @@ public class RobotContainer {
             AMP.STATE.INTAKING.get(),
             RPM_SETPOINT.SPEAKER.get(),
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get()));
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            WAIT.SHOOTING.get(),
+            5));
+
+    m_autoChooser.addOption(
+        "ScoreSpeakerTestingYipee", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
   }
 
   public void initSysidChooser() {

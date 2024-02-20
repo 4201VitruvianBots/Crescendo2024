@@ -33,7 +33,8 @@ public final class SHOOTER {
 
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
-    WAIT_FOR_AMP_SCORE(0.8);
+    WAIT_FOR_AMP_SCORE(0.8),
+    SHOOTING(0.75);
 
     private final double value;
 

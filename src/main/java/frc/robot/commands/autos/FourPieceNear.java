@@ -12,6 +12,7 @@ import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -56,7 +57,9 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMP.STATE.INTAKING.get(),
             RPM_SETPOINT.SPEAKER.get(),
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            WAIT.SHOOTING.get(),
+            5);
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
