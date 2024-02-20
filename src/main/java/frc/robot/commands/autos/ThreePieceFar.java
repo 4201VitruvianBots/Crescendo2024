@@ -22,7 +22,7 @@ public class ThreePieceFar extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
   public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     String[] pathFiles = {
-      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4", "3Piece2Pt5",
+      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
