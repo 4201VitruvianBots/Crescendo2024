@@ -243,10 +243,18 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
-    m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim, m_shooter, m_ampShooter, m_intake,AMP_STATE.INTAKING.get(),
-    RPM_SETPOINT.SPEAKER.get(),
-    INTAKE_STATE.FRONT_ROLLER_INTAKING.get(),
-    INTAKE_STATE.BACK_ROLLER_INTAKING.get()));
+    m_autoChooser.addOption(
+        "FourPieceNear",
+        new FourPieceNear(
+            m_swerveDrive,
+            m_fieldSim,
+            m_shooter,
+            m_ampShooter,
+            m_intake,
+            AMP_STATE.INTAKING.get(),
+            RPM_SETPOINT.SPEAKER.get(),
+            INTAKE_STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE_STATE.BACK_ROLLER_INTAKING.get()));
     m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));

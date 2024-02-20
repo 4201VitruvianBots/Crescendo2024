@@ -194,12 +194,12 @@ public class SuperStructureVisualizer implements AutoCloseable {
     m_arm2d.setColor(new Color8Bit(235, 137, 52));
     m_ampShooter2d.setColor(new Color8Bit(235, 205, 52));
 
-  // m_drivebase2d_originalColor = m_drivebase2d.getColor();
-  // m_limelightA2d_originalColor = m_limelightA2d.getColor();
-  // m_limelightB2d_originalColor = m_limelightB2d.getColor();
-  // m_intake2d_originalColor = m_intake2d.getColor();
-  // m_shooter2d_originalColor = m_shooter2d.getColor();
-  // m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
+    // m_drivebase2d_originalColor = m_drivebase2d.getColor();
+    // m_limelightA2d_originalColor = m_limelightA2d.getColor();
+    // m_limelightB2d_originalColor = m_limelightB2d.getColor();
+    // m_intake2d_originalColor = m_intake2d.getColor();
+    // m_shooter2d_originalColor = m_shooter2d.getColor();
+    // m_ampShooter2d_originalColor = m_ampShooter2d.getColor();
 
     SmartDashboard.putData("SuperStructure Sim", m_mech2d);
     if (RobotBase.isSimulation()) {
