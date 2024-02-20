@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
 
   DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
   DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
-  private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+  private STATE m_state = STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
   private final TalonFXSimState m_intakeMotor1SimState = intakeMotor1.getSimState();
@@ -79,7 +79,7 @@ public class Intake extends SubsystemBase {
   //     m_state = speed;
   //   }
 
-  public INTAKE_STATE getIntakeState() {
+  public STATE getIntakeState() {
     return m_state;
   }
 

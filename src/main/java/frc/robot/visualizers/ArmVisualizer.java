@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.ARM;
 
 public class ArmVisualizer implements AutoCloseable {
-  private MechanismLigament2d m_arm2d;
+  private final MechanismLigament2d m_arm2d;
   private final Color8Bit m_ligamentColor = new Color8Bit(235, 137, 52);
   private final String m_name;
 

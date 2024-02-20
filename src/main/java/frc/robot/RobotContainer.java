@@ -19,11 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
-import frc.robot.commands.autos.AutoScoreTest;
-import frc.robot.commands.autos.DriveStraightChoreoTest;
-import frc.robot.commands.autos.DriveStraightPathPlannerTest;
-import frc.robot.commands.autos.FourPieceNear;
-import frc.robot.commands.autos.ThreePieceFar;
+import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -32,13 +28,13 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
+import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
-import frc.robot.constants.AMP.AMP_STATE;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -58,7 +54,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //   private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -89,7 +85,7 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    // if (RobotBase.isSimulation()) m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -169,7 +165,7 @@ public class RobotContainer {
     //     new SetIntakePercentOutput(
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
-    m_climber.setDefaultCommand(new RunClimberJoystick(m_climber, xboxController::getRightY));
+    m_climber.setDefaultCommand(new RunClimberJoystick(m_climber, ()-> -xboxController.getRightY()));
   }
 
   private void configureBindings() {
@@ -204,15 +200,13 @@ public class RobotContainer {
     xboxController
         .rightTrigger()
         .whileTrue(
-            new RunIntake(m_intake, 0.55, 0.85)
-                .alongWith(
-                    new RunAmp(m_ampShooter, m_intake, 0.5))); // Intake Note with Intake And Amp
+            new AmpTake(
+                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
-            new RunIntake(m_intake, -0.50, -0.85)
-                .alongWith(
-                    new RunAmp(m_ampShooter, m_intake, -0.5))); // Outtake Note with Intake And Amp
+            new AmpTake(
+                m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
@@ -227,7 +221,7 @@ public class RobotContainer {
             new RunAmp(
                 m_ampShooter,
                 m_intake,
-                AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+                AMP.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povDown()
@@ -235,7 +229,7 @@ public class RobotContainer {
             new RunAmp(
                 m_ampShooter,
                 m_intake,
-                AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+                AMP.STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
   }
 
   public void initAutoChooser() {
@@ -243,23 +237,22 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
-    m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim, m_shooter, m_ampShooter, m_intake,AMP_STATE.INTAKING.get(),
-    RPM_SETPOINT.SPEAKER.get(),
-    INTAKE_STATE.FRONT_ROLLER_INTAKING.get(),
-    INTAKE_STATE.BACK_ROLLER_INTAKING.get()));
+    m_autoChooser.addOption(
+        "FourPieceNear",
+        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "AutoScoreTest",
-        new AutoScoreTest(
+        new AutoScore(
             m_shooter,
             m_ampShooter,
             m_intake,
-            AMP_STATE.INTAKING.get(),
+            AMP.STATE.INTAKING.get(),
             RPM_SETPOINT.SPEAKER.get(),
-            INTAKE_STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE_STATE.BACK_ROLLER_INTAKING.get()));
+            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get()));
   }
 
   public void initSysidChooser() {

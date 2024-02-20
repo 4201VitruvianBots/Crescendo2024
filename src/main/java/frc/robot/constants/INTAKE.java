@@ -27,7 +27,7 @@ public final class INTAKE {
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 13.0;
 
-  public enum INTAKE_STATE {
+  public enum STATE {
 
     // Units are in Percent Output
     NONE(0),
@@ -42,10 +42,10 @@ public final class INTAKE {
     FRONT_ROLLER_REVERSE(-0.50),
     BACK_ROLLER_REVERSE(-0.85),
 
-    INTAKINGSLOW(0.2);
+    INTAKING_SLOW(0.2);
     private final double value;
 
-    INTAKE_STATE(final double value) {
+    STATE(final double value) {
       this.value = value;
     }
 
