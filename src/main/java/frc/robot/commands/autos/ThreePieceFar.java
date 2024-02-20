@@ -52,7 +52,6 @@ public class ThreePieceFar extends SequentialCommandGroup {
         commandList.get(0),
         commandList.get(1),
         commandList.get(2),
-        commandList.get(3),
-        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
+        commandList.get(3).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
