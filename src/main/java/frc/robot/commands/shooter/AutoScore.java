@@ -84,7 +84,7 @@ public class AutoScore extends Command {
     } else if (m_timer.hasElapsed(m_withTimeout)) {
       m_reversetimer.stop();
       m_reversetimer.reset();
-      if ((m_shooter.getRpmMaster() == 0) || (m_shooter.getRpmFollower() == 0)) {
+      if ((m_shooter.getRpmMaster() < 300) || (m_shooter.getRpmFollower() < 300)) {
 
         m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
         m_intake.setSpeed(-m_FrontIntakePercentOutput, -m_BackIntakeAmpPercentOutput);
@@ -97,9 +97,9 @@ public class AutoScore extends Command {
 
         // Abort Shot bc flywheel is broken
 
-      } else if (((m_shooter.getRpmMaster() > 300))
+      } else if (((m_shooter.getRpmMaster() >= 300))
           && (m_shooter.getRpmMaster() < (m_RPMOutput - allowableError)
-              || (m_shooter.getRpmFollower() > 300))
+              || (m_shooter.getRpmFollower() >= 300))
           && (m_shooter.getRpmFollower() < (m_RPMOutput - allowableError))) {
 
         m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
