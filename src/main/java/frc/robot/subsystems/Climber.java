@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
+import frc.robot.constants.CAN;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 import frc.robot.constants.ROBOT;
@@ -29,7 +30,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
-    new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)
+    new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
   private final StaticBrake brake = new StaticBrake();
   private final Follower follower = new Follower(0, false);
