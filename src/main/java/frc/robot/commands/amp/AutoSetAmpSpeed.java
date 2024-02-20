@@ -5,15 +5,15 @@
 package frc.robot.commands.amp;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.ARM.AMP_STATE;
+import frc.robot.constants.AMP;
 import frc.robot.subsystems.AmpShooter;
 
 public class AutoSetAmpSpeed extends Command {
   private final AmpShooter m_ampShooter;
-  private final AMP_STATE m_state;
+  private final AMP.STATE m_state;
 
-  public AutoSetAmpSpeed(AmpShooter ampshooter, AMP_STATE state) {
-    m_ampShooter = ampshooter;
+  public AutoSetAmpSpeed(AmpShooter ampShooter, AMP.STATE state) {
+    m_ampShooter = ampShooter;
     m_state = state;
 
     addRequirements(m_ampShooter);

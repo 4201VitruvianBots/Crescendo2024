@@ -46,7 +46,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private final MechanismRoot2d m_climberPostRoot2d =
       m_mech2d.getRoot(
           "ClimberPost",
-          ROBOT.drivebaseLength * 0.6 + CLIMBER.kDistanceFromIntake,
+          ROBOT.drivebaseLength * 0.525 + CLIMBER.kDistanceFromIntake,
           ROBOT.drivebaseWidth * 0.5);
   private final MechanismRoot2d m_shooterRoot2d =
       m_mech2d.getRoot(
@@ -209,8 +209,8 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
       m_climberVisualizer2 = new ClimberVisualizer("Climber2d");
       var climberDisplay =
-          new VisualizerUtils.MechanismDisplay(0.6, 0.25, m_climberVisualizer2.getLigament());
-      climberDisplay.addLigament(0.7, 0.25, m_climberVisualizer2.getPost());
+          new VisualizerUtils.MechanismDisplay(0.5, 0.25, m_climberVisualizer2.getLigament());
+      climberDisplay.addLigament(0.525, 0.25, m_climberVisualizer2.getPost());
       m_displays.add(climberDisplay);
 
       for (var display : m_displays) display.addSmartDashboardDisplay();
@@ -289,11 +289,16 @@ public class SuperStructureVisualizer implements AutoCloseable {
   }
 
   public void updateArm() {
-    m_armVisualizer.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
+    m_armVisualizer.update(m_arm.getCurrentAngle() + 90, m_arm.getPercentOutput());
+    if (m_armVisualizer2 != null)
+      m_armVisualizer2.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
   }
 
   public void updateClimber() {
+
     m_climberVisualizer.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
+    if (m_climberVisualizer2 != null)
+      m_climberVisualizer2.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
   }
 
   public void updateLimelights() {

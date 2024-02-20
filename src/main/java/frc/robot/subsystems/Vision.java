@@ -66,8 +66,8 @@ public class Vision extends SubsystemBase {
       visionSim.addCamera(aprilTagLimelightCameraASim, VISION.robotToAprilTagLimelightCameraA);
       visionSim.addCamera(aprilTagLimelightCameraBSim, VISION.robotToAprilTagLimelightCameraB);
 
-      aprilTagLimelightCameraASim.enableDrawWireframe(true);
-      aprilTagLimelightCameraBSim.enableDrawWireframe(true);
+      aprilTagLimelightCameraASim.enableDrawWireframe(false);
+      aprilTagLimelightCameraBSim.enableDrawWireframe(false);
     }
   }
 

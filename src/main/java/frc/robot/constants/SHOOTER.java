@@ -11,7 +11,7 @@ public final class SHOOTER {
   public static final double topkI = 0;
   public static final double topkD = 0;
 
-  public static final double bottomkP = 8;
+  public static final double bottomkP = 4;
   public static final double bottomkI = 0;
   public static final double bottomkD = 0;
 
@@ -23,11 +23,11 @@ public final class SHOOTER {
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(19);
 
-  public static final double gearRatioBottom = 28.0 / 20.0;
-  public static final DCMotor ShooterBottomGearbox = DCMotor.getFalcon500Foc(1);
+  public static final double gearRatioBottom = 20.0 / 28.0;
+  public static final DCMotor ShooterBottomGearbox = DCMotor.getFalcon500(1);
 
-  public static final DCMotor ShooterTopGearbox = DCMotor.getFalcon500Foc(1);
-  public static final double gearRatioTop = 28.0 / 28.0;
+  public static final DCMotor ShooterTopGearbox = DCMotor.getKrakenX60(1);
+  public static final double gearRatioTop = 20.0 / 28.0;
 
   public static final double Inertia = 0.001;
 

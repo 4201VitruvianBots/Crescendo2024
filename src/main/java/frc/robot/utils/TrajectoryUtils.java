@@ -48,12 +48,12 @@ public class TrajectoryUtils {
         path,
         () -> swerveDrive.getState().Pose,
         swerveDrive::getChassisSpeed,
-        swerveDrive::setChassisSpeedControl,
+        swerveDrive::setChassisSpeedControlNormal,
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
             new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
             maxSpeed,
-            0.86210458762,
+            0.898744,
             new ReplanningConfig(false, false, 1.0, 0.25)),
         () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);

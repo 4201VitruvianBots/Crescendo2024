@@ -13,10 +13,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
@@ -27,13 +28,12 @@ public class Intake extends SubsystemBase {
 
   DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
   DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
-  private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+  private STATE m_state = STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
   private final TalonFXSimState m_intakeMotor1SimState = intakeMotor1.getSimState();
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
   private final TalonFXSimState m_intakeMotor2SimState = intakeMotor2.getSimState();
-
   private final DCMotorSim m_intakeMotor1Sim =
       new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
   private final DCMotorSim m_intakeMotor2Sim =
@@ -79,7 +79,7 @@ public class Intake extends SubsystemBase {
   //     m_state = speed;
   //   }
 
-  public INTAKE_STATE getIntakeState() {
+  public STATE getIntakeState() {
     return m_state;
   }
 
@@ -121,6 +121,10 @@ public class Intake extends SubsystemBase {
   public void updateLogger() {
     Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+
+    SmartDashboard.putData(this);
   }
 
   @Override

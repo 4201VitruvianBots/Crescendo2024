@@ -35,9 +35,9 @@ public final class SWERVE {
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
     // In rotations
-    public static double kFrontLeftEncoderOffset = 0.021240234375;
-    public static double kFrontRightEncoderOffset = 0.325439453125;
-    public static double kBackLeftEncoderOffset = 0.2958984375;
+    public static double kFrontLeftEncoderOffset = 0.02099609375;
+    public static double kFrontRightEncoderOffset = 0.3251953125;
+    public static double kBackLeftEncoderOffset = 0.295654296875;
     public static double kBackRightEncoderOffset = -0.16796875;
 
     public static boolean kInvertLeftDrive = true;
@@ -56,9 +56,9 @@ public final class SWERVE {
     public static final double kD_X = 0.0;
 
     // Rotation
-    public static final double kP_Theta = 8.0;
+    public static final double kP_Theta = 10.0;
     public static final double kI_Theta = 0.0;
-    public static final double kD_Theta = 0.5;
+    public static final double kD_Theta = 0;
   }
 
   public static class MODULE {
@@ -69,8 +69,8 @@ public final class SWERVE {
     public static final double kWheelDiameterMeters =
         2.0 * Units.inchesToMeters(kWheelRadiusInches);
 
-    public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
-    public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
+    public static final DCMotor kDriveGearbox = DCMotor.getKrakenX60Foc(1);
+    public static final DCMotor kTurnGearbox = DCMotor.getFalcon500Foc(1);
 
     public static boolean kTurnInverted = false;
     public static final double kSlipCurrent = 300.0;

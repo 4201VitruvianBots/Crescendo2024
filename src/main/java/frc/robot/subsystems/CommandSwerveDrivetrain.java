@@ -62,12 +62,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
-      Vision vision,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
-    m_vision = vision;
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -220,6 +218,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             chassisSpeeds.omegaRadiansPerSecond);
 
     setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
+  }
+
+  public void setChassisSpeedControlNormal(ChassisSpeeds chassisSpeeds) {
+    setControl(m_chassisSpeedRequest.withSpeeds(chassisSpeeds));
   }
 
   private void startSimThread() {

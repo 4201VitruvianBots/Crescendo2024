@@ -67,13 +67,13 @@ public final class ARM {
 
   public static final double mountingAngleDegrees = 0;
 
-  public enum AMP_STATE {
+  public enum ARM_STATE {
     NONE(0),
     SCORE(0.8);
 
     private final double value;
 
-    AMP_STATE(final double value) {
+    ARM_STATE(final double value) {
       this.value = value;
     }
 

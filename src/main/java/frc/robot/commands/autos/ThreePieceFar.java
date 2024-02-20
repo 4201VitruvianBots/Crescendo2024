@@ -22,7 +22,7 @@ public class ThreePieceFar extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
   public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     String[] pathFiles = {
-      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4", "3Piece2Pt5",
+      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
@@ -45,8 +45,6 @@ public class ThreePieceFar extends SequentialCommandGroup {
         new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
-        turnToShoot,
-        turnToPath,
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)
@@ -54,7 +52,6 @@ public class ThreePieceFar extends SequentialCommandGroup {
         commandList.get(0),
         commandList.get(1),
         commandList.get(2),
-        commandList.get(3),
-        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
+        commandList.get(3).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }

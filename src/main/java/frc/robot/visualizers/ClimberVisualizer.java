@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.CLIMBER;
 
 public class ClimberVisualizer implements AutoCloseable {
-  private MechanismLigament2d m_post2d;
-  private MechanismLigament2d m_climber2d;
-  private MechanismLigament2d m_hook2d;
+  private final MechanismLigament2d m_post2d;
+  private final MechanismLigament2d m_climber2d;
+  private final MechanismLigament2d m_hook2d;
   private final Color8Bit m_ligamentColor = new Color8Bit(52, 212, 235);
   private final String m_name;
 

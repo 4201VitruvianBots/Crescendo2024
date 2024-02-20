@@ -96,13 +96,22 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
-  public void setRPMOutput(double rpm) {
+  public void setRPMOutputFOC(double rpm) {
     m_rpm = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(m_focVelocityControl.withVelocity(rps).withFeedForward(0));
     m_shooterMotors[1].setControl(m_focVelocityControl.withVelocity(rps).withFeedForward(0));
+  }
+
+  public void setRPMOutput(double rpm) {
+    m_rpm = rpm;
+
+    // Phoenix 6 uses rotations per second for velocity control
+    var rps = rpm / 60.0;
+    m_shooterMotors[0].setControl(m_velocityRequest.withVelocity(rps).withFeedForward(0));
+    m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rps).withFeedForward(0));
   }
 
   public double getShootNStrafeAngle(
@@ -183,8 +192,10 @@ public class Shooter extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
-    Logger.recordOutput("Shooter/MasterPercentOutput", m_shooterMotors[0].get());
-    Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
+    Logger.recordOutput(
+        "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput(
+        "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Shooter/rpmsetpoint", m_rpm);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
