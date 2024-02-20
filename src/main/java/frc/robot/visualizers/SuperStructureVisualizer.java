@@ -180,6 +180,10 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private ArmVisualizer m_armVisualizer2;
   private ClimberVisualizer m_climberVisualizer2;
 
+  private final ArrayList<VisualizerUtils.MechanismDisplay> m_displays = new ArrayList<>();
+  private ArmVisualizer m_armVisualizer2;
+  private ClimberVisualizer m_climberVisualizer2;
+
   public SuperStructureVisualizer() {
     m_drivebase2d.setColor(new Color8Bit(235, 137, 52));
     m_limelightA2d.setColor(new Color8Bit(45, 235, 45));
@@ -316,6 +320,13 @@ public class SuperStructureVisualizer implements AutoCloseable {
     if (m_climber != null) updateClimber();
     // if (m_vision != null) updateLimelights();
     // if (m_led != null) updateLED();
+  }
+
+  @Override
+  public void close() throws Exception {
+    for (var display : m_displays) display.close();
+    m_armVisualizer2.close();
+    m_climberVisualizer2.close();
   }
 
   @Override
