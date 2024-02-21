@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -93,6 +94,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
+    SmartDashboard.putData("ResetArmPosition", new ResetArmPosition(m_arm));
 
     if (RobotBase.isSimulation()) {
       m_visualizer = new SuperStructureVisualizer();

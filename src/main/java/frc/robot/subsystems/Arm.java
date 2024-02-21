@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -120,6 +121,14 @@ public class Arm extends SubsystemBase {
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
     m_controlMode = mode;
+  }
+  
+  public void resetSensorPosition() {
+    if (RobotBase.isReal()) {
+        m_armMotor.setPosition(0);
+    } else {
+        m_simState.setRawRotorPosition(0);
+    }
   }
 
   public TalonFX getMotor() {
