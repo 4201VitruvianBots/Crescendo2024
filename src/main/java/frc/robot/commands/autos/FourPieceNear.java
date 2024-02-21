@@ -62,7 +62,15 @@ public class FourPieceNear extends SequentialCommandGroup {
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             WAIT.SHOOTING.get(),
             3);
-    var shootCommandContinuous = new AutoRunAll(intake, shooter, ampShooter, STATE.FRONT_ROLLER_INTAKING.get(), STATE.BACK_ROLLER_INTAKING.get(), frc.robot.constants.AMP.STATE.INTAKING.get(), RPM_SETPOINT.MAX.get());
+    var shootCommandContinuous =
+        new AutoRunAll(
+            intake,
+            shooter,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get(),
+            RPM_SETPOINT.MAX.get());
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),

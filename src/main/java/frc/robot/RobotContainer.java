@@ -30,13 +30,11 @@ import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
@@ -173,13 +171,19 @@ public class RobotContainer {
   private void configureBindings() {
     xboxController
         .a()
-        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get(), RPM_SETPOINT.SLOW.get() )); // slow sbeaker
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.SLOW.get(), RPM_SETPOINT.SLOW.get())); // slow sbeaker
     xboxController
         .b()
-        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
- xboxController
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
+    xboxController
         .x()
-        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));

@@ -20,7 +20,13 @@ public class AutoRunAll extends Command {
 
   /** Creates a new RunIntake. */
   public AutoRunAll(
-      Intake intake, Shooter shooter, AmpShooter ampShooter, double speed, double speed2, double ampSpeed, double RPM) {
+      Intake intake,
+      Shooter shooter,
+      AmpShooter ampShooter,
+      double speed,
+      double speed2,
+      double ampSpeed,
+      double RPM) {
     m_intake = intake;
     m_ampShooter = ampShooter;
     m_shooter = shooter;
