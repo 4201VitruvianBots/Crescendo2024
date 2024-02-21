@@ -31,7 +31,6 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
-import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
@@ -175,7 +174,7 @@ public class RobotContainer {
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> xboxController.getRawAxis(1)));
+        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
   }
 
   private void configureBindings() {

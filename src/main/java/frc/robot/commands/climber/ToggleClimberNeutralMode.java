@@ -4,44 +4,41 @@
 
 package frc.robot.commands.climber;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
-import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 
-public class SetSetpoint extends Command {
+public class ToggleClimberNeutralMode extends Command {
+  /** Creates a new ToggleElevatorCoastMode. */
   private final Climber m_climber;
-  private final CLIMBER_SETPOINT m_setpoint;
 
-  public SetSetpoint(Climber climber, CLIMBER_SETPOINT setpoint) {
+  public ToggleClimberNeutralMode(Climber climber) {
     m_climber = climber;
-    m_setpoint = setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-    m_climber.setUserSetpoint(true);
+    NeutralModeValue neutralMode = m_climber.getNeutralMode();
+    if (neutralMode == NeutralModeValue.Coast) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    } else if (neutralMode == NeutralModeValue.Brake) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Coast);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_climber.setDesiredSetpoint(m_setpoint);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_climber.setUserSetpoint(false);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

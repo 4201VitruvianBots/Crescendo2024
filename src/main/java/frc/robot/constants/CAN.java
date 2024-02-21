@@ -29,4 +29,7 @@ public final class CAN {
 
   public static final int ampShooter = 51;
   public static final int armMotor = 52;
+
+  public static final int climbMotor1 = 60;
+  public static final int climbMotor2 = 61;
 }

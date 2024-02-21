@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
+import frc.robot.constants.CAN;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 import frc.robot.constants.ROBOT;
@@ -29,7 +30,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
-    new TalonFX(CLIMBER.climbMotor1), new TalonFX(CLIMBER.climbMotor2)
+    new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
   private final StaticBrake brake = new StaticBrake();
   private final Follower follower = new Follower(0, false);
@@ -55,6 +56,8 @@ public class Climber extends SubsystemBase {
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
   private boolean m_userSetpoint;
+
+  private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
 
   private boolean elevatorClimbSate;
 
@@ -110,6 +113,10 @@ public class Climber extends SubsystemBase {
 
   public double getPercentOutput() {
     return elevatorClimbMotors[0].get();
+  }
+
+  public void setPercentOutput(double output) {
+    setPercentOutput(output, false);
   }
 
   // sets the percent output of the elevator based on its position
@@ -214,8 +221,13 @@ public class Climber extends SubsystemBase {
   }
 
   public void setClimberNeutralMode(NeutralModeValue mode) {
+    m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
     elevatorClimbMotors[1].setNeutralMode(mode);
+  }
+
+  public NeutralModeValue getNeutralMode() {
+    return m_neutralMode;
   }
 
   private void updateLogger() {

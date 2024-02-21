@@ -4,15 +4,13 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class CLIMBER {
-  public static final int climbMotor1 = 31;
-  public static final int climbMotor2 = 32;
 
   public static final double kDistanceFromIntake = Units.inchesToMeters(17);
 
   public static final double kPostHeight = Units.inchesToMeters(22);
   public static final double kHookHeight = Units.inchesToMeters(5);
   public static final double kHookLength = Units.inchesToMeters(2);
-  
+
   public static final double upperLimitMeters = Units.inchesToMeters(21.50);
   public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 

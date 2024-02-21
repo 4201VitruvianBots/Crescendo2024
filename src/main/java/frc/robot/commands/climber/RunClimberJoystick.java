@@ -41,7 +41,8 @@ public class RunClimberJoystick extends Command {
     if (joystickYDeadbandOutput == 0
         && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
-      m_climber.setClimbState(false);
+      m_climber.resetTrapezoidState();
+      m_climber.setPercentOutput(0);
     }
   }
 

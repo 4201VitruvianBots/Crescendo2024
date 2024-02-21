@@ -25,11 +25,11 @@ public class ClimbFinal extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new DriveEndgame(swerveDrive).withTimeout(2),
             new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED),
-            new SetSetpoint(climber, CLIMBER_SETPOINT.EXTEND)),
+            new AutoSetSetpoint(climber, CLIMBER_SETPOINT.EXTEND)),
 
         // will climb then arm will go forward into the trap
         new WaitCommand(1),
-        new SetSetpoint(climber, CLIMBER_SETPOINT.FULL_RETRACT),
+        new AutoSetSetpoint(climber, CLIMBER_SETPOINT.FULL_RETRACT),
         new WaitCommand(2),
         new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.FORWARD),
         new WaitCommand(2),
