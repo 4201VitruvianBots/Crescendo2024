@@ -97,7 +97,7 @@ public class AutoScore extends Command {
         }
       }
 
-          }
+          
 
 
       if ((m_shooter.getRpmMaster() < minRPMThreshold) || (m_shooter.getRpmFollower() < minRPMThreshold)) {
@@ -117,6 +117,7 @@ public class AutoScore extends Command {
 
     }
   }
+  
 
   // Called every time the scheduler runs while the command is scheduled.
 

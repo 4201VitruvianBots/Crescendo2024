@@ -32,6 +32,6 @@ public class ScoreSpeaker extends SequentialCommandGroup {
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             WAIT.SHOOTING.get(),
-            5));
+            3));
   }
 }
