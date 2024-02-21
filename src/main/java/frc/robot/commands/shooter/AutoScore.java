@@ -19,8 +19,8 @@ public class AutoScore extends Command {
   private final double m_timeToShoot;
   private final double m_withTimeout;
   private final double reverseTimerThreshold = 0.25;
-  
-    private final boolean funny = true;
+
+  private final boolean funny = true;
 
   private final Timer m_timer = new Timer();
   private final Timer m_reversetimer = new Timer();
@@ -56,8 +56,8 @@ public class AutoScore extends Command {
     m_timer.reset();
     m_reversetimer.stop();
     m_reversetimer.reset();
-     m_shoottimer.stop();
-      m_shoottimer.reset();
+    m_shoottimer.stop();
+    m_shoottimer.reset();
   }
 
   @Override
@@ -69,53 +69,46 @@ public class AutoScore extends Command {
         && (m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError))) {
 
       m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
-      
+
       m_reversetimer.start();
 
-   
       if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
         m_ampShooter.setPercentOutput(m_AmpPercentOutput);
         m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
         m_shoottimer.start();
-        
       }
 
     } else if (m_timer.hasElapsed(m_withTimeout)) {
 
-         if ((m_shooter.getRpmMaster() >= 300) || (m_shooter.getRpmFollower() >= 300)) {
-            System.err.println("Flywheel Did not Reach Setpoint RPM");
+      if ((m_shooter.getRpmMaster() >= 300) || (m_shooter.getRpmFollower() >= 300)) {
+        System.err.println("Flywheel Did not Reach Setpoint RPM");
         SmartDashboard.putString("isFlyWheelMoving?", "Flywheel Did not Reach Setpoint RPM");
-      m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
-      
-      m_reversetimer.start();
+        m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
 
-   
-      if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
-        m_ampShooter.setPercentOutput(m_AmpPercentOutput);
-        m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
-        m_shoottimer.start();
-        
+        m_reversetimer.start();
+
+        if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
+          m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+          m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
+          m_shoottimer.start();
+        }
       }
-
-          }
-
 
       if ((m_shooter.getRpmMaster() < 300) || (m_shooter.getRpmFollower() < 300)) {
 
         m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
         m_intake.setSpeed(-m_FrontIntakePercentOutput, -m_BackIntakeAmpPercentOutput);
         m_shoottimer.start();
-     
+
         System.err.println("Flywheel Did not Move");
         SmartDashboard.putString("isFlyWheelMoving?", "Flywheel Did not Move");
 
         // Abort Shot bc flywheel is broken
 
-      } 
-        
-        // attempt shot even though RPM is low
- 
-      
+      }
+
+      // attempt shot even though RPM is low
+
     }
   }
 

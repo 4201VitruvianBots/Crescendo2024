@@ -23,7 +23,6 @@ public final class AMP {
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 13.0;
 
-  
   public static final DCMotor AmpGearbox = DCMotor.getFalcon500(1);
 
   public enum STATE {

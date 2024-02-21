@@ -1,9 +1,6 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.amp.AutoSetAmpSpeed;
-import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.WAIT;

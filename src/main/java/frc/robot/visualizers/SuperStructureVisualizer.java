@@ -172,11 +172,6 @@ public class SuperStructureVisualizer implements AutoCloseable {
           new MechanismLigament2d(
               "Upperside8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
 
-
-
-
-              
-
   private final Color8Bit m_drivebase2d_originalColor,
       m_limelightA2d_originalColor,
       m_limelightB2d_originalColor,
