@@ -19,6 +19,9 @@ public class AutoScore extends Command {
   private final double m_timeToShoot;
   private final double m_withTimeout;
   private final double reverseTimerThreshold = 0.25;
+  
+  private final double minRPMThreshold = 300;
+  
 
   private final boolean funny = true;
 
@@ -80,8 +83,8 @@ public class AutoScore extends Command {
 
     } else if (m_timer.hasElapsed(m_withTimeout)) {
 
-      if ((m_shooter.getRpmMaster() >= 300) || (m_shooter.getRpmFollower() >= 300)) {
-        System.err.println("Flywheel Did not Reach Setpoint RPM");
+         if ((m_shooter.getRpmMaster() >= minRPMThreshold) || (m_shooter.getRpmFollower() >= minRPMThreshold)) {
+            System.err.println("Flywheel Did not Reach Setpoint RPM");
         SmartDashboard.putString("isFlyWheelMoving?", "Flywheel Did not Reach Setpoint RPM");
         m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
 
@@ -94,7 +97,10 @@ public class AutoScore extends Command {
         }
       }
 
-      if ((m_shooter.getRpmMaster() < 300) || (m_shooter.getRpmFollower() < 300)) {
+          }
+
+
+      if ((m_shooter.getRpmMaster() < minRPMThreshold) || (m_shooter.getRpmFollower() < minRPMThreshold)) {
 
         m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
         m_intake.setSpeed(-m_FrontIntakePercentOutput, -m_BackIntakeAmpPercentOutput);
