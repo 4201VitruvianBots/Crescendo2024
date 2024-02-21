@@ -1,6 +1,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.WAIT;
@@ -13,13 +14,13 @@ public class ScoreSpeaker extends SequentialCommandGroup {
   public ScoreSpeaker(Shooter shooter, AmpShooter ampShooter, Intake intake) {
 
     addCommands(
-        // new AutoRunAmpTake(
-        //         intake,
-        //         ampShooter,
-        //         INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-        //         INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-        //         AMP.STATE.INTAKING.get())
-        //     .withTimeout(2),
+        new AutoRunAmpTake(
+                intake,
+                ampShooter,
+                INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+                INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+                AMP.STATE.INTAKING.get())
+            .withTimeout(2),
         // new WaitCommand(1),
         // new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
         // new WaitCommand(1),
