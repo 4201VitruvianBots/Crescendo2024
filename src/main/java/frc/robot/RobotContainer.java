@@ -259,7 +259,7 @@ public class RobotContainer {
             5));
 
     m_autoChooser.addOption(
-        "ScoreSpeakerTestingYipee", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
+        "ScoreSpeakerTesting", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
   }
 
   public void initSysidChooser() {

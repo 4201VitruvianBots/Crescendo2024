@@ -16,16 +16,16 @@ public class ScoreSpeaker extends SequentialCommandGroup {
   public ScoreSpeaker(Shooter shooter, AmpShooter ampShooter, Intake intake) {
 
     addCommands(
-        new AutoRunAmpTake(
-                intake,
-                ampShooter,
-                INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-                INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-                AMP.STATE.INTAKING.get())
-            .withTimeout(2),
-        new WaitCommand(1),
-        new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
-        new WaitCommand(1),
+        // new AutoRunAmpTake(
+        //         intake,
+        //         ampShooter,
+        //         INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+        //         INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+        //         AMP.STATE.INTAKING.get())
+        //     .withTimeout(2),
+        // new WaitCommand(1),
+        // new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
+        // new WaitCommand(1),
         new AutoScore(
             shooter,
             ampShooter,
