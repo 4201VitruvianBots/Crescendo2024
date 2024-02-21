@@ -43,6 +43,6 @@ public class AutoSetSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(m_climber.getHeightMeters() - m_setpoint.getSetpointMeters()) < Units.inchesToMeters(1));
+    return false;
   }
-}
+  }
