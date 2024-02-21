@@ -1,9 +1,13 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.intake.AutoRunAll;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.*;
+import frc.robot.constants.INTAKE.STATE;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
@@ -21,18 +25,10 @@ public class ScoreSpeaker extends SequentialCommandGroup {
                 INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
                 AMP.STATE.INTAKING.get())
             .withTimeout(2),
-        // new WaitCommand(1),
+        new WaitCommand(2),
         // new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
         // new WaitCommand(1),
-        new AutoScore(
-            shooter,
-            ampShooter,
-            intake,
-            AMP.STATE.INTAKING.get(),
-            SHOOTER.RPM_SETPOINT.SPEAKER.get(),
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            WAIT.SHOOTING.get(),
-            3));
+        new AutoRunAll(intake, shooter, ampShooter, STATE.FRONT_ROLLER_INTAKING.get(), STATE.BACK_ROLLER_INTAKING.get(), frc.robot.constants.AMP.STATE.INTAKING.get(), RPM_SETPOINT.MAX.get())
+           );
   }
 }

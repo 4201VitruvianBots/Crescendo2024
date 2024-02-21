@@ -27,11 +27,8 @@ public class RunAmp extends Command {
 
   @Override
   public void execute() {
-    if (m_intake.isIntaking() && m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
-      m_ampShooter.setPercentOutput(0);
-    } else {
-      m_ampShooter.setPercentOutput(m_percentOutput);
-    }
+
+    m_ampShooter.setPercentOutput(m_percentOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -9,11 +9,13 @@ import frc.robot.subsystems.Shooter;
 
 public class SetShooterRPMSetpoint extends Command {
   private final Shooter m_shooter;
-  private final double m_RPMOutput;
+  private final double m_RPMOutputBottom;
+  private final double m_RPMOutputTop;
 
-  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutput) {
+  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutputBottom, double RPMOutputTop) {
     m_shooter = shooter;
-    m_RPMOutput = RPMOutput;
+    m_RPMOutputBottom = RPMOutputBottom;
+    m_RPMOutputTop = RPMOutputTop;
     addRequirements(m_shooter);
   }
 
@@ -24,7 +26,7 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void execute() {
     // m_shooter.setRPMOutputFOC(m_RPMOutput);
-    m_shooter.setRPMOutput(m_RPMOutput);
+    m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

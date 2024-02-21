@@ -15,7 +15,7 @@ public class AutoScore extends Command {
   private double m_RPMOutput;
   private final double m_FrontIntakePercentOutput;
   private final double m_BackIntakeAmpPercentOutput;
-  private final double allowableError = 2000; // in RPM
+  private final double allowableError = 350; // in RPM
   private final double m_timeToShoot;
   private final double m_withTimeout;
   private final double reverseTimerThreshold = 0.25;
