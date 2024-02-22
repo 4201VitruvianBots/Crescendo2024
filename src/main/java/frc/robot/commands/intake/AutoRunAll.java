@@ -7,22 +7,33 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
-public class AmpTake extends Command {
+public class AutoRunAll extends Command {
   Intake m_intake;
   AmpShooter m_ampShooter;
   double m_speed;
+  Shooter m_shooter;
   double m_speed2;
   double m_ampSpeed;
+  double m_rpm;
 
   /** Creates a new RunIntake. */
-  public AmpTake(
-      Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
+  public AutoRunAll(
+      Intake intake,
+      Shooter shooter,
+      AmpShooter ampShooter,
+      double speed,
+      double speed2,
+      double ampSpeed,
+      double RPM) {
     m_intake = intake;
     m_ampShooter = ampShooter;
+    m_shooter = shooter;
     m_speed = speed;
     m_speed2 = speed2;
     m_ampSpeed = ampSpeed;
+    m_rpm = RPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake, m_ampShooter);
   }
@@ -35,15 +46,16 @@ public class AmpTake extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
-
     m_ampShooter.setPercentOutput(m_ampSpeed);
+    m_shooter.setRPMOutput(m_rpm);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setSpeed(0.0, 0.0);
-    m_ampShooter.setPercentOutput(0);
+    m_intake.setSpeed(m_speed, m_speed2);
+    m_ampShooter.setPercentOutput(m_ampSpeed);
+    m_shooter.setRPMOutput(m_rpm);
   }
 
   // Returns true when the command should end.

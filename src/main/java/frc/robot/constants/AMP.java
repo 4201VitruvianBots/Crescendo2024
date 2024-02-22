@@ -4,6 +4,8 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+
 /** Add your docs here. */
 public final class AMP {
   public static final double gearRatio = 24.0 / 47.0;
@@ -20,6 +22,8 @@ public final class AMP {
   /* D is generally used to 'predict' the next output using the slope of the error,
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 13.0;
+
+  public static final DCMotor AmpGearbox = DCMotor.getFalcon500(1);
 
   public enum STATE {
 

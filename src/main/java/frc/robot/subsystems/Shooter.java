@@ -27,6 +27,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private double m_rpm;
+  private double m_rpmTop;
+  private double m_rpmBottom;
   private boolean m_testMode = false;
   private double m_headingOffset;
   private double m_desiredPercentOutput;
@@ -74,8 +76,8 @@ public class Shooter extends SubsystemBase {
     configTop.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
-    m_shooterMotors[0].setInverted(true);
-    m_shooterMotors[1].setInverted(false);
+    m_shooterMotors[0].setInverted(false);
+    m_shooterMotors[1].setInverted(true);
   }
 
   // values that we set
@@ -106,12 +108,17 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpm) {
-    m_rpm = rpm;
+    setRPMOutput(rpm, rpm);
+  }
 
+  public void setRPMOutput(double rpmBottom, double rpmTop) {
+    m_rpmBottom = rpmBottom;
+    m_rpmTop = rpmTop;
     // Phoenix 6 uses rotations per second for velocity control
-    var rps = rpm / 60.0;
-    m_shooterMotors[0].setControl(m_velocityRequest.withVelocity(rps).withFeedForward(0));
-    m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rps).withFeedForward(0));
+    var rpsBottom = rpmBottom / 60.0;
+    var rpsTop = rpmTop / 60.0;
+    m_shooterMotors[0].setControl(m_velocityRequest.withVelocity(rpsBottom).withFeedForward(0));
+    m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
   public double getShootNStrafeAngle(
@@ -197,6 +204,8 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Shooter/rpmsetpoint", m_rpm);
+    Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
+    Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }
