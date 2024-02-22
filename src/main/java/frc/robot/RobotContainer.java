@@ -29,7 +29,9 @@ import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
+import frc.robot.commands.intake.RunAll;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
@@ -209,22 +211,16 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Shoot Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
-            new AmpTake(
-                m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
+            new SetIntakePercentOutput(
+                m_intake, m_ampShooter, -0.50, -0.85)); // Intake Note with Intake
+
 
     xboxController
         .rightBumper()
-        .whileTrue(new RunIntake(m_intake, 0.55, 0.85)); // Intake Note with Only Intake
-    xboxController
-        .leftBumper()
-        .whileTrue(new RunIntake(m_intake, -0.55, -0.85)); // Outtake Note with Only Intake
-
-    xboxController
-        .povUp()
         .whileTrue(
             new RunAmp(
                 m_ampShooter,
@@ -232,12 +228,23 @@ public class RobotContainer {
                 AMP.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
-        .povDown()
+        .leftBumper()
         .whileTrue(
             new RunAmp(
                 m_ampShooter,
                 m_intake,
                 AMP.STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+
+
+                 xboxController
+        .povDown()
+        .whileTrue(
+            new RunAll(m_intake, m_shooter, m_ampShooter, INTAKE.STATE.FRONT_ROLLER_REVERSE.get(), INTAKE.STATE.BACK_ROLLER_REVERSE.get(), AMP.STATE.REVERSE.get(), SHOOTER.RPM_SETPOINT.REVERSE.get())); // Outtake Note with Only Amp
+            
+          xboxController
+        .povLeft()
+        .whileTrue(new RunAll(m_intake, m_shooter, m_ampShooter, INTAKE.STATE.NONE.get(), INTAKE.STATE.NONE.get(), AMP.STATE.REVERSE_SLOW.get(), SHOOTER.RPM_SETPOINT.REVERSE.get())); // Outtake Note with Only Amp
+           
   }
 
   public void initAutoChooser() {
