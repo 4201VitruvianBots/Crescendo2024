@@ -1,13 +1,10 @@
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -16,6 +13,7 @@ import frc.robot.constants.AMP;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
+import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
@@ -32,7 +30,7 @@ public class AmpShooter extends SubsystemBase {
     config.Slot0.kI = AMP.kI;
     config.Slot0.kD = AMP.kD;
     config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
-    config.MotorOutput.NeutralMode = NeutralMode;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(ampMotor, config);
   }
@@ -41,33 +39,6 @@ public class AmpShooter extends SubsystemBase {
     ampMotor.set(percentOutput);
   }
 
-  public void setNeutralMode(boolean Coast){
-    if (Coast == true){
-      NeutralMode = NeutralModeValue.Coast;
-
-    //       TalonFXConfiguration config = new TalonFXConfiguration();
-    // config.Slot0.kP = AMP.kP;
-    // config.Slot0.kI = AMP.kI;
-    // config.Slot0.kD = AMP.kD;
-    // config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
-    // config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    // CtreUtils.configureTalonFx(ampMotor, config);
-    }
-    else {
-    NeutralMode = NeutralModeValue.Brake;
-    
-    //         TalonFXConfiguration config = new TalonFXConfiguration();
-    // config.Slot0.kP = AMP.kP;
-    // config.Slot0.kI = AMP.kI;
-    // config.Slot0.kD = AMP.kD;
-    // config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
-    // config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    // CtreUtils.configureTalonFx(ampMotor, config);
-  }
-    
-  }
   public double getSpeed() {
     return ampMotor.get();
   }

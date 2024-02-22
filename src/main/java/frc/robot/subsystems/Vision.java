@@ -75,7 +75,8 @@
 //     m_swerveDriveTrain = swerveDriveTrain;
 //   }
 
-//   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
+//   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator)
+// {
 //     return photonEstimator.update();
 //   }
 
@@ -115,7 +116,8 @@
 //   private void updateLog() {
 //     Logger.recordOutput("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
 //     Logger.recordOutput(
-//         "vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
+//         "vision/NoteDetectionLimelight - robotToGamePieceRotation",
+// getRobotToGamePieceDegrees());
 
 //     Logger.recordOutput(
 //         "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));

@@ -53,7 +53,7 @@ public class RunAll extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setSpeed(0,0);
+    m_intake.setSpeed(0, 0);
     m_ampShooter.setPercentOutput(0);
     m_shooter.setRPMOutput(0);
   }

@@ -11,11 +11,11 @@ public class AutoScore extends Command {
   private final Shooter m_shooter;
   private final AmpShooter m_ampShooter;
   private final Intake m_intake;
+  private final double allowableError = 350; // in RPM
   private double m_AmpPercentOutput;
   private double m_RPMOutput;
   private final double m_FrontIntakePercentOutput;
   private final double m_BackIntakeAmpPercentOutput;
-  private final double allowableError = 350; // in RPM
   private final double m_timeToShoot;
   private final double m_withTimeout;
   private final double reverseTimerThreshold = 0.25;
