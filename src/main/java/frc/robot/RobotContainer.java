@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -55,8 +57,9 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+//   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
+ private final  Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
@@ -86,7 +89,7 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    // m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -102,7 +105,7 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      m_visualizer.registerVision(m_vision);
+    //   m_visualizer.registerVision(m_vision);
       //      m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -202,6 +205,7 @@ public class RobotContainer {
                 m_swerveDrive,
                 m_ampShooter,
                 m_shooter,
+                m_pose2d,
                 () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                 () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                 () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,

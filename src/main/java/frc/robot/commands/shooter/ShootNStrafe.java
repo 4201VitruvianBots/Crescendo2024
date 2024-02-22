@@ -8,6 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,17 +27,16 @@ public class ShootNStrafe extends Command {
   private final AmpShooter m_ampShooter;
 
   private final double timerThreshold = 0.5;
-  private boolean CorrectRange = true;
 
   private final Timer m_timer = new Timer();
   private boolean timerStart = false;
+  Pose2d m_pose2d;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
   private RPM_SETPOINT mstate;
   private double m_RPMOutput;
   private double RPMThreshold = m_RPMOutput;
-  private double ChangeThisValue;
 
   public final int hehe = 69; // Mano's work
 
@@ -52,6 +52,7 @@ public class ShootNStrafe extends Command {
       CommandSwerveDrivetrain swerveDrive,
       AmpShooter ampShooter,
       Shooter shooter,
+      Pose2d pose2d,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
@@ -60,6 +61,7 @@ public class ShootNStrafe extends Command {
     m_swerveDrive = swerveDrive;
 
     m_shooter = shooter;
+    m_pose2d = pose2d;
     m_ampShooter = ampShooter;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
@@ -83,9 +85,9 @@ public class ShootNStrafe extends Command {
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
 
-    double displacementX = ChangeThisValue * Math.sin(shootAngle); // TODO: Change this
+    double displacementX = m_pose2d.getX()* Math.sin(shootAngle);
 
-    double displacementY = ChangeThisValue * Math.cos(shootAngle);
+    double displacementY = m_pose2d.getY() * Math.cos(shootAngle);
 
     double VelocityY =
         m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
@@ -111,11 +113,16 @@ public class ShootNStrafe extends Command {
         MathUtil.applyDeadband(Math.abs(m_strafeInput.getAsDouble()), 0.05)
             * Math.signum(m_strafeInput.getAsDouble());
     double rotation =
-        MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
-            * Math.signum(m_rotationInput.getAsDouble());
+        m_swerveDrive.getState().Pose.getRotation().getRadians() - shootAngle;
 
-    if (CorrectRange
-        && m_shooter.getRpmMaster() >= RPMThreshold
+
+      m_swerveDrive.setControl(
+          drive
+              .withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
+              .withVelocityY((strafe) * DRIVE.kMaxSpeedMetersPerSecond)
+              .withRotationalRate(rotation));
+
+    if ( m_shooter.getRpmMaster() >= RPMThreshold
         && m_shooter.getRpmFollower() >= RPMThreshold) {
 
       drive.withVelocityX(VelocityX).withVelocityY(VelocityY).withRotationalRate(m_headingOffset);
@@ -126,7 +133,7 @@ public class ShootNStrafe extends Command {
       if (timerStart && m_timer.hasElapsed(timerThreshold)) {
         isFinished();
       }
-    } else {
+
       m_swerveDrive.setControl(
           drive
               .withVelocityX((throttle) * DRIVE.kMaxSpeedMetersPerSecond)
