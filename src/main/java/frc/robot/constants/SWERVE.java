@@ -43,6 +43,7 @@ public final class SWERVE {
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
 
+    public static boolean kTurnInverted = true;
     public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
@@ -65,14 +66,15 @@ public final class SWERVE {
     public static final double kDriveMotorGearRatio = 6.12;
     public static final double kTurnMotorGearRatio = 150.0 / 7.0;
     public static final double kCoupleRatio = 3.5714285714285716;
-    public static final double kWheelRadiusInches = 2.0;
+    public static final double kWheelRadiusInches = 1.95;
     public static final double kWheelDiameterMeters =
         2.0 * Units.inchesToMeters(kWheelRadiusInches);
 
     public static final DCMotor kDriveGearbox = DCMotor.getKrakenX60Foc(1);
-    public static final DCMotor kTurnGearbox = DCMotor.getFalcon500Foc(1);
+    public static final DCMotor kTurnGearbox = DCMotor.getKrakenX60(1);
 
     public static boolean kTurnInverted = false;
+    public static boolean kTurnInvertedBack = false;
     public static final double kSlipCurrent = 300.0;
     public static final double kFrictionVoltage = 0.25;
     public static final double kDriveInertia = 0.001;
@@ -117,7 +119,7 @@ public final class SWERVE {
       new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.drivebaseCanbus);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
-      new SwerveModuleConstantsFactory()
+     new SwerveModuleConstantsFactory()
           .withDriveMotorGearRatio(MODULE.kDriveMotorGearRatio)
           .withSteerMotorGearRatio(MODULE.kTurnMotorGearRatio)
           .withWheelRadius(MODULE.kWheelRadiusInches)
@@ -143,7 +145,7 @@ public final class SWERVE {
           DRIVE.kFrontLeftEncoderOffset,
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getX(),
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getY(),
-          DRIVE.kInvertLeftDrive);
+          DRIVE.kInvertLeftDrive).withSteerMotorInverted(DRIVE.kTurnInverted);
 
   public static final SwerveModuleConstants FrontRightConstants =
       ConstantCreator.createModuleConstants(
@@ -153,7 +155,8 @@ public final class SWERVE {
           DRIVE.kFrontRightEncoderOffset,
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_RIGHT).getX(),
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_RIGHT).getY(),
-          DRIVE.kInvertRightDrive);
+          DRIVE.kInvertRightDrive
+      );
 
   public static final SwerveModuleConstants BackLeftConstants =
       ConstantCreator.createModuleConstants(
@@ -173,7 +176,8 @@ public final class SWERVE {
           DRIVE.kBackRightEncoderOffset,
           DRIVE.kModuleTranslations.get(MODULE_POSITION.BACK_RIGHT).getX(),
           DRIVE.kModuleTranslations.get(MODULE_POSITION.BACK_RIGHT).getY(),
-          DRIVE.kInvertRightDrive);
+          DRIVE.kInvertRightDrive
+          );
 
   public static final SwerveModuleConstants[] MODULE_CONSTANTS = {
     FrontLeftConstants, FrontRightConstants, BackLeftConstants, BackRightConstants

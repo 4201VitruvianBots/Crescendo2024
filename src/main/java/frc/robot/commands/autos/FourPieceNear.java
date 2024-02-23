@@ -9,6 +9,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAll;
+import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
@@ -71,6 +72,14 @@ public class FourPieceNear extends SequentialCommandGroup {
             STATE.BACK_ROLLER_INTAKING.get(),
             frc.robot.constants.AMP.STATE.INTAKING.get(),
             RPM_SETPOINT.MAX.get());
+
+    var RunIntake =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get());
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
