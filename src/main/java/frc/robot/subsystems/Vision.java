@@ -104,17 +104,17 @@ public class Vision extends SubsystemBase {
       return false;
     }
 
-//    if (Math.abs(poseDelta.getTranslation().getZ()) > VISION.poseZTolerance) {
-//      return false;
-//    }
+    //    if (Math.abs(poseDelta.getTranslation().getZ()) > VISION.poseZTolerance) {
+    //      return false;
+    //    }
 
-//    if (Math.abs(poseDelta.getRotation().getX()) > VISION.poseRollTolerance) {
-//      return false;
-//    }
-//
-//    if (Math.abs(poseDelta.getRotation().getY()) > VISION.posePitchTolerance) {
-//      return false;
-//    }
+    //    if (Math.abs(poseDelta.getRotation().getX()) > VISION.poseRollTolerance) {
+    //      return false;
+    //    }
+    //
+    //    if (Math.abs(poseDelta.getRotation().getY()) > VISION.posePitchTolerance) {
+    //      return false;
+    //    }
 
     if (Math.abs(poseDelta.getRotation().getZ()) > VISION.poseYawTolerance) {
       return false;
