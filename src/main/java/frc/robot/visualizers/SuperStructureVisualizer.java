@@ -31,31 +31,25 @@ public class SuperStructureVisualizer implements AutoCloseable {
   Vision m_vision;
   LEDSubsystem m_led;
 
+  private final double startPointX = 0.28;
+  private final double startPointY = 0.2;
   private final double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
   private final Mechanism2d m_mech2d =
       new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
 
   private final MechanismRoot2d m_drivebaseRoot2d =
-      m_mech2d.getRoot("Drivebase", ROBOT.drivebaseLength * 0.5, ROBOT.drivebaseWidth * 0.5);
+      m_mech2d.getRoot("startRoot", startPointX, startPointY);
   private final MechanismRoot2d m_climberRoot2d =
-      m_mech2d.getRoot(
-          "Climber",
-          ROBOT.drivebaseLength * 0.5 + CLIMBER.kDistanceFromIntake,
-          ROBOT.drivebaseWidth * 0.5);
+      m_mech2d.getRoot("climberRoot", startPointX + CLIMBER.kDistanceFromIntake, startPointY);
   private final MechanismRoot2d m_climberPostRoot2d =
-      m_mech2d.getRoot(
-          "ClimberPost",
-          ROBOT.drivebaseLength * 0.525 + CLIMBER.kDistanceFromIntake,
-          ROBOT.drivebaseWidth * 0.5);
-  private final MechanismRoot2d m_shooterRoot2d =
-      m_mech2d.getRoot(
-          "Shooter",
-          ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake,
-          ROBOT.drivebaseWidth * 0.5);
+      m_mech2d.getRoot("climberPostRoot", startPointX + CLIMBER.kDistanceFromIntake, startPointY);
+  private final MechanismRoot2d m_superStructureRoot =
+      m_mech2d.getRoot("superStructureRoot", startPointX + Units.inchesToMeters(23), startPointY);
 
   private final MechanismLigament2d m_drivebase2d =
-      m_drivebaseRoot2d.append(new MechanismLigament2d("Drivebase", ROBOT.drivebaseLength, 0));
+      m_drivebaseRoot2d.append(
+          new MechanismLigament2d("drivebase", INTAKE.intakeLength + ROBOT.drivebaseLength, 0));
   private final MechanismLigament2d m_limelightA2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
@@ -68,14 +62,18 @@ public class SuperStructureVisualizer implements AutoCloseable {
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, 0));
 
   private final MechanismLigament2d m_led2d =
-      m_shooterRoot2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
+      m_superStructureRoot.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   private final MechanismLigament2d m_shooter2d =
-      m_shooterRoot2d.append(new MechanismLigament2d("Shooter", Units.inchesToMeters(22), 90));
+      m_superStructureRoot.append(
+          new MechanismLigament2d("superStructure", Units.inchesToMeters(20), 83.442));
 
   private final ArmVisualizer m_armVisualizer = new ArmVisualizer("m_arm2d");
-  private final MechanismLigament2d m_arm2d = m_shooter2d.append(m_armVisualizer.getLigament());
+  private final MechanismLigament2d m_arm2d =
+      m_shooter2d.append(m_armVisualizer.getJointLigament());
   private final MechanismLigament2d m_ampShooter2d =
-      m_arm2d.append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(6), 0));
+      m_armVisualizer
+          .getArmLigament()
+          .append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(8), -110));
 
   private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("m_climber2d");
   private final MechanismLigament2d m_climber2d =
@@ -87,8 +85,8 @@ public class SuperStructureVisualizer implements AutoCloseable {
       m_mech2d
           .getRoot(
               "pivotPoint",
-              ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake + Units.inchesToMeters(2),
-              (ROBOT.drivebaseWidth * 0.5) + Units.inchesToMeters(11.3125))
+              startPointX + SHOOTER.kBottomFlywheelDistanceFromIntake,
+              startPointY + SHOOTER.kBottomFlywheelDistanceFromDriveBase)
           .append(
               new MechanismLigament2d(
                   "flywheelArmBottom",
@@ -129,8 +127,8 @@ public class SuperStructureVisualizer implements AutoCloseable {
       m_mech2d
           .getRoot(
               "UpperPivotPoint",
-              ROBOT.drivebaseLength * 0.5 + SHOOTER.kDistanceFromIntake - Units.inchesToMeters(2),
-              (ROBOT.drivebaseWidth * 0.5) + Units.inchesToMeters(15.3125))
+              startPointX + SHOOTER.kTopFlywheelDistanceFromIntake,
+              startPointY + SHOOTER.kTopFlywheelDistanceFromDriveBase)
           .append(
               new MechanismLigament2d(
                   "flywheelArmTop",
@@ -204,7 +202,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
     if (RobotBase.isSimulation()) {
       m_armVisualizer2 = new ArmVisualizer("Arm2d");
       var armDisplay =
-          new VisualizerUtils.MechanismDisplay(0.5, 0.5, m_armVisualizer2.getLigament());
+          new VisualizerUtils.MechanismDisplay(0.5, 0.5, m_armVisualizer2.getJointLigament());
       m_displays.add(armDisplay);
 
       m_climberVisualizer2 = new ClimberVisualizer("Climber2d");
@@ -289,7 +287,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
   }
 
   public void updateArm() {
-    m_armVisualizer.update(m_arm.getCurrentAngle() + 90, m_arm.getPercentOutput());
+    m_armVisualizer.update(m_arm.getCurrentAngle() + 170, m_arm.getPercentOutput());
     if (m_armVisualizer2 != null)
       m_armVisualizer2.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
   }

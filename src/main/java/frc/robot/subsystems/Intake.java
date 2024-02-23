@@ -56,6 +56,8 @@ public class Intake extends SubsystemBase {
     configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor2, configback);
+
+    SmartDashboard.putData(this);
   }
 
   public void setSpeed(double speed1, double speed2) {
@@ -84,11 +86,15 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean getSensorInput1() {
-    return distanceSensorDigitalInput.get();
+    // Disabled until sensor installed
+    //    return distanceSensorDigitalInput.get();
+    return false;
   }
 
   public boolean getSensorInput2() {
-    return distanceSensorDigitalInput2.get();
+    // Disabled until sensor installed
+    //    return distanceSensorDigitalInput2.get();
+    return false;
   }
 
   @Override
@@ -123,8 +129,8 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-
-    SmartDashboard.putData(this);
+    Logger.recordOutput("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
+    Logger.recordOutput("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
   }
 
   @Override

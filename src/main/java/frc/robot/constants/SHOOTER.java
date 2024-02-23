@@ -21,7 +21,10 @@ public final class SHOOTER {
 
   public static final double kShooterAngle = Units.degreesToRadians(35);
 
-  public static final double kDistanceFromIntake = Units.inchesToMeters(19);
+  public static final double kTopFlywheelDistanceFromIntake = Units.inchesToMeters(22.4);
+  public static final double kTopFlywheelDistanceFromDriveBase = Units.inchesToMeters(11.5);
+  public static final double kBottomFlywheelDistanceFromIntake = Units.inchesToMeters(25.9);
+  public static final double kBottomFlywheelDistanceFromDriveBase = Units.inchesToMeters(6.6);
 
   public static final double gearRatioBottom = 20.0 / 28.0;
   public static final DCMotor ShooterBottomGearbox = DCMotor.getKrakenX60(1);

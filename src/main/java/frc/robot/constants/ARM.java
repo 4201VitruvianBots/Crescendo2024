@@ -55,11 +55,13 @@ public final class ARM {
   // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
   public static final double gearRatio = 140.0 / 1.0;
 
-  public static final double length = Units.inchesToMeters(21.5);
+  public static final double jointLength = Units.inchesToMeters(5);
+  public static final double armVisualizerLength = Units.inchesToMeters(17);
+  public static final double armLength = Units.inchesToMeters(21.5);
 
   public static final double mass = Units.lbsToKilograms(7.0);
 
-  public static final double minAngleDegrees = -70;
+  public static final double minAngleDegrees = -40;
 
   public static final double maxAngleDegrees = 160;
 
