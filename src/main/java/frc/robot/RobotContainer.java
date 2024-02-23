@@ -94,6 +94,8 @@ public class RobotContainer {
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     if (RobotBase.isSimulation()) {
+      m_vision.registerFieldSim(m_fieldSim);
+
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
       m_visualizer.registerShooter(m_shooter);
@@ -139,7 +141,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond), true));
     }
 
     // m_intake.setDefaultCommand(

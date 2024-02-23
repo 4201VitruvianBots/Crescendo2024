@@ -43,13 +43,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private double m_desiredHeadingRadians;
   private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
   private Vision m_vision;
-  private final SwerveRequest.FieldCentric m_driveRequest =
+  private final SwerveRequest.FieldCentric m_driveReqeustFieldCentric =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
           .withRotationalDeadband(
               SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
           .withDriveRequestType(
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private final SwerveRequest.RobotCentric m_driveReqeustRobotCentric =
+          new SwerveRequest.RobotCentric()
+                  .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+                  .withRotationalDeadband(
+                          SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+                  .withDriveRequestType(
+                          SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
   private final SwerveRequest.FieldCentricFacingAngle m_turnRequest =
       new SwerveRequest.FieldCentricFacingAngle();
   // driving in open loop
@@ -151,35 +158,46 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds) {
-    return applyFieldCentricDrive(chassisSpeeds, 0.02, 1.0);
+    return applyFieldCentricDrive(chassisSpeeds, 0.02, 1.0, false);
+  }
+  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds, boolean isRobotCentric) {
+    return applyFieldCentricDrive(chassisSpeeds, 0.02, 1.0, isRobotCentric);
   }
 
-  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod) {
-    return applyFieldCentricDrive(chassisSpeeds, loopPeriod, 1.0);
+  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, boolean isRobotCentric) {
+    return applyFieldCentricDrive(chassisSpeeds, loopPeriod, 1.0, isRobotCentric);
   }
 
   public Command applyFieldCentricDrive(
-      Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, double driftRate) {
+      Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, double driftRate, boolean isRobotCentric) {
     return applyRequest(
         () -> {
           m_futurePose =
-              new Pose2d(
-                  chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
-                  chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
-                  Rotation2d.fromRadians(
-                      chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
+                  new Pose2d(
+                          chassisSpeeds.get().vxMetersPerSecond * loopPeriod,
+                          chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
+                          Rotation2d.fromRadians(
+                                  chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
 
           m_twistFromPose = new Pose2d().log(m_futurePose);
 
           m_newChassisSpeeds =
-              new ChassisSpeeds(
-                  m_twistFromPose.dx / loopPeriod,
-                  m_twistFromPose.dy / loopPeriod,
-                  chassisSpeeds.get().omegaRadiansPerSecond);
-          return m_driveRequest
-              .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
-              .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
-              .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+                  new ChassisSpeeds(
+                          m_twistFromPose.dx / loopPeriod,
+                          m_twistFromPose.dy / loopPeriod,
+                          chassisSpeeds.get().omegaRadiansPerSecond);
+
+          if (isRobotCentric) {
+            return m_driveReqeustRobotCentric
+                    .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                    .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                    .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+          } else {
+            return m_driveReqeustFieldCentric
+                    .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                    .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                    .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+          }
         });
   }
 

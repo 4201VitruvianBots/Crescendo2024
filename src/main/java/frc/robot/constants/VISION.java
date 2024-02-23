@@ -74,9 +74,16 @@ public final class VISION {
               aprilTagLimelightCameraBDistanceFromCenterY,
               aprilTagLimelightCameraBDistanceFromGroundZ),
           new Rotation3d(
-              aprilTagLimelightCameraAOffsetInRadiansRoll,
-              aprilTagLimelightCameraAOffsetInRadiansPitch,
-              aprilTagLimelightCameraAOffsetInRadiansYaw));
+              aprilTagLimelightCameraBOffsetInRadiansRoll,
+              aprilTagLimelightCameraBOffsetInRadiansPitch,
+              aprilTagLimelightCameraBOffsetInRadiansYaw));
+
+  public static final double poseXTolerance = Units.inchesToMeters(4);
+  public static final double poseYTolerance = Units.inchesToMeters(4);
+  public static final double poseZTolerance = Units.inchesToMeters(4);
+  public static final double posePitchTolerance = Units.degreesToRadians(4);
+  public static final double poseRollTolerance = Units.degreesToRadians(4);
+  public static final double poseYawTolerance = Units.degreesToRadians(4);
 
   public enum CAMERA_TYPE {
     LIMELIGHT,
