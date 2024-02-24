@@ -50,7 +50,7 @@ public final class SHOOTER {
   public enum RPM_SETPOINT {
     REVERSE(-600),
     NONE(0),
-    SLOW(600),
+    SLOW(1200),
     SPEAKER(6000),
     MAX(7500);
 

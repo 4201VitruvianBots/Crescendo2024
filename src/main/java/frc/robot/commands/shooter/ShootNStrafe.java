@@ -8,14 +8,20 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import java.util.function.DoubleSupplier;
+import java.util.logging.Logger;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 public class ShootNStrafe extends Command {
 
@@ -38,7 +44,6 @@ public class ShootNStrafe extends Command {
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
-  private RPM_SETPOINT mstate;
   private double allowableError = 300;
   private boolean inZone = true; // change to toggle when we are in our shooting zone
 
@@ -64,7 +69,7 @@ public class ShootNStrafe extends Command {
       double AmpPercentOutput,
       double RPMOutput,
       double FrontIntakeAmpPercentOutput,
-      Double BackIntakeAmpPercentOutput) {
+      double BackIntakeAmpPercentOutput) {
 
     m_swerveDrive = swerveDrive;
     m_intake = intake;
@@ -90,10 +95,22 @@ public class ShootNStrafe extends Command {
   public void initialize() {
     m_timer.stop();
     m_timer.reset();
+    m_reversetimer.stop();
+    m_reversetimer.reset();
+    m_shoottimer.stop();
+    m_shoottimer.reset();
   }
 
   @Override
   public void execute() {
+     m_swerveDrive.setDefaultCommand(
+        m_swerveDrive.applyFieldCentricDrive(
+            () ->
+                new ChassisSpeeds(
+                    m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+                    m_strafeInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+                    m_rotationInput.getAsDouble() * DRIVE.kMaxRotationRadiansPerSecond)));
+  
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
 
@@ -117,6 +134,15 @@ public class ShootNStrafe extends Command {
                     / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                         * VelocityShoot));
 
+        final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+                
+
     // TODO: @jax when are we using this vs var rotation?
 
     double rotation =
@@ -126,11 +152,23 @@ public class ShootNStrafe extends Command {
     // all of the logic for angle is above this Comment
 
     m_shooter.setRPMOutput(m_RPMOutput);
-
-    new ChassisSpeeds(
-        m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-        m_strafeInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-        rotation);
+    
+    m_swerveDrive.setControl(
+      drive
+          .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+          .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+          .withRotationalRate(rotation));
+ 
+        // m_swerveDrive.applyFieldCentricDrive(
+        //     () ->
+        //         new ChassisSpeeds(
+        //             m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+        //             m_strafeInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+        //             0));
+   
+  //  System.out.println(rotation);
+   
+   System.out.println(shootAngle);
 
     if (inZone
         && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)

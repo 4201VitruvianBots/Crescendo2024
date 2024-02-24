@@ -33,8 +33,11 @@ import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
 import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
+import frc.robot.commands.shooter.runSwerve;
 import frc.robot.constants.*;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -181,12 +184,15 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
+    // xboxController
+    //     .x()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
     xboxController
         .x()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
-
+        .whileTrue(new runSwerve(m_swerveDrive, () -> m_testController.getRawAxis(1), null));
+            
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
@@ -195,11 +201,22 @@ public class RobotContainer {
     xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
-    // xboxController
-    //     .y()
-    //     .whileTrue(
-    //         new ShootNStrafe(
-    //     ));
+    xboxController
+        .y()
+        .whileTrue(
+            new ShootNStrafe(
+                m_swerveDrive,
+                m_ampShooter,
+                m_shooter,
+                m_intake,
+                m_pose2d,
+                () -> leftJoystick.getRawAxis(1),
+                () -> leftJoystick.getRawAxis(0),
+                () -> rightJoystick.getRawAxis(0),
+                AMP.STATE.INTAKING.get(),
+                RPM_SETPOINT.SPEAKER.get(),
+                STATE.FRONT_ROLLER_INTAKING.get(),
+                STATE.BACK_ROLLER_INTAKING.get()));
 
     xboxController
         .rightTrigger()
@@ -209,7 +226,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new SetIntakePercentOutput(
-                m_intake, m_ampShooter, -0.50, -0.85)); // Intake Note with Intake
+                m_intake, m_ampShooter, 0.50, 0.85)); // Intake Note with Intake
 
     xboxController
         .rightBumper()
@@ -260,9 +277,7 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
-    m_autoChooser.addOption(
-        "ThreePieceFar",
-        new ThreePieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption(
