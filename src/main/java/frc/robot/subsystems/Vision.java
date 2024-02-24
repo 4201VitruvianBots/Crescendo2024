@@ -65,7 +65,7 @@ public class Vision extends SubsystemBase {
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
       cameraProp.setCalibError(0.35, 0.10);
-      cameraProp.setFPS(15);
+      cameraProp.setFPS(45);
       cameraProp.setAvgLatencyMs(50);
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
