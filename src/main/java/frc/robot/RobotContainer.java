@@ -140,24 +140,6 @@ public class RobotContainer {
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //      m_swerveDrive.setDefaultCommand(
-      //          m_swerveDrive.applyRequest(
-      //              () ->
-      //                  drive
-      //                      .withVelocityX(
-      //                          -m_testController.getRawAxis(1)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-      //                      // negative Y (forward)
-      //                      .withVelocityY(
-      //                          -m_testController.getRawAxis(0)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
-      // X (left)
-      //                      .withRotationalRate(
-      //                          -m_testController.getRawAxis(2)
-      //                              * DRIVE
-      //                                  .kMaxRotationRadiansPerSecond))); // Drive
-      // counterclockwise with
-      // negative X (left)
     }
 
     // m_intake.setDefaultCommand(

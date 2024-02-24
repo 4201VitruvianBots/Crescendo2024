@@ -41,7 +41,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "112,364",
-      "Size": "286,98"
+      "Size": "273,86"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -55,8 +55,8 @@
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
-      "Pos": "986,86",
-      "Size": "548,557"
+      "Pos": "647,125",
+      "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "0",
@@ -66,12 +66,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "336,158"
+      "Size": "169,184"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "264,866",
-      "Size": "976,239"
+      "Pos": "268,866",
+      "Size": "796,240"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",

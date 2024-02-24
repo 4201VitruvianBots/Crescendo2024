@@ -54,8 +54,8 @@ public class TrajectoryUtils {
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
             new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
             maxSpeed,
-            // 0.898744,
-            SWERVE.DRIVE.kDriveradius,
+            //            0.898744,
+            SWERVE.DRIVE.kDriveBaseRadius,
             new ReplanningConfig(false, false, 1.0, 0.25)),
         () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
