@@ -152,7 +152,7 @@ public class Arm extends SubsystemBase {
     armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
     armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
     
-    armTab.getDoubleTopic("kSetpoint").publish().set(m_desiredRotations);
+    armTab.getDoubleTopic("kSetpoint").publish().set(Units.rotationsToDegrees(m_desiredRotations));
 
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
@@ -164,7 +164,7 @@ public class Arm extends SubsystemBase {
     m_kMaxArmAcceleration_subscriber =
         armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
     
-    m_kSetpoint_subscriber = armTab.getDoubleTopic("kSetpoint").subscribe(m_desiredRotations);
+    m_kSetpoint_subscriber = armTab.getDoubleTopic("kSetpoint").subscribe(Units.rotationsToDegrees(m_desiredRotations));
   }
 
   public void testPeriodic() {
@@ -182,7 +182,7 @@ public class Arm extends SubsystemBase {
             m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
     
     double m_oldSetpoint = Units.rotationsToDegrees(m_desiredRotations);
-    m_desiredRotations = Units.degreesToRotations(m_kSetpoint_subscriber.get(m_desiredRotations));
+    m_desiredRotations = Units.degreesToRotations(m_kSetpoint_subscriber.get(Units.rotationsToDegrees(m_desiredRotations)));
     if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
   }
   

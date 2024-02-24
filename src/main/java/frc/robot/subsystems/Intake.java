@@ -123,8 +123,6 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-
-    SmartDashboard.putData(this);
   }
 
   @Override
