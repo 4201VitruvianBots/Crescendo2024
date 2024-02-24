@@ -16,9 +16,9 @@ import java.util.Map;
 public final class SWERVE {
 
   public static final class DRIVE {
-    public static double kTrackWidth = Units.inchesToMeters(26);
-    public static final double kWheelBase = Units.inchesToMeters(24);
-
+    public static double kTrackWidth = Units.inchesToMeters(21);
+    public static final double kWheelBase = Units.inchesToMeters(19.5);
+    public static final double kDriveradius = Math.sqrt(Math.pow(kTrackWidth, 2) + Math.pow(kWheelBase, 2));
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
         Map.of(
             MODULE_POSITION.FRONT_LEFT,
@@ -119,7 +119,7 @@ public final class SWERVE {
       new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.drivebaseCanbus);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
-     new SwerveModuleConstantsFactory()
+      new SwerveModuleConstantsFactory()
           .withDriveMotorGearRatio(MODULE.kDriveMotorGearRatio)
           .withSteerMotorGearRatio(MODULE.kTurnMotorGearRatio)
           .withWheelRadius(MODULE.kWheelRadiusInches)
@@ -139,13 +139,14 @@ public final class SWERVE {
 
   public static final SwerveModuleConstants FrontLeftConstants =
       ConstantCreator.createModuleConstants(
-          CAN.frontLeftTurnMotor,
-          CAN.frontLeftDriveMotor,
-          CAN.frontLeftCanCoder,
-          DRIVE.kFrontLeftEncoderOffset,
-          DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getX(),
-          DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getY(),
-          DRIVE.kInvertLeftDrive).withSteerMotorInverted(DRIVE.kTurnInverted);
+              CAN.frontLeftTurnMotor,
+              CAN.frontLeftDriveMotor,
+              CAN.frontLeftCanCoder,
+              DRIVE.kFrontLeftEncoderOffset,
+              DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getX(),
+              DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_LEFT).getY(),
+              DRIVE.kInvertLeftDrive)
+          .withSteerMotorInverted(DRIVE.kTurnInverted);
 
   public static final SwerveModuleConstants FrontRightConstants =
       ConstantCreator.createModuleConstants(
@@ -155,8 +156,7 @@ public final class SWERVE {
           DRIVE.kFrontRightEncoderOffset,
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_RIGHT).getX(),
           DRIVE.kModuleTranslations.get(MODULE_POSITION.FRONT_RIGHT).getY(),
-          DRIVE.kInvertRightDrive
-      );
+          DRIVE.kInvertRightDrive);
 
   public static final SwerveModuleConstants BackLeftConstants =
       ConstantCreator.createModuleConstants(
@@ -176,8 +176,7 @@ public final class SWERVE {
           DRIVE.kBackRightEncoderOffset,
           DRIVE.kModuleTranslations.get(MODULE_POSITION.BACK_RIGHT).getX(),
           DRIVE.kModuleTranslations.get(MODULE_POSITION.BACK_RIGHT).getY(),
-          DRIVE.kInvertRightDrive
-          );
+          DRIVE.kInvertRightDrive);
 
   public static final SwerveModuleConstants[] MODULE_CONSTANTS = {
     FrontLeftConstants, FrontRightConstants, BackLeftConstants, BackRightConstants

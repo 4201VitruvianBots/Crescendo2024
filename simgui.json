@@ -38,7 +38,6 @@
         }
       },
       "/SmartDashboard/SuperStructure Sim": {
-        "image": "C:\\repos\\FRC\\Crescendo2024\\resources\\robot.png",
         "window": {
           "visible": true
         }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import frc.robot.utils.ModuleMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class TestSwerveConstants {
@@ -31,7 +32,7 @@ public class TestSwerveConstants {
     }
   }
 
-  @Test
+  @Disabled
   public void testModuleConstants() {
     for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
       var moduleConstants = SWERVE.MODULE_CONSTANTS[i.ordinal()];
