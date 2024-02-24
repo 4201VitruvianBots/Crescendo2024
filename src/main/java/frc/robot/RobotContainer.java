@@ -36,7 +36,6 @@ import frc.robot.commands.intake.SetIntakePercentOutput;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-import frc.robot.commands.shooter.runSwerve;
 import frc.robot.constants.*;
 import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -58,7 +57,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //   private final Vision m_vision = new Vision();
+    private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
@@ -67,7 +66,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  //  private final LEDSubsystem m_led = new LEDSubsystem();
+   private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -163,7 +162,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var rightButton1Action = new Trigger(() -> leftJoystick.getRawButton(1));
-    rightButton1Action.whileTrue(
+    xboxController.x().whileTrue(
         new DriveAndAim(
             m_swerveDrive,
             () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
@@ -183,10 +182,7 @@ public class RobotContainer {
     //     .whileTrue(
     //         new SetShooterRPMSetpoint(
     //             m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
-    xboxController
-        .x()
-        .whileTrue(new runSwerve(m_swerveDrive, () -> m_testController.getRawAxis(1), null));
-            
+ 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
@@ -200,10 +196,10 @@ public class RobotContainer {
         .whileTrue(
             new ShootNStrafe(
                 m_swerveDrive,
+                m_telemetry,
                 m_ampShooter,
                 m_shooter,
                 m_intake,
-                m_pose2d,
                 () -> leftJoystick.getRawAxis(1),
                 () -> leftJoystick.getRawAxis(0),
                 () -> rightJoystick.getRawAxis(0),

@@ -50,7 +50,7 @@
     },
     "###/SmartDashboard/Field2d": {
       "Collapsed": "0",
-      "Pos": "94,22",
+      "Pos": "19,212",
       "Size": "921,596"
     },
     "###/SmartDashboard/SuperStructure Sim": {
@@ -60,7 +60,7 @@
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "0",
-      "Pos": "93,708",
+      "Pos": "301,372",
       "Size": "785,331"
     },
     "###FMS": {
@@ -71,7 +71,7 @@
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "268,866",
-      "Size": "796,240"
+      "Size": "796,206"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -80,7 +80,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "689,684",
+      "Pos": "352,178",
       "Size": "876,599"
     },
     "###NetworkTables Info": {

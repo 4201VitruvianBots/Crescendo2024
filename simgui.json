@@ -44,7 +44,6 @@
             0.0,
             255.0
           ],
-          "image": "C:\\repos\\FRC\\Crescendo2024\\resources\\swerve_module.png",
           "length": 0.25,
           "width": 0.25
         },
@@ -108,10 +107,7 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
-          "Climber": {
-            "open": true
-          },
-          "Shooter": {
+          "Swerve": {
             "open": true
           },
           "open": true
