@@ -8,10 +8,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
+import frc.robot.commands.intake.AutoRunAll;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -56,14 +59,25 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMP.STATE.INTAKING.get(),
             RPM_SETPOINT.SPEAKER.get(),
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            WAIT.SHOOTING.get(),
+            3);
+    var shootCommandContinuous =
+        new AutoRunAll(
+            intake,
+            shooter,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get(),
+            RPM_SETPOINT.MAX.get());
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
+        shootCommandContinuous.withTimeout(1),
         commandList.get(0),
-        shootCommand.withTimeout(1),
         commandList.get(1),
         commandList.get(2),
         commandList.get(3),

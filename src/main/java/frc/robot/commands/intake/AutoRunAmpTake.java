@@ -36,7 +36,7 @@ public class AutoRunAmpTake extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
-    if (m_intake.isIntaking() && m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
+    if (m_intake.isIntaking() && (m_intake.getSensorInput1() || m_intake.getSensorInput2())) {
       m_ampShooter.setPercentOutput(0);
     } else {
       m_ampShooter.setPercentOutput(m_ampSpeed);
@@ -54,6 +54,6 @@ public class AutoRunAmpTake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.getSensorInput1() || m_intake.getSensorInput1();
+    return m_intake.getSensorInput1() || m_intake.getSensorInput2();
   }
 }

@@ -176,6 +176,6 @@ src/main/java/frc/robot/BuildConstants.java
 
 logs/
 
-simgui-ds.json
-
 simgui.json
+simgui-ds.json
+simgui-window.json

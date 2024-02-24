@@ -1,22 +1,38 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.shooter.AutoSetRPMSetpoint;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.intake.AutoRunAll;
+import frc.robot.commands.intake.AutoRunAmpTake;
+import frc.robot.constants.*;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.subsystems.AmpShooter;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class ScoreSpeaker extends SequentialCommandGroup {
 
-  public ScoreSpeaker(Shooter shooter, AmpShooter uptake) {
+  public ScoreSpeaker(Shooter shooter, AmpShooter ampShooter, Intake intake) {
 
     addCommands(
-        new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.SPEAKER.get())
-            .withTimeout(WAIT.WAIT_FOR_FLYWHEEL_SETPOINT.get()),
-        new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.NONE.get())
-        // TODO: Replace with Amp Rollers
-        // new AutoRunUptake(uptake, UPTAKE_STATE.DOWNTAKE)
-        );
+        new AutoRunAmpTake(
+                intake,
+                ampShooter,
+                INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+                INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+                AMP.STATE.INTAKING.get())
+            .withTimeout(2),
+        new WaitCommand(2),
+        // new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
+        // new WaitCommand(1),
+        new AutoRunAll(
+            intake,
+            shooter,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get(),
+            RPM_SETPOINT.MAX.get()));
   }
 }

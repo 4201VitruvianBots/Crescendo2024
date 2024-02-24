@@ -21,10 +21,13 @@ public final class SHOOTER {
 
   public static final double kShooterAngle = Units.degreesToRadians(35);
 
-  public static final double kDistanceFromIntake = Units.inchesToMeters(19);
+  public static final double kTopFlywheelDistanceFromIntake = Units.inchesToMeters(22.4);
+  public static final double kTopFlywheelDistanceFromDriveBase = Units.inchesToMeters(11.5);
+  public static final double kBottomFlywheelDistanceFromIntake = Units.inchesToMeters(25.9);
+  public static final double kBottomFlywheelDistanceFromDriveBase = Units.inchesToMeters(6.6);
 
   public static final double gearRatioBottom = 20.0 / 28.0;
-  public static final DCMotor ShooterBottomGearbox = DCMotor.getFalcon500(1);
+  public static final DCMotor ShooterBottomGearbox = DCMotor.getKrakenX60(1);
 
   public static final DCMotor ShooterTopGearbox = DCMotor.getKrakenX60(1);
   public static final double gearRatioTop = 20.0 / 28.0;
@@ -33,7 +36,8 @@ public final class SHOOTER {
 
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
-    WAIT_FOR_AMP_SCORE(0.8);
+    WAIT_FOR_AMP_SCORE(0.8),
+    SHOOTING(0.75);
 
     private final double value;
 
@@ -51,7 +55,7 @@ public final class SHOOTER {
 
     SLOW(600),
     SPEAKER(6000),
-    MAX(6000);
+    MAX(7500);
 
     private final double value;
 
