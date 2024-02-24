@@ -72,8 +72,8 @@ public class TestArm {
         new SingleJointedArmSim(
             ARM.gearBox,
             ARM.gearRatio,
-            SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
-            ARM.length,
+            SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
+            ARM.armLength,
             Units.degreesToRadians(ARM.minAngleDegrees),
             Units.degreesToRadians(ARM.maxAngleDegrees),
             false,

@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
+import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
-import frc.robot.simulation.SimConstants;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.junction.Logger;
 
@@ -132,7 +132,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public void updateStartPose(String autoName) {
     if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
-      m_startPose = SimConstants.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
+      m_startPose = FIELD.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
     }
   }
 

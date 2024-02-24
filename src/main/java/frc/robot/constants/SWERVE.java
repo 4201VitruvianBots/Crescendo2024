@@ -16,8 +16,12 @@ import java.util.Map;
 public final class SWERVE {
 
   public static final class DRIVE {
-    public static double kTrackWidth = Units.inchesToMeters(26);
-    public static final double kWheelBase = Units.inchesToMeters(24);
+    //    public static double kTrackWidth = Units.inchesToMeters(26);
+    //    public static final double kWheelBase = Units.inchesToMeters(24);
+    public static double kTrackWidth = Units.inchesToMeters(21);
+    public static final double kWheelBase = Units.inchesToMeters(19);
+    public static final double kDriveBaseRadius =
+        Math.sqrt(Math.pow(kTrackWidth / 2.0, 2) + Math.pow(kWheelBase / 2.0, 2));
 
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
         Map.of(

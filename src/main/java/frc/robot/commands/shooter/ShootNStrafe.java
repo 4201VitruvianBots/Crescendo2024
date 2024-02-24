@@ -212,7 +212,7 @@ public class ShootNStrafe extends Command {
     m_shoottimer.reset();
 
     m_swerveDrive.setDefaultCommand(
-        m_swerveDrive.applyFieldCentricDrive(
+        m_swerveDrive.applyChassisSpeeds(
             () ->
                 new ChassisSpeeds(
                     m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,

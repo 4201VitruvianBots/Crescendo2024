@@ -9,12 +9,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -28,6 +28,7 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.drive.DriveAndAim;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
@@ -80,12 +81,14 @@ public class RobotContainer {
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
-  private final PS4Controller m_testController = new PS4Controller(USB.testController);
+  private final CommandPS4Controller m_testController =
+      new CommandPS4Controller(USB.testController);
   private final Trigger trigger =
       new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_swerveDrive.registerVisionSubsystem(m_vision);
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
@@ -99,6 +102,8 @@ public class RobotContainer {
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
 
     if (RobotBase.isSimulation()) {
+      m_vision.registerFieldSim(m_fieldSim);
+
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
       m_visualizer.registerShooter(m_shooter);
@@ -113,7 +118,7 @@ public class RobotContainer {
   private void initializeSubsystems() {
     if (RobotBase.isReal()) {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyFieldCentricDrive(
+          m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
                       leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
@@ -139,30 +144,13 @@ public class RobotContainer {
       //      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
-          m_swerveDrive.applyFieldCentricDrive(
+          m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //      m_swerveDrive.setDefaultCommand(
-      //          m_swerveDrive.applyRequest(
-      //              () ->
-      //                  drive
-      //                      .withVelocityX(
-      //                          -m_testController.getRawAxis(1)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-      //                      // negative Y (forward)
-      //                      .withVelocityY(
-      //                          -m_testController.getRawAxis(0)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
-      // X (left)
-      //                      .withRotationalRate(
-      //                          -m_testController.getRawAxis(2)
-      //                              * DRIVE
-      //                                  .kMaxRotationRadiansPerSecond))); // Drive
-      // counterclockwise with
-      // negative X (left)
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond),
+              true));
     }
 
     // m_intake.setDefaultCommand(
@@ -174,6 +162,12 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    var rightButton1Action = new Trigger(() -> leftJoystick.getRawButton(1));
+    rightButton1Action.whileTrue(
+        new DriveAndAim(
+            m_swerveDrive,
+            () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+            () -> leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
     xboxController
         .a()
         .whileTrue(
@@ -267,6 +261,16 @@ public class RobotContainer {
                 INTAKE.STATE.NONE.get(),
                 AMP.STATE.REVERSE_SLOW.get(),
                 SHOOTER.RPM_SETPOINT.REVERSE.get())); // Outtake Note with Only Amp
+
+    if (RobotBase.isSimulation()) {
+      m_testController
+          .cross()
+          .whileTrue(
+              new DriveAndAim(
+                  m_swerveDrive,
+                  () -> -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                  () -> -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
+    }
   }
 
   public void initAutoChooser() {

@@ -15,11 +15,12 @@ public class ClimberVisualizer implements AutoCloseable {
     m_name = name;
 
     // Create lines to represent the climber post
-    m_post2d = new MechanismLigament2d(m_name + "Post", CLIMBER.kPostHeight, 90);
+    m_post2d =
+        new MechanismLigament2d(m_name + "Post", CLIMBER.kPostHeight, 90, 25, m_ligamentColor);
 
     // Create lines to represent the climber hook
     // We will use this to show its current position
-    m_climber2d = new MechanismLigament2d(m_name, CLIMBER.kHookHeight, 90);
+    m_climber2d = new MechanismLigament2d(m_name, CLIMBER.kHookHeight, 90, 25, m_ligamentColor);
     m_hook2d = new MechanismLigament2d(m_name + "Hook", CLIMBER.kHookLength, 90);
     m_climber2d.append(m_hook2d);
   }
