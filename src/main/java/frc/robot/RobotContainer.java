@@ -24,7 +24,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
-import frc.robot.commands.climber.ClimbFinal;
+// import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
@@ -35,6 +35,7 @@ import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
+import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -148,7 +149,7 @@ public class RobotContainer {
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
+        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
   }
 
   private void configureBindings() {
@@ -169,10 +170,12 @@ public class RobotContainer {
                 m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
-    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    // trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
     // switch between open loop and close loop
-    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber, CONTROL_MODE.OPEN_LOOP));
+    xboxController.start().toggleOnTrue(new ToggleClimberControlMode(m_climber, CONTROL_MODE.CLOSED_LOOP));
+
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
     xboxController

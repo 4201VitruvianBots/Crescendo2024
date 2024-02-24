@@ -10,10 +10,12 @@ import frc.robot.subsystems.Climber;
 
 public class ToggleClimberControlMode extends Command {
   private final Climber m_climber;
+  private final CONTROL_MODE m_mode;
 
   /** Creates a new ToggleClimberControlMode. */
-  public ToggleClimberControlMode(Climber climber) {
+  public ToggleClimberControlMode(Climber climber, CONTROL_MODE mode) {
     m_climber = climber;
+    m_mode = mode;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_climber);
   }
@@ -21,10 +23,19 @@ public class ToggleClimberControlMode extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_climber.getClosedLoopControlMode() != CONTROL_MODE.OPEN_LOOP)
-      m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-    else if (m_climber.getClosedLoopControlMode() != CONTROL_MODE.CLOSED_LOOP)
-      m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+    switch(m_mode) {
+      case OPEN_LOOP:
+          m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);          
+          m_climber.resetTrapezoidState();
+          m_climber.holdClimber();
+          break;
+      default:
+      case CLOSED_LOOP:
+          m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+          break;
+    }
+    // 
+    // else       
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +49,6 @@ public class ToggleClimberControlMode extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

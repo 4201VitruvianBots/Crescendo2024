@@ -99,7 +99,7 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[0].setInverted(false);
     elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()));
-
+    
     SmartDashboard.putData(this);
   }
 
@@ -159,9 +159,13 @@ public class Climber extends SubsystemBase {
     setDesiredPositionMeters(m_desiredSetpoint.getSetpointMeters());
   }
 
+  public double getDesiredSetpoint() {
+    return m_desiredPositionMeters;
+  }
+
   public void setDesiredPositionMeters(double setpoint) {
     m_desiredPositionMeters = setpoint;
-    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.sprocketRotationsToMeters);
+    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -170,7 +174,7 @@ public class Climber extends SubsystemBase {
 
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
   public void resetTrapezoidState() {
-    m_setpoint = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
+    m_goal = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
   }
 
   // Sets the calculated trapezoid state of the motors
@@ -230,6 +234,11 @@ public class Climber extends SubsystemBase {
     return m_neutralMode;
   }
 
+  public void teleopInit() {
+    setDesiredPositionMeters(getHeightMeters());
+    resetTrapezoidState();
+  }
+
   private void updateLogger() {
     Logger.recordOutput("Climber/CONTROL_MODE", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
@@ -238,6 +247,7 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
     Logger.recordOutput("Climber/ControlModeValue", getNeutralMode());
+    Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
   }
 
   @Override
@@ -290,10 +300,10 @@ public class Climber extends SubsystemBase {
     m_simState2.setRotorVelocity(
         rightElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
-            / CLIMBER.sprocketRotationsToMeters);
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
         rightElevatorSim.getPositionMeters()
             * CLIMBER.gearRatio
-            / CLIMBER.sprocketRotationsToMeters);
+            * CLIMBER.sprocketRotationsToMeters);
   }
 }
