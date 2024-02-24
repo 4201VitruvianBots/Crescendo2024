@@ -51,7 +51,7 @@ public final class SHOOTER {
   }
 
   public enum RPM_SETPOINT {
-      REVERSE(-0.1),
+    REVERSE(-0.1),
 
     NONE(0),
 
