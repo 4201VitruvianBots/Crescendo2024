@@ -46,8 +46,8 @@ public final class SWERVE {
 
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
-    public static final boolean[] kTurnInversions = {false, true, true, true};
-    public static final boolean[] kDriveInversions = {true, false, false, false};
+    public static final boolean[] kTurnInversions = {true, false, false, false};
+    public static final boolean[] kDriveInversions = {true, true, true, false};
 
     public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;
