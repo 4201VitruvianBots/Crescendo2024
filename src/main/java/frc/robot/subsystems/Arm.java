@@ -90,6 +90,9 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(this);
 
     // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    
+    // For testing for now
+    m_armMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   // Get the percent output of the arm motor.
@@ -120,7 +123,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getCurrentAngle() {
-    return Units.rotationsToDegrees(getCurrentRotation() * (RobotBase.isReal() ? (1.0/140) : 1.0));  
+    return Units.rotationsToDegrees(getCurrentRotation() /** (RobotBase.isReal() ? (1.0/140) : 1.0)*/);  
   }
  
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
@@ -156,7 +159,7 @@ public class Arm extends SubsystemBase {
     armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
     armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
 
-    armTab.getDoubleTopic("kSetpoint").publish().set(Units.rotationsToDegrees(m_desiredRotations));
+    armTab.getDoubleTopic("kSetpoint").publish().set(getCurrentAngle());
 
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);

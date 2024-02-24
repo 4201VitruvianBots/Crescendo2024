@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,8 +25,10 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
-  DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
-  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
+// Disabled until sensor installed
+//   DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
+//   DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
+  
   private STATE m_state = STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
