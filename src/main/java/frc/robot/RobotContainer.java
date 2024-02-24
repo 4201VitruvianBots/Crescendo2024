@@ -18,9 +18,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmForward;
-import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.ArmJoystick;
 import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
+import frc.robot.commands.amp.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -154,7 +155,7 @@ public class RobotContainer {
     // m_intake.setDefaultCommand(
     //     new SetIntakePercentOutput(
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
-    m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
   }
@@ -162,29 +163,19 @@ public class RobotContainer {
   private void configureBindings() {
     var driveshootbutton = new Trigger(() -> rightJoystick.getRawButton(1));
     driveshootbutton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
-
-    xboxController
-        .a()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.SLOW.get(), RPM_SETPOINT.SLOW.get())); // slow sbeaker
+    
     xboxController
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
-    xboxController
-        .x()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast speaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
     // switch between open loop and close loop
-    // xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
-    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
     xboxController.x().whileTrue(new ArmForward(m_arm));

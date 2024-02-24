@@ -4,11 +4,11 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 
-public class ToggleClimberControlMode extends Command {
+public class ToggleClimberControlMode extends InstantCommand {
   private final Climber m_climber;
 
   /** Creates a new ToggleClimberControlMode. */
@@ -21,23 +21,9 @@ public class ToggleClimberControlMode extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_climber.getClosedLoopControlMode() != CONTROL_MODE.OPEN_LOOP)
-      m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-    else if (m_climber.getClosedLoopControlMode() != CONTROL_MODE.CLOSED_LOOP)
+    if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP)
       m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    else if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.CLOSED_LOOP)
+      m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
   }
 }

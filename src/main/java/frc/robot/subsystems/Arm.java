@@ -129,6 +129,10 @@ public class Arm extends SubsystemBase {
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
     m_controlMode = mode;
   }
+  
+  public ROBOT.CONTROL_MODE getControlMode() {
+    return m_controlMode;
+  }
 
   public void resetSensorPosition() {
     if (RobotBase.isReal()) {
@@ -143,8 +147,9 @@ public class Arm extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
+    Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
+    Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
