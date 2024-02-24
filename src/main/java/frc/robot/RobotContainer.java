@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
@@ -188,6 +189,8 @@ public class RobotContainer {
     xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
+    xboxController.x().whileTrue(new ArmForward(m_arm));
+    
     xboxController
         .y()
         .whileTrue(
@@ -334,5 +337,9 @@ public class RobotContainer {
 
   public void testPeriodic() {
     m_arm.testPeriodic();
+  }
+  
+  public void teleopInit() {
+    m_arm.teleopInit();
   }
 }

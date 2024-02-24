@@ -37,7 +37,9 @@ public class Arm extends SubsystemBase {
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
 
-  private final PositionVoltage m_position = new PositionVoltage(0);
+  private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
+  
+  private final PositionVoltage m_position = new PositionVoltage(m_desiredRotations);
 
   private TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(ARM.kMaxArmVelocity, ARM.kMaxArmAcceleration);
@@ -45,9 +47,7 @@ public class Arm extends SubsystemBase {
 
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-
-  private double m_desiredRotations = 0;
-
+  
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
@@ -69,7 +69,8 @@ public class Arm extends SubsystemBase {
       m_kI_subscriber,
       m_kD_subscriber,
       m_kMaxArmVelocity_subscriber,
-      m_kMaxArmAcceleration_subscriber;
+      m_kMaxArmAcceleration_subscriber,
+      m_kSetpoint_subscriber;
   private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
@@ -88,8 +89,7 @@ public class Arm extends SubsystemBase {
     // Simulation setup
     SmartDashboard.putData(this);
 
-    //    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-    setDesiredSetpointRotations(getCurrentRotation());
+    // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
   // Get the percent output of the arm motor.
@@ -102,7 +102,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setDesiredSetpointRotations(double rotations) {
-    m_desiredRotations = rotations;
+    m_desiredRotations = MathUtil.clamp(rotations, Units.degreesToRotations(ARM.minAngleDegrees), Units.degreesToRotations(ARM.maxAngleDegrees));
     m_goal = new TrapezoidProfile.State(m_desiredRotations, 0);
   }
 
@@ -151,6 +151,8 @@ public class Arm extends SubsystemBase {
 
     armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
     armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
+    
+    armTab.getDoubleTopic("kSetpoint").publish().set(m_desiredRotations);
 
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
@@ -161,6 +163,8 @@ public class Arm extends SubsystemBase {
     m_kMaxArmVelocity_subscriber = armTab.getDoubleTopic("kMaxVel").subscribe(ARM.kMaxArmVelocity);
     m_kMaxArmAcceleration_subscriber =
         armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
+    
+    m_kSetpoint_subscriber = armTab.getDoubleTopic("kSetpoint").subscribe(m_desiredRotations);
   }
 
   public void testPeriodic() {
@@ -176,6 +180,14 @@ public class Arm extends SubsystemBase {
     m_constraints =
         new TrapezoidProfile.Constraints(
             m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
+    
+    double m_oldSetpoint = Units.rotationsToDegrees(m_desiredRotations);
+    m_desiredRotations = Units.degreesToRotations(m_kSetpoint_subscriber.get(m_desiredRotations));
+    if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
+  }
+  
+  public void teleopInit() {
+    setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
   }
 
   @Override

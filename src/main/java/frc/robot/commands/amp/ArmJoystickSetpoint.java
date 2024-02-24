@@ -31,13 +31,16 @@ public class ArmJoystickSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var rotationSetpoint =
-        MathUtil.clamp(
-            m_output.getAsDouble() * 0.5 + m_arm.getCurrentRotation(),
-            Units.degreesToRotations(ARM.minAngleDegrees),
-            Units.degreesToRotations(ARM.maxAngleDegrees));
-
-    m_arm.setDesiredSetpointRotations(rotationSetpoint);
+    double m_setpointDeadband = MathUtil.applyDeadband(m_output.getAsDouble(), 0.05);
+    
+    if (m_setpointDeadband != 0.0) {
+        var rotationSetpoint =
+            MathUtil.clamp(
+                m_setpointDeadband * 0.5 + m_arm.getCurrentRotation(),
+                Units.degreesToRotations(ARM.minAngleDegrees),
+                Units.degreesToRotations(ARM.maxAngleDegrees));
+        m_arm.setDesiredSetpointRotations(rotationSetpoint);
+    }
   }
 
   // Called once the command ends or is interrupted.
