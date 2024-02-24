@@ -14,6 +14,7 @@
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Intake": "Subsystem",
+      "/SmartDashboard/ResetArmPosition": "Command",
       "/SmartDashboard/ResetGyro": "Command",
       "/SmartDashboard/SuperStructure Sim": "Mechanism2d",
       "/SmartDashboard/SysID Chooser": "String Chooser",
