@@ -5,13 +5,13 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1104",
+      "height": "1055",
       "maximized": "0",
       "style": "0",
       "userScale": "2",
       "width": "1559",
-      "xpos": "235",
-      "ypos": "230"
+      "xpos": "203",
+      "ypos": "189"
     }
   },
   "Table": {
@@ -50,7 +50,7 @@
     },
     "###/SmartDashboard/Field2d": {
       "Collapsed": "0",
-      "Pos": "94,22",
+      "Pos": "276,28",
       "Size": "921,596"
     },
     "###/SmartDashboard/SuperStructure Sim": {
@@ -59,19 +59,19 @@
       "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
-      "Collapsed": "0",
+      "Collapsed": "1",
       "Pos": "93,708",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "169,184"
+      "Size": "283,140"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "268,866",
-      "Size": "796,240"
+      "Size": "796,73"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",

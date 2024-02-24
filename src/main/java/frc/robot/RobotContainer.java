@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.amp.ArmForward;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -95,6 +97,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
+    SmartDashboard.putData("ResetArmPosition", new ResetArmPosition(m_arm));
 
     if (RobotBase.isSimulation()) {
       m_vision.registerFieldSim(m_fieldSim);
@@ -187,6 +190,8 @@ public class RobotContainer {
     xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
+    xboxController.x().whileTrue(new ArmForward(m_arm));
+
     xboxController
         .y()
         .whileTrue(
@@ -252,7 +257,8 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
-    m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+        "TwoPieceFar", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption(
@@ -348,5 +354,9 @@ public class RobotContainer {
 
   public void testPeriodic() {
     m_arm.testPeriodic();
+  }
+
+  public void teleopInit() {
+    m_arm.teleopInit();
   }
 }
