@@ -160,12 +160,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var rightButton1Action = new Trigger(() -> leftJoystick.getRawButton(1));
-    rightButton1Action.whileTrue(
-        new DriveAndAim(
-            m_swerveDrive,
-            () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-            () -> leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
+    var driveshootbutton = new Trigger(() -> rightJoystick.getRawButton(1));
+    driveshootbutton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+
     xboxController
         .a()
         .whileTrue(
@@ -208,12 +205,12 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+                m_intake, 0.55, 0.75, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
+                m_intake, 0.6, 0.75, m_ampShooter, 0.2)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
