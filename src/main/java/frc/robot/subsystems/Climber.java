@@ -237,6 +237,7 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
+    Logger.recordOutput("Climber/ControlModeValue", getNeutralMode());
   }
 
   @Override
