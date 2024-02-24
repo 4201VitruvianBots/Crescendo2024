@@ -29,7 +29,7 @@ public class Vision extends SubsystemBase {
   private final NetworkTable NoteDetectionLimelight =
       NetworkTableInstance.getDefault().getTable("limelight");
 
-  public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
+  public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("limelightA");
   PhotonPoseEstimator limelightPhotonPoseEstimatorA =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -37,7 +37,7 @@ public class Vision extends SubsystemBase {
           aprilTagLimelightCameraA,
           VISION.robotToAprilTagLimelightCameraA);
 
-  public static final PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("LimelightB");
+  public static final PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("limelightB");
   PhotonPoseEstimator limelightPhotonPoseEstimatorB =
       new PhotonPoseEstimator(
           VISION.aprilTagFieldLayout,
@@ -63,7 +63,7 @@ public class Vision extends SubsystemBase {
       visionSim.addAprilTags(VISION.aprilTagFieldLayout);
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
       cameraProp.setCalibError(0.35, 0.10);
       cameraProp.setFPS(15);
       cameraProp.setAvgLatencyMs(50);
