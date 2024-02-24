@@ -25,6 +25,7 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
+import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
@@ -219,6 +220,9 @@ public class RobotContainer {
                 m_ampShooter,
                 m_intake,
                 AMP.STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+
+    //button on smartdashboard to reset climber height
+    SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
   }
 
   public void initAutoChooser() {
