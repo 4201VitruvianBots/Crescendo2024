@@ -33,10 +33,12 @@ import frc.robot.commands.drive.DriveAndAim;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.DriverScore;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
+import frc.robot.constants.AMP.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -161,7 +163,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveshootbutton = new Trigger(() -> rightJoystick.getRawButton(1));
-    driveshootbutton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+    driveshootbutton.whileTrue(
+        new DriverScore(m_shooter, m_ampShooter, STATE.INTAKING.get(), RPM_SETPOINT.SPEAKER.get()));
 
     xboxController
         .a()
