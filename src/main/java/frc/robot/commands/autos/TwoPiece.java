@@ -108,11 +108,14 @@ public class TwoPiece extends SequentialCommandGroup {
         commandList.get(0).alongWith(runIntake).andThen(() -> swerveDrive.setControl(stopRequest)),
         shootCommand2,
         commandList.get(1).alongWith(runIntake2).andThen(() -> swerveDrive.setControl(stopRequest)),
-        shootCommand.withTimeout(5).andThen(()-> {
-          intake.setSpeed(0, 0);
-          ampShooter.setPercentOutput(0);
-          shooter.setRPMOutput(0);
-          shooter.setPercentOutput(0);
-        }));
+        shootCommand
+            .withTimeout(5)
+            .andThen(
+                () -> {
+                  intake.setSpeed(0, 0);
+                  ampShooter.setPercentOutput(0);
+                  shooter.setRPMOutput(0);
+                  shooter.setPercentOutput(0);
+                }));
   }
 }
