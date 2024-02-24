@@ -179,7 +179,7 @@ public class RobotContainer {
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
     xboxController.x().whileTrue(new ArmForward(m_arm));
-    
+
     xboxController
         .y()
         .whileTrue(
@@ -332,7 +332,7 @@ public class RobotContainer {
   public void testPeriodic() {
     m_arm.testPeriodic();
   }
-  
+
   public void teleopInit() {
     m_arm.teleopInit();
   }
