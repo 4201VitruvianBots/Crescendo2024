@@ -68,7 +68,6 @@ public class ROBOT {
 
     SWERVE.DRIVE.kInvertLeftDrive = false;
     SWERVE.DRIVE.kInvertRightDrive = true;
-    SWERVE.MODULE.kTurnInverted = true;
 
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
     CAN.drivebaseCanbus = CAN.rioCanbus;
@@ -82,7 +81,6 @@ public class ROBOT {
 
     SWERVE.DRIVE.kInvertLeftDrive = false;
     SWERVE.DRIVE.kInvertRightDrive = true;
-    SWERVE.MODULE.kTurnInverted = true;
   }
 
   public static void initSim() {

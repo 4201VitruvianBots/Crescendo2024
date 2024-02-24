@@ -158,7 +158,7 @@ public class ShootNStrafe extends Command {
             * Math.signum(m_rotationInput.getAsDouble());
 
     m_swerveDrive.setDefaultCommand(
-        m_swerveDrive.applyFieldCentricDrive(
+        m_swerveDrive.applyChassisSpeeds(
             () ->
                 new ChassisSpeeds(
                     throttle * DRIVE.kMaxSpeedMetersPerSecond,
