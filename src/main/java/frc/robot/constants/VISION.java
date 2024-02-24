@@ -12,6 +12,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public final class VISION {
+  public static final double kLimelightHFOV = 62.5;
+  public static final double kLimelightVFOV = 48.9;
+  public static final double kLimelightDFOV = Math.sqrt(Math.pow(kLimelightHFOV,2) + Math.pow(kLimelightVFOV, 2));
+
   public static final double aprilTagLimelightCameraADistanceFromCenterX =
       Units.inchesToMeters(-7.590951);
   public static final double aprilTagLimelightCameraADistanceFromCenterY =
@@ -74,9 +78,16 @@ public final class VISION {
               aprilTagLimelightCameraBDistanceFromCenterY,
               aprilTagLimelightCameraBDistanceFromGroundZ),
           new Rotation3d(
-              aprilTagLimelightCameraAOffsetInRadiansRoll,
-              aprilTagLimelightCameraAOffsetInRadiansPitch,
-              aprilTagLimelightCameraAOffsetInRadiansYaw));
+              aprilTagLimelightCameraBOffsetInRadiansRoll,
+              aprilTagLimelightCameraBOffsetInRadiansPitch,
+              aprilTagLimelightCameraBOffsetInRadiansYaw));
+
+  public static final double poseXTolerance = Units.inchesToMeters(4);
+  public static final double poseYTolerance = Units.inchesToMeters(4);
+  public static final double poseZTolerance = Units.inchesToMeters(4);
+  public static final double posePitchTolerance = Units.degreesToRadians(4);
+  public static final double poseRollTolerance = Units.degreesToRadians(4);
+  public static final double poseYawTolerance = Units.degreesToRadians(4);
 
   public enum CAMERA_TYPE {
     LIMELIGHT,
@@ -97,7 +108,9 @@ public final class VISION {
   }
 
   public enum CAMERA_SERVER {
-    FRONT("10.42.1.11");
+    INTAKE("10.42.1.11"),
+    LIMELIGHTA("10.42.1.12"),
+    LIMELIGHTB("10.42.1.13"),;
     private final String ip;
 
     CAMERA_SERVER(final String ip) {

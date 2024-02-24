@@ -79,7 +79,7 @@ public class TrajectoryUtils {
         new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
         new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
         new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
-        swerveDrive::setChassisSpeedControl,
+        swerveDrive::setChassisSpeedControlNormal,
         () -> flipPath,
         swerveDrive);
   }
