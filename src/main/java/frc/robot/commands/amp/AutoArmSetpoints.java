@@ -9,8 +9,8 @@ import frc.robot.constants.ARM.ARM_SETPOINT;
 import frc.robot.subsystems.Arm;
 
 public class AutoArmSetpoints extends Command {
-  Arm m_arm;
-  ARM_SETPOINT m_state;
+  private final Arm m_arm;
+  private final ARM_SETPOINT m_state;
 
   /** Creates a new ArmForward. */
   public AutoArmSetpoints(Arm arm, ARM_SETPOINT state) {

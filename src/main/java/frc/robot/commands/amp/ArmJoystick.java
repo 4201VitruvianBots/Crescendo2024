@@ -10,9 +10,9 @@ import java.util.function.DoubleSupplier;
 
 public class ArmJoystick extends Command {
   /** Creates a new ArmForward. */
-  Arm m_arm;
+  private final Arm m_arm;
 
-  private DoubleSupplier m_output;
+  private final DoubleSupplier m_output;
 
   public ArmJoystick(Arm arm, DoubleSupplier output) {
     m_arm = arm;

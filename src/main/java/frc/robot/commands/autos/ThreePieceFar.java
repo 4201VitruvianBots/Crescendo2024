@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class ThreePieceFar extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
   public ThreePieceFar(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
     String[] pathFiles = {
-      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4", "3Piece2Pt5",
+      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
@@ -35,6 +36,8 @@ public class ThreePieceFar extends SequentialCommandGroup {
       commandList.add(command);
     }
 
+    var turnToShoot = swerveDrive.turnInPlace(Rotation2d.fromDegrees(-45), Controls::isRedAlliance);
+    var turnToPath = swerveDrive.turnInPlace(Rotation2d.fromDegrees(0), Controls::isRedAlliance);
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
@@ -49,7 +52,6 @@ public class ThreePieceFar extends SequentialCommandGroup {
         commandList.get(0),
         commandList.get(1),
         commandList.get(2),
-        commandList.get(3),
-        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
+        commandList.get(3).andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }

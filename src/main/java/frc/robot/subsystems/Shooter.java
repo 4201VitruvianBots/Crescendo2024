@@ -27,6 +27,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private double m_rpm;
+  private double m_rpmTop;
+  private double m_rpmBottom;
   private boolean m_testMode = false;
   private double m_headingOffset;
   private double m_desiredPercentOutput;
@@ -35,7 +37,7 @@ public class Shooter extends SubsystemBase {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
   };
 
-  private DCMotorSim[] m_shooterMotorSim = {
+  private final DCMotorSim[] m_shooterMotorSim = {
     new DCMotorSim(SHOOTER.ShooterBottomGearbox, SHOOTER.gearRatioBottom, SHOOTER.Inertia),
     new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
   };
@@ -74,8 +76,8 @@ public class Shooter extends SubsystemBase {
     configTop.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
-    m_shooterMotors[0].setInverted(true);
-    m_shooterMotors[1].setInverted(false);
+    m_shooterMotors[0].setInverted(false);
+    m_shooterMotors[1].setInverted(true);
   }
 
   // values that we set
@@ -96,13 +98,27 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
-  public void setRpmOutput(double rpm) {
+  public void setRPMOutputFOC(double rpm) {
     m_rpm = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
     m_shooterMotors[0].setControl(m_focVelocityControl.withVelocity(rps).withFeedForward(0));
     m_shooterMotors[1].setControl(m_focVelocityControl.withVelocity(rps).withFeedForward(0));
+  }
+
+  public void setRPMOutput(double rpm) {
+    setRPMOutput(rpm, rpm);
+  }
+
+  public void setRPMOutput(double rpmBottom, double rpmTop) {
+    m_rpmBottom = rpmBottom;
+    m_rpmTop = rpmTop;
+    // Phoenix 6 uses rotations per second for velocity control
+    var rpsBottom = rpmBottom / 60.0;
+    var rpsTop = rpmTop / 60.0;
+    m_shooterMotors[0].setControl(m_velocityRequest.withVelocity(rpsBottom).withFeedForward(0));
+    m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
   public double getShootNStrafeAngle(
@@ -183,9 +199,13 @@ public class Shooter extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
-    Logger.recordOutput("Shooter/MasterPercentOutput", m_shooterMotors[0].get());
-    Logger.recordOutput("Shooter/FollowerPercentOutput", m_shooterMotors[1].get());
+    Logger.recordOutput(
+        "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput(
+        "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Shooter/rpmsetpoint", m_rpm);
+    Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
+    Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }

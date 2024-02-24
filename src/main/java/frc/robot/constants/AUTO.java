@@ -21,7 +21,7 @@ public final class AUTO {
     }
   }
 
-  public static Map<String, START_POSE> AUTO_POSE_MAP =
+  public static final Map<String, START_POSE> AUTO_POSE_MAP =
       Map.ofEntries(
           Map.entry("FourPieceNear", START_POSE.FOUR_PIECE_NEAR),
           Map.entry("ThreePieceFar", START_POSE.THREE_PIECE_FAR));

@@ -13,10 +13,10 @@ import java.util.function.BooleanSupplier;
 
 public class SetRobotPose extends Command {
   /** Creates a new RestGyro. */
-  CommandSwerveDrivetrain m_swerveDrive;
+  private final CommandSwerveDrivetrain m_swerveDrive;
 
-  Pose2d m_pose;
-  BooleanSupplier m_booleanSupplier;
+  private final Pose2d m_pose;
+  private final BooleanSupplier m_booleanSupplier;
 
   public SetRobotPose(CommandSwerveDrivetrain swerveDrive, Pose2d pose) {
     this(swerveDrive, pose, Controls::isRedAlliance);

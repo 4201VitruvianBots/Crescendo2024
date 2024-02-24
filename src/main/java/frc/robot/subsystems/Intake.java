@@ -10,12 +10,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
+import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
@@ -24,13 +26,14 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
-  private INTAKE_STATE m_state = INTAKE_STATE.NONE;
+  DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
+  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
+  private STATE m_state = STATE.NONE;
 
   private final TalonFX intakeMotor1 = new TalonFX(CAN.intakeMotor1);
   private final TalonFXSimState m_intakeMotor1SimState = intakeMotor1.getSimState();
   private final TalonFX intakeMotor2 = new TalonFX(CAN.intakeMotor2);
   private final TalonFXSimState m_intakeMotor2SimState = intakeMotor2.getSimState();
-
   private final DCMotorSim m_intakeMotor1Sim =
       new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
   private final DCMotorSim m_intakeMotor2Sim =
@@ -53,6 +56,8 @@ public class Intake extends SubsystemBase {
     configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor2, configback);
+
+    SmartDashboard.putData(this);
   }
 
   public void setSpeed(double speed1, double speed2) {
@@ -76,8 +81,20 @@ public class Intake extends SubsystemBase {
   //     m_state = speed;
   //   }
 
-  public INTAKE_STATE getIntakeState() {
+  public STATE getIntakeState() {
     return m_state;
+  }
+
+  public boolean getSensorInput1() {
+    // Disabled until sensor installed
+    //    return distanceSensorDigitalInput.get();
+    return false;
+  }
+
+  public boolean getSensorInput2() {
+    // Disabled until sensor installed
+    //    return distanceSensorDigitalInput2.get();
+    return false;
   }
 
   @Override
@@ -110,6 +127,10 @@ public class Intake extends SubsystemBase {
   public void updateLogger() {
     Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
     Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
+    Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
+    Logger.recordOutput("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
   }
 
   @Override
@@ -117,5 +138,9 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLogger();
+
+    setIntaking(
+        MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0
+            || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
   }
 }

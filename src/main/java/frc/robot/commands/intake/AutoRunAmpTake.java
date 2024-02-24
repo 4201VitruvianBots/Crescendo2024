@@ -8,23 +8,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
-public class AmpTake extends Command {
+public class AutoRunAmpTake extends Command {
+  /** Creates a new AutoRunIntake. */
   Intake m_intake;
-  AmpShooter m_ampShooter;
+
   double m_speed;
   double m_speed2;
+  AmpShooter m_ampShooter;
   double m_ampSpeed;
 
-  /** Creates a new RunIntake. */
-  public AmpTake(
-      Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
+  public AutoRunAmpTake(
+      Intake intake, AmpShooter ampShooter, double speed, double speed2, double ampSpeed) {
+    // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-    m_ampShooter = ampShooter;
     m_speed = speed;
     m_speed2 = speed2;
     m_ampSpeed = ampSpeed;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake, m_ampShooter);
+    m_ampShooter = ampShooter;
+    addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
@@ -45,13 +46,14 @@ public class AmpTake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setSpeed(0.0, 0.0);
+
+    m_intake.setSpeed(0, 0);
     m_ampShooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intake.getSensorInput1() || m_intake.getSensorInput2();
   }
 }

@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoSetRPMSetpoint extends Command {
-  Shooter m_shooter;
-  double m_RPM;
+  private final Shooter m_shooter;
+  private final double m_RPM;
 
   public AutoSetRPMSetpoint(Shooter shooter, double RPM) {
     m_shooter = shooter;
@@ -20,7 +20,7 @@ public class AutoSetRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    m_shooter.setRpmOutput(m_RPM);
+    m_shooter.setRPMOutput(m_RPM);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -28,7 +28,7 @@ public class AutoSetRPMSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setRpmOutput(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.

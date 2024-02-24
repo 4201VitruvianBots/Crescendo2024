@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
-  private TalonFXSimState m_simState = m_armMotor.getSimState();
+  private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
 
@@ -52,8 +52,8 @@ public class Arm extends SubsystemBase {
       new SingleJointedArmSim(
           ARM.gearBox,
           ARM.gearRatio,
-          SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
-          ARM.length,
+          SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
+          ARM.armLength,
           Units.degreesToRadians(ARM.minAngleDegrees),
           Units.degreesToRadians(ARM.maxAngleDegrees),
           false,
@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
       m_kD_subscriber,
       m_kMaxArmVelocity_subscriber,
       m_kMaxArmAcceleration_subscriber;
-  private NetworkTable armTab =
+  private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
   public Arm() {

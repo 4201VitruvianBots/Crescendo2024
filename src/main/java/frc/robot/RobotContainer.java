@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.constants.SWERVE.*;
-
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,10 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.amp.ArmJoystickSetpoint;
 import frc.robot.commands.amp.RunAmp;
-import frc.robot.commands.autos.DriveStraightChoreoTest;
-import frc.robot.commands.autos.DriveStraightPathPlannerTest;
-import frc.robot.commands.autos.FourPieceNear;
-import frc.robot.commands.autos.ThreePieceFar;
+import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
@@ -38,12 +33,9 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
-import frc.robot.constants.AMP;
-import frc.robot.constants.ROBOT;
-import frc.robot.constants.SHOOTER;
+import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
-import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdShooterUtils;
@@ -55,11 +47,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
       new CommandSwerveDrivetrain(
-          DrivetrainConstants,
-          FrontLeftConstants,
-          FrontRightConstants,
-          BackLeftConstants,
-          BackRightConstants);
+          SWERVE.DrivetrainConstants,
+          SWERVE.FrontLeftConstants,
+          SWERVE.FrontRightConstants,
+          SWERVE.BackLeftConstants,
+          SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
@@ -69,7 +61,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  private final LEDSubsystem m_led = new LEDSubsystem();
+  //  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -92,15 +84,14 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    if (RobotBase.isSimulation()) m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
-    initAutoChooser();
+    if (ROBOT.useSysID) initSysidChooser();
+    else initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-
-    if (ROBOT.useSysID) initSysidChooser();
 
     if (RobotBase.isSimulation()) {
       m_visualizer = new SuperStructureVisualizer();
@@ -110,7 +101,7 @@ public class RobotContainer {
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
       m_visualizer.registerVision(m_vision);
-      m_visualizer.registerLedSubsystem(m_led);
+      //      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -149,24 +140,6 @@ public class RobotContainer {
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //      m_swerveDrive.setDefaultCommand(
-      //          m_swerveDrive.applyRequest(
-      //              () ->
-      //                  drive
-      //                      .withVelocityX(
-      //                          -m_testController.getRawAxis(1)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-      //                      // negative Y (forward)
-      //                      .withVelocityY(
-      //                          -m_testController.getRawAxis(0)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
-      // X (left)
-      //                      .withRotationalRate(
-      //                          -m_testController.getRawAxis(2)
-      //                              * DRIVE
-      //                                  .kMaxRotationRadiansPerSecond))); // Drive
-      // counterclockwise with
-      // negative X (left)
     }
 
     // m_intake.setDefaultCommand(
@@ -174,17 +147,25 @@ public class RobotContainer {
     //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
+        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
   }
 
   private void configureBindings() {
     xboxController
         .a()
-        .whileTrue(new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SLOW.get())); // slow sbeaker
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.SLOW.get(), RPM_SETPOINT.SLOW.get())); // slow sbeaker
     xboxController
         .b()
         .whileTrue(
-            new SetShooterRPMSetpoint(m_shooter, RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
+    xboxController
+        .x()
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
@@ -215,6 +196,7 @@ public class RobotContainer {
         .whileTrue(
             new AmpTake(
                 m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
+
     xboxController
         .rightBumper()
         .whileTrue(new RunIntake(m_intake, 0.55, 0.85)); // Intake Note with Only Intake
@@ -226,13 +208,17 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, AMP.INTAKE_STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+                m_ampShooter,
+                m_intake,
+                AMP.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povDown()
         .whileTrue(
             new RunAmp(
-                m_ampShooter, AMP.INTAKE_STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
+                m_ampShooter,
+                m_intake,
+                AMP.STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
   }
 
   public void initAutoChooser() {
@@ -240,10 +226,27 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
-    m_autoChooser.addOption("FourPieceNear", new FourPieceNear(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+        "FourPieceNear",
+        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
+    // m_autoChooser.addOption(
+    //     "AutoScoreTest",
+    //     new AutoScore(
+    //         m_shooter,
+    //         m_ampShooter,
+    //         m_intake,
+    //         AMP.STATE.INTAKING.get(),
+    //         RPM_SETPOINT.SPEAKER.get(),
+    //         INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+    //         INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    //         WAIT.SHOOTING.get(),
+    //         5));
+
+    m_autoChooser.addOption(
+        "ScoreSpeakerTesting", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
   }
 
   public void initSysidChooser() {

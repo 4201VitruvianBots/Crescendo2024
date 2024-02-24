@@ -24,7 +24,7 @@ public final class CAN {
   public static final int intakeMotor1 = 30; // front
   public static final int intakeMotor2 = 31;
 
-  public static final int flywheel1 = 41; // Top
+  public static final int flywheel1 = 41; // Bottom
   public static final int flywheel2 = 42;
 
   public static final int ampShooter = 51;

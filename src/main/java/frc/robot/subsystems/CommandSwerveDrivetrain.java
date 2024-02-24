@@ -25,6 +25,7 @@ import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
@@ -49,6 +50,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
               SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
           .withDriveRequestType(
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private final SwerveRequest.FieldCentricFacingAngle m_turnRequest =
+      new SwerveRequest.FieldCentricFacingAngle();
   // driving in open loop
   private Pose2d m_futurePose = new Pose2d();
   private Twist2d m_twistFromPose = new Twist2d();
@@ -59,12 +62,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
-      Vision vision,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
-    m_vision = vision;
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -129,6 +130,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public ChassisSpeeds getChassisSpeed() {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+  }
+
+  public Command turnInPlace(Rotation2d angle, BooleanSupplier flipAngle) {
+    if (flipAngle.getAsBoolean()) {
+      angle = new Rotation2d(Math.PI).minus(angle);
+    }
+
+    // variables passed into lambdas must be final
+    Rotation2d finalAngle = angle;
+    return applyRequest(() -> m_turnRequest.withTargetDirection(finalAngle))
+        .onlyWhile(
+            () ->
+                Math.abs(
+                        finalAngle
+                            .minus(Rotation2d.fromDegrees(getPigeon2().getYaw().getValue()))
+                            .getDegrees())
+                    > 1.0)
+        .withTimeout(0.25);
   }
 
   public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds) {
@@ -199,6 +218,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             chassisSpeeds.omegaRadiansPerSecond);
 
     setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
+  }
+
+  public void setChassisSpeedControlNormal(ChassisSpeeds chassisSpeeds) {
+    setControl(m_chassisSpeedRequest.withSpeeds(chassisSpeeds));
   }
 
   private void startSimThread() {
