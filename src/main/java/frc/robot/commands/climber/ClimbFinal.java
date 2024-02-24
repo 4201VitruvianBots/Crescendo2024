@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.amp.AutoArmSetpoints;
 import frc.robot.commands.amp.AutoSetAmpSpeed;
 import frc.robot.constants.ARM;
-import frc.robot.constants.ARM.AMP_STATE;
+import frc.robot.constants.AMP;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Arm;
@@ -20,19 +20,19 @@ public class ClimbFinal extends SequentialCommandGroup {
 
     addCommands(
 
-        // will drive forward and set up the arm to about level with the floor and extend the
-        // climber
+        // will drive forward and set up the arm forward
+        // to make room for climber to climb and extend the climber
         new ParallelCommandGroup(
             new DriveEndgame(swerveDrive).withTimeout(2),
-            new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED),
+            new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.FORWARD),
             new AutoSetSetpoint(climber, CLIMBER_SETPOINT.EXTEND)),
 
         // will climb then arm will go forward into the trap
         new WaitCommand(1),
         new AutoSetSetpoint(climber, CLIMBER_SETPOINT.FULL_RETRACT),
         new WaitCommand(2),
-        new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.FORWARD),
+        new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED),
         new WaitCommand(2),
-        new AutoSetAmpSpeed(ampshooter, AMP_STATE.SCORE));
+        new AutoSetAmpSpeed(ampshooter, AMP.STATE.REVERSE));
   }
 }

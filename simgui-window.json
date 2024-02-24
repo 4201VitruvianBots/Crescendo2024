@@ -5,13 +5,13 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1104",
-      "maximized": "0",
+      "height": "989",
+      "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "1559",
-      "xpos": "235",
-      "ypos": "230"
+      "width": "1920",
+      "xpos": "0",
+      "ypos": "30"
     }
   },
   "Table": {
@@ -41,7 +41,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "112,364",
-      "Size": "273,86"
+      "Size": "286,98"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -49,29 +49,29 @@
       "Size": "438,427"
     },
     "###/SmartDashboard/Field2d": {
-      "Collapsed": "0",
-      "Pos": "95,21",
+      "Collapsed": "1",
+      "Pos": "107,24",
       "Size": "921,596"
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
-      "Pos": "647,125",
+      "Pos": "1303,14",
       "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
-      "Collapsed": "0",
-      "Pos": "93,708",
+      "Collapsed": "1",
+      "Pos": "104,62",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "169,184"
+      "Size": "202,214"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "268,866",
-      "Size": "796,240"
+      "Pos": "541,656",
+      "Size": "976,278"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -80,28 +80,28 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "689,684",
+      "Pos": "550,158",
       "Size": "876,599"
     },
     "###NetworkTables Info": {
-      "Collapsed": "0",
-      "Pos": "865,629",
+      "Collapsed": "1",
+      "Pos": "427,87",
       "Size": "750,305"
     },
     "###Other Devices": {
-      "Collapsed": "0",
-      "Pos": "935,18",
+      "Collapsed": "1",
+      "Pos": "999,24",
       "Size": "340,993"
     },
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "5,349",
-      "Size": "192,218"
+      "Size": "232,254"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "5,150",
-      "Size": "141,173"
+      "Size": "169,194"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -111,7 +111,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "92,116"
+      "Size": "109,134"
     }
   }
 }
