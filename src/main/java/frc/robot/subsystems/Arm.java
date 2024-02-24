@@ -88,7 +88,7 @@ public class Arm extends SubsystemBase {
 
     // Simulation setup
     SmartDashboard.putData(this);
-    
+
     // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getCurrentAngle() {
-    return Units.rotationsToDegrees(getCurrentRotation() * (1.0/140.0));
+    return Units.rotationsToDegrees(getCurrentRotation() * (1.0 / 140.0));
   }
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
