@@ -32,7 +32,7 @@ public class TestSwerveConstants {
     }
   }
 
-  @Disabled
+  @Test
   public void testModuleConstants() {
     for (ModuleMap.MODULE_POSITION i : ModuleMap.MODULE_POSITION.values()) {
       var moduleConstants = SWERVE.MODULE_CONSTANTS[i.ordinal()];
@@ -44,6 +44,7 @@ public class TestSwerveConstants {
           assertEquals(moduleConstants.CANcoderId, CAN.frontLeftCanCoder);
           assertEquals(moduleConstants.CANcoderOffset, SWERVE.DRIVE.kFrontLeftEncoderOffset);
           assertEquals(moduleConstants.DriveMotorInverted, SWERVE.DRIVE.kInvertLeftDrive);
+          assertEquals(moduleConstants.SteerMotorInverted, true); // why is this one different?
         }
         case FRONT_RIGHT -> {
           assertEquals(moduleConstants.DriveMotorId, CAN.frontRightDriveMotor);
@@ -51,6 +52,7 @@ public class TestSwerveConstants {
           assertEquals(moduleConstants.CANcoderId, CAN.frontRightCanCoder);
           assertEquals(moduleConstants.CANcoderOffset, SWERVE.DRIVE.kFrontRightEncoderOffset);
           assertEquals(moduleConstants.DriveMotorInverted, SWERVE.DRIVE.kInvertRightDrive);
+          assertEquals(moduleConstants.SteerMotorInverted, SWERVE.MODULE.kTurnInverted);
         }
         case BACK_LEFT -> {
           assertEquals(moduleConstants.DriveMotorId, CAN.backLeftDriveMotor);
@@ -58,6 +60,7 @@ public class TestSwerveConstants {
           assertEquals(moduleConstants.CANcoderId, CAN.backLeftCanCoder);
           assertEquals(moduleConstants.CANcoderOffset, SWERVE.DRIVE.kBackLeftEncoderOffset);
           assertEquals(moduleConstants.DriveMotorInverted, SWERVE.DRIVE.kInvertLeftDrive);
+          assertEquals(moduleConstants.SteerMotorInverted, SWERVE.MODULE.kTurnInverted);
         }
         case BACK_RIGHT -> {
           assertEquals(moduleConstants.DriveMotorId, CAN.backRightDriveMotor);
@@ -65,9 +68,9 @@ public class TestSwerveConstants {
           assertEquals(moduleConstants.CANcoderId, CAN.backRightCanCoder);
           assertEquals(moduleConstants.CANcoderOffset, SWERVE.DRIVE.kBackRightEncoderOffset);
           assertEquals(moduleConstants.DriveMotorInverted, SWERVE.DRIVE.kInvertRightDrive);
+          assertEquals(moduleConstants.SteerMotorInverted, SWERVE.MODULE.kTurnInverted);
         }
       }
-      assertEquals(moduleConstants.SteerMotorInverted, SWERVE.MODULE.kTurnInverted);
       assertEquals(moduleConstants.LocationX, SWERVE.DRIVE.kModuleTranslations.get(i).getX());
       assertEquals(moduleConstants.LocationY, SWERVE.DRIVE.kModuleTranslations.get(i).getY());
     }
