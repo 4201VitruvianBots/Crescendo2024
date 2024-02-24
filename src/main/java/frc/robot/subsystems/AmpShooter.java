@@ -43,6 +43,14 @@ public class AmpShooter extends SubsystemBase {
     return ampMotor.get();
   }
 
+  public void setNeutralMode(NeutralModeValue NeutralMode) {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.MotorOutput.NeutralMode = NeutralMode;
+
+    CtreUtils.configureTalonFx(ampMotor, config);
+  }
+
   private void updateLogger() {
     Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
     Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);

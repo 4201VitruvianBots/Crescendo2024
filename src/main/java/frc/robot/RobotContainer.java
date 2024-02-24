@@ -57,7 +57,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-    private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
@@ -66,7 +66,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-   private final LEDSubsystem m_led = new LEDSubsystem();
+  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -162,11 +162,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     var rightButton1Action = new Trigger(() -> leftJoystick.getRawButton(1));
-    xboxController.x().whileTrue(
-        new DriveAndAim(
-            m_swerveDrive,
-            () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-            () -> leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
+    xboxController
+        .x()
+        .whileTrue(
+            new DriveAndAim(
+                m_swerveDrive,
+                () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                () -> leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
     xboxController
         .a()
         .whileTrue(
@@ -182,7 +184,7 @@ public class RobotContainer {
     //     .whileTrue(
     //         new SetShooterRPMSetpoint(
     //             m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
- 
+
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 

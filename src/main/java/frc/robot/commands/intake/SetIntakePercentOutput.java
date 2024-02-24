@@ -4,6 +4,7 @@
 
 package frc.robot.commands.intake;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
@@ -33,12 +34,15 @@ public class SetIntakePercentOutput extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_percentOutput1, m_percentOutput2);
+    m_ampShooter.setNeutralMode(NeutralModeValue.Coast);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.setSpeed(0, 0);
+
+    m_ampShooter.setNeutralMode(NeutralModeValue.Brake);
   }
 
   // Returns true when the command should end.

@@ -4,16 +4,15 @@
 
 package frc.robot.commands.shooter;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
-import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.AmpShooter;
@@ -22,14 +21,7 @@ import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Telemetry;
-
 import java.util.function.DoubleSupplier;
-import java.util.logging.Logger;
-
-import javax.swing.tree.TreeCellEditor;
-
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 public class ShootNStrafe extends Command {
 
@@ -38,7 +30,7 @@ public class ShootNStrafe extends Command {
   private final AmpShooter m_ampShooter;
   private final Intake m_intake;
   private final Telemetry m_telemetry;
-  
+
   private double m_AmpPercentOutput;
   private double m_RPMOutput;
   private final double m_FrontIntakePercentOutput;
@@ -47,7 +39,7 @@ public class ShootNStrafe extends Command {
   private final Timer m_timer = new Timer();
   private final Timer m_reversetimer = new Timer();
   private final Timer m_shoottimer = new Timer();
- 
+
   private final double reverseTimerThreshold = 0.25;
   private final double m_timeToShoot = 0.75;
 
@@ -58,7 +50,6 @@ public class ShootNStrafe extends Command {
 
   public final int hehe = 69; // Mano's work
 
-  
   private final PIDController m_turnController =
       new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
   private Translation2d m_target = new Translation2d();
@@ -121,13 +112,13 @@ public class ShootNStrafe extends Command {
 
   @Override
   public void execute() {
-  
+
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
 
     double displacementX = m_swerveDrive.getState().Pose.getX() * Math.sin(shootAngle);
 
-    double displacementY = m_swerveDrive.getState().Pose.getY()* Math.cos(shootAngle);
+    double displacementY = m_swerveDrive.getState().Pose.getY() * Math.cos(shootAngle);
 
     double VelocityY =
         m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
@@ -137,7 +128,6 @@ public class ShootNStrafe extends Command {
             * m_swerveDrive.getState().Pose.getRotation().getCos();
     double VelocityShoot = 111; // TODO: Change after testing
 
-    
     double m_headingOffset =
         Math.asin(
             displacementY * VelocityX
@@ -145,16 +135,15 @@ public class ShootNStrafe extends Command {
                     * VelocityY
                     / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
                         * VelocityShoot));
-    System.out.println(m_headingOffset*180/Math.PI);
+    System.out.println(m_headingOffset * 180 / Math.PI);
 
-        final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-          .withRotationalDeadband(
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-                
+    final SwerveRequest.FieldCentric drive =
+        new SwerveRequest.FieldCentric()
+            .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+            .withRotationalDeadband(
+                SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+            .withDriveRequestType(
+                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
     // TODO: @jax when are we using this vs var rotation?
 
@@ -164,23 +153,23 @@ public class ShootNStrafe extends Command {
 
     // all of the logic for angle is above this Comment
 
-      if (Controls.isRedAlliance()) {
+    if (Controls.isRedAlliance()) {
       m_target = FIELD.redSpeaker;
     } else {
       m_target = FIELD.blueSpeaker;
     }
-    var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle()) ;
-
+    var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
 
     m_shooter.setRPMOutput(m_RPMOutput);
-    
+
     m_swerveDrive.setControl(
-      drive
-          .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
-          .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
-          .withRotationalRate(m_turnController.calculate(
-            m_swerveDrive.getState().Pose.getRotation().getRadians(),
-            targetDelta.getRadians()+ m_headingOffset)));
+        drive
+            .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withRotationalRate(
+                m_turnController.calculate(
+                    m_swerveDrive.getState().Pose.getRotation().getRadians(),
+                    targetDelta.getRadians() + m_headingOffset)));
     if (inZone
         && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
         && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
@@ -197,8 +186,6 @@ public class ShootNStrafe extends Command {
     }
   }
 
-
-
   // Called every time the scheduler runs while the command is scheduled.
 
   // Called once the command ends or is interrupted.
@@ -213,19 +200,20 @@ public class ShootNStrafe extends Command {
     m_reversetimer.stop();
     m_reversetimer.reset();
     m_shoottimer.stop();
-    m_shoottimer.reset();        final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-          .withRotationalDeadband(
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-              
- m_swerveDrive.setControl(
-      drive
-          .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
-          .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
-          .withRotationalRate((m_rotationInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond));
+    m_shoottimer.reset();
+    final SwerveRequest.FieldCentric drive =
+        new SwerveRequest.FieldCentric()
+            .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+            .withRotationalDeadband(
+                SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+            .withDriveRequestType(
+                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+
+    m_swerveDrive.setControl(
+        drive
+            .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withRotationalRate((m_rotationInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond));
     m_timer.stop();
     m_timer.reset();
   }

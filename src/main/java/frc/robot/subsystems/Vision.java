@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
-
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -23,7 +22,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
-  
+
   private FieldSim m_fieldSim;
 
   private final NetworkTable NoteDetectionLimelight =
@@ -78,11 +77,12 @@ public class Vision extends SubsystemBase {
   public void registerSwerveDrive(CommandSwerveDrivetrain swerveDriveTrain) {
     m_swerveDriveTrain = swerveDriveTrain;
   }
- public void registerFieldSim(FieldSim fieldSim) {
+
+  public void registerFieldSim(FieldSim fieldSim) {
     m_fieldSim = fieldSim;
   }
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator)
-{
+
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
     return photonEstimator.update();
   }
 
@@ -122,8 +122,7 @@ public class Vision extends SubsystemBase {
   private void updateLog() {
     Logger.recordOutput("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
     Logger.recordOutput(
-        "vision/NoteDetectionLimelight - robotToGamePieceRotation",
-getRobotToGamePieceDegrees());
+        "vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
 
     Logger.recordOutput(
         "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));

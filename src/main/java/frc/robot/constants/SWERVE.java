@@ -46,7 +46,7 @@ public final class SWERVE {
 
     public static boolean kInvertLeftDrive = true;
     public static boolean kInvertRightDrive = false;
-    
+
     public static boolean kInvertFrontRightDrive = true;
 
     public static boolean kTurnInverted = true;

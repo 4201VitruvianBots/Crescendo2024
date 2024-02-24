@@ -138,8 +138,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-
-
   public Command turnInPlace(Rotation2d angle, BooleanSupplier flipAngle) {
     if (flipAngle.getAsBoolean()) {
       angle = new Rotation2d(Math.PI).minus(angle);
@@ -175,7 +173,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
    * Second-Order Kinematics <a
    * href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79">...</a>
    */
-
   public Command applyChassisSpeeds(
       Supplier<ChassisSpeeds> chassisSpeeds,
       double loopPeriod,
@@ -189,7 +186,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                   chassisSpeeds.get().vyMetersPerSecond * loopPeriod,
                   Rotation2d.fromRadians(
                       chassisSpeeds.get().omegaRadiansPerSecond * loopPeriod * driftRate));
-
 
           m_twistFromPose = new Pose2d().log(m_futurePose);
 
@@ -294,8 +290,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void resetGyro(double angle) {
     getPigeon2().setYaw(angle);
   }
-
-  
 
   public void initTurnSysid() {
     var turnMotor = getModule(0).getSteerMotor();
