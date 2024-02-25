@@ -216,12 +216,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     if (!RobotController.isSysActive()) {
-        // TODO: figure out why this is happening seriously what is going on aaaaaaaaa
-        // System.out.println("Wait the robot is disabled why is it trying to do this? Wat?");
-        // Thread.dumpStack();
-        return;
+      // TODO: figure out why this is happening seriously what is going on aaaaaaaaa
+      // System.out.println("Wait the robot is disabled why is it trying to do this? Wat?");
+      // Thread.dumpStack();
+      return;
     }
-    
+
     switch (m_controlMode) {
       case CLOSED_LOOP:
         // This method will be called once per scheduler run

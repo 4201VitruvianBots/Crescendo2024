@@ -20,8 +20,10 @@ public class DefaultFlywheel extends Command {
   @Override
   public void execute() {
     // If no other command is running, slow down the flywheel to decelerate it faster
-    // This function is causing CommandScheduler loop overruns (~0.09 seconds per loop, ~0.07 seconds).
-    // The overrun then gets transferred to ParallelRaceGroup.initialize() once this is commented out. TODO: fix
+    // This function is causing CommandScheduler loop overruns (~0.09 seconds per loop, ~0.07
+    // seconds).
+    // The overrun then gets transferred to ParallelRaceGroup.initialize() once this is commented
+    // out. TODO: fix
     if (m_shooter.getRpmMaster() > 500) {
       m_shooter.setPercentOutput(-0.01);
       m_shooter.setNeutralMode(NeutralModeValue.Brake);
