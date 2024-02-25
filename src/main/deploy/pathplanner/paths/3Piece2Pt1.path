@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.53,
+        "x": 2.2,
         "y": 4.18
       },
       "prevControl": {
-        "x": 2.440475435167519,
+        "x": 2.1104754351675195,
         "y": 4.224557292237689
       },
       "nextControl": null,
@@ -55,7 +55,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "3PieceAutoFar",
+  "folder": null,
   "previewStartingState": {
     "rotation": -1.6134125910940103,
     "velocity": 0
