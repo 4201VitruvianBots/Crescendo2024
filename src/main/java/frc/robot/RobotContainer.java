@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.amp.ArmForward;
+import frc.robot.commands.amp.ArmSetpoint;
 import frc.robot.commands.amp.ArmJoystick;
 import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
@@ -38,6 +38,7 @@ import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
+import frc.robot.constants.ARM.ARM_SETPOINT;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -178,7 +179,8 @@ public class RobotContainer {
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
-    xboxController.x().whileTrue(new ArmForward(m_arm));
+    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+    xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
 
     xboxController
         .y()
