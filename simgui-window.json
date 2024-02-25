@@ -5,13 +5,13 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "989",
-      "maximized": "1",
+      "height": "1055",
+      "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1920",
-      "xpos": "0",
-      "ypos": "30"
+      "width": "1559",
+      "xpos": "203",
+      "ypos": "189"
     }
   },
   "Table": {
@@ -46,7 +46,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "112,364",
-      "Size": "286,98"
+      "Size": "337,110"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -54,8 +54,8 @@
       "Size": "438,427"
     },
     "###/SmartDashboard/Field2d": {
-      "Collapsed": "1",
-      "Pos": "107,24",
+      "Collapsed": "0",
+      "Pos": "199,21",
       "Size": "921,596"
     },
     "###/SmartDashboard/ResetClimberHeight": {
@@ -65,23 +65,23 @@
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
-      "Pos": "1303,14",
+      "Pos": "950,158",
       "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "1",
-      "Pos": "104,62",
+      "Pos": "93,708",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "202,214"
+      "Size": "388,176"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "541,656",
-      "Size": "976,278"
+      "Pos": "268,866",
+      "Size": "1156,91"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -95,7 +95,7 @@
     },
     "###NetworkTables Info": {
       "Collapsed": "0",
-      "Pos": "427,87",
+      "Pos": "511,736",
       "Size": "750,305"
     },
     "###Other Devices": {
@@ -111,12 +111,12 @@
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "5,349",
-      "Size": "232,254"
+      "Size": "273,290"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "5,150",
-      "Size": "169,194"
+      "Size": "197,215"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -126,7 +126,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "109,134"
+      "Size": "126,152"
     }
   }
 }

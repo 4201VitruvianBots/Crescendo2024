@@ -14,7 +14,7 @@
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Intake": "Subsystem",
-      "/SmartDashboard/ResetClimberHeight": "Command",
+      "/SmartDashboard/ResetArmPosition": "Command",
       "/SmartDashboard/ResetGyro": "Command",
       "/SmartDashboard/SuperStructure Sim": "Mechanism2d",
       "/SmartDashboard/SysID Chooser": "String Chooser",
@@ -28,11 +28,59 @@
         }
       },
       "/SmartDashboard/Field2d": {
+        "Robot": {
+          "arrowColor": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.6096000075340271,
+          "width": 0.6984999775886536
+        },
+        "Swerve Modules": {
+          "arrowColor": [
+            0.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.25,
+          "width": 0.25
+        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
         "top": 79,
+        "visionAPose": {
+          "arrowColor": [
+            0.0,
+            0.8529412746429443,
+            1.0,
+            255.0
+          ],
+          "color": [
+            0.0,
+            15.000014305114746,
+            255.0,
+            255.0
+          ],
+          "length": 1.0,
+          "weight": 1.0,
+          "width": 1.0
+        },
+        "visionBPose": {
+          "arrowColor": [
+            255.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 1.0,
+          "weight": 1.0,
+          "width": 1.0
+        },
         "width": 16.541748046875,
         "window": {
           "visible": true

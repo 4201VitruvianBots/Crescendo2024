@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,6 +55,7 @@ public class AutoScore extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_shooter.setNeutralMode(NeutralModeValue.Coast);
     m_timer.stop();
     m_timer.reset();
     m_reversetimer.stop();
@@ -121,7 +123,6 @@ public class AutoScore extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setPercentOutput(0);
     m_ampShooter.setPercentOutput(0);
     m_intake.setSpeed(0, 0);
     m_timer.stop();

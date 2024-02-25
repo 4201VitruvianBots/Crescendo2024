@@ -4,11 +4,11 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 
-public class ToggleClimberControlMode extends Command {
+public class ToggleClimberControlMode extends InstantCommand {
   private final Climber m_climber;
   private final CONTROL_MODE m_mode;
 
@@ -38,7 +38,6 @@ public class ToggleClimberControlMode extends Command {
     // else       
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 

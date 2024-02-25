@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.99,
-        "y": 7.401026427201135
+        "x": 2.2,
+        "y": 4.18
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.09,
-        "y": 7.401026427201135
+        "x": 2.2447622824162408,
+        "y": 4.157721353881155
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.113134431397068,
-        "y": 6.0458778467414485
+        "x": 2.83,
+        "y": 4.18
       },
       "prevControl": {
-        "x": 3.014653656095847,
-        "y": 6.028513028974755
+        "x": 2.7852377175837595,
+        "y": 4.202278646118844
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.9,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 0.95,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
@@ -51,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 30.0,
-    "rotateFast": false
+    "rotation": -26.45999999999998,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "4PieceAutoNear",
+  "folder": null,
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": -26.45999999999998,
     "velocity": 0
   },
   "useDefaultConstraints": false

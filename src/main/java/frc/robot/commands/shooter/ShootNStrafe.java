@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -76,6 +77,7 @@ public class ShootNStrafe extends Command {
   @Override
   public void initialize() {
     timerStart = false;
+    m_shooter.setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override
@@ -158,7 +160,7 @@ public class ShootNStrafe extends Command {
             * Math.signum(m_rotationInput.getAsDouble());
 
     m_swerveDrive.setDefaultCommand(
-        m_swerveDrive.applyFieldCentricDrive(
+        m_swerveDrive.applyChassisSpeeds(
             () ->
                 new ChassisSpeeds(
                     throttle * DRIVE.kMaxSpeedMetersPerSecond,

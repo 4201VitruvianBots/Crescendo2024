@@ -35,7 +35,8 @@ public final class ARM {
   public static final double kMaxArmAcceleration = 10;
 
   public enum ARM_SETPOINT {
-    STOWED(Units.degreesToRotations(0.0)),
+    STOWED(Units.degreesToRotations(-35.0)),
+    STAGED(Units.degreesToRotations(75.0)),
     FORWARD(Units.degreesToRotations(120.0));
 
     private final double angle;
@@ -63,11 +64,13 @@ public final class ARM {
 
   public static final double minAngleDegrees = -40;
 
-  public static final double maxAngleDegrees = 160;
+  public static final double maxAngleDegrees = 130;
 
   public static final double startingAngleDegrees = minAngleDegrees;
 
   public static final double mountingAngleDegrees = 0;
+
+  public static final double joystickMultiplier = 0.2;
 
   public enum ARM_STATE {
     NONE(0),

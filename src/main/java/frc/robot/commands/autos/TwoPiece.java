@@ -10,10 +10,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoScore;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
@@ -28,17 +29,15 @@ import java.util.ArrayList;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreePieceFar extends SequentialCommandGroup {
+public class TwoPiece extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
-  public ThreePieceFar(
+  public TwoPiece(
       CommandSwerveDrivetrain swerveDrive,
       FieldSim fieldSim,
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {
-      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4",
-    };
+    String[] pathFiles = {"3Piece2Pt1", "MasonsMagic"};
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
 
@@ -56,15 +55,34 @@ public class ThreePieceFar extends SequentialCommandGroup {
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    var RunIntake =
+    var runIntake =
+        new AutoRunIntake(
+            intake,
+            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+    var runIntake2 =
+        new AutoRunIntake(
+            intake,
+            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+
+    var shootCommand =
         new AutoRunAmpTake(
             intake,
             ampShooter,
-            STATE.FRONT_ROLLER_INTAKING.get(),
-            STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get());
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.NONE.get(),
+            AMP.STATE.INTAKING.get());
 
-    var shootCommand =
+    var shootCommand2 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            AMP.STATE.INTAKING.get());
+
+    var flywheelCommand =
         new AutoScore(
             shooter,
             ampShooter,
@@ -76,17 +94,30 @@ public class ThreePieceFar extends SequentialCommandGroup {
             WAIT.SHOOTING.get(),
             3);
 
+    var flywheelCommandContinues = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+
     addCommands(
-        new PlotAutoPath(fieldSim, "", pathsList),
+        new PlotAutoPath(fieldSim, "TwoPiece", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         new InstantCommand(
-                () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
-                swerveDrive)
-            .alongWith(new WaitCommand(1)),
-        commandList.get(0),
-        commandList.get(1),
-        commandList.get(2),
-        commandList.get(3).andThen(() -> swerveDrive.setControl(stopRequest)));
+            () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
+            swerveDrive),
+        commandList
+            .get(0)
+            .alongWith(flywheelCommandContinues)
+            .andThen(() -> swerveDrive.setControl(stopRequest)),
+        new WaitCommand(1),
+        shootCommand,
+        commandList.get(1).alongWith(runIntake2).andThen(() -> swerveDrive.setControl(stopRequest)),
+        shootCommand2
+            .withTimeout(5)
+            .andThen(
+                () -> {
+                  intake.setSpeed(0, 0);
+                  ampShooter.setPercentOutput(0);
+                  shooter.setRPMOutput(0);
+                  shooter.setPercentOutput(0);
+                }));
   }
 }
