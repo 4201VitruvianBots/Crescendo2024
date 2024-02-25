@@ -13,7 +13,7 @@ import frc.robot.subsystems.Arm;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ToggleArmControlMode extends InstantCommand {
   private Arm m_arm;
-  
+
   public ToggleArmControlMode(Arm arm) {
     m_arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,7 +23,7 @@ public class ToggleArmControlMode extends InstantCommand {
   @Override
   public void initialize() {
     ROBOT.CONTROL_MODE armControlMode = m_arm.getControlMode();
-    
+
     if (armControlMode == ROBOT.CONTROL_MODE.CLOSED_LOOP) {
       m_arm.setControlMode(ROBOT.CONTROL_MODE.OPEN_LOOP);
     } else if (armControlMode == ROBOT.CONTROL_MODE.OPEN_LOOP) {

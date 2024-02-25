@@ -124,13 +124,13 @@ public class Arm extends SubsystemBase {
   public double getCurrentAngle() {
     return Units.rotationsToDegrees(getCurrentRotation() * (1.0 / 140.0));
   }
- 
+
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
     if (mode == ROBOT.CONTROL_MODE.CLOSED_LOOP && m_controlMode == ROBOT.CONTROL_MODE.OPEN_LOOP)
-        resetTrapezoidState();
+      resetTrapezoidState();
     m_controlMode = mode;
   }
-  
+
   public ROBOT.CONTROL_MODE getControlMode() {
     return m_controlMode;
   }
@@ -144,7 +144,7 @@ public class Arm extends SubsystemBase {
       resetTrapezoidState();
     }
   }
-  
+
   public void resetTrapezoidState() {
     m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
   }

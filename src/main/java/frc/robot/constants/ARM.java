@@ -69,7 +69,7 @@ public final class ARM {
   public static final double startingAngleDegrees = minAngleDegrees;
 
   public static final double mountingAngleDegrees = 0;
-  
+
   public static final double joystickMultiplier = 0.2;
 
   public enum ARM_STATE {

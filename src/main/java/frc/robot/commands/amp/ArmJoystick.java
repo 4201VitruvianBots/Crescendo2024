@@ -35,27 +35,25 @@ public class ArmJoystick extends Command {
     double m_joystickDeadband = MathUtil.applyDeadband(m_output.getAsDouble(), 0.05);
 
     if (m_joystickDeadband != 0.0) {
-        if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.CLOSED_LOOP) {
-            var rotationSetpoint =
-                MathUtil.clamp(
-                    
-                    m_joystickDeadband * 0.5 + m_arm.getCurrentRotation(),
-                    Units.degreesToRotations(ARM.minAngleDegrees),
-                    Units.degreesToRotations(ARM.maxAngleDegrees));
-            m_arm.setDesiredSetpointRotations(rotationSetpoint);
-        } else if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP) {
-            // Upper limit, not working
-            if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
-                m_joystickDeadband = Math.min(m_joystickDeadband, 0);
-            
-            // Lower limit, working
-            if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
-                m_joystickDeadband = Math.max(m_joystickDeadband, 0);
-            m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
-        }
+      if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.CLOSED_LOOP) {
+        var rotationSetpoint =
+            MathUtil.clamp(
+                m_joystickDeadband * 0.5 + m_arm.getCurrentRotation(),
+                Units.degreesToRotations(ARM.minAngleDegrees),
+                Units.degreesToRotations(ARM.maxAngleDegrees));
+        m_arm.setDesiredSetpointRotations(rotationSetpoint);
+      } else if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP) {
+        // Upper limit, not working
+        if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
+          m_joystickDeadband = Math.min(m_joystickDeadband, 0);
+
+        // Lower limit, working
+        if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
+          m_joystickDeadband = Math.max(m_joystickDeadband, 0);
+        m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
+      }
     } else {
-        if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP)
-            m_arm.setPercentOutput(0.0);
+      if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP) m_arm.setPercentOutput(0.0);
     }
   }
 
