@@ -14,7 +14,8 @@ import edu.wpi.first.math.util.Units;
 public final class VISION {
   public static final double kLimelightHFOV = 62.5;
   public static final double kLimelightVFOV = 48.9;
-  public static final double kLimelightDFOV = Math.sqrt(Math.pow(kLimelightHFOV,2) + Math.pow(kLimelightVFOV, 2));
+  public static final double kLimelightDFOV =
+      Math.sqrt(Math.pow(kLimelightHFOV, 2) + Math.pow(kLimelightVFOV, 2));
 
   public static final double aprilTagLimelightCameraADistanceFromCenterX =
       Units.inchesToMeters(-7.590951);
@@ -110,7 +111,8 @@ public final class VISION {
   public enum CAMERA_SERVER {
     INTAKE("10.42.1.11"),
     LIMELIGHTA("10.42.1.12"),
-    LIMELIGHTB("10.42.1.13"),;
+    LIMELIGHTB("10.42.1.13"),
+    ;
     private final String ip;
 
     CAMERA_SERVER(final String ip) {

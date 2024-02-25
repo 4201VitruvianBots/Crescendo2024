@@ -17,10 +17,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.amp.ArmForward;
-import frc.robot.commands.amp.ArmJoystickSetpoint;
+import frc.robot.commands.amp.ArmJoystick;
+import frc.robot.commands.amp.ArmSetpoint;
 import frc.robot.commands.amp.ResetArmPosition;
 import frc.robot.commands.amp.RunAmp;
+import frc.robot.commands.amp.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -29,12 +30,11 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
-import frc.robot.commands.drive.DriveAndAim;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
-import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.RunAll;
+import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
-import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -85,11 +85,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
-    m_swerveDrive.registerVisionSubsystem(m_vision);
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerFieldSim(m_fieldSim);
+    //    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -100,8 +100,6 @@ public class RobotContainer {
     SmartDashboard.putData("ResetArmPosition", new ResetArmPosition(m_arm));
 
     if (RobotBase.isSimulation()) {
-      m_vision.registerFieldSim(m_fieldSim);
-
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
       m_visualizer.registerShooter(m_shooter);
@@ -147,106 +145,109 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond),
-              true));
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
     }
 
-    // m_intake.setDefaultCommand(
-    //     new SetIntakePercentOutput(
-    //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
-    m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
+    // Default command to decelerate the flywheel if no other command is set
+    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
+    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
   }
 
   private void configureBindings() {
-    var rightButton1Action = new Trigger(() -> leftJoystick.getRawButton(1));
-    rightButton1Action.whileTrue(
-        new DriveAndAim(
-            m_swerveDrive,
-            () -> leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-            () -> leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
-    xboxController
-        .a()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.SLOW.get(), RPM_SETPOINT.SLOW.get())); // slow sbeaker
+    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+
     xboxController
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast sbeaker
-    xboxController
-        .x()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.SPEAKER.get())); // fast sbeaker
+                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast speaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
     // switch between open loop and close loop
-    // xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
-    xboxController.back().toggleOnTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
     // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
-    xboxController.x().whileTrue(new ArmForward(m_arm));
+    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+    xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
 
-    xboxController
-        .y()
-        .whileTrue(
-            new ShootNStrafe(
-                m_swerveDrive,
-                m_ampShooter,
-                m_shooter,
-                () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                SHOOTER.RPM_SETPOINT.SPEAKER.get()));
+    // xboxController
+    //     .y()
+    //     .whileTrue(
+    //         new ShootNStrafe(
+    //             m_swerveDrive,
+    //             m_ampShooter,
+    //             m_shooter,
+    //             () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+    //             () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+    //             () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+    //             SHOOTER.RPM_SETPOINT.SPEAKER.get()));
 
     xboxController
         .rightTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.55, 0.85, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+                m_intake, 0.55, 0.75, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, -0.50, -0.85, m_ampShooter, -0.5)); // Outtake Note with Intake And Amp
+                m_intake, 0.6, 0.75, m_ampShooter, 0.05)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
-        .whileTrue(new RunIntake(m_intake, 0.55, 0.85)); // Intake Note with Only Intake
+        .whileTrue(
+            new RunAmp(
+                m_ampShooter,
+                m_intake,
+                AMP.STATE.INTAKING_SLOW.get())); // Intake Note with Only Intake
     xboxController
         .leftBumper()
-        .whileTrue(new RunIntake(m_intake, -0.55, -0.85)); // Outtake Note with Only Intake
+        .whileTrue(
+            new RunAmp(
+                m_ampShooter,
+                m_intake,
+                AMP.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
+
+    xboxController
+        .povLeft()
+        .whileTrue(
+            new RunAll(
+                m_intake,
+                m_shooter,
+                m_ampShooter,
+                0,
+                0,
+                0,
+                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+    xboxController
+        .povDown()
+        .whileTrue(
+            new RunAll(
+                m_intake,
+                m_shooter,
+                m_ampShooter,
+                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+                AMP.STATE.REVERSE.get(),
+                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
 
     xboxController
         .povUp()
         .whileTrue(
-            new RunAmp(
-                m_ampShooter,
+            new RunAll(
                 m_intake,
-                AMP.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
-
-    xboxController
-        .povDown()
-        .whileTrue(
-            new RunAmp(
+                m_shooter,
                 m_ampShooter,
-                m_intake,
-                AMP.STATE.REVERSE_SLOW.get())); // Outtake Note with Only Amp
-
-    if (RobotBase.isSimulation()) {
-      m_testController
-          .cross()
-          .whileTrue(
-              new DriveAndAim(
-                  m_swerveDrive,
-                  () -> -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                  () -> -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond));
-    }
+                INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
+                INTAKE.STATE.BACK_SLOW_INTAKING.get(),
+                AMP.STATE.INTAKING_SLOW.get(),
+                RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
   }
 
   public void initAutoChooser() {

@@ -220,7 +220,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Climber/CONTROL_MODE", getClosedLoopControlMode());
+    Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
     Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPositionMeters());
     Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());

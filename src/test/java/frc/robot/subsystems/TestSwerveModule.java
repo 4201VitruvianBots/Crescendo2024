@@ -117,7 +117,7 @@ public class TestSwerveModule implements AutoCloseable {
 
     m_turnSimState = m_testModule.getSteerMotor().getSimState();
     m_turnSimState.Orientation =
-        SWERVE.MODULE.kTurnInverted
+        SWERVE.DRIVE.kTurnInversions[0]
             ? ChassisReference.Clockwise_Positive
             : ChassisReference.CounterClockwise_Positive;
     m_driveSimState = m_testModule.getDriveMotor().getSimState();

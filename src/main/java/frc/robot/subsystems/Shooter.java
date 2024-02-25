@@ -121,6 +121,11 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
+  public void setNeutralMode(NeutralModeValue mode) {
+    m_shooterMotors[0].setNeutralMode(mode);
+    m_shooterMotors[1].setNeutralMode(mode);
+  }
+
   public double getShootNStrafeAngle(
       Pose2d robotPose, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(
