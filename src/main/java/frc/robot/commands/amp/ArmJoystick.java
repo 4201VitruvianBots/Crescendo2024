@@ -46,7 +46,7 @@ public class ArmJoystick extends Command {
         // Upper limit
         if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
           m_joystickDeadband = Math.min(m_joystickDeadband, 0);
-        
+
         // Lower limit
         if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
           m_joystickDeadband = Math.max(m_joystickDeadband, 0);
