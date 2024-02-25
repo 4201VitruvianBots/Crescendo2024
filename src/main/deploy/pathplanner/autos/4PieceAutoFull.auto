@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

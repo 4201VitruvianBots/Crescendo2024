@@ -18,6 +18,8 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
 
   private Pose2d m_robotPose = new Pose2d();
   private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
+  private Pose2d m_visionAPose = new Pose2d();
+  private Pose2d m_visionBPose = new Pose2d();
 
   public FieldSim() {
     initSim();
@@ -36,12 +38,22 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     m_robotPose = pose;
   }
 
+  public void updateVisionAPose(Pose2d pose) {
+    m_visionAPose = pose;
+  }
+
+  public void updateVisionBPose(Pose2d pose) {
+    m_visionBPose = pose;
+  }
+
   public void updateSwervePoses(Pose2d[] poses) {
     m_swervePoses = poses;
   }
 
   private void updateField2d() {
     m_field2d.setRobotPose(m_robotPose);
+    m_field2d.getObject("visionAPose").setPose(m_visionAPose);
+    m_field2d.getObject("visionBPose").setPose(m_visionBPose);
 
     if (RobotBase.isSimulation()) {
       m_field2d.getObject("Swerve Modules").setPoses(m_swervePoses);

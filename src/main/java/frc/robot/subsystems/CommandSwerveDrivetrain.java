@@ -7,6 +7,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -18,11 +19,16 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.frc2023.util.Alert;
+import org.littletonrobotics.frc2023.util.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -33,16 +39,26 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
-  private final Pose2d[] m_modulePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
-
-  private final SwerveRequest.FieldCentric m_driveRequest =
+  private double m_desiredHeadingRadians;
+  private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
+  private Vision m_vision;
+  private final SwerveRequest.FieldCentric m_driveReqeustFieldCentric =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
           .withRotationalDeadband(
               SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
           .withDriveRequestType(
               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private final SwerveRequest.RobotCentric m_driveReqeustRobotCentric =
+      new SwerveRequest.RobotCentric()
+          .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
+          .withRotationalDeadband(
+              SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private final SwerveRequest.FieldCentricFacingAngle m_turnRequest =
+      new SwerveRequest.FieldCentricFacingAngle();
   // driving in open loop
   private Pose2d m_futurePose = new Pose2d();
   private Twist2d m_twistFromPose = new Twist2d();
@@ -56,39 +72,28 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    resetGyro(0);
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    System.out.println("Swerve Init at: " + Logger.getRealTimestamp());
+    m_alert.setText("Swerve Init at: " + Logger.getRealTimestamp());
+    m_alert.set(true);
   }
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
 
-    // for (int i = 0; i < modules.length; i++) {
-    //   m_constants[i] = modules[i];
-    //   var encoderConfigs = CtreUtils.generateCanCoderConfig();
-    //   // encoderConfigs.MagnetSensor.MagnetOffset = modules[i].CANcoderOffset;
-    //   CtreUtils.configureCANCoder(getModule(i).getCANcoder(), encoderConfigs);
-
-    //   var turnConfigs = CtreUtils.generateTurnMotorConfig();
-    //   // turnConfigs.Feedback.FeedbackRemoteSensorID = modules[i].CANcoderId;
-    //   CtreUtils.configureTalonFx(getModule(i).getSteerMotor(), turnConfigs);
-    //   setTurnAngle(i, 0);
-
-    //   var driveConfigs = CtreUtils.generateDriveMotorConfig();
-    //   // driveConfigs.MotorOutput.Inverted = i % 2 == 0 ? InvertedValue.Clockwise_Positive :
-    // InvertedValue.CounterClockwise_Positive;
-    //   CtreUtils.configureTalonFx(getModule(i).getDriveMotor(), driveConfigs);
-    // }
-    resetGyro(0);
-
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    System.out.printf("Swerve Init at: %.2f\n", Logger.getTimestamp() * 1.0e-6);
+    m_alert.setText("Swerve Init at: " + Logger.getTimestamp() * 1.0e-6);
+    m_alert.set(true);
+  }
+
+  public void registerVisionSubsystem(Vision vision) {
+    m_vision = vision;
   }
 
   public void setTurnAngle(int moduleId, double angle) {
@@ -105,43 +110,79 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     if (!turnMotorStatus.isOK()) {
-      System.out.println(
-          "Could not update Swerve Turn TalonFX Angle: "
-              + getModule(moduleId).getSteerMotor().getDeviceID()
-              + ". Error code: "
-              + turnMotorStatus);
+      var alert =
+          new Alert(
+              "Could not update Swerve Turn TalonFX Angle: "
+                  + getModule(moduleId).getSteerMotor().getDeviceID()
+                  + ". Error code: "
+                  + turnMotorStatus,
+              AlertType.ERROR);
+      alert.set(true);
     } else {
-      // System.out.printf(
-      //     """
-      //                 Updated Turn Motor %2d Angle:
-      //                 Desired Angle: %.2f
-      //                 Turn Motor Angle: %.2f
-      //                 CANCoder Absolute Angle: %.2f
-      //                 CANCoder Offset: %.2f\n""",
-      //     m_turnMotor.getDeviceID(),
-      //     angle,
-      //     getTurnHeadingDeg(),
-      //     getTurnEncoderAbsHeading().getDegrees(),
-      //     m_angleOffset);
+      System.out.printf(
+          """
+                       Updated Turn Motor %2d Angle:
+                       Desired Angle: %.2f
+                       Turn Motor Angle: %.2f
+                       CANCoder Absolute Angle: %.2f
+                       CANCoder Offset: %.2f
+                       """,
+          getModule(moduleId).getSteerMotor().getDeviceID(),
+          angle,
+          Units.rotationsToDegrees(getModule(moduleId).getSteerMotor().getPosition().getValue()),
+          getModule(moduleId).getCANcoder().getAbsolutePosition().getValue(),
+          Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset));
     }
   }
-
-  public void resetOdometry(Pose2d pose) {}
 
   public ChassisSpeeds getChassisSpeed() {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds) {
-    return applyFieldCentricDrive(chassisSpeeds, 0.02, 1.0);
+  public void resetGyro(double angle) {
+    getPigeon2().setYaw(angle);
   }
 
-  public Command applyFieldCentricDrive(Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod) {
-    return applyFieldCentricDrive(chassisSpeeds, loopPeriod, 1.0);
+  public Command turnInPlace(Rotation2d angle, BooleanSupplier flipAngle) {
+    if (flipAngle.getAsBoolean()) {
+      angle = new Rotation2d(Math.PI).minus(angle);
+    }
+
+    // variables passed into lambdas must be final
+    Rotation2d finalAngle = angle;
+    return applyRequest(() -> m_turnRequest.withTargetDirection(finalAngle))
+        .onlyWhile(
+            () ->
+                Math.abs(
+                        finalAngle
+                            .minus(Rotation2d.fromDegrees(getPigeon2().getYaw().getValue()))
+                            .getDegrees())
+                    > 1.0)
+        .withTimeout(0.25);
   }
 
-  public Command applyFieldCentricDrive(
-      Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, double driftRate) {
+  public Command applyChassisSpeeds(Supplier<ChassisSpeeds> chassisSpeeds) {
+    return applyChassisSpeeds(chassisSpeeds, 0.02, 1.0, false);
+  }
+
+  public Command applyChassisSpeeds(Supplier<ChassisSpeeds> chassisSpeeds, boolean isRobotCentric) {
+    return applyChassisSpeeds(chassisSpeeds, 0.02, 1.0, isRobotCentric);
+  }
+
+  public Command applyChassisSpeeds(
+      Supplier<ChassisSpeeds> chassisSpeeds, double loopPeriod, boolean isRobotCentric) {
+    return applyChassisSpeeds(chassisSpeeds, loopPeriod, 1.0, isRobotCentric);
+  }
+
+  /**
+   * Second-Order Kinematics <a
+   * href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79">...</a>
+   */
+  public Command applyChassisSpeeds(
+      Supplier<ChassisSpeeds> chassisSpeeds,
+      double loopPeriod,
+      double driftRate,
+      boolean isRobotCentric) {
     return applyRequest(
         () -> {
           m_futurePose =
@@ -158,18 +199,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                   m_twistFromPose.dx / loopPeriod,
                   m_twistFromPose.dy / loopPeriod,
                   chassisSpeeds.get().omegaRadiansPerSecond);
-          return m_driveRequest
-              .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
-              .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
-              .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
-        });
-  }
-  ;
 
-  public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-    var cmd = run(() -> setControl(requestSupplier.get()));
-    cmd.addRequirements(this);
-    return cmd;
+          if (isRobotCentric) {
+            return m_driveReqeustRobotCentric
+                .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+          } else {
+            return m_driveReqeustFieldCentric
+                .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+          }
+        });
   }
 
   public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds) {
@@ -180,9 +222,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
   }
 
-  /* Second-Order Kinematics
-  https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79
-
+  /**
+   * Second-Order Kinematics <a
+   * href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/79">...</a>
    */
   public void setChassisSpeedControl(
       ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
@@ -203,21 +245,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
   }
 
-  private void startSimThread() {
-    m_lastSimTime = Utils.getCurrentTimeSeconds();
+  public void setChassisSpeedControlNormal(ChassisSpeeds chassisSpeeds) {
+    setControl(m_chassisSpeedRequest.withSpeeds(chassisSpeeds));
+  }
 
-    /* Run simulation at a faster rate so PID gains behave more reasonably */
-    m_simNotifier =
-        new Notifier(
-            () -> {
-              final double currentTime = Utils.getCurrentTimeSeconds();
-              double deltaTime = currentTime - m_lastSimTime;
-              m_lastSimTime = currentTime;
+  public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
+    var cmd = run(() -> setControl(requestSupplier.get()));
+    cmd.addRequirements(this);
+    return cmd;
+  }
 
-              /* use the measured time delta, get battery voltage from WPILib */
-              updateSimState(deltaTime, RobotController.getBatteryVoltage());
-            });
-    m_simNotifier.startPeriodic(kSimLoopPeriod);
+  public Optional<Rotation2d> getRotationTargetOverride() {
+    // Some condition that should decide if we want to override rotation
+    if (m_vision != null) {
+      if (m_vision.hasGamePieceTarget()) {
+        // Return an optional containing the rotation override (this should be a field relative
+        // rotation)
+        return Optional.of(m_vision.getRobotToGamePieceRotation());
+      }
+    }
+    // return an empty optional when we don't want to override the path's rotation
+    return Optional.empty();
   }
 
   public void initDriveSysid() {
@@ -240,11 +288,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
-    System.out.println("Finished Initializing Drive Settings");
-  }
-
-  public void resetGyro(double angle) {
-    getPigeon2().setYaw(angle);
+    m_alert.setText("Finished Initializing Drive Settings");
+    m_alert.set(true);
   }
 
   public void initTurnSysid() {
@@ -263,27 +308,45 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
-    System.out.println("Finished Initializing Drive Settings");
+    m_alert.setText("Finished Initializing Drive Settings");
+    m_alert.set(true);
   }
 
-  public void updateLog() {
+  private void updateLogger() {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
-        "Swerve/FRONTLEFTENCODER",
+        "Swerve/FrontLeftEncoder",
         Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/FRONTRIGHTENCODER",
+        "Swerve/FrontRightEncoder",
         Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKLEFTENCODER",
+        "Swerve/BackLeftEncoder",
         Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
     Logger.recordOutput(
-        "Swerve/BACKRIGHTENCODER",
+        "Swerve/BackRightEncoder",
         Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
   }
 
   @Override
   public void periodic() {
-    updateLog();
+    if (!ROBOT.disableLogging) updateLogger();
+  }
+
+  private void startSimThread() {
+    m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    m_simNotifier =
+        new Notifier(
+            () -> {
+              final double currentTime = Utils.getCurrentTimeSeconds();
+              double deltaTime = currentTime - m_lastSimTime;
+              m_lastSimTime = currentTime;
+
+              /* use the measured time delta, get battery voltage from WPILib */
+              updateSimState(deltaTime, RobotController.getBatteryVoltage());
+            });
+    m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 }

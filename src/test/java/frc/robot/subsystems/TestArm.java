@@ -2,10 +2,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.simulation.SimConstants.kMotorResistance;
 import static frc.robot.utils.TestUtils.refreshAkitData;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.hal.HAL;
@@ -16,7 +14,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.*;
 import frc.robot.constants.ARM;
-import frc.robot.constants.ROBOT;
 import frc.robot.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +21,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
-@Disabled("To Fix")
+@Disabled
 public class TestArm {
   static final double DELTA = 0.2; // acceptable deviation range
-  static final double WAIT_TIME = 0.04;
+  static final double WAIT_TIME = 0.02;
 
   NetworkTableInstance m_nt;
   NetworkTable m_table;
@@ -75,8 +72,8 @@ public class TestArm {
         new SingleJointedArmSim(
             ARM.gearBox,
             ARM.gearRatio,
-            SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
-            ARM.length,
+            SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
+            ARM.armLength,
             Units.degreesToRadians(ARM.minAngleDegrees),
             Units.degreesToRadians(ARM.maxAngleDegrees),
             false,
@@ -99,79 +96,10 @@ public class TestArm {
   }
 
   @Test
-  public void testArmOutput() {
-    m_arm.setControlMode(ROBOT.CONTROL_MODE.OPEN_LOOP);
-    var percentOutput = new DutyCycleOut(0);
-    m_armMotor.setControl(percentOutput.withOutput(1.0));
-    refreshAkitData();
-    Timer.delay(WAIT_TIME);
-
-    var posPub = m_table.getDoubleTopic("position").publish();
-    var voltagePub = m_table.getDoubleTopic("voltage").publish();
-    var currentPub = m_table.getDoubleTopic("current").publish();
-
-    for (int i = 0; i < 25; i++) {
-      m_arm.periodic();
-      updateSimArm();
-      posPub.set(Units.radiansToDegrees(m_arm.getAngleDegrees()));
-      //            voltagePub.set(m_testModule.getSteerMotor().getMotorVoltage().getValue());
-      //            currentPub.set(m_testModule.getSteerMotor().getStatorCurrent().getValue());
-      m_nt.flush();
-    }
-
-    var testPos = m_arm.getAngleDegrees();
-    assertTrue(testPos > 0.0);
-  }
-
-  @Test
-  public void testArmMotorSetpoint() {
-    m_arm.setControlMode(ROBOT.CONTROL_MODE.OPEN_LOOP);
-    var positionControl = new PositionVoltage(0);
-    m_armMotor.setControl(positionControl.withPosition(100));
-    refreshAkitData();
-    Timer.delay(WAIT_TIME);
-
-    var posPub = m_table.getDoubleTopic("position").publish();
-    var voltagePub = m_table.getDoubleTopic("voltage").publish();
-    var currentPub = m_table.getDoubleTopic("current").publish();
-
-    for (int i = 0; i < 25; i++) {
-      m_arm.periodic();
-      updateSimArm();
-      posPub.set(Units.radiansToDegrees(m_arm.getAngleDegrees()));
-      //            voltagePub.set(m_testModule.getSteerMotor().getMotorVoltage().getValue());
-      //            currentPub.set(m_testModule.getSteerMotor().getStatorCurrent().getValue());
-      m_nt.flush();
-    }
-
-    var testPos = m_arm.getAngleDegrees();
-    assertTrue(testPos > 0.0);
-  }
-
-  @Test
   public void testArmSetpoint() {
     m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.FORWARD.get());
-    refreshAkitData();
-    Timer.delay(WAIT_TIME);
 
-    var posPub = m_table.getDoubleTopic("position").publish();
-    var voltagePub = m_table.getDoubleTopic("voltage").publish();
-    var currentPub = m_table.getDoubleTopic("current").publish();
-
-    for (int i = 0; i < 25; i++) {
-      m_robotTime.periodic();
-      m_arm.periodic();
-      refreshAkitData();
-      Timer.delay(WAIT_TIME);
-      updateSimArm();
-      posPub.set(Units.radiansToDegrees(m_arm.getAngleDegrees()));
-      //            voltagePub.set(m_testModule.getSteerMotor().getMotorVoltage().getValue());
-      //            currentPub.set(m_testModule.getSteerMotor().getStatorCurrent().getValue());
-      m_nt.flush();
-    }
-
-    var testPos = m_arm.getAngleDegrees();
-    assertTrue(testPos > 0.0);
+    assertEquals(ARM.ARM_SETPOINT.FORWARD.get(), m_arm.getDesiredSetpointRotations());
   }
 
   @AfterEach

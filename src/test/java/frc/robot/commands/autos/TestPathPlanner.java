@@ -1,28 +1,34 @@
 package frc.robot.commands.autos;
 
 import static frc.robot.constants.SWERVE.*;
+import static frc.robot.utils.TestUtils.setPrivateField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.FIELD;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
 import frc.robot.utils.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class TestPathPlanner {
   static final double DELTA = 0.02; // acceptable deviation range
 
   RobotTime m_robotTime;
   CommandSwerveDrivetrain m_swerveDrive;
+  Controls m_controls;
   Telemetry m_telemetry;
   FieldSim m_fieldSim;
 
@@ -43,6 +49,7 @@ public class TestPathPlanner {
     m_fieldSim = new FieldSim();
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_telemetry.registerFieldSim(m_fieldSim);
+    m_controls = new Controls();
 
     /* enable the robot */
     DriverStationSim.setDsAttached(true);
@@ -87,5 +94,23 @@ public class TestPathPlanner {
 
       System.out.println("TEST");
     }
+  }
+
+  @Test
+  public void testStartPoseFlip() {
+    setPrivateField(m_controls, "m_allianceColor", DriverStation.Alliance.Red);
+    var path = PathPlannerPath.fromPathFile("DriveForwardTest");
+    var flippedPath = path.flipPath();
+
+    var flippedStartPoint = FIELD.pathPlannerFlip(path.getPreviewStartingHolonomicPose());
+
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getX(), flippedStartPoint.getX(), DELTA);
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getY(), flippedStartPoint.getY(), DELTA);
+    assertEquals(
+        flippedPath.getPreviewStartingHolonomicPose().getRotation().getDegrees(),
+        flippedStartPoint.getRotation().getDegrees(),
+        DELTA);
   }
 }

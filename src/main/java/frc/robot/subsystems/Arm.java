@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,11 +33,13 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
-  private TalonFXSimState m_simState = m_armMotor.getSimState();
+  private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
-  private StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
+  private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
 
-  private final PositionVoltage m_position = new PositionVoltage(0);
+  private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
+
+  private final PositionVoltage m_position = new PositionVoltage(m_desiredRotations);
 
   private TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(ARM.kMaxArmVelocity, ARM.kMaxArmAcceleration);
@@ -45,19 +48,17 @@ public class Arm extends SubsystemBase {
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
 
-  private double m_desiredRotations = 0;
-
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
           ARM.gearBox,
           ARM.gearRatio,
-          SingleJointedArmSim.estimateMOI(ARM.length, ARM.mass),
-          ARM.length,
-          Units.degreesToRadians(ARM.minAngleDegrees + 90.0),
-          Units.degreesToRadians(ARM.maxAngleDegrees + 90.0),
+          SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
+          ARM.armLength,
+          Units.degreesToRadians(ARM.minAngleDegrees),
+          Units.degreesToRadians(ARM.maxAngleDegrees - ARM.minAngleDegrees),
           false,
-          Units.degreesToRadians(ARM.startingAngleDegrees + 90.0));
+          Units.degreesToRadians(ARM.startingAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
 
@@ -68,27 +69,29 @@ public class Arm extends SubsystemBase {
       m_kI_subscriber,
       m_kD_subscriber,
       m_kMaxArmVelocity_subscriber,
-      m_kMaxArmAcceleration_subscriber;
-  private NetworkTable armTab =
+      m_kMaxArmAcceleration_subscriber,
+      m_kSetpoint_subscriber;
+  private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Slot0.kS = ARM.kS;
     config.Slot0.kV = ARM.kV;
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
-    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.PeakForwardDutyCycle = 0.2;
+    config.MotorOutput.PeakReverseDutyCycle = -0.2;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
     SmartDashboard.putData(this);
 
-    m_armMotor.setPosition(Units.degreesToRotations(ARM.minAngleDegrees));
-    setDesiredSetpointRotations(Units.degreesToRotations(ARM.minAngleDegrees));
+    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
   // Get the percent output of the arm motor.
@@ -101,7 +104,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void setDesiredSetpointRotations(double rotations) {
-    m_desiredRotations = rotations;
+    m_desiredRotations =
+        MathUtil.clamp(
+            rotations,
+            Units.degreesToRotations(ARM.minAngleDegrees),
+            Units.degreesToRotations(ARM.maxAngleDegrees));
     m_goal = new TrapezoidProfile.State(m_desiredRotations, 0);
   }
 
@@ -109,13 +116,37 @@ public class Arm extends SubsystemBase {
     return m_desiredRotations;
   }
 
-  public double getAngleDegrees() {
+  public double getCurrentRotation() {
     m_positionSignal.refresh();
-    return Units.rotationsToDegrees(m_positionSignal.getValue());
+    return m_positionSignal.getValue();
+  }
+
+  public double getCurrentAngle() {
+    return Units.rotationsToDegrees(getCurrentRotation() * (1.0 / 140.0));
   }
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
+    if (mode == ROBOT.CONTROL_MODE.CLOSED_LOOP && m_controlMode == ROBOT.CONTROL_MODE.OPEN_LOOP)
+      resetTrapezoidState();
     m_controlMode = mode;
+  }
+
+  public ROBOT.CONTROL_MODE getControlMode() {
+    return m_controlMode;
+  }
+
+  public void resetSensorPosition() {
+    if (RobotBase.isReal()) {
+      m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+      resetTrapezoidState();
+    } else {
+      m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+      resetTrapezoidState();
+    }
+  }
+
+  public void resetTrapezoidState() {
+    m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
   }
 
   public TalonFX getMotor() {
@@ -123,9 +154,10 @@ public class Arm extends SubsystemBase {
   }
 
   private void updateLogger() {
+    Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
+    Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/CurrentAngle", getAngleDegrees());
-    Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_setpoint.position));
+    Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
 
@@ -139,6 +171,8 @@ public class Arm extends SubsystemBase {
     armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
     armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
 
+    armTab.getDoubleTopic("kSetpoint").publish().set(getCurrentAngle());
+
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
     m_kP_subscriber = armTab.getDoubleTopic("kP").subscribe(ARM.kP);
@@ -148,6 +182,9 @@ public class Arm extends SubsystemBase {
     m_kMaxArmVelocity_subscriber = armTab.getDoubleTopic("kMaxVel").subscribe(ARM.kMaxArmVelocity);
     m_kMaxArmAcceleration_subscriber =
         armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
+
+    m_kSetpoint_subscriber =
+        armTab.getDoubleTopic("kSetpoint").subscribe(Units.rotationsToDegrees(m_desiredRotations));
   }
 
   public void testPeriodic() {
@@ -163,6 +200,17 @@ public class Arm extends SubsystemBase {
     m_constraints =
         new TrapezoidProfile.Constraints(
             m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
+
+    double m_oldSetpoint = Units.rotationsToDegrees(m_desiredRotations);
+    m_desiredRotations =
+        Units.degreesToRotations(
+            m_kSetpoint_subscriber.get(Units.rotationsToDegrees(m_desiredRotations)));
+    if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
+  }
+
+  public void teleopInit() {
+    setDesiredSetpointRotations(getCurrentRotation());
+    resetTrapezoidState();
   }
 
   @Override
@@ -182,10 +230,8 @@ public class Arm extends SubsystemBase {
         break;
     }
 
-    updateLogger();
+    if (!ROBOT.disableLogging) updateLogger();
   }
-
-  double m_last_time;
 
   @Override
   public void simulationPeriodic() {

@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 public final class CAN {
   public static final String rioCanbus = "rio";
-  public static final String drivebaseCanbus = "drivebase";
+  public static String drivebaseCanbus = "drivebase";
 
   public static final int CANdle = 8;
   public static final int pigeon = 9;
@@ -21,12 +21,15 @@ public final class CAN {
   public static final int backRightDriveMotor = 26;
   public static final int backRightTurnMotor = 27;
 
-  public static final int intakeMotor1 = 30;
+  public static final int intakeMotor1 = 30; // front
   public static final int intakeMotor2 = 31;
 
-  public static final int flywheel1 = 41;
+  public static final int flywheel1 = 41; // Bottom
   public static final int flywheel2 = 42;
 
   public static final int ampShooter = 51;
   public static final int armMotor = 52;
+
+  public static final int climbMotor1 = 60;
+  public static final int climbMotor2 = 61;
 }
