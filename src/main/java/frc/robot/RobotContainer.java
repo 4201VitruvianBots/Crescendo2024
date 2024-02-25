@@ -32,6 +32,7 @@ import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
+import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
@@ -145,17 +146,16 @@ public class RobotContainer {
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
     }
 
-    // m_intake.setDefaultCommand(
-    //     new SetIntakePercentOutput(
-    //         m_intake, xboxController.getLeftY(), xboxController.getRightY()));
+    // Default command to decelerate the flywheel if no other command is set
+    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
     m_arm.setDefaultCommand(new ArmJoystickSetpoint(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
   }
 
   private void configureBindings() {
-    var driveshootbutton = new Trigger(() -> rightJoystick.getRawButton(1));
-    driveshootbutton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
     xboxController
         .a()
@@ -199,7 +199,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.6, 0.75, m_ampShooter, 0.1)); // Outtake Note with Intake And Amp
+                m_intake, 0.6, 0.75, m_ampShooter, 0.05)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
@@ -238,6 +238,18 @@ public class RobotContainer {
                 STATE.BACK_ROLLER_REVERSE.get(),
                 frc.robot.constants.AMP.STATE.REVERSE.get(),
                 RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+
+    xboxController
+        .povUp()
+        .whileTrue(
+            new RunAll(
+                m_intake,
+                m_shooter,
+                m_ampShooter,
+                STATE.FRONT_SLOW_INTAKING.get(),
+                STATE.BACK_SLOW_INTAKING.get(),
+                frc.robot.constants.AMP.STATE.INTAKING_SLOW.get(),
+                RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
   }
 
   public void initAutoChooser() {

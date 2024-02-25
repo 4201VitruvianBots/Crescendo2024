@@ -70,8 +70,8 @@ public class TwoPiece extends SequentialCommandGroup {
         new AutoRunAmpTake(
             intake,
             ampShooter,
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.NONE.get(),
             AMP.STATE.INTAKING.get());
 
     var shootCommand2 =
@@ -103,12 +103,11 @@ public class TwoPiece extends SequentialCommandGroup {
         new InstantCommand(
             () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
             swerveDrive),
-        flywheelCommandContinues,
-        new WaitCommand(2),
-        commandList.get(0).alongWith(runIntake).andThen(() -> swerveDrive.setControl(stopRequest)),
-        shootCommand2,
+        commandList.get(0).alongWith(flywheelCommandContinues).andThen(() -> swerveDrive.setControl(stopRequest)),
+        new WaitCommand(1),
+        shootCommand,
         commandList.get(1).alongWith(runIntake2).andThen(() -> swerveDrive.setControl(stopRequest)),
-        shootCommand
+        shootCommand2
             .withTimeout(5)
             .andThen(
                 () -> {

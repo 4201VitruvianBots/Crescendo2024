@@ -5,26 +5,30 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class AutoSetRPMSetpoint extends Command {
+public class DefaultFlywheel extends Command {
   private final Shooter m_shooter;
-  private final double m_RPM;
 
-  public AutoSetRPMSetpoint(Shooter shooter, double RPM) {
+  public DefaultFlywheel(Shooter shooter) {
     m_shooter = shooter;
-    m_RPM = RPM;
 
     addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_shooter.setNeutralMode(NeutralModeValue.Coast);
-    m_shooter.setRPMOutput(m_RPM);
-  }
+  public void initialize() {}
 
   @Override
-  public void execute() {}
+  public void execute() {
+    // If no other command is running, slow down the flywheel to decelerate it faster
+    if (m_shooter.getRpmMaster() > 500) {
+      m_shooter.setPercentOutput(-0.01);
+      m_shooter.setNeutralMode(NeutralModeValue.Brake);
+    } else {
+      m_shooter.setPercentOutput(0);
+      m_shooter.setNeutralMode(NeutralModeValue.Coast);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
 
@@ -35,6 +39,6 @@ public class AutoSetRPMSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
