@@ -5,11 +5,11 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1055",
-      "maximized": "0",
+      "height": "1011",
+      "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "1559",
+      "width": "1920",
       "xpos": "203",
       "ypos": "189"
     }
@@ -41,7 +41,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "112,364",
-      "Size": "337,110"
+      "Size": "236,86"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -71,7 +71,7 @@
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "268,866",
-      "Size": "1156,91"
+      "Size": "796,155"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -96,12 +96,12 @@
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "5,349",
-      "Size": "273,290"
+      "Size": "192,218"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "5,150",
-      "Size": "197,215"
+      "Size": "141,173"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -111,7 +111,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "126,152"
+      "Size": "92,116"
     }
   }
 }
