@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -22,6 +29,11 @@
       "/SmartDashboard/toggleShooterTestMode": "Command"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Climber": {
         "window": {
           "visible": true
@@ -51,6 +63,10 @@
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
+        "path": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
         "right": 2961,
         "top": 79,
         "visionAPose": {
@@ -121,6 +137,11 @@
     }
   },
   "NetworkTables Info": {
-    "visible": true
+    "Connections": {
+      "open": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

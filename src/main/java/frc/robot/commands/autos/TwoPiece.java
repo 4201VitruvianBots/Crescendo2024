@@ -37,7 +37,7 @@ public class TwoPiece extends SequentialCommandGroup {
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"3Piece2Pt1", "MasonsMagic"};
+    String[] pathFiles = {"3Piece2Pt1", "3Piece2Pt2"};
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
 
