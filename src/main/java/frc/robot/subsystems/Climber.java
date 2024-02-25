@@ -233,29 +233,26 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
-        case OPEN_LOOP:
-            double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
+      case OPEN_LOOP:
+        double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
 
-            if (m_limitJoystickInput)
-                percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
+        if (m_limitJoystickInput)
+          percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
-            if (DriverStation.isEnabled())
-                setPercentOutput(percentOutput, true);
-            else
-                setPercentOutput(0.0, true);
-            
-            break;
-        default:
-        case CLOSED_LOOP:
-            // Updates our trapezoid profile state based on the time since our last periodic and our
-            // recorded change in height
-            m_setpoint = m_currentProfile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
-            m_position.Position = m_setpoint.position;
-            m_position.Velocity = m_setpoint.velocity;
+        if (DriverStation.isEnabled()) setPercentOutput(percentOutput, true);
+        else setPercentOutput(0.0, true);
 
-            if (DriverStation.isEnabled())
-                elevatorClimbMotors[0].setControl(m_position);
-            break;
+        break;
+      default:
+      case CLOSED_LOOP:
+        // Updates our trapezoid profile state based on the time since our last periodic and our
+        // recorded change in height
+        m_setpoint = m_currentProfile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
+        m_position.Position = m_setpoint.position;
+        m_position.Velocity = m_setpoint.velocity;
+
+        if (DriverStation.isEnabled()) elevatorClimbMotors[0].setControl(m_position);
+        break;
     }
     if (!ROBOT.disableLogging) updateLogger();
   }

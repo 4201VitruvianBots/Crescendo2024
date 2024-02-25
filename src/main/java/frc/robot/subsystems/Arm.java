@@ -217,22 +217,21 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     switch (m_controlMode) {
-        case CLOSED_LOOP:
-            // This method will be called once per scheduler run
-            // periodic, update the profile setpoint for 20 ms loop time
-            m_setpoint = m_profile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
-            // apply the setpoint to the control request
-            m_position.Position = m_setpoint.position;
-            m_position.Velocity = m_setpoint.velocity;
-            if (DriverStation.isEnabled()) 
-                m_armMotor.setControl(m_position);
-            break;
-        default:
-        case OPEN_LOOP:
-            if (DriverStation.isDisabled()) {
-                setPercentOutput(0.0);
-            }
-            break;
+      case CLOSED_LOOP:
+        // This method will be called once per scheduler run
+        // periodic, update the profile setpoint for 20 ms loop time
+        m_setpoint = m_profile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
+        // apply the setpoint to the control request
+        m_position.Position = m_setpoint.position;
+        m_position.Velocity = m_setpoint.velocity;
+        if (DriverStation.isEnabled()) m_armMotor.setControl(m_position);
+        break;
+      default:
+      case OPEN_LOOP:
+        if (DriverStation.isDisabled()) {
+          setPercentOutput(0.0);
+        }
+        break;
     }
 
     if (!ROBOT.disableLogging) updateLogger();
