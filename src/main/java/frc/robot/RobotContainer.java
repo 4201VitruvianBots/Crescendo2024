@@ -8,12 +8,12 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -36,7 +36,6 @@ import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
-import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -78,7 +77,8 @@ public class RobotContainer {
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
-  private final PS4Controller m_testController = new PS4Controller(USB.testController);
+  private final CommandPS4Controller m_testController =
+      new CommandPS4Controller(USB.testController);
   private final Trigger trigger =
       new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
@@ -87,7 +87,8 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-//    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerFieldSim(m_fieldSim);
+    //    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -234,9 +235,9 @@ public class RobotContainer {
                 m_intake,
                 m_shooter,
                 m_ampShooter,
-                STATE.FRONT_ROLLER_REVERSE.get(),
-                STATE.BACK_ROLLER_REVERSE.get(),
-                frc.robot.constants.AMP.STATE.REVERSE.get(),
+                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+                AMP.STATE.REVERSE.get(),
                 RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
 
     xboxController
@@ -246,9 +247,9 @@ public class RobotContainer {
                 m_intake,
                 m_shooter,
                 m_ampShooter,
-                STATE.FRONT_SLOW_INTAKING.get(),
-                STATE.BACK_SLOW_INTAKING.get(),
-                frc.robot.constants.AMP.STATE.INTAKING_SLOW.get(),
+                INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
+                INTAKE.STATE.BACK_SLOW_INTAKING.get(),
+                AMP.STATE.INTAKING_SLOW.get(),
                 RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
   }
 
