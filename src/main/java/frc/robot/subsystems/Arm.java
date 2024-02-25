@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
           SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
           ARM.armLength,
           Units.degreesToRadians(ARM.minAngleDegrees),
-          Units.degreesToRadians(ARM.maxAngleDegrees),
+          Units.degreesToRadians(ARM.maxAngleDegrees - ARM.minAngleDegrees),
           false,
           Units.degreesToRadians(ARM.startingAngleDegrees));
 
@@ -84,15 +84,14 @@ public class Arm extends SubsystemBase {
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
+    config.MotorOutput.PeakForwardDutyCycle = 0.2;
+    config.MotorOutput.PeakReverseDutyCycle = -0.2;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
     SmartDashboard.putData(this);
 
-    // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-    
-    // For testing for now
-    m_armMotor.setNeutralMode(NeutralModeValue.Coast);
+    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
   // Get the percent output of the arm motor.
@@ -127,6 +126,8 @@ public class Arm extends SubsystemBase {
   }
  
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
+    if (mode == ROBOT.CONTROL_MODE.CLOSED_LOOP && m_controlMode == ROBOT.CONTROL_MODE.OPEN_LOOP)
+        resetTrapezoidState();
     m_controlMode = mode;
   }
   
@@ -136,10 +137,16 @@ public class Arm extends SubsystemBase {
 
   public void resetSensorPosition() {
     if (RobotBase.isReal()) {
-      m_armMotor.setPosition(0);
+      m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+      resetTrapezoidState();
     } else {
-      m_simState.setRawRotorPosition(0);
+      m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+      resetTrapezoidState();
     }
+  }
+  
+  public void resetTrapezoidState() {
+    m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
   }
 
   public TalonFX getMotor() {
@@ -202,7 +209,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void teleopInit() {
-    setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
+    setDesiredSetpointRotations(getCurrentRotation());
   }
 
   @Override
