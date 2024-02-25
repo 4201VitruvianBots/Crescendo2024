@@ -121,6 +121,8 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
+  
+
   public double getShootNStrafeAngle(
       Pose2d robotPose, double RobotVelocityX, double RobotVelocityY) {
     return Math.atan2(

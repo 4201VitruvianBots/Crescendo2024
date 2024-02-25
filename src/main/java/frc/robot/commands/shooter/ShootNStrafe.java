@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
@@ -53,6 +54,9 @@ public class ShootNStrafe extends Command {
   private final PIDController m_turnController =
       new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
   private Translation2d m_target = new Translation2d();
+  
+  private double m_targetx;
+  private double m_targety;
 
   //   private final SwerveRequest.FieldCentric drive =
   //       new SwerveRequest.FieldCentric()
@@ -112,30 +116,85 @@ public class ShootNStrafe extends Command {
 
   @Override
   public void execute() {
+    if (Controls.isRedAlliance()) {
+      m_target = FIELD.redSpeaker;
+
+      m_targetx = FIELD.redSpeaker.getX();
+      m_targety = FIELD.redSpeaker.getY();
+    } else {
+      m_target = FIELD.blueSpeaker;
+      m_targetx = FIELD.blueSpeaker.getX();
+      m_targety = FIELD.blueSpeaker.getY();
+    }
 
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     double shootAngle = m_shooter.getShootAngle(robotPose);
 
-    double displacementX = m_swerveDrive.getState().Pose.getX() * Math.sin(shootAngle);
+    double effectiveDistance = 2.5; //meters
+    Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
-    double displacementY = m_swerveDrive.getState().Pose.getY() * Math.cos(shootAngle);
+    double displacementY = m_swerveDrive.getState().Pose.getY()-m_targety;
+    double displacementX = m_swerveDrive.getState().Pose.getX()-m_targetx;
+    
 
-    double VelocityY =
-        m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
-            * m_swerveDrive.getState().Pose.getRotation().getSin();
+    
+
+    Translation2d robotToGoal = m_target.minus(m_swerveDrive.getState().Pose.getTranslation());
+   
+    double PositionY = m_swerveDrive.getState().Pose.getY();
+    double PositionX = m_swerveDrive.getState().Pose.getX();
+    double VelocityY = m_swerveDrive.getChassisSpeed().vyMetersPerSecond;
     double VelocityX =
-        m_swerveDrive.getChassisSpeed().omegaRadiansPerSecond
-            * m_swerveDrive.getState().Pose.getRotation().getCos();
-    double VelocityShoot = 111; // TODO: Change after testing
+        m_swerveDrive.getChassisSpeed().vxMetersPerSecond;
 
-    double m_headingOffset =
-        Math.asin(
-            displacementY * VelocityX
-                - displacementX
-                    * VelocityY
-                    / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
-                        * VelocityShoot));
-    System.out.println(m_headingOffset * 180 / Math.PI);
+        double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
+        double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
+
+
+    double VelocityShoot = 11.1; // TODO: Change after testing
+
+        double virtualGoalX = m_target.getX()-VelocityShoot*(VelocityX+AccelerationX);
+    double virtualGoalY = m_target.getY()-VelocityShoot*(VelocityY+AccelerationY);
+
+
+        SmartDashboard.putNumber("Goal X", virtualGoalX);
+        SmartDashboard.putNumber("Goal Y", virtualGoalY);
+
+        Translation2d movingGoalLocation = new Translation2d(virtualGoalX,virtualGoalY);
+        
+        Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
+
+        
+        double newDist = toMovingGoal.getDistance(new Translation2d());
+
+
+  /*public static double getOffsetAngleDeg(double effectiveDistance) {
+    //Pose2d goalRel = getGoalRelPose();
+    Pose2d pose = new Pose2d(robotPose.getX() - Constants.goalLocation.getX(), robotPose.getY() - Constants.goalLocation.getY(), robotPose.getRotation());
+    return Units.radiansToDegrees( 
+      Math.asin(airTime * 
+        (getGlobalMecVy() * pose.getX() + getGlobalMecVx() * pose.getY())
+        / (getActualDistance() * effectiveDistance)
+      )
+    );
+*/
+
+double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * PositionY)/(newDist*effectiveDistance));
+
+
+
+
+    // double m_headingOffset =
+    //     Math.asin(
+    //         displacementY * VelocityX
+    //             - displacementX
+    //                 * VelocityY
+    //                 / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
+    //                     * VelocityShoot));
+    // System.out.println(m_headingOffset * 180 / Math.PI);
+    System.out.println(getOffsetAngleDeg);
+
+
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
@@ -145,7 +204,6 @@ public class ShootNStrafe extends Command {
             .withDriveRequestType(
                 SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-    // TODO: @jax when are we using this vs var rotation?
 
     // double rotation =
     //     (m_swerveDrive.getState().Pose.getRotation().getRadians() - shootAngle) // Jax's code
@@ -153,13 +211,10 @@ public class ShootNStrafe extends Command {
 
     // all of the logic for angle is above this Comment
 
-    if (Controls.isRedAlliance()) {
-      m_target = FIELD.redSpeaker;
-    } else {
-      m_target = FIELD.blueSpeaker;
-    }
+    
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
-
+    
+    
     m_shooter.setRPMOutput(m_RPMOutput);
 
     m_swerveDrive.setControl(
@@ -169,7 +224,7 @@ public class ShootNStrafe extends Command {
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                    targetDelta.getRadians() + m_headingOffset)));
+                    targetDelta.getRadians()+getOffsetAngleDeg)));
     if (inZone
         && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
         && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
