@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FourPiecePt2"
+            "pathName": "4PiecePart2"
           }
         },
         {
@@ -27,12 +27,6 @@
           "type": "path",
           "data": {
             "pathName": "FourPiecePt4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "FourPiecePt5"
           }
         }
       ]

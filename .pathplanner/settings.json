@@ -4,7 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "3PieceAutoFar",
-    "4PieceAutoNear"
+    "4PieceAutoNear",
+    "2PieceFar"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
