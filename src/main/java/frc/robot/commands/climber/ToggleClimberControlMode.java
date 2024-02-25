@@ -14,6 +14,7 @@ public class ToggleClimberControlMode extends InstantCommand {
   /** Creates a new ToggleClimberControlMode. */
   public ToggleClimberControlMode(Climber climber) {
     m_climber = climber;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_climber);
   }
@@ -25,5 +26,10 @@ public class ToggleClimberControlMode extends InstantCommand {
       m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
     else if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.CLOSED_LOOP)
       m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 }
