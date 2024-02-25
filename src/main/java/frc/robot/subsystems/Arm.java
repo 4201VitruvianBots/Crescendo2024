@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -215,26 +216,23 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!RobotController.isSysActive()) {
-      // TODO: figure out why this is happening seriously what is going on aaaaaaaaa
-      // System.out.println("Wait the robot is disabled why is it trying to do this? Wat?");
-      // Thread.dumpStack();
-      return;
-    }
-
     switch (m_controlMode) {
-      case CLOSED_LOOP:
-        // This method will be called once per scheduler run
-        // periodic, update the profile setpoint for 20 ms loop time
-        m_setpoint = m_profile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
-        // apply the setpoint to the control request
-        m_position.Position = m_setpoint.position;
-        m_position.Velocity = m_setpoint.velocity;
-        m_armMotor.setControl(m_position);
-        break;
-      default:
-      case OPEN_LOOP:
-        break;
+        case CLOSED_LOOP:
+            // This method will be called once per scheduler run
+            // periodic, update the profile setpoint for 20 ms loop time
+            m_setpoint = m_profile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
+            // apply the setpoint to the control request
+            m_position.Position = m_setpoint.position;
+            m_position.Velocity = m_setpoint.velocity;
+            if (DriverStation.isEnabled()) 
+                m_armMotor.setControl(m_position);
+            break;
+        default:
+        case OPEN_LOOP:
+            if (DriverStation.isDisabled()) {
+                setPercentOutput(0.0);
+            }
+            break;
     }
 
     if (!ROBOT.disableLogging) updateLogger();
