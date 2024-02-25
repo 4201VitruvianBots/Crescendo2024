@@ -103,7 +103,10 @@ public class TwoPiece extends SequentialCommandGroup {
         new InstantCommand(
             () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
             swerveDrive),
-        commandList.get(0).alongWith(flywheelCommandContinues).andThen(() -> swerveDrive.setControl(stopRequest)),
+        commandList
+            .get(0)
+            .alongWith(flywheelCommandContinues)
+            .andThen(() -> swerveDrive.setControl(stopRequest)),
         new WaitCommand(1),
         shootCommand,
         commandList.get(1).alongWith(runIntake2).andThen(() -> swerveDrive.setControl(stopRequest)),

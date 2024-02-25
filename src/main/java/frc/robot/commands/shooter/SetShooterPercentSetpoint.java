@@ -1,7 +1,6 @@
 package frc.robot.commands.shooter;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
@@ -18,8 +17,8 @@ public class SetShooterPercentSetpoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      m_shooter.setNeutralMode(NeutralModeValue.Coast);
-    }
+    m_shooter.setNeutralMode(NeutralModeValue.Coast);
+  }
 
   @Override
   public void execute() {
