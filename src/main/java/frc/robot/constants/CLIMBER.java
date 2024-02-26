@@ -16,8 +16,9 @@ public final class CLIMBER {
 
   public static final DCMotor gearbox = DCMotor.getKrakenX60(1);
   public static final double gearRatio = 594.0 / 25.0;
-  public static final double sprocketRadiusMeters = Units.inchesToMeters(1.185);
-  public static final double sprocketRotationsToMeters = sprocketRadiusMeters * 2 * Math.PI;
+  public static final double sprocketRadiusMeters = Units.inchesToMeters(1.432 / 2.0);
+  public static final double climberRotationsToMeters =
+      sprocketRadiusMeters * 2 * Math.PI * gearRatio;
   // public static final double centerOffset = Units.inchesToMeters(14);
   // public static final double kMaxReverseOutput = -0.45;
 
