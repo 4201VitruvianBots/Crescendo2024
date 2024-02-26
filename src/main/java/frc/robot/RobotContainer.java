@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -362,5 +363,13 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_arm.teleopInit();
+  }
+
+  public void disabledInit() {
+    m_intake.setSpeed(0, 0);
+    m_ampShooter.setPercentOutput(0);
+    m_shooter.setRPMOutput(0);
+    m_shooter.setPercentOutput(0);
+    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
   }
 }
