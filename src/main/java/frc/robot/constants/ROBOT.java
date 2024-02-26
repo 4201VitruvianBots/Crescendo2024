@@ -23,7 +23,7 @@ public class ROBOT {
 
   public enum ROBOT_ID {
     // Robot Serial Numbers
-    FORTE("FORTRE"),
+    FORTE("030cbc95"),
     ALPHABOT("030cbcf0"),
     GRIDLOCK("0306ce62"),
     BOBOT("030e6a97"),

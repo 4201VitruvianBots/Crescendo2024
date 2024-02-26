@@ -28,6 +28,7 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ClimbFinal;
+import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
@@ -57,7 +58,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+  //   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -89,8 +90,8 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    m_vision.registerFieldSim(m_fieldSim);
-    //    m_vision.registerSwerveDrive(m_swerveDrive);
+    // m_vision.registerFieldSim(m_fieldSim);
+    // m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -107,8 +108,8 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      m_visualizer.registerVision(m_vision);
-      //      m_visualizer.registerLedSubsystem(m_led);
+      // m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -158,7 +159,8 @@ public class RobotContainer {
     // Default command to decelerate the flywheel if no other command is set
     m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
-    m_climber.setDefaultCommand(new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
+    m_climber.setDefaultCommand(
+        new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
   }
 
   private void configureBindings() {
@@ -198,12 +200,12 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.55, 0.75, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+                m_intake, 0.55, 0.75, m_ampShooter, 0.75)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.6, 0.75, m_ampShooter, 0.05)); // Outtake Note with Intake And Amp
+                m_intake, 0.6, 0.75, m_ampShooter, 0.1)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
@@ -254,6 +256,10 @@ public class RobotContainer {
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
                 AMP.STATE.INTAKING_SLOW.get(),
                 RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
+    // button on smartdashboard to reset climber height
+
+    xboxController.start().onTrue(new ToggleClimberControlMode(m_climber));
+    SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
 
     var aimButton = new Trigger(() -> leftJoystick.getRawButton(2));
 
@@ -374,5 +380,6 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_arm.teleopInit();
+    m_climber.teleopInit();
   }
 }
