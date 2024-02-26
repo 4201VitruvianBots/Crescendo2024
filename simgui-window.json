@@ -15,6 +15,11 @@
     }
   },
   "Table": {
+    "0x965B9C9E,2": {
+      "Column 0  Width": "160",
+      "Column 1  Weight": "1.0000",
+      "RefScale": "16"
+    },
     "0xE56EC1C2,4": {
       "Column 0  Weight": "1.0000",
       "Column 1  Weight": "1.0000",
@@ -53,6 +58,11 @@
       "Pos": "199,21",
       "Size": "921,596"
     },
+    "###/SmartDashboard/ResetClimberHeight": {
+      "Collapsed": "0",
+      "Pos": "280,198",
+      "Size": "155,80"
+    },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
       "Pos": "950,158",
@@ -66,7 +76,7 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "388,176"
+      "Size": "202,214"
     },
     "###Joysticks": {
       "Collapsed": "0",
@@ -80,18 +90,23 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "689,684",
+      "Pos": "492,109",
       "Size": "876,599"
     },
     "###NetworkTables Info": {
       "Collapsed": "0",
-      "Pos": "511,736",
+      "Pos": "1109,743",
       "Size": "750,305"
     },
     "###Other Devices": {
-      "Collapsed": "0",
-      "Pos": "935,18",
+      "Collapsed": "1",
+      "Pos": "999,24",
       "Size": "340,993"
+    },
+    "###Plot <0>": {
+      "Collapsed": "0",
+      "Pos": "1102,314",
+      "Size": "700,400"
     },
     "###System Joysticks": {
       "Collapsed": "0",

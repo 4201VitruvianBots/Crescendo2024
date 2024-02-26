@@ -5,10 +5,13 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class RunClimberJoystick extends Command {
   /** Creates a new RunElevatorJoystick. This is our default command */
@@ -33,22 +36,32 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
+    if(m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
     if (joystickYDeadbandOutput != 0.0) {
-      m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
       m_climber.setJoystickY(-joystickYDeadbandOutput);
       m_climber.setClimbState(true);
     }
-    if (joystickYDeadbandOutput == 0
-        && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
+    if (joystickYDeadbandOutput == 0) {
+      m_climber.holdClimber();
+      m_climber.resetTrapezoidState();
+      m_climber.setPercentOutput(0);
+    }
+  }          
+    else {
+      m_climber.holdClimber();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
-    m_climber.setClimbState(false);
+      m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+      m_climber.holdClimber();
+      m_climber.setPercentOutput(0);
+      m_climber.setClimbState(false);
+      m_climber.resetTrapezoidState();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake); 
   }
 
   // Returns true when the command should end.
