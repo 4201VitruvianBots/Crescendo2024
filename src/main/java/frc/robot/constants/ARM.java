@@ -35,7 +35,7 @@ public final class ARM {
   public static final double kMaxArmAcceleration = 10;
 
   public enum ARM_SETPOINT {
-    STOWED(Units.degreesToRotations(-35.0)),
+    STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
     FORWARD(Units.degreesToRotations(120.0));
 
