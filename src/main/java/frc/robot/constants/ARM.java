@@ -37,7 +37,8 @@ public final class ARM {
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
-    FORWARD(Units.degreesToRotations(110.0));
+    FORWARD(Units.degreesToRotations(110.0)),
+    TRAP(Units.degreesToRotations(135.0));
 
     private final double angle;
 
@@ -50,6 +51,8 @@ public final class ARM {
       return angle;
     }
   }
+
+  
 
   public static final DCMotor gearBox = DCMotor.getKrakenX60(1);
 
@@ -64,7 +67,8 @@ public final class ARM {
 
   public static final double minAngleDegrees = -40;
 
-  public static final double maxAngleDegrees = 130;
+  public static final double maxAngleDegrees = 140;
+  
 
   public static final double startingAngleDegrees = minAngleDegrees;
 
