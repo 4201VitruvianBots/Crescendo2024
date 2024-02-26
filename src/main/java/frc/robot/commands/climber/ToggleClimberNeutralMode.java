@@ -4,40 +4,31 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.constants.ROBOT;
-import frc.robot.constants.ROBOT.CONTROL_MODE;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
-public class ToggleClimberControlMode extends InstantCommand {
+public class ToggleClimberNeutralMode extends Command {
+  /** Creates a new ToggleElevatorCoastMode. */
   private final Climber m_climber;
 
-  /** Creates a new ToggleClimberControlMode. */
-  public ToggleClimberControlMode(Climber climber) {
+  public ToggleClimberNeutralMode(Climber climber) {
     m_climber = climber;
-
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ROBOT.CONTROL_MODE climberControlMode = m_climber.getClosedLoopControlMode();
-
-    switch (climberControlMode) {
-      case OPEN_LOOP:
-        m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-        m_climber.resetTrapezoidState();
-        m_climber.holdClimber();
-        break;
-      default:
-      case CLOSED_LOOP:
-        m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-        break;
+    NeutralModeValue neutralMode = m_climber.getNeutralMode();
+    if (neutralMode == NeutralModeValue.Coast) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    } else if (neutralMode == NeutralModeValue.Brake) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Coast);
     }
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 

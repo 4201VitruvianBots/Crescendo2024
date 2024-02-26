@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -122,7 +123,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getCurrentAngle() {
-    return Units.rotationsToDegrees(getCurrentRotation() * (1.0 / 140.0));
+    return Units.rotationsToDegrees(getCurrentRotation());
   }
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
@@ -159,6 +160,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
+    Logger.recordOutput("Arm/CurrentOutput", m_armMotor.getTorqueCurrent().getValue());
   }
 
   public void testInit() {
@@ -223,10 +225,13 @@ public class Arm extends SubsystemBase {
         // apply the setpoint to the control request
         m_position.Position = m_setpoint.position;
         m_position.Velocity = m_setpoint.velocity;
-        m_armMotor.setControl(m_position);
+        if (DriverStation.isEnabled()) m_armMotor.setControl(m_position);
         break;
       default:
       case OPEN_LOOP:
+        if (DriverStation.isDisabled()) {
+          setPercentOutput(0.0);
+        }
         break;
     }
 
