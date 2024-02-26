@@ -91,7 +91,7 @@ public class RobotContainer {
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     // m_vision.registerFieldSim(m_fieldSim);
-    //    m_vision.registerSwerveDrive(m_swerveDrive);
+    // m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -108,8 +108,8 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      //   m_visualizer.registerVision(m_vision);
-      //      m_visualizer.registerLedSubsystem(m_led);
+      // m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -368,6 +368,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_arm.teleopInit();
+    m_climber.teleopInit();
   }
 
   public void disabledInit() {
