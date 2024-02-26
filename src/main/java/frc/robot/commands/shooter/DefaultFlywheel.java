@@ -6,6 +6,7 @@ import frc.robot.subsystems.Shooter;
 
 public class DefaultFlywheel extends Command {
   private final Shooter m_shooter;
+  private Boolean startLatch, stopLatch;
 
   public DefaultFlywheel(Shooter shooter) {
     m_shooter = shooter;
@@ -15,7 +16,10 @@ public class DefaultFlywheel extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    startLatch = false;
+    stopLatch = false;
+  }
 
   @Override
   public void execute() {
@@ -24,12 +28,14 @@ public class DefaultFlywheel extends Command {
     // seconds).
     // The overrun then gets transferred to ParallelRaceGroup.initialize() once this is commented
     // out. TODO: fix
-    if (m_shooter.getRpmMaster() > 500) {
+    if (m_shooter.getRpmMaster() > 500 && !startLatch) {
       m_shooter.setPercentOutput(-0.01);
       m_shooter.setNeutralMode(NeutralModeValue.Brake);
-    } else {
+      startLatch = true;
+    } else if (m_shooter.getRpmMaster() <= 500 && !stopLatch) {
       m_shooter.setPercentOutput(0);
       m_shooter.setNeutralMode(NeutralModeValue.Coast);
+      stopLatch = true;
     }
   }
 
