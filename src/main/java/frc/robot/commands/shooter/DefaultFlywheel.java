@@ -32,7 +32,7 @@ public class DefaultFlywheel extends Command {
       m_shooter.setPercentOutput(-0.01);
       m_shooter.setNeutralMode(NeutralModeValue.Brake);
       startLatch = true;
-    } else if(m_shooter.getRpmMaster() <= 500 && !stopLatch){
+    } else if (m_shooter.getRpmMaster() <= 500 && !stopLatch) {
       m_shooter.setPercentOutput(0);
       m_shooter.setNeutralMode(NeutralModeValue.Coast);
       stopLatch = true;

@@ -99,7 +99,10 @@ public class Climber extends SubsystemBase {
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
     elevatorClimbMotors[0].setInverted(true);
     elevatorClimbMotors[1].setInverted(false);
-    elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()).withOpposeMasterDirection(true));
+    elevatorClimbMotors[1].setControl(
+        follower
+            .withMasterID(elevatorClimbMotors[0].getDeviceID())
+            .withOpposeMasterDirection(true));
 
     SmartDashboard.putData(this);
   }
