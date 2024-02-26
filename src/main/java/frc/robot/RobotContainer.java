@@ -27,7 +27,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
-// import frc.robot.commands.climber.ClimbFinal;
+import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
@@ -168,7 +168,7 @@ public class RobotContainer {
                 m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast speaker
 
     // toggles the climb sequence when presses and cuts the command when pressed again
-    // trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
     // switch between open loop and close loop
     xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));

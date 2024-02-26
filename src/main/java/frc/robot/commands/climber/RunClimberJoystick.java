@@ -56,8 +56,12 @@ public class RunClimberJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
-    m_climber.setClimbState(false);
+      m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+      m_climber.holdClimber();
+      m_climber.setPercentOutput(0);
+      m_climber.setClimbState(false);
+      m_climber.resetTrapezoidState();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake); 
   }
 
   // Returns true when the command should end.

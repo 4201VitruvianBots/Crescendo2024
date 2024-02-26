@@ -36,8 +36,6 @@ public class ToggleClimberControlMode extends InstantCommand {
           m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
           break;
     }
-    // 
-    // else       
   }
 
   @Override
