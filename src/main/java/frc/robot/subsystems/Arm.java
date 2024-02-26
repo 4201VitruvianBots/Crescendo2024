@@ -211,8 +211,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void teleopInit() {
-    setDesiredSetpointRotations(getCurrentRotation());
     resetTrapezoidState();
+    setDesiredSetpointRotations(getCurrentRotation());
   }
 
   @Override

@@ -240,8 +240,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void teleopInit() {
-    setDesiredPositionMeters(getHeightMeters());
     resetTrapezoidState();
+    setDesiredPositionMeters(getHeightMeters());
   }
 
   private void updateLogger() {
@@ -277,7 +277,7 @@ public class Climber extends SubsystemBase {
         m_position.Position = m_setpoint.position;
         m_position.Velocity = m_setpoint.velocity;
 
-        if (DriverStation.isEnabled()) elevatorClimbMotors[0].setControl(m_position);
+        // elevatorClimbMotors[0].setControl(m_position);
         break;
     }
     if (!ROBOT.disableLogging) updateLogger();
