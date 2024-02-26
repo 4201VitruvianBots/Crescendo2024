@@ -15,7 +15,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -138,7 +137,7 @@ public class Climber extends SubsystemBase {
 
   // gets the position of the climber in meters
   public double getHeightMeters() {
-    return getMotorRotations() * CLIMBER.sprocketRotationsToMeters;
+    return getMotorRotations() * CLIMBER.climberRotationsToMeters;
   }
 
   // gets the position of the climber in encoder counts
@@ -148,11 +147,11 @@ public class Climber extends SubsystemBase {
 
   // sets position in meters
   public void setSensorPosition(double meters) {
-    elevatorClimbMotors[0].setPosition(meters / CLIMBER.sprocketRotationsToMeters);
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.climberRotationsToMeters);
   }
 
   public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.sprocketRotationsToMeters;
+    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.climberRotationsToMeters;
   }
 
   public void holdClimber() {
@@ -169,8 +168,7 @@ public class Climber extends SubsystemBase {
 
   public void setDesiredPositionMeters(double setpoint) {
     m_desiredPositionMeters = setpoint;
-    setSetpointTrapezoidState(
-        m_desiredPositionMeters / CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
+    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.climberRotationsToMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -265,9 +263,8 @@ public class Climber extends SubsystemBase {
         if (m_limitJoystickInput)
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
-        if (DriverStation.isEnabled()) setPercentOutput(percentOutput, true);
-        else setPercentOutput(0.0, true);
-
+        // TODO: Verify rotation to distance conversion before continuing
+        // setPercentOutput(percentOutput, true);
         break;
       default:
       case CLOSED_LOOP:
@@ -277,6 +274,7 @@ public class Climber extends SubsystemBase {
         m_position.Position = m_setpoint.position;
         m_position.Velocity = m_setpoint.velocity;
 
+        // TODO: Verify rotation to distance conversion before continuing
         // elevatorClimbMotors[0].setControl(m_position);
         break;
     }
@@ -297,20 +295,12 @@ public class Climber extends SubsystemBase {
     rightElevatorSim.update(RobotTime.getTimeDelta());
 
     m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.climberRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getPositionMeters() * CLIMBER.climberRotationsToMeters);
     m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.climberRotationsToMeters);
     m_simState2.setRawRotorPosition(
-        rightElevatorSim.getPositionMeters()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getPositionMeters() * CLIMBER.climberRotationsToMeters);
   }
 }
