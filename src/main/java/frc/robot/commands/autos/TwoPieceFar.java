@@ -11,16 +11,13 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
-import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TrajectoryUtils;
@@ -58,7 +55,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
             intake,
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get());
- 
+
     var shootCommand =
         new AutoRunAmpTake(
             intake,
@@ -75,8 +72,6 @@ public class TwoPieceFar extends SequentialCommandGroup {
             INTAKE.STATE.NONE.get(),
             AMP.STATE.INTAKING.get());
 
-
-
     var flywheelCommandContinues = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
     addCommands(
@@ -86,7 +81,6 @@ public class TwoPieceFar extends SequentialCommandGroup {
         new InstantCommand(
             () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
             swerveDrive),
-            
         commandList
             .get(0)
             .alongWith(flywheelCommandContinues)
@@ -94,9 +88,10 @@ public class TwoPieceFar extends SequentialCommandGroup {
         shootCommand,
         commandList.get(1).alongWith(runIntake).andThen(() -> swerveDrive.setControl(stopRequest)),
         commandList.get(2).andThen(() -> swerveDrive.setControl(stopRequest)),
-       shootCommand2,
-               commandList.get(3).andThen(() -> swerveDrive.setControl(stopRequest))
-     
+        shootCommand2,
+        commandList
+            .get(3)
+            .andThen(() -> swerveDrive.setControl(stopRequest))
             .andThen(
                 () -> {
                   intake.setSpeed(0, 0);
