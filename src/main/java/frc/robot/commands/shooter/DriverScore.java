@@ -9,7 +9,7 @@ public class DriverScore extends Command {
   private final AmpShooter m_ampShooter;
   private double m_AmpPercentOutput;
   private double m_RPMOutput;
-  private final double allowableError = 350; // in RPM
+  private final double allowableError = 200; // in RPM
 
   public DriverScore(
       Shooter shooter, AmpShooter ampShooter, double AmpPercentOutput, double RPMOutput) {

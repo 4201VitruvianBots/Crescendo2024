@@ -38,7 +38,6 @@ import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
 import frc.robot.constants.*;
-import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -58,7 +57,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+//   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -90,7 +89,7 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    m_vision.registerFieldSim(m_fieldSim);
+    // m_vision.registerFieldSim(m_fieldSim);
     //    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
@@ -108,7 +107,7 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      m_visualizer.registerVision(m_vision);
+    //   m_visualizer.registerVision(m_vision);
       //      m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -194,12 +193,12 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.55, 0.75, m_ampShooter, 0.5)); // Intake Note with Intake And Amp
+                m_intake, 0.55, 0.75, m_ampShooter, 0.75)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.6, 0.75, m_ampShooter, 0.05)); // Outtake Note with Intake And Amp
+                m_intake, 0.6, 0.75, m_ampShooter, 0.1)); // Outtake Note with Intake And Amp
 
     xboxController
         .rightBumper()
@@ -250,7 +249,9 @@ public class RobotContainer {
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
                 AMP.STATE.INTAKING_SLOW.get(),
                 RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
-    //button on smartdashboard to reset climber height
+    // button on smartdashboard to reset climber height
+
+    xboxController.start().onTrue(new ToggleClimberControlMode(m_climber));
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
   }
 

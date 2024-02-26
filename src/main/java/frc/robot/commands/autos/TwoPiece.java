@@ -37,7 +37,7 @@ public class TwoPiece extends SequentialCommandGroup {
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"3Piece2Pt1", "MasonsMagic"};
+    String[] pathFiles = {"3Piece2Pt1", "3Piece2Pt2"};
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
 
@@ -97,7 +97,7 @@ public class TwoPiece extends SequentialCommandGroup {
     var flywheelCommandContinues = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
     addCommands(
-        new PlotAutoPath(fieldSim, "TwoPiece", pathsList),
+        new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         new InstantCommand(

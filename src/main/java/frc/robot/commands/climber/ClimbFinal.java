@@ -26,12 +26,12 @@ public class ClimbFinal extends SequentialCommandGroup {
             new WaitCommand(1),
             new AutoSetSetpoint(climber, CLIMBER_SETPOINT.EXTEND)));
 
-        // will climb then arm will go forward into the trap
-        // new WaitCommand(1),
-        // new AutoSetSetpoint(climber, CLIMBER_SETPOINT.FULL_RETRACT),
-        // new WaitCommand(2),
-        // new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED),
-        // new WaitCommand(2),
-        // new AutoSetAmpSpeed(ampshooter, AMP.STATE.REVERSE));
+    // will climb then arm will go forward into the trap
+    // new WaitCommand(1),
+    // new AutoSetSetpoint(climber, CLIMBER_SETPOINT.FULL_RETRACT),
+    // new WaitCommand(2),
+    // new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED),
+    // new WaitCommand(2),
+    // new AutoSetAmpSpeed(ampshooter, AMP.STATE.REVERSE));
   }
 }

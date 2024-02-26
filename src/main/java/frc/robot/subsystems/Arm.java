@@ -160,6 +160,8 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
+    Logger.recordOutput("Arm/CurrentOutput", m_armMotor.getTorqueCurrent().getValue());
+
   }
 
   public void testInit() {

@@ -97,10 +97,10 @@ public class Climber extends SubsystemBase {
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
-    elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setInverted(true);
-    elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()));
-    
+    elevatorClimbMotors[0].setInverted(true);
+    elevatorClimbMotors[1].setInverted(false);
+    elevatorClimbMotors[1].setControl(follower.withMasterID(elevatorClimbMotors[0].getDeviceID()).withOpposeMasterDirection(true));
+
     SmartDashboard.putData(this);
   }
 
@@ -166,7 +166,8 @@ public class Climber extends SubsystemBase {
 
   public void setDesiredPositionMeters(double setpoint) {
     m_desiredPositionMeters = setpoint;
-    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
+    setSetpointTrapezoidState(
+        m_desiredPositionMeters / CLIMBER.gearRatio / CLIMBER.sprocketRotationsToMeters);
   }
 
   public double getDesiredPositionMeters() {

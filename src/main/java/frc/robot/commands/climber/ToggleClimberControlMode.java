@@ -15,7 +15,7 @@ public class ToggleClimberControlMode extends InstantCommand {
   /** Creates a new ToggleClimberControlMode. */
   public ToggleClimberControlMode(Climber climber) {
     m_climber = climber;
-    
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_climber);
   }
@@ -24,17 +24,17 @@ public class ToggleClimberControlMode extends InstantCommand {
   @Override
   public void initialize() {
     ROBOT.CONTROL_MODE climberControlMode = m_climber.getClosedLoopControlMode();
-    
-    switch(climberControlMode) {
+
+    switch (climberControlMode) {
       case OPEN_LOOP:
-          m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);          
-          m_climber.resetTrapezoidState();
-          m_climber.holdClimber();
-          break;
+        m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+        m_climber.resetTrapezoidState();
+        m_climber.holdClimber();
+        break;
       default:
       case CLOSED_LOOP:
-          m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-          break;
+        m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+        break;
     }
   }
 
