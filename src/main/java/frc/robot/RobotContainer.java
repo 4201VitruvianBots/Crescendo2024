@@ -31,6 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
 import frc.robot.commands.drive.ResetGyro;
+import frc.robot.commands.drive.moveAndAimAtSpeaker;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
 import frc.robot.commands.shooter.DefaultFlywheel;
@@ -143,16 +144,21 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+        //   m_swerveDrive.applyChassisSpeeds(
+        //       () ->
+        //           new ChassisSpeeds(
+        //               -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+        //               -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+        //               -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
     }
 
     // Default command to decelerate the flywheel if no other command is set
     m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
-    m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
+    m_climber.setDefaultCommand(new RunClimberJoystick(m_climber, () -> -xboxController.getRightY()));
   }
 
   private void configureBindings() {
@@ -248,6 +254,15 @@ public class RobotContainer {
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
                 AMP.STATE.INTAKING_SLOW.get(),
                 RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
+
+    var aimButton = new Trigger(() -> leftJoystick.getRawButton(2));
+
+    aimButton.whileTrue(
+        new moveAndAimAtSpeaker(
+            m_swerveDrive,
+            m_vision,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0)));
   }
 
   public void initAutoChooser() {
