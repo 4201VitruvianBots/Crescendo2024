@@ -31,7 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
-import frc.robot.commands.drive.MoveAndAimAtSpeaker;
+import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
@@ -169,7 +169,7 @@ public class RobotContainer {
 
     var aimButton = new Trigger(() -> leftJoystick.getRawButton(2));
     aimButton.whileTrue(
-        new MoveAndAimAtSpeaker(
+        new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
             () -> leftJoystick.getRawAxis(1),
