@@ -18,29 +18,26 @@ import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
-public class moveAndAimAtNote extends Command {
-  CommandSwerveDrivetrain m_SwerveDrivetrain;
-  Vision m_vision;
-  DoubleSupplier m_throttleInput;
-  DoubleSupplier m_turnInput;
-  DoubleSupplier m_strafeInput;
-  PIDController m_PidController =
+public class MoveAndAimAtSpeaker extends Command {
+  private final CommandSwerveDrivetrain m_SwerveDrivetrain;
+  private final Vision m_vision;
+  private final DoubleSupplier m_throttleInput;
+  private final DoubleSupplier m_turnInput;
+  private final PIDController m_PidController =
       new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
   Translation2d m_goal = new Translation2d();
-  Double finalTurn = 0.0;
+  double finalTurn = 0.0;
 
   /** Creates a new rotateRobotToGoal. */
-  public moveAndAimAtNote(
+  public MoveAndAimAtSpeaker(
       CommandSwerveDrivetrain commandSwerveDrivetrain,
       Vision vision,
       DoubleSupplier throttleInput,
-      DoubleSupplier strafeInput,
       DoubleSupplier turnInput) {
     m_SwerveDrivetrain = commandSwerveDrivetrain;
     m_vision = vision;
     m_throttleInput = throttleInput;
     m_turnInput = turnInput;
-    m_strafeInput = strafeInput;
     m_PidController.setTolerance(Units.degreesToRadians(2));
     m_PidController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(m_SwerveDrivetrain);
@@ -55,27 +52,26 @@ public class moveAndAimAtNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_vision.hasGamePieceTarget()) {
-    var setPoint = m_SwerveDrivetrain.getState().Pose.getRotation().plus(m_vision.getRobotToGamePieceRotation());
+    if (Controls.isBlueAlliance()) {
+      m_goal = FIELD.blueSpeaker;
+    } else {
+      m_goal = FIELD.redSpeaker;
+    }
+    var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
     var turnRate =
         m_PidController.calculate(
             m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),
-            setPoint.getRadians());
+            setPoint.getAngle().getRadians());
     finalTurn =
         MathUtil.clamp(
             turnRate,
             -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
             SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
-    m_SwerveDrivetrain.setChassisSpeedControl(new ChassisSpeeds(
-                m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-                m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-                finalTurn));
-    } else {
-    m_SwerveDrivetrain.setChassisSpeedControl(new ChassisSpeeds(
-                m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-                m_strafeInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-                m_turnInput.getAsDouble() * DRIVE.kMaxRotationRadiansPerSecond));
-    }
+    m_SwerveDrivetrain.setChassisSpeedControl(
+        new ChassisSpeeds(
+            m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+            m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+            finalTurn));
   }
 
   // Called once the command ends or is interrupted.
