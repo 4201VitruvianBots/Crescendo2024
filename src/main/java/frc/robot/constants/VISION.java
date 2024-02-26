@@ -12,14 +12,83 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public final class VISION {
-  public static final double limelightHeight = Units.inchesToMeters(35);
+  public static final double kLimelightHFOV = 62.5;
+  public static final double kLimelightVFOV = 48.9;
+  public static final double kLimelightDFOV =
+      Math.sqrt(Math.pow(kLimelightHFOV, 2) + Math.pow(kLimelightVFOV, 2));
+
+  public static final double aprilTagLimelightCameraADistanceFromCenterX =
+      Units.inchesToMeters(-7.590951);
+  public static final double aprilTagLimelightCameraADistanceFromCenterY =
+      Units.inchesToMeters(-9.541729);
+  public static final double aprilTagLimelightCameraADistanceFromGroundZ =
+      Units.inchesToMeters(15.184963);
+  public static final double aprilTagLimelightCameraAOffsetInRadiansRoll =
+      Units.degreesToRadians(0);
+  public static final double aprilTagLimelightCameraAOffsetInRadiansPitch =
+      Units.degreesToRadians(6.172091);
+  public static final double aprilTagLimelightCameraAOffsetInRadiansYaw =
+      Units.degreesToRadians(-145.513393);
+
+  public static final double aprilTagLimelightCameraBDistanceFromCenterX =
+      Units.inchesToMeters(-7.590951);
+  public static final double aprilTagLimelightCameraBDistanceFromCenterY =
+      Units.inchesToMeters(9.541729);
+  public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
+      Units.inchesToMeters(15.184963);
+  public static final double aprilTagLimelightCameraBOffsetInRadiansRoll =
+      Units.degreesToRadians(0);
+  public static final double aprilTagLimelightCameraBOffsetInRadiansPitch =
+      Units.degreesToRadians(6.172091);
+  public static final double aprilTagLimelightCameraBOffsetInRadiansYaw =
+      Units.degreesToRadians(145.513393);
+
+  public static final double noteDetectionLimelightCameraDistanceFromCenterX =
+      Units.inchesToMeters(12.125);
+  public static final double noteDetectionLimelightCameraDistanceFromCenterY =
+      Units.inchesToMeters(0);
+  public static final double noteDetectionLimelightCameraDistanceFromGroundZ =
+      Units.inchesToMeters(7.040388);
+  public static final double noteDetectionLimelightCameraOffsetInDegreesRoll =
+      Units.degreesToRadians(0);
+  public static final double noteDetectionLimelightCameraOffsetInDegreesPitch =
+      Units.degreesToRadians(0);
+  public static final double noteDetectionLimelightCameraOffsetInDegreesYaw =
+      Units.degreesToRadians(0);
 
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-  // Camera offset from robot center in meters. Will need to update this
-  public static final Transform3d robotToCam =
-      new Transform3d(new Translation3d(0.5, 0.0, limelightHeight), new Rotation3d(0, 0, 0));
+  // Camera offset from robot center. Camera A is on the left side of the robot from front view.
+  public static final Transform3d robotToAprilTagLimelightCameraA =
+      new Transform3d(
+          new Translation3d(
+              aprilTagLimelightCameraADistanceFromCenterX,
+              aprilTagLimelightCameraADistanceFromCenterY,
+              aprilTagLimelightCameraADistanceFromGroundZ),
+          new Rotation3d(
+              aprilTagLimelightCameraAOffsetInRadiansRoll,
+              aprilTagLimelightCameraAOffsetInRadiansPitch,
+              aprilTagLimelightCameraAOffsetInRadiansYaw));
+
+  // Camera offset from robot center. Camera A is on the left side of the robot from front view.
+  public static final Transform3d robotToAprilTagLimelightCameraB =
+      new Transform3d(
+          new Translation3d(
+              aprilTagLimelightCameraBDistanceFromCenterX,
+              aprilTagLimelightCameraBDistanceFromCenterY,
+              aprilTagLimelightCameraBDistanceFromGroundZ),
+          new Rotation3d(
+              aprilTagLimelightCameraBOffsetInRadiansRoll,
+              aprilTagLimelightCameraBOffsetInRadiansPitch,
+              aprilTagLimelightCameraBOffsetInRadiansYaw));
+
+  public static final double poseXTolerance = Units.inchesToMeters(4);
+  public static final double poseYTolerance = Units.inchesToMeters(4);
+  public static final double poseZTolerance = Units.inchesToMeters(4);
+  public static final double posePitchTolerance = Units.degreesToRadians(4);
+  public static final double poseRollTolerance = Units.degreesToRadians(4);
+  public static final double poseYawTolerance = Units.degreesToRadians(4);
 
   public enum CAMERA_TYPE {
     LIMELIGHT,
@@ -40,7 +109,10 @@ public final class VISION {
   }
 
   public enum CAMERA_SERVER {
-    FRONT("10.42.1.11");
+    INTAKE("10.42.1.11"),
+    LIMELIGHTA("10.42.1.12"),
+    LIMELIGHTB("10.42.1.13"),
+    ;
     private final String ip;
 
     CAMERA_SERVER(final String ip) {

@@ -8,9 +8,10 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.utils.TrajectoryUtils;
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
@@ -37,18 +38,17 @@ public class FourPieceNearTest extends SequentialCommandGroup {
       commandList.add(command);
     }
 
+    var turnToShoot = swerveDrive.turnInPlace(Rotation2d.fromDegrees(-45), Controls::isRedAlliance);
+    var turnToPath = swerveDrive.turnInPlace(Rotation2d.fromDegrees(0), Controls::isRedAlliance);
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
         // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
-        new InstantCommand(
-            () ->
-                swerveDrive.seedFieldRelative(
-                    SimConstants.pathPlannerFlip(
-                        pathsList.get(0).getPreviewStartingHolonomicPose())),
-            swerveDrive),
+        new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
+        turnToShoot,
+        turnToPath,
         new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
                 swerveDrive)

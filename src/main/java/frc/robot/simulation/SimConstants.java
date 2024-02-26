@@ -7,9 +7,8 @@
 
 package frc.robot.simulation;
 
-import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Controls;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are in meters, and sets
@@ -22,60 +21,4 @@ import frc.robot.subsystems.Controls;
 public final class SimConstants {
   public static final double kMotorResistance =
       0.002; // Assume 2mOhm resistance for voltage drop calculation
-
-  public static final double fieldLength = Units.inchesToMeters(651.25);
-  public static final double fieldWidth = Units.inchesToMeters(315.5);
-  public static final double tapeWidth = Units.inchesToMeters(2.0);
-  public static final double aprilTagWidth = Units.inchesToMeters(6.5);
-  public static final double fieldHeightMeters = Units.feetToMeters(27);
-
-  /**
-   * Flips a translation to the correct side of the field based on the current alliance color. By
-   * default, all translations and poses in {@link SimConstants} are stored with the origin at the
-   * rightmost point on the BLUE ALLIANCE wall.
-   */
-  public static Translation2d allianceFlip(Translation2d translation) {
-    if (Controls.isRedAlliance()) {
-      return new Translation2d(fieldLength - translation.getX(), translation.getY());
-    } else {
-      return translation;
-    }
-  }
-
-  public static Pose2d absoluteFlip(Pose2d pose) {
-    return new Pose2d(
-        absoluteFlip(pose.getTranslation()),
-        new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
-  }
-
-  public static Translation2d absoluteFlip(Translation2d translation) {
-    return new Translation2d(fieldLength - translation.getX(), translation.getY());
-  }
-
-  /**
-   * Flips a pose to the correct side of the field based on the current alliance color. By default,
-   * all translations and poses in {@link SimConstants} are stored with the origin at the rightmost
-   * point on the BLUE ALLIANCE wall.
-   */
-  public static Pose2d allianceFlip(Pose2d pose) {
-    if (Controls.isRedAlliance()) {
-      return new Pose2d(
-          fieldLength - pose.getX(),
-          pose.getY(),
-          new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
-    } else {
-      return pose;
-    }
-  }
-
-  public static Pose2d pathPlannerFlip(Pose2d pose) {
-    if (Controls.isRedAlliance()) {
-      return new Pose2d(
-          fieldLength - pose.getX(),
-          pose.getY(),
-          new Rotation2d(-pose.getRotation().getCos(), pose.getRotation().getSin()));
-    } else {
-      return pose;
-    }
-  }
 }

@@ -13,6 +13,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
@@ -48,14 +49,15 @@ public class TrajectoryUtils {
         path,
         () -> swerveDrive.getState().Pose,
         swerveDrive::getChassisSpeed,
-        swerveDrive::setChassisSpeedControl,
+        swerveDrive::setChassisSpeedControlNormal,
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
             new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
             maxSpeed,
-            0.86210458762,
+            //            0.898744,
+            SWERVE.DRIVE.kDriveBaseRadius,
             new ReplanningConfig(false, false, 1.0, 0.25)),
-        () -> !manualFlip && Controls.isRedAlliance(),
+        () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
   }
 
@@ -77,7 +79,7 @@ public class TrajectoryUtils {
         new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
         new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
         new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
-        swerveDrive::setChassisSpeedControl,
+        swerveDrive::setChassisSpeedControlNormal,
         () -> flipPath,
         swerveDrive);
   }

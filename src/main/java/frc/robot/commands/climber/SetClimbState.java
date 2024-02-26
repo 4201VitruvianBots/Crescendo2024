@@ -2,35 +2,27 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.Climber;
 
-public class ResetGyro extends Command {
-  /** Creates a new RestGyro. */
-  CommandSwerveDrivetrain m_swerveDrive;
+public class SetClimbState extends Command {
+  private final Climber m_climber;
+  private final boolean m_climbState;
 
-  public ResetGyro(CommandSwerveDrivetrain swerveDrive) {
-    m_swerveDrive = swerveDrive;
-
-    addRequirements(m_swerveDrive);
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
+  /** Creates a new SetClimbState. */
+  public SetClimbState(Climber climber, boolean climbState) {
+    m_climber = climber;
+    m_climbState = climbState;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (Controls.isRedAlliance()) {
-      m_swerveDrive.resetGyro(180);
-    } else {
-      m_swerveDrive.resetGyro(0);
-    }
+    m_climber.setClimbState(m_climbState);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,6 +36,6 @@ public class ResetGyro extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

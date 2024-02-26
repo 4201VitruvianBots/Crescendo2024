@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 public class RunIntake extends Command {
-  Intake m_intake;
-  double m_speed;
-  double m_speed2;
+  private final Intake m_intake;
+  private final double m_speed;
+  private final double m_speed2;
 
   /** Creates a new RunIntake. */
   public RunIntake(Intake intake, double speed, double speed2) {
     m_intake = intake;
     m_speed = speed;
     m_speed2 = speed2;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake);
   }
@@ -43,6 +44,6 @@ public class RunIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intake.getSensorInput1() || m_intake.getSensorInput1();
   }
 }

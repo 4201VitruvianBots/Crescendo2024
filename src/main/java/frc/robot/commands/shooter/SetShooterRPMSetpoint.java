@@ -4,28 +4,32 @@
 
 package frc.robot.commands.shooter;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class SetShooterRPMSetpoint extends Command {
-  Shooter m_shooter;
-  double m_RPMOutput;
+  private final Shooter m_shooter;
+  private final double m_RPMOutputBottom;
+  private final double m_RPMOutputTop;
 
-  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutput) {
+  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutputBottom, double RPMOutputTop) {
     m_shooter = shooter;
-    m_RPMOutput = RPMOutput;
+    m_RPMOutputBottom = RPMOutputBottom;
+    m_RPMOutputTop = RPMOutputTop;
     addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setShooterState(true);
+    m_shooter.setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override
   public void execute() {
-    m_shooter.setRpmOutput(m_RPMOutput);
+    // m_shooter.setRPMOutputFOC(m_RPMOutput);
+    m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,9 +37,7 @@ public class SetShooterRPMSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    m_shooter.setRpmOutput(0);
-    m_shooter.setShooterState(false);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.

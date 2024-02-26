@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.FIELD;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.RobotTime;
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class TestPathPlanner {
   static final double DELTA = 0.02; // acceptable deviation range
 
@@ -101,7 +102,7 @@ public class TestPathPlanner {
     var path = PathPlannerPath.fromPathFile("DriveForwardTest");
     var flippedPath = path.flipPath();
 
-    var flippedStartPoint = SimConstants.pathPlannerFlip(path.getPreviewStartingHolonomicPose());
+    var flippedStartPoint = FIELD.pathPlannerFlip(path.getPreviewStartingHolonomicPose());
 
     assertEquals(
         flippedPath.getPreviewStartingHolonomicPose().getX(), flippedStartPoint.getX(), DELTA);

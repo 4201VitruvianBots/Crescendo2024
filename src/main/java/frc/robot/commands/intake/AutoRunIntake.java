@@ -5,31 +5,32 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.INTAKE.INTAKE_STATE;
 import frc.robot.subsystems.Intake;
 
 public class AutoRunIntake extends Command {
   /** Creates a new AutoRunIntake. */
   Intake m_intake;
 
-  INTAKE_STATE m_state;
+  double m_speed;
+  double m_speed2;
 
-  public AutoRunIntake(Intake intake, INTAKE_STATE state) {
+  public AutoRunIntake(Intake intake, double speed, double speed2) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-    m_state = state;
+    m_speed = speed;
+    m_speed2 = speed2;
     addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setSpeed(m_speed, m_speed2);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_intake.setSpeed(m_state.get(), m_state.get());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -38,6 +39,7 @@ public class AutoRunIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // return m_intake.getSensorInput1() || m_intake.getSensorInput2();
     return true;
   }
 }
