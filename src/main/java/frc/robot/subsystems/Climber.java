@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -260,7 +261,9 @@ public class Climber extends SubsystemBase {
         if (m_limitJoystickInput)
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
-        setPercentOutput(percentOutput, true);
+        if (DriverStation.isEnabled()) setPercentOutput(percentOutput, true);
+        else setPercentOutput(0.0, true);
+
         break;
       default:
       case CLOSED_LOOP:
@@ -270,7 +273,7 @@ public class Climber extends SubsystemBase {
         m_position.Position = m_setpoint.position;
         m_position.Velocity = m_setpoint.velocity;
 
-        elevatorClimbMotors[0].setControl(m_position);
+        if (DriverStation.isEnabled()) elevatorClimbMotors[0].setControl(m_position);
         break;
     }
     if (!ROBOT.disableLogging) updateLogger();
