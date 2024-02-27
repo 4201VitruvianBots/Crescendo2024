@@ -5,7 +5,6 @@
 package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
@@ -16,7 +15,6 @@ import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -34,8 +32,6 @@ public class TwoPiece extends SequentialCommandGroup {
     String[] pathFiles = {"3Piece2Pt1", "3Piece2Pt2"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
-    var turnToShoot = swerveDrive.turnInPlace(Rotation2d.fromDegrees(-45), Controls::isRedAlliance);
-    var turnToPath = swerveDrive.turnInPlace(Rotation2d.fromDegrees(0), Controls::isRedAlliance);
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
