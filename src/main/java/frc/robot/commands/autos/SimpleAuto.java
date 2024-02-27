@@ -29,7 +29,7 @@ public class SimpleAuto extends SequentialCommandGroup {
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"Shoot1"};
+    String[] pathFiles = {"SimpleAuto"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
     var point = new SwerveRequest.PointWheelsAt();
