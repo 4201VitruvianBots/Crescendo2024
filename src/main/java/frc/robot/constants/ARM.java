@@ -52,8 +52,6 @@ public final class ARM {
     }
   }
 
-  
-
   public static final DCMotor gearBox = DCMotor.getKrakenX60(1);
 
   // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
@@ -74,20 +72,6 @@ public final class ARM {
 
   public static final double mountingAngleDegrees = 0;
 
-  public static final double joystickMultiplier = 0.2;
-
-  public enum ARM_STATE {
-    NONE(0),
-    SCORE(0.8);
-
-    private final double value;
-
-    ARM_STATE(final double value) {
-      this.value = value;
-    }
-
-    public double get() {
-      return value;
-    }
-  }
+  public static final double maxOutput = 0.5;
+  public static final double joystickMultiplier = maxOutput;
 }
