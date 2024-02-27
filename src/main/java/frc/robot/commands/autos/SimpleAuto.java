@@ -51,9 +51,10 @@ public class SimpleAuto extends SequentialCommandGroup {
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
+    var Wait = new WaitCommand(10);
     addCommands(
-        new WaitCommand(10),
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        
+        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim).alongWith(Wait),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand);
   }

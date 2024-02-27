@@ -87,4 +87,6 @@ public class AutoFactory {
   public static class IntakeFactory {
     public IntakeFactory(Intake intake, AmpShooter ampShooter) {}
   }
+
+
 }
