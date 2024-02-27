@@ -31,17 +31,15 @@ public final class VISION {
       Units.degreesToRadians(-145.513393);
 
   public static final double aprilTagLimelightCameraBDistanceFromCenterX =
-      Units.inchesToMeters(-7.590951);
-  public static final double aprilTagLimelightCameraBDistanceFromCenterY =
-      Units.inchesToMeters(9.541729);
+      Units.inchesToMeters(-7.6);
+  public static final double aprilTagLimelightCameraBDistanceFromCenterY = Units.inchesToMeters(0);
   public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
-      Units.inchesToMeters(15.184963);
+      Units.inchesToMeters(22.5);
   public static final double aprilTagLimelightCameraBOffsetInRadiansRoll =
       Units.degreesToRadians(0);
   public static final double aprilTagLimelightCameraBOffsetInRadiansPitch =
-      Units.degreesToRadians(6.172091);
-  public static final double aprilTagLimelightCameraBOffsetInRadiansYaw =
-      Units.degreesToRadians(145.513393);
+      Units.degreesToRadians(35.5);
+  public static final double aprilTagLimelightCameraBOffsetInRadiansYaw = Units.degreesToRadians(0);
 
   public static final double noteDetectionLimelightCameraDistanceFromCenterX =
       Units.inchesToMeters(12.125);
