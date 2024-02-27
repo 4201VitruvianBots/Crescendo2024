@@ -137,7 +137,7 @@ public class Climber extends SubsystemBase {
 
   // gets the position of the climber in meters
   public double getHeightMeters() {
-    return getMotorRotations() * CLIMBER.climberRotationsToMeters;
+    return getMotorRotations() *  CLIMBER.sprocketRotationsToMeters;
   }
 
   // gets the position of the climber in encoder counts
