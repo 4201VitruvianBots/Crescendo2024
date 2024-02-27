@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2Piece2Pt1"
+            "pathName": "2PieceNearPart1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2PieceNearPart2"
           }
         }
       ]
