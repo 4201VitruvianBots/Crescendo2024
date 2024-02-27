@@ -53,7 +53,6 @@ public class SimpleAuto extends SequentialCommandGroup {
 
     var Wait = new WaitCommand(10);
     addCommands(
-        
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim).alongWith(Wait),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand);
