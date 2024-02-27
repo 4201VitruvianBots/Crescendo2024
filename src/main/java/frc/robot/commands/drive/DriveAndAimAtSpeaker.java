@@ -57,7 +57,7 @@ public class DriveAndAimAtSpeaker extends Command {
     } else {
       m_goal = FIELD.redSpeaker;
     }
-    var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
+    var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().plus(m_goal);
     var turnRate =
         m_PidController.calculate(
             m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),

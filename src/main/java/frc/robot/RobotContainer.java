@@ -31,6 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.drive.DriveAndAimAtNote;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
@@ -91,7 +92,7 @@ public class RobotContainer {
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     m_vision.registerFieldSim(m_fieldSim);
-    //     m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -167,8 +168,17 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
-    var aimButton = new Trigger(() -> leftJoystick.getRawButton(2));
-    aimButton.whileTrue(
+    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    // aimNoteButton.whileTrue(
+    //     new DriveAndAimAtNote(
+    //         m_swerveDrive,
+    //         m_vision,
+    //         () -> leftJoystick.getRawAxis(1),
+    //         () -> leftJoystick.getRawAxis(0),
+    //         () -> rightJoystick.getRawAxis(0)));
+
+    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    aimSpeakerButton.whileTrue(
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
