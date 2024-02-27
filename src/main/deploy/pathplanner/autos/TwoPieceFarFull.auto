@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.497586995173991,
+      "y": 3.019848325410937
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TwoPieceFarPt1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TwoPieceFarPt2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TwoPieceFarPt3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TwoPieceFarPt4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
