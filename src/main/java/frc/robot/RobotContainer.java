@@ -31,7 +31,6 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
-import frc.robot.commands.drive.DriveAndAimAtNote;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
@@ -146,15 +145,18 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //   m_swerveDrive.applyChassisSpeeds(
-      //       () ->
-      //           new ChassisSpeeds(
-      //               -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-      //               -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-      //               -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+
+      m_testController
+          .cross()
+          .whileTrue(
+              new DriveAndAimAtSpeaker(
+                  m_swerveDrive,
+                  m_vision,
+                  () -> -m_testController.getRawAxis(1),
+                  () -> -m_testController.getRawAxis(0)));
     }
 
     // Default command to decelerate the flywheel if no other command is set
