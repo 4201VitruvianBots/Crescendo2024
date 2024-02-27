@@ -55,7 +55,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "2PieceNear",
   "previewStartingState": {
     "rotation": -26.45999999999998,
     "velocity": 0
