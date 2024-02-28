@@ -54,7 +54,7 @@ public class GetSubsystemStates extends Command {
     isEnabled = !isDisabled; // Done
     isIntaking = m_intake.getIntakeState(); // Done
     isShooting = m_shooter.getShooterState(); // Done
-    isClimbing = m_climber.getClimberState(); // TODO: Implement this in the climber command after it's done. 
+     // isClimbing = m_climber.getClimberState(); // TODO: Implement this in the climber command after it's done. 
     isArmScoring = m_arm.getArmState(); // Done
 
     // the prioritized state to be expressed to the LEDs
