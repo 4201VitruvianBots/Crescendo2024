@@ -34,6 +34,8 @@ public final class SHOOTER {
 
   public static final double Inertia = 0.001;
 
+  public static final double flywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
+
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
     WAIT_FOR_AMP_SCORE(0.8),
