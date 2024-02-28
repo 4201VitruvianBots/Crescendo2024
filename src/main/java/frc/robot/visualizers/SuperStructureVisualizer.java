@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.INTAKE;
@@ -33,7 +32,6 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   private final double startPointX = 0.28;
   private final double startPointY = 0.2;
-  private final double FlywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
   private final Mechanism2d m_mech2d =
       new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
@@ -81,95 +79,23 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private final MechanismLigament2d m_climberPost =
       m_climberPostRoot2d.append(m_climberVisualizer.getPost());
 
-  private final MechanismLigament2d m_bottomFlywheel =
-      m_mech2d
-          .getRoot(
-              "pivotPoint",
-              startPointX + SHOOTER.kBottomFlywheelDistanceFromIntake,
-              startPointY + SHOOTER.kBottomFlywheelDistanceFromDriveBase)
-          .append(
-              new MechanismLigament2d(
-                  "flywheelArmBottom",
-                  Units.inchesToMeters(1.7),
-                  0,
-                  0,
-                  new Color8Bit(Color.kAliceBlue)));
-
-  private final MechanismLigament2d side1 =
-      m_bottomFlywheel.append(
-          new MechanismLigament2d("side1", FlywheelSize, 112.5, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side2 =
-      side1.append(
-          new MechanismLigament2d("side2", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side3 =
-      side2.append(
-          new MechanismLigament2d("side3", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side4 =
-      side3.append(
-          new MechanismLigament2d("side4", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side5 =
-      side4.append(
-          new MechanismLigament2d("side5", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side6 =
-      side5.append(
-          new MechanismLigament2d("side6", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side7 =
-      side6.append(
-          new MechanismLigament2d("side7", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d side8 =
-      side7.append(
-          new MechanismLigament2d("side8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
+  private final MechanismRoot2d m_bottomFlywheelRoot2d =
+      m_mech2d.getRoot(
+          "pivotPoint",
+          startPointX + SHOOTER.kBottomFlywheelDistanceFromIntake,
+          startPointY + SHOOTER.kBottomFlywheelDistanceFromDriveBase);
+  private final ShooterVisualizer m_bottomFlywheelVisualizer = new ShooterVisualizer("flywheelArmBottom", m_bottomFlywheelRoot2d);
 
   // Velocity
 
   // Position
-  private final MechanismLigament2d m_topFlywheel =
-      m_mech2d
-          .getRoot(
-              "UpperPivotPoint",
-              startPointX + SHOOTER.kTopFlywheelDistanceFromIntake,
-              startPointY + SHOOTER.kTopFlywheelDistanceFromDriveBase)
-          .append(
-              new MechanismLigament2d(
-                  "flywheelArmTop",
-                  Units.inchesToMeters(1.7),
-                  0,
-                  0,
-                  new Color8Bit(Color.kAliceBlue)));
-
-  private final MechanismLigament2d Upperside1 =
-      m_topFlywheel.append(
-          new MechanismLigament2d(
-              "Upperside1", FlywheelSize, 112.5, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside2 =
-      Upperside1.append(
-          new MechanismLigament2d(
-              "Upperside2", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside3 =
-      Upperside2.append(
-          new MechanismLigament2d(
-              "Upperside3", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside4 =
-      Upperside3.append(
-          new MechanismLigament2d(
-              "Upperside4", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside5 =
-      Upperside4.append(
-          new MechanismLigament2d(
-              "Upperside5", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside6 =
-      Upperside5.append(
-          new MechanismLigament2d(
-              "Upperside6", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside7 =
-      Upperside6.append(
-          new MechanismLigament2d(
-              "Upperside7", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-  private final MechanismLigament2d Upperside8 =
-      Upperside7.append(
-          new MechanismLigament2d(
-              "Upperside8", FlywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
-
+  private final MechanismRoot2d m_topFlywheelRoot2d =
+      m_mech2d.getRoot(
+          "UpperPivotPoint",
+          startPointX + SHOOTER.kTopFlywheelDistanceFromIntake,
+          startPointY + SHOOTER.kTopFlywheelDistanceFromDriveBase);
+  private final ShooterVisualizer m_topFlywheelVisualizer = new ShooterVisualizer("flywheelArmTop", m_topFlywheelRoot2d);
+  
   private final Color8Bit m_drivebase2d_originalColor,
       m_limelightA2d_originalColor,
       m_limelightB2d_originalColor,
@@ -277,9 +203,8 @@ public class SuperStructureVisualizer implements AutoCloseable {
   public void updateShooter() {
     updateMotorColor(m_shooter2d, m_shooter.getRpmFollower(), m_shooter2d_originalColor);
 
-    m_bottomFlywheel.setAngle(
-        m_bottomFlywheel.getAngle() - 360 * m_shooter.getRpmMaster() / 60 * 0.2);
-    m_topFlywheel.setAngle(m_topFlywheel.getAngle() + 360 * m_shooter.getRpmFollower() / 60 * 0.2);
+    m_bottomFlywheelVisualizer.update(m_shooter.getRpmMaster());
+    m_topFlywheelVisualizer.update(m_shooter.getRpmFollower());
   }
 
   public void updateAmpShooter() {

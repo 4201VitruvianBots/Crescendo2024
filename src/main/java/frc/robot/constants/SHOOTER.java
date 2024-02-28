@@ -33,6 +33,8 @@ public final class SHOOTER {
   public static final double gearRatioTop = 20.0 / 28.0;
 
   public static final double Inertia = 0.001;
+  
+  public static final double flywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
