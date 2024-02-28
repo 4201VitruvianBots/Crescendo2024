@@ -96,12 +96,13 @@ public class Climber extends SubsystemBase {
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
-    elevatorClimbMotors[0].setInverted(true);
-    elevatorClimbMotors[1].setInverted(false);
+    
+    // TODO: Verify
+    elevatorClimbMotors[0].setInverted(false);
+    elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[1].setControl(
         follower
-            .withMasterID(elevatorClimbMotors[0].getDeviceID())
-            .withOpposeMasterDirection(true));
+            .withMasterID(elevatorClimbMotors[0].getDeviceID()));
 
     SmartDashboard.putData(this);
   }
@@ -296,14 +297,14 @@ public class Climber extends SubsystemBase {
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
-
+    
     m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
-        rightElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
   }
 }
