@@ -135,6 +135,10 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[0].set(output);
   }
 
+  public double getSupplyCurrent() {
+    return elevatorClimbMotors[0].getSupplyCurrent().getValueAsDouble();
+  }
+
   // gets the position of the climber in meters
   public double getHeightMeters() {
     return getMotorRotations() * CLIMBER.sprocketRotationsToMeters;
@@ -245,12 +249,11 @@ public class Climber extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
-    Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPositionMeters());
     Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
-    Logger.recordOutput("Climber/ControlModeValue", getNeutralMode());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
+    Logger.recordOutput("Climber/Supply Current", getSupplyCurrent());
   }
 
   @Override
@@ -264,7 +267,7 @@ public class Climber extends SubsystemBase {
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
         // TODO: Verify rotation to distance conversion before continuing
-        // setPercentOutput(percentOutput, true);
+        setPercentOutput(percentOutput, true);
         break;
       default:
       case CLOSED_LOOP:
@@ -275,7 +278,7 @@ public class Climber extends SubsystemBase {
         m_position.Velocity = m_setpoint.velocity;
 
         // TODO: Verify rotation to distance conversion before continuing
-        // elevatorClimbMotors[0].setControl(m_position);
+        elevatorClimbMotors[0].setControl(m_position);
         break;
     }
     if (!ROBOT.disableLogging) updateLogger();

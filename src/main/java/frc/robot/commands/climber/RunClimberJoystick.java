@@ -6,8 +6,13 @@ package frc.robot.commands.climber;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
+import frc.robot.constants.USB;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
@@ -34,6 +39,7 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
+      GenericHID xBoxController = new GenericHID(USB.xBoxController);
 
       if (joystickYDeadbandOutput != 0.0) {
         m_climber.setJoystickY(-joystickYDeadbandOutput);
@@ -42,6 +48,9 @@ public class RunClimberJoystick extends Command {
       if (joystickYDeadbandOutput == 0) {
         m_climber.holdClimber();
         m_climber.setPercentOutput(0);
+      }
+      if (m_climber.getSupplyCurrent() >= 131.064) {
+        xBoxController.setRumble(RumbleType.kBothRumble, 0.2);
       }
     }
   }
