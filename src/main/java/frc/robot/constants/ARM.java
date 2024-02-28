@@ -66,7 +66,6 @@ public final class ARM {
   public static final double minAngleDegrees = -40;
 
   public static final double maxAngleDegrees = 140;
-  
 
   public static final double startingAngleDegrees = minAngleDegrees;
 

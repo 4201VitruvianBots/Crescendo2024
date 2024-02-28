@@ -31,6 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
@@ -57,7 +58,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  //   private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -89,8 +90,8 @@ public class RobotContainer {
     m_telemetry.registerFieldSim(m_fieldSim);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    // m_vision.registerFieldSim(m_fieldSim);
-    //    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerFieldSim(m_fieldSim);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -107,8 +108,8 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
-      //   m_visualizer.registerVision(m_vision);
-      //      m_visualizer.registerLedSubsystem(m_led);
+      m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -147,6 +148,15 @@ public class RobotContainer {
                       -m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+
+      m_testController
+          .cross()
+          .whileTrue(
+              new DriveAndAimAtSpeaker(
+                  m_swerveDrive,
+                  m_vision,
+                  () -> -m_testController.getRawAxis(1),
+                  () -> -m_testController.getRawAxis(0)));
     }
 
     // Default command to decelerate the flywheel if no other command is set
@@ -159,6 +169,23 @@ public class RobotContainer {
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+
+    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    // aimNoteButton.whileTrue(
+    //     new DriveAndAimAtNote(
+    //         m_swerveDrive,
+    //         m_vision,
+    //         () -> leftJoystick.getRawAxis(1),
+    //         () -> leftJoystick.getRawAxis(0),
+    //         () -> rightJoystick.getRawAxis(0)));
+
+    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    aimSpeakerButton.whileTrue(
+        new DriveAndAimAtSpeaker(
+            m_swerveDrive,
+            m_vision,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0)));
 
     xboxController
         .b()
@@ -364,5 +391,6 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_arm.teleopInit();
+    m_climber.teleopInit();
   }
 }
