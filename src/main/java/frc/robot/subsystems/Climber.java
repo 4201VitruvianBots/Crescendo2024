@@ -147,11 +147,11 @@ public class Climber extends SubsystemBase {
 
   // sets position in meters
   public void setSensorPosition(double meters) {
-    elevatorClimbMotors[0].setPosition(meters / CLIMBER.climberRotationsToMeters);
+    elevatorClimbMotors[0].setPosition(meters / CLIMBER.sprocketRotationsToMeters);
   }
 
   public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.climberRotationsToMeters;
+    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.sprocketRotationsToMeters;
   }
 
   public void holdClimber() {
@@ -168,7 +168,7 @@ public class Climber extends SubsystemBase {
 
   public void setDesiredPositionMeters(double setpoint) {
     m_desiredPositionMeters = setpoint;
-    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.climberRotationsToMeters);
+    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.sprocketRotationsToMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -295,12 +295,12 @@ public class Climber extends SubsystemBase {
     rightElevatorSim.update(RobotTime.getTimeDelta());
 
     m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.climberRotationsToMeters);
+        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters() * CLIMBER.climberRotationsToMeters);
+        leftElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.climberRotationsToMeters);
+        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
-        rightElevatorSim.getPositionMeters() * CLIMBER.climberRotationsToMeters);
+        rightElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
   }
 }
