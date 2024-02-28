@@ -35,7 +35,7 @@ public class AmpTake extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
-    if (m_intake.isIntaking() && (m_intake.getSensorInput1() || m_intake.getSensorInput2())) {
+    if (m_intake.getIntakeState() && (m_intake.getSensorInput1() || m_intake.getSensorInput2())) {
       m_ampShooter.setPercentOutput(0);
     } else {
       m_ampShooter.setPercentOutput(m_ampSpeed);

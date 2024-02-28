@@ -82,9 +82,9 @@ public class Intake extends SubsystemBase {
   //     m_state = speed;
   //   }
 
-  public STATE getIntakeState() {
-    return m_state;
-  }
+  // public STATE getIntakeState() {
+  //  return m_state;
+  // }
 
   public boolean getSensorInput1() {
     // Disabled until sensor installed
