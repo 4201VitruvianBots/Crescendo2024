@@ -93,12 +93,14 @@ public class Intake extends SubsystemBase {
 
   public boolean getSensorInput1() {
     // Disabled until sensor installed
-    return distanceSensorDigitalInput.get();
+//    return distanceSensorDigitalInput.get();
+    return false;
   }
 
   public boolean getSensorInput2() {
     // Disabled until sensor installed
-    return distanceSensorDigitalInput2.get();
+//    return distanceSensorDigitalInput2.get();
+    return false;
   }
 
   @Override
