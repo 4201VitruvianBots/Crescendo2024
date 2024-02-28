@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -32,7 +31,7 @@ public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
-  private final StaticBrake brake = new StaticBrake();
+  
   private final Follower follower = new Follower(0, false);
 
   // Trapezoid profile setup
@@ -190,7 +189,7 @@ public class Climber extends SubsystemBase {
     m_goal = new TrapezoidProfile.State(rotations, 0);
   }
 
-  private double calculateFeedforward(TrapezoidProfile.State state) {
+  public double calculateFeedforward(TrapezoidProfile.State state) {
     return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
   }
 

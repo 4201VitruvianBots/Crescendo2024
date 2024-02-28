@@ -145,8 +145,6 @@ public class LEDSubsystem extends SubsystemBase {
     return new Color8Bit(red, green, blue);
   }
 
-  private void updateSmartDashboard() {}
-
   private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
   }

@@ -51,7 +51,7 @@ public class Vision extends SubsystemBase {
 
   private Pose2d cameraAEstimatedPose = new Pose2d();
   private Pose2d cameraBEstimatedPose = new Pose2d();
-  private double cameraATimestamp, cameraBTimestamp;
+  private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
 
   public Vision() {
@@ -92,7 +92,7 @@ public class Vision extends SubsystemBase {
     return photonEstimator.update();
   }
 
-  private boolean checkPoseAgreement(Pose3d a, Pose3d b) {
+  public boolean checkPoseAgreement(Pose3d a, Pose3d b) {
     var poseDelta = a.minus(b);
 
     if (Math.abs(poseDelta.getTranslation().getX()) > VISION.poseXTolerance) {
