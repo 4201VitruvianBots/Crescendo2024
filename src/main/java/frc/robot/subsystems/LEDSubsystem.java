@@ -23,8 +23,6 @@ import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,6 +32,7 @@ import frc.robot.constants.LED.*;
 import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
+// There are 26 LED's on the robot.
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LED. */
   private final CANdle m_candle = new CANdle(CAN.CANdle);
@@ -124,16 +123,10 @@ public class LEDSubsystem extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case INTAKING:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Strobe);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
-        case SCORE_SPEAKER:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
-          break;
-        case SCORE_ARM: // For scoring amp or trap
-          setPattern(LED.white, 1, 0, ANIMATION_TYPE.Solid);
-          break;
-        case CLIMBING:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Rainbow);
+        case SHOOTING:
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
@@ -169,13 +162,6 @@ public class LEDSubsystem extends SubsystemBase {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
-
-    if (DriverStation.isDisabled()) {
-      if (RobotController.getBatteryVoltage()
-          < 10) { // calling battery to let driver know that it is low
-        expressState(SUBSYSTEM_STATES.LOW_BATTERY);
-      }
-    }
 
     if (!ROBOT.disableLogging) updateLogger();
   }
