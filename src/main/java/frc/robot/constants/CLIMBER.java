@@ -20,6 +20,7 @@ public final class CLIMBER {
   public static final double sprocketRadiusMeters = Units.inchesToMeters(1.432);
   public static final double sprocketRotationsToMeters = sprocketRadiusMeters * 2 * Math.PI;
   public static final double climberReduction = gearRatio * sprocketRotationsToMeters;
+  public static final double carriageMassKg = 3.0;
   // public static final double centerOffset = Units.inchesToMeters(14);
   // public static final double kMaxReverseOutput = -0.45;
 

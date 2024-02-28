@@ -51,7 +51,7 @@ public class Climber extends SubsystemBase {
   private final double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
   private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
 
-  private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
+  private CONTROL_MODE m_controlMode = CONTROL_MODE.OPEN_LOOP;
   // Controlled by open loop
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
@@ -65,7 +65,7 @@ public class Climber extends SubsystemBase {
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
-          3.0,
+          CLIMBER.carriageMassKg,
           CLIMBER.sprocketRadiusMeters,
           CLIMBER.lowerLimitMeters,
           CLIMBER.upperLimitMeters,
@@ -75,12 +75,13 @@ public class Climber extends SubsystemBase {
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
-          3.0,
+          CLIMBER.carriageMassKg,
           CLIMBER.sprocketRadiusMeters,
           CLIMBER.lowerLimitMeters,
           CLIMBER.upperLimitMeters,
           false,
           CLIMBER.lowerLimitMeters);
+  
   private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
   private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
@@ -97,12 +98,11 @@ public class Climber extends SubsystemBase {
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
     
-    // TODO: Verify
     elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[1].setControl(
         follower
-            .withMasterID(elevatorClimbMotors[0].getDeviceID()));
+            .withMasterID(elevatorClimbMotors[0].getDeviceID())
+            .withOpposeMasterDirection(true));
 
     SmartDashboard.putData(this);
   }
