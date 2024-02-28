@@ -58,7 +58,7 @@ public class GetSubsystemStates extends Command {
     // the prioritized state to be expressed to the LEDs
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (isIntaking ) {
+    if (isIntaking) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
     } else if (isShooting) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
@@ -70,7 +70,7 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
     }
   }
- 
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}

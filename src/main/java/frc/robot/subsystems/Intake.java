@@ -74,16 +74,14 @@ public class Intake extends SubsystemBase {
   public double getRpm() {
     return intakeMotor1.getVelocity().getValueAsDouble() * 60.0;
   }
-  
+
   public void setIntakeState(boolean state) {
     isIntaking = state;
   }
-  
+
   public boolean getIntakeState() {
     return isIntaking;
   }
-
-
 
   //   public void setIntakingState(INTAKE_STATE speed) {
   //     m_state = speed;
