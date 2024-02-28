@@ -19,7 +19,7 @@ public class ArmVisualizer implements AutoCloseable {
     m_armJoint2d = new MechanismLigament2d(m_name, ARM.jointLength, 130);
     m_armJoint2d.append(m_arm2d);
   }
-
+  
   public MechanismLigament2d getJointLigament() {
     return m_armJoint2d;
   }

@@ -70,6 +70,10 @@ public class Intake extends SubsystemBase {
   public double getSpeed() {
     return intakeMotor1.get();
   }
+  
+  public double getRpm() {
+    return intakeMotor1.getVelocity().getValueAsDouble() * 60.0;
+  }
 
   public void setIntaking(boolean isIntaking) {
     m_isIntaking = isIntaking;

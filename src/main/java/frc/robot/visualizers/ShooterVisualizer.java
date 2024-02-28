@@ -23,16 +23,7 @@ public class ShooterVisualizer {
   private MechanismLigament2d m_side7;
   private MechanismLigament2d m_side8;
 
-  public ShooterVisualizer(String name, MechanismRoot2d root2d) {
-    m_spinner = root2d
-          .append(
-              new MechanismLigament2d(
-                  name,
-                  Units.inchesToMeters(1.7),
-                  0,
-                  0,
-                  new Color8Bit(Color.kAliceBlue)));
-    
+  private void initSides() {
     m_side1 =
         m_spinner.append(
             new MechanismLigament2d("side1", SHOOTER.flywheelSize, 112.5, 3, new Color8Bit(Color.kDimGray)));
@@ -57,7 +48,32 @@ public class ShooterVisualizer {
     m_side8 =
         m_side7.append(
             new MechanismLigament2d("side8", SHOOTER.flywheelSize, 45, 3, new Color8Bit(Color.kDimGray)));
+  }
+  
+  public ShooterVisualizer(String name, MechanismRoot2d root2d) {
+    m_spinner = root2d
+          .append(
+              new MechanismLigament2d(
+                  name,
+                  Units.inchesToMeters(1.7),
+                  0,
+                  0,
+                  new Color8Bit(Color.kAliceBlue)));
     
+    initSides();
+  }
+  
+  public ShooterVisualizer(String name, MechanismLigament2d ligament2d) {
+    m_spinner = ligament2d
+          .append(
+              new MechanismLigament2d(
+                  name,
+                  Units.inchesToMeters(1.7),
+                  0,
+                  0,
+                  new Color8Bit(Color.kAliceBlue)));
+    
+    initSides();
   }
   
   public MechanismLigament2d getSpinnerLigament() {
