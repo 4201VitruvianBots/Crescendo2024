@@ -24,7 +24,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private boolean isIntaking = false;
+  private boolean m_isIntaking = false;
 
   // Disabled until sensor installed
   DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
@@ -74,24 +74,14 @@ public class Intake extends SubsystemBase {
   public double getRpm() {
     return intakeMotor1.getVelocity().getValueAsDouble() * 60.0;
   }
-  
+
   public void setIntakeState(boolean state) {
-    isIntaking = state;
+    m_isIntaking = state;
   }
-  
+
   public boolean getIntakeState() {
-    return isIntaking;
+    return m_isIntaking;
   }
-
-
-
-  //   public void setIntakingState(INTAKE_STATE speed) {
-  //     m_state = speed;
-  //   }
-
-  // public STATE getIntakeState() {
-  //  return m_state;
-  // }
 
   public boolean getSensorInput1() {
     // Disabled until sensor installed
@@ -103,31 +93,6 @@ public class Intake extends SubsystemBase {
     // Disabled until sensor installed
     //    return distanceSensorDigitalInput2.get();
     return false;
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    m_intakeMotor1SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    m_intakeMotor2SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-
-    m_intakeMotor2Sim.setInputVoltage(
-        MathUtil.clamp(m_intakeMotor2SimState.getMotorVoltage(), -12, 12));
-    m_intakeMotor1Sim.setInputVoltage(
-        MathUtil.clamp(m_intakeMotor1SimState.getMotorVoltage(), -12, 12));
-
-    m_intakeMotor2Sim.update(RobotTime.getTimeDelta());
-    m_intakeMotor1Sim.update(RobotTime.getTimeDelta());
-    //    System.out.printf("DT: %.2f\tDrive Rotations: %.2f\tDrive RPM: %.2f\n", dt,
-    // m_intakeMotor2Sim.getAngularPositionRotations(), m_intakeMotor2Sim.getAngularVelocityRPM());
-
-    m_intakeMotor2SimState.setRawRotorPosition(
-        m_intakeMotor2Sim.getAngularPositionRotations() * INTAKE.gearRatio);
-    m_intakeMotor2SimState.setRotorVelocity(
-        m_intakeMotor2Sim.getAngularVelocityRPM() * INTAKE.gearRatio / 60.0);
-    m_intakeMotor1SimState.setRawRotorPosition(
-        m_intakeMotor1Sim.getAngularPositionRotations() * INTAKE.gearRatio);
-    m_intakeMotor1SimState.setRotorVelocity(
-        m_intakeMotor1Sim.getAngularVelocityRPM() * INTAKE.gearRatio / 60.0);
   }
 
   public void updateSmartDashboard() {}
@@ -146,9 +111,28 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLogger();
+  }
 
-    // setIntaking(
-    //     MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0
-    //         || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
+  @Override
+  public void simulationPeriodic() {
+    m_intakeMotor1SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_intakeMotor2SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    m_intakeMotor2Sim.setInputVoltage(
+        MathUtil.clamp(m_intakeMotor2SimState.getMotorVoltage(), -12, 12));
+    m_intakeMotor1Sim.setInputVoltage(
+        MathUtil.clamp(m_intakeMotor1SimState.getMotorVoltage(), -12, 12));
+
+    m_intakeMotor2Sim.update(RobotTime.getTimeDelta());
+    m_intakeMotor1Sim.update(RobotTime.getTimeDelta());
+
+    m_intakeMotor2SimState.setRawRotorPosition(
+        m_intakeMotor2Sim.getAngularPositionRotations() * INTAKE.gearRatio);
+    m_intakeMotor2SimState.setRotorVelocity(
+        m_intakeMotor2Sim.getAngularVelocityRPM() * INTAKE.gearRatio / 60.0);
+    m_intakeMotor1SimState.setRawRotorPosition(
+        m_intakeMotor1Sim.getAngularPositionRotations() * INTAKE.gearRatio);
+    m_intakeMotor1SimState.setRotorVelocity(
+        m_intakeMotor1Sim.getAngularVelocityRPM() * INTAKE.gearRatio / 60.0);
   }
 }

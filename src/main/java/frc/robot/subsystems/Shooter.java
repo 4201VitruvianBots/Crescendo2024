@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
   private boolean m_testMode = false;
   private double m_headingOffset;
   private double m_desiredPercentOutput;
-  private boolean isShooting = false;
+  private boolean m_isShooting = false;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -82,12 +82,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getShooterState() {
-    return isShooting;
+    return m_isShooting;
   }
 
   /** Sets a boolean for the intake's actuation */
   public void setShooterState(boolean state) {
-    isShooting = state;
+    m_isShooting = state;
   }
 
   // values that we set

@@ -25,6 +25,7 @@ public class ArmSetpoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // m_arm.setArmState(true);
     m_arm.setDesiredSetpointRotations(m_setpoint.get());
   }
 
