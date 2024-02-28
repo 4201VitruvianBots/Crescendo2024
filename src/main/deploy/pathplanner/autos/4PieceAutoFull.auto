@@ -28,6 +28,18 @@
           "data": {
             "pathName": "FourPiecePt4"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt4.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FourPiecePt5.1"
+          }
         }
       ]
     }
