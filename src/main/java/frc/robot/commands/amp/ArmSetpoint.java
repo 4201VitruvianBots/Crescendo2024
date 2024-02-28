@@ -36,7 +36,7 @@ public class ArmSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
-    m_arm.setArmState(false);
+    // m_arm.setArmState(false);
   }
 
   // Returns true when the command should end.

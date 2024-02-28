@@ -31,7 +31,7 @@ import frc.robot.constants.LED;
 import frc.robot.constants.LED.*;
 import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
-
+// There are 26 LED's on the robot.
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LED. */
   private final CANdle m_candle = new CANdle(CAN.CANdle);
@@ -122,16 +122,10 @@ public class LEDSubsystem extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case INTAKING:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Strobe);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
         case SHOOTING:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
-          break;
-        case ARMSCORING: // For scoring amp or trap
-          setPattern(LED.white, 1, 0, ANIMATION_TYPE.Solid);
-          break;
-        case CLIMBING:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Rainbow);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red

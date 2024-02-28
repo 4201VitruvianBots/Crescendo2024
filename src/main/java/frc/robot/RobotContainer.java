@@ -35,6 +35,7 @@ import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.intake.RunAll;
+import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ToggleShooterTestMode;
@@ -66,7 +67,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
-  //  private final LEDSubsystem m_led = new LEDSubsystem();
+  private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
@@ -164,6 +165,7 @@ public class RobotContainer {
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> xboxController.getRightY()));
+    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
   }
 
   private void configureBindings() {

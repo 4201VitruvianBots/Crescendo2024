@@ -7,7 +7,6 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDSubsystem;
@@ -21,21 +20,19 @@ public class GetSubsystemStates extends Command {
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
-  private final Arm m_arm;
+  // private final Arm m_arm;
   private boolean isIntaking;
   private boolean isClimbing;
   private boolean isShooting;
-  private boolean isArmScoring;
   private boolean isDisabled;
   private boolean isEnabled;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Arm arm, Shooter shooter) {
+  public GetSubsystemStates(LEDSubsystem led, Intake intake, Climber climber, Shooter shooter) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
-    m_arm = arm;
+    // m_arm = arm;
     m_shooter = shooter;
 
     addRequirements(m_led);
@@ -56,26 +53,24 @@ public class GetSubsystemStates extends Command {
     isShooting = m_shooter.getShooterState(); // Done
     // isClimbing = m_climber.getClimberState(); // TODO: Implement this in the climber command
     // after it's done.
-    isArmScoring = m_arm.getArmState(); // Done
+    // isArmScoring = m_arm.getArmState(); // Done
 
     // the prioritized state to be expressed to the LEDs
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (isDisabled) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
-    } else if (isIntaking) {
+    if (isIntaking ) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
     } else if (isShooting) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
     } else if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
-    } else if (isArmScoring) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.ARMSCORING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
+    } else if (isDisabled) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
     }
   }
-
+ 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
