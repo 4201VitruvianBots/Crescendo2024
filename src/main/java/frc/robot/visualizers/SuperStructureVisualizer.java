@@ -73,9 +73,10 @@ public class SuperStructureVisualizer implements AutoCloseable {
       m_armVisualizer
           .getArmLigament()
           .append(new MechanismLigament2d("Amp Shooter", Units.inchesToMeters(8), -110));
-  
-  private final ShooterVisualizer m_ampShooterVisualizer = new ShooterVisualizer("flywheelAmpShooter", m_ampShooter2d);
-  
+
+  private final ShooterVisualizer m_ampShooterVisualizer =
+      new ShooterVisualizer("flywheelAmpShooter", m_ampShooter2d);
+
   private final ClimberVisualizer m_climberVisualizer = new ClimberVisualizer("m_climber2d");
   private final MechanismLigament2d m_climber2d =
       m_climberRoot2d.append(m_climberVisualizer.getLigament());
@@ -87,7 +88,8 @@ public class SuperStructureVisualizer implements AutoCloseable {
           "pivotPoint",
           startPointX + SHOOTER.kBottomFlywheelDistanceFromIntake,
           startPointY + SHOOTER.kBottomFlywheelDistanceFromDriveBase);
-  private final ShooterVisualizer m_bottomFlywheelVisualizer = new ShooterVisualizer("flywheelArmBottom", m_bottomFlywheelRoot2d);
+  private final ShooterVisualizer m_bottomFlywheelVisualizer =
+      new ShooterVisualizer("flywheelArmBottom", m_bottomFlywheelRoot2d);
 
   // Velocity
 
@@ -97,8 +99,9 @@ public class SuperStructureVisualizer implements AutoCloseable {
           "UpperPivotPoint",
           startPointX + SHOOTER.kTopFlywheelDistanceFromIntake,
           startPointY + SHOOTER.kTopFlywheelDistanceFromDriveBase);
-  private final ShooterVisualizer m_topFlywheelVisualizer = new ShooterVisualizer("flywheelArmTop", m_topFlywheelRoot2d);
-  
+  private final ShooterVisualizer m_topFlywheelVisualizer =
+      new ShooterVisualizer("flywheelArmTop", m_topFlywheelRoot2d);
+
   private final Color8Bit m_drivebase2d_originalColor,
       m_limelightA2d_originalColor,
       m_limelightB2d_originalColor,
@@ -201,7 +204,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   public void updateIntake() {
     updateMotorColor(m_intake2d, m_intake.getSpeed(), m_intake2d_originalColor);
-    
+
     m_intakeVisualizer.update(m_intake.getRpm());
   }
 
@@ -214,7 +217,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   public void updateAmpShooter() {
     updateMotorColor(m_ampShooter2d, m_ampShooter.getSpeed(), m_ampShooter2d_originalColor);
-    
+
     m_ampShooterVisualizer.update(m_ampShooter.getRpm());
   }
 

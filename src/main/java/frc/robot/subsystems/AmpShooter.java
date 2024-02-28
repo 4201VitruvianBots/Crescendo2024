@@ -41,7 +41,7 @@ public class AmpShooter extends SubsystemBase {
   public double getSpeed() {
     return ampMotor.get();
   }
-  
+
   public double getRpm() {
     return ampMotor.getVelocity().getValueAsDouble() * 60.0;
   }
