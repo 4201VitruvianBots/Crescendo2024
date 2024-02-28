@@ -23,7 +23,7 @@ public class ROBOT {
 
   public enum ROBOT_ID {
     // Robot Serial Numbers
-    FORTE("FORTRE"),
+    FORTE("030cbc95"),
     ALPHABOT("030cbcf0"),
     GRIDLOCK("0306ce62"),
     BOBOT("030e6a97"),
@@ -69,9 +69,6 @@ public class ROBOT {
     SWERVE.DRIVE.kBackLeftEncoderOffset = 0.483642578125;
     SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
 
-    SWERVE.DRIVE.kInvertLeftDrive = false;
-    SWERVE.DRIVE.kInvertRightDrive = true;
-
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
     CAN.drivebaseCanbus = CAN.rioCanbus;
   }
@@ -81,9 +78,6 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = Units.degreesToRotations(34.18956);
     SWERVE.DRIVE.kBackLeftEncoderOffset = Units.degreesToRotations(77.51952);
     SWERVE.DRIVE.kBackRightEncoderOffset = Units.degreesToRotations(330.55668);
-
-    SWERVE.DRIVE.kInvertLeftDrive = false;
-    SWERVE.DRIVE.kInvertRightDrive = true;
   }
 
   public static void initSim() {

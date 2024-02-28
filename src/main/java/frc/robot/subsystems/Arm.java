@@ -85,8 +85,8 @@ public class Arm extends SubsystemBase {
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
-    config.MotorOutput.PeakForwardDutyCycle = 0.2;
-    config.MotorOutput.PeakReverseDutyCycle = -0.2;
+    config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
+    config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
@@ -165,8 +165,8 @@ public class Arm extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
+    Logger.recordOutput("Arm/CurrentOutput", m_armMotor.getTorqueCurrent().getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/DesiredSetpoint", Units.rotationsToDegrees(m_goal.position));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
 
@@ -218,8 +218,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void teleopInit() {
-    setDesiredSetpointRotations(getCurrentRotation());
     resetTrapezoidState();
+    setDesiredSetpointRotations(getCurrentRotation());
   }
 
   @Override

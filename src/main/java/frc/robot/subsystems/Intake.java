@@ -140,8 +140,8 @@ public class Intake extends SubsystemBase {
     updateSmartDashboard();
     if (!ROBOT.disableLogging) updateLogger();
 
-    setIntaking(
-        MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0
-            || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
+    // setIntaking(
+    //     MathUtil.clamp(intakeMotor1.get(), -0.05, 0.05) > 0
+    //         || MathUtil.clamp(intakeMotor2.get(), -0.05, 0.05) > 0);
   }
 }

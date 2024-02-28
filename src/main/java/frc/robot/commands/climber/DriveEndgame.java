@@ -39,7 +39,6 @@ public class DriveEndgame extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
     m_swerveDrive.setControl(drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
   }
 
