@@ -31,6 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.drive.DriveAndAimAtNote;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
@@ -172,7 +173,7 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
-    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
     //     new DriveAndAimAtNote(
     //         m_swerveDrive,
@@ -182,7 +183,7 @@ public class RobotContainer {
     //         () -> rightJoystick.getRawAxis(0)));
 
     var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
-    aimSpeakerButton.whileTrue(
+    aimSpeakerButton.whileTrue( 
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
