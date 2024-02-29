@@ -11,11 +11,18 @@ import frc.robot.subsystems.Arm;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ResetArmPosition extends InstantCommand {
-  Arm m_arm;
+  private final Arm m_arm;
 
   public ResetArmPosition(Arm arm) {
     m_arm = arm;
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_arm);
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 
   // Called when the command is initially scheduled.

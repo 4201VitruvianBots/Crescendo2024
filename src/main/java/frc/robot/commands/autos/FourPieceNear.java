@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
-import frc.robot.constants.AMP;
+import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -40,7 +40,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             shooter,
             ampShooter,
             intake,
-            AMP.STATE.INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get(),
             RPM_SETPOINT.SPEAKER.get(),
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
@@ -55,7 +55,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             INTAKE.STATE.NONE.get(),
             INTAKE.STATE.NONE.get(),
-            AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var shootCommand2 =
         new AutoRunAmpTake(
@@ -63,7 +63,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             INTAKE.STATE.NONE.get(),
             INTAKE.STATE.NONE.get(),
-            AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var shootCommand4 =
         new AutoRunAmpTake(
@@ -71,7 +71,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             INTAKE.STATE.NONE.get(),
             INTAKE.STATE.NONE.get(),
-            AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var RunIntake =
         new AutoRunAmpTake(
@@ -79,7 +79,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var RunIntake2 =
         new AutoRunAmpTake(
@@ -87,7 +87,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var RunIntake3 =
         new AutoRunAmpTake(
@@ -95,7 +95,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),

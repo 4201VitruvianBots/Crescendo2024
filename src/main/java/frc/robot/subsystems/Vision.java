@@ -188,7 +188,7 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
       }
 
-      Logger.recordOutput("vision/poseAgreement", poseAgreement);
+      //      Logger.recordOutput("vision/poseAgreement", poseAgreement);
     } catch (Exception e) {
       System.out.println("Advantagekit could not update Vision logs");
     }

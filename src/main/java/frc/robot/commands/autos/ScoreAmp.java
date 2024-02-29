@@ -3,9 +3,9 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.amp.AutoArmSetpoints;
-import frc.robot.commands.amp.AutoSetAmpSpeed;
+import frc.robot.commands.ampShooter.AutoSetAmpSpeed;
 import frc.robot.commands.intake.AutoRunAmpTake;
-import frc.robot.constants.AMP;
+import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.ARM.ARM_SETPOINT;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.WAIT;
@@ -23,11 +23,11 @@ public class ScoreAmp extends SequentialCommandGroup {
             AmpShooter,
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMP.STATE.INTAKING.get()),
+            AMPSHOOTER.STATE.INTAKING.get()),
         new AutoArmSetpoints(flipper, ARM_SETPOINT.FORWARD),
-        new AutoSetAmpSpeed(AmpShooter, AMP.STATE.INTAKING),
+        new AutoSetAmpSpeed(AmpShooter, AMPSHOOTER.STATE.INTAKING),
         new WaitCommand(WAIT.WAIT_FOR_AMP_SCORE.get()),
-        new AutoSetAmpSpeed(AmpShooter, AMP.STATE.NONE),
+        new AutoSetAmpSpeed(AmpShooter, AMPSHOOTER.STATE.NONE),
         new AutoArmSetpoints(flipper, ARM_SETPOINT.STOWED));
   }
 }

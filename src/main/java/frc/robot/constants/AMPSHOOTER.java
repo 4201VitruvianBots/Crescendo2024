@@ -7,7 +7,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.system.plant.DCMotor;
 
 /** Add your docs here. */
-public final class AMP {
+public final class AMPSHOOTER {
   public static final double gearRatio = 24.0 / 47.0;
   public static final double Inertia = 0.001;
   /* A higher P value means you will put more effort into correcting the measured error,

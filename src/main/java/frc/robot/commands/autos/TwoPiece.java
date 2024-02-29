@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
-import frc.robot.constants.AMP;
+import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.simulation.FieldSim;
@@ -52,7 +52,7 @@ public class TwoPiece extends SequentialCommandGroup {
             ampShooter,
             INTAKE.STATE.NONE.get(),
             INTAKE.STATE.NONE.get(),
-            AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var shootCommand2 =
         new AutoRunAmpTake(
@@ -60,7 +60,7 @@ public class TwoPiece extends SequentialCommandGroup {
             ampShooter,
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMP.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.INTAKING.get());
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 

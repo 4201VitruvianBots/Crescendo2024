@@ -9,12 +9,12 @@ import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
-public class ToggleClimberControlMode extends InstantCommand {
+public class ToggleClimbMode extends InstantCommand {
   private final Climber m_climber;
   private final Arm m_arm;
 
   /** Creates a new ToggleClimberControlMode. */
-  public ToggleClimberControlMode(Climber climber, Arm arm) {
+  public ToggleClimbMode(Climber climber, Arm arm) {
     m_climber = climber;
     m_arm = arm;
 

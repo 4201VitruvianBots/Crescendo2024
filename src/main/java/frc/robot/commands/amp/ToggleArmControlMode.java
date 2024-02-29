@@ -19,6 +19,11 @@ public class ToggleArmControlMode extends InstantCommand {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -29,10 +34,5 @@ public class ToggleArmControlMode extends InstantCommand {
     } else if (armControlMode == ROBOT.CONTROL_MODE.OPEN_LOOP) {
       m_arm.setControlMode(ROBOT.CONTROL_MODE.CLOSED_LOOP);
     }
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
   }
 }

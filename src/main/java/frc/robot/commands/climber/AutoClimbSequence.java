@@ -11,9 +11,9 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class ClimbFinal extends SequentialCommandGroup {
+public class AutoClimbSequence extends SequentialCommandGroup {
 
-  public ClimbFinal(
+  public AutoClimbSequence(
       AmpShooter ampshooter, CommandSwerveDrivetrain swerveDrive, Arm arm, Climber climber) {
 
     addCommands(
@@ -24,7 +24,7 @@ public class ClimbFinal extends SequentialCommandGroup {
             // new DriveEndgame(swerveDrive).withTimeout(2),
             new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.FORWARD),
             new WaitCommand(1),
-            new AutoSetSetpoint(climber, CLIMBER_SETPOINT.EXTEND)));
+            new SetClimberSetpoint(climber, CLIMBER_SETPOINT.EXTEND.getSetpointMeters())));
 
     // will climb then arm will go forward into the trap
     // new WaitCommand(1),
