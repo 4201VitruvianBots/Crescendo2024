@@ -306,6 +306,6 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean getClimberState() {
-      return getPercentOutput() > 0.05;
+    return getPercentOutput() > 0.05;
   }
 }
