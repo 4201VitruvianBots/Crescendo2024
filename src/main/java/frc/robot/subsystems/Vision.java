@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
@@ -236,15 +235,15 @@ public class Vision extends SubsystemBase {
     //   //   m_swerveDriveTrain.addVisionMeasurement(
     //   //       cameraBEstimatedPose, cameraBTimestamp);
     //   // }
-  //   }
+    //   }
 
-  //   if (m_fieldSim != null) {
-  //     // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
-  //     m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
-  //   }
-  //   // This method will be called once per scheduler run
-  //   updateLog();
-  //   updateSmartDashboard();
+    //   if (m_fieldSim != null) {
+    //     // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
+    //     m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
+    //   }
+    //   // This method will be called once per scheduler run
+    //   updateLog();
+    //   updateSmartDashboard();
   }
 
   @Override

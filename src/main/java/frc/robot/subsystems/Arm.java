@@ -234,6 +234,10 @@ public class Arm extends SubsystemBase {
         break;
     }
 
+    if (DriverStation.isDisabled()) {
+      m_armMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
+
     if (!ROBOT.disableLogging) updateLogger();
   }
 

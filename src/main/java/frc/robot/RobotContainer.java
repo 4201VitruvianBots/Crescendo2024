@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
-import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ResetArmPosition;
 import frc.robot.commands.arm.ToggleArmControlMode;
@@ -120,9 +119,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
@@ -162,7 +161,7 @@ public class RobotContainer {
 
     // Default command to decelerate the flywheel if no other command is set
     m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
-    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    // m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
@@ -288,13 +287,14 @@ public class RobotContainer {
         "SimpleAuto", new SimpleAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
-        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim,m_arm));
+        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
-    //     new AutoScore(
+    //     new AutoScore(6
     //         m_shooter,
     //         m_ampShooter,
     //         m_intake,

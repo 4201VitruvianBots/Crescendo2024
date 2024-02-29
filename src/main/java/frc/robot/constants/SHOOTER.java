@@ -7,7 +7,7 @@ public final class SHOOTER {
 
   public static final int kSlotIdx = 0;
 
-  public static final double topkP = 4;
+  public static final double topkP = 6;
   public static final double topkI = 0;
   public static final double topkD = 0;
 

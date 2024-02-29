@@ -4,10 +4,14 @@
 
 package frc.robot.commands.autos;
 
-import java.util.Set;
+import java.util.ArrayList;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.arm.AutoArmSetpoints;
+import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
@@ -23,6 +27,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.TrajectoryUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -34,12 +39,25 @@ public class FourPieceNear extends SequentialCommandGroup {
       Shooter shooter,
       AmpShooter ampShooter,
       Intake intake,
-      FieldSim fieldSim, 
-      Arm arm) {
-    String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
+      FieldSim fieldSim) {
+ 
+   String[] pathFiles = {
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
     };
-    var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
+    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
+    ArrayList<Command> commandList = new ArrayList<>();
+
+    for (var filename : pathFiles) {
+      var path = PathPlannerPath.fromPathFile(filename);
+      var command =
+          TrajectoryUtils.generatePPHolonomicCommand(
+              swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
+      pathsList.add(path);
+      commandList.add(command);
+    }
+
+    var point = new SwerveRequest.PointWheelsAt();
+    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     var shootCommand =
         new AutoScore(
@@ -55,7 +73,6 @@ public class FourPieceNear extends SequentialCommandGroup {
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
-    var SetArm = new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED); 
 
     var shootCommand3 =
         new AutoRunAmpTake(
@@ -106,15 +123,16 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMPSHOOTER.STATE.INTAKING.get());
 
     addCommands(
-
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
-        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
+         new PlotAutoPath(fieldSim, "", pathsList),
+       new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
+        commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
-        pathFactory.getNextPathCommand().alongWith(RunIntake),
+        commandList.get(1).alongWith(RunIntake),
         shootCommand2,
-        pathFactory.getNextPathCommand().alongWith(RunIntake2),
+        commandList.get(2).alongWith(RunIntake2),
         shootCommand3,
-        pathFactory.getNextPathCommand().alongWith(RunIntake3),
+        commandList.get(3).alongWith(RunIntake3),
         shootCommand4);
+        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
 }

@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
@@ -90,9 +89,9 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.SensorToMechanismRatio = CLIMBER.gearRatio;
-    config.Slot0.kP = ARM.kP;
-    config.Slot0.kI = ARM.kI;
-    config.Slot0.kD = ARM.kD;
+    config.Slot0.kP = CLIMBER.kP;
+    config.Slot0.kI = CLIMBER.kI;
+    config.Slot0.kD = CLIMBER.kD;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
