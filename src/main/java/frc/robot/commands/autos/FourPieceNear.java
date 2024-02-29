@@ -4,17 +4,22 @@
 
 package frc.robot.commands.autos;
 
+import java.util.Set;
+
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.arm.AutoArmSetpoints;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
+import frc.robot.constants.ARM;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -29,7 +34,8 @@ public class FourPieceNear extends SequentialCommandGroup {
       Shooter shooter,
       AmpShooter ampShooter,
       Intake intake,
-      FieldSim fieldSim) {
+      FieldSim fieldSim, 
+      Arm arm) {
     String[] pathFiles = {
       "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
     };
@@ -48,6 +54,8 @@ public class FourPieceNear extends SequentialCommandGroup {
             3);
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+
+    var SetArm = new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.STOWED); 
 
     var shootCommand3 =
         new AutoRunAmpTake(
@@ -98,6 +106,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMPSHOOTER.STATE.INTAKING.get());
 
     addCommands(
+
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand,
