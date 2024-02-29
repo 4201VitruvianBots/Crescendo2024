@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
-  
+
   private final Follower follower = new Follower(0, false);
 
   // Trapezoid profile setup
@@ -80,7 +80,7 @@ public class Climber extends SubsystemBase {
           CLIMBER.upperLimitMeters,
           false,
           CLIMBER.lowerLimitMeters);
-  
+
   private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
   private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
@@ -96,7 +96,7 @@ public class Climber extends SubsystemBase {
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
-    
+
     elevatorClimbMotors[0].setInverted(false);
     elevatorClimbMotors[1].setControl(
         follower
@@ -296,15 +296,23 @@ public class Climber extends SubsystemBase {
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
-    
+
     m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getVelocityMetersPerSecond()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getVelocityMetersPerSecond()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
-        rightElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
   }
 
   public boolean getClimberState() {
