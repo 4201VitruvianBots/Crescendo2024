@@ -19,7 +19,7 @@ public class RunClimberJoystick extends Command {
   private final Climber m_climber;
 
   private final DoubleSupplier m_joystickY;
-  
+
   private GenericHID xBoxController = new GenericHID(USB.xBoxController); // Used to control rumble
 
   public RunClimberJoystick(Climber climber, DoubleSupplier joystickY) {
@@ -54,9 +54,9 @@ public class RunClimberJoystick extends Command {
     }
 
     if (m_climber.getSupplyCurrent() >= 131.064) {
-        xBoxController.setRumble(RumbleType.kBothRumble, 0.2);
-      } else {
-        xBoxController.setRumble(RumbleType.kBothRumble, 0);
+      xBoxController.setRumble(RumbleType.kBothRumble, 0.2);
+    } else {
+      xBoxController.setRumble(RumbleType.kBothRumble, 0);
     }
   }
 
