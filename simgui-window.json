@@ -5,11 +5,11 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1459",
+      "height": "991",
       "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "2560",
+      "width": "1920",
       "xpos": "203",
       "ypos": "189"
     }
@@ -41,7 +41,7 @@
     "###/SmartDashboard/Auto Chooser": {
       "Collapsed": "0",
       "Pos": "320,51",
-      "Size": "469,78"
+      "Size": "307,60"
     },
     "###/SmartDashboard/AutoChooser": {
       "Collapsed": "0",
@@ -51,7 +51,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "112,364",
-      "Size": "438,134"
+      "Size": "286,98"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -60,13 +60,13 @@
     },
     "###/SmartDashboard/Field2d": {
       "Collapsed": "0",
-      "Pos": "561,361",
+      "Pos": "437,232",
       "Size": "921,355"
     },
     "###/SmartDashboard/ResetClimberHeight": {
       "Collapsed": "0",
       "Pos": "280,198",
-      "Size": "233,107"
+      "Size": "155,80"
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
@@ -81,12 +81,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "5,540",
-      "Size": "302,304"
+      "Size": "202,214"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "268,866",
-      "Size": "1516,109"
+      "Size": "976,82"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -116,12 +116,12 @@
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "5,349",
-      "Size": "354,362"
+      "Size": "232,254"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "5,150",
-      "Size": "253,257"
+      "Size": "169,194"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -131,7 +131,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "161,188"
+      "Size": "109,134"
     }
   }
 }
