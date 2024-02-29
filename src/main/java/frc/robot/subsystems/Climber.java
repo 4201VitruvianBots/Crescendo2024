@@ -251,6 +251,7 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
     Logger.recordOutput("Climber/ControlModeValue", getNeutralMode());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
+    System.out.println("JoystickInput: " + m_joystickInput);
   }
 
   @Override
@@ -264,7 +265,7 @@ public class Climber extends SubsystemBase {
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
         // TODO: Verify rotation to distance conversion before continuing
-        // setPercentOutput(percentOutput, true);
+        setPercentOutput(percentOutput, true);
         break;
       default:
       case CLOSED_LOOP:
@@ -275,7 +276,7 @@ public class Climber extends SubsystemBase {
         m_position.Velocity = m_setpoint.velocity;
 
         // TODO: Verify rotation to distance conversion before continuing
-        // elevatorClimbMotors[0].setControl(m_position);
+        elevatorClimbMotors[0].setControl(m_position);
         break;
     }
     if (!ROBOT.disableLogging) updateLogger();
@@ -302,5 +303,9 @@ public class Climber extends SubsystemBase {
         rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
         rightElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
+  }
+
+  public boolean getClimberState() {
+      return getPercentOutput() > 0.05;
   }
 }

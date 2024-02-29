@@ -43,6 +43,9 @@ public class RunClimberJoystick extends Command {
         m_climber.holdClimber();
         m_climber.setPercentOutput(0);
       }
+    } else {
+      m_climber.holdClimber();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     }
   }
 
