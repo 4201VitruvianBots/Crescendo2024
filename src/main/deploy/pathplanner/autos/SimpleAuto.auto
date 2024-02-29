@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.45,
-      "y": 4.18
+      "x": 0.43,
+      "y": 4.15
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2PieceNearPart1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2PieceNearPart2"
+            "pathName": "SimpleAuto"
           }
         }
       ]

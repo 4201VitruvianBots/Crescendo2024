@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -288,10 +289,15 @@ public class RobotContainer {
         "DriveStraightPathPlannerTest",
         new DriveStraightPathPlannerTest(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
+        "SimpleAuto", new SimpleAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
+    // m_autoChooser.addOption(
+    //     "TwoPiece", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
-        "TwoPieceFar", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "TwoPieceFar",
+        new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "DriveStraightChoreoTest", new DriveStraightChoreoTest(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption(
@@ -392,5 +398,13 @@ public class RobotContainer {
   public void teleopInit() {
     m_arm.teleopInit();
     m_climber.teleopInit();
+  }
+
+  public void disabledInit() {
+    m_intake.setSpeed(0, 0);
+    m_ampShooter.setPercentOutput(0);
+    m_shooter.setRPMOutput(0);
+    m_shooter.setPercentOutput(0);
+    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
   }
 }

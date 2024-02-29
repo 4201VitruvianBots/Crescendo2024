@@ -4,13 +4,10 @@
 
 package frc.robot.commands.autos;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.drive.SetRobotPose;
-import frc.robot.commands.intake.AutoRunAll;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMP;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.STATE;
@@ -21,8 +18,6 @@ import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.utils.TrajectoryUtils;
-import java.util.ArrayList;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -36,22 +31,10 @@ public class FourPieceNear extends SequentialCommandGroup {
       Intake intake,
       FieldSim fieldSim) {
     String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
     };
-    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
-    ArrayList<Command> commandList = new ArrayList<>();
+    var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
-    for (var filename : pathFiles) {
-      var path = PathPlannerPath.fromPathFile(filename);
-      var command =
-          TrajectoryUtils.generatePPHolonomicCommand(
-              swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
-      pathsList.add(path);
-      commandList.add(command);
-    }
-
-    var point = new SwerveRequest.PointWheelsAt();
-    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
     var shootCommand =
         new AutoScore(
             shooter,
@@ -63,15 +46,32 @@ public class FourPieceNear extends SequentialCommandGroup {
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             WAIT.SHOOTING.get(),
             3);
-    var shootCommandContinuous =
-        new AutoRunAll(
+
+    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+
+    var shootCommand3 =
+        new AutoRunAmpTake(
             intake,
-            shooter,
             ampShooter,
-            STATE.FRONT_ROLLER_INTAKING.get(),
-            STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get(),
-            RPM_SETPOINT.MAX.get());
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.NONE.get(),
+            AMP.STATE.INTAKING.get());
+
+    var shootCommand2 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.NONE.get(),
+            AMP.STATE.INTAKING.get());
+
+    var shootCommand4 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.NONE.get(),
+            AMP.STATE.INTAKING.get());
 
     var RunIntake =
         new AutoRunAmpTake(
@@ -81,15 +81,31 @@ public class FourPieceNear extends SequentialCommandGroup {
             STATE.BACK_ROLLER_INTAKING.get(),
             frc.robot.constants.AMP.STATE.INTAKING.get());
 
+    var RunIntake2 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get());
+
+    var RunIntake3 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            frc.robot.constants.AMP.STATE.INTAKING.get());
+
     addCommands(
-        new PlotAutoPath(fieldSim, "", pathsList),
-        // new InstantCommand(()-> swerveDrive.resetGyro(0), swerveDrive),
-        new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
-        shootCommandContinuous.withTimeout(1),
-        commandList.get(0),
-        commandList.get(1),
-        commandList.get(2),
-        commandList.get(3),
-        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest)));
+        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
+        shootCommand,
+        pathFactory.getNextPathCommand().alongWith(RunIntake),
+        shootCommand2,
+        pathFactory.getNextPathCommand().alongWith(RunIntake2),
+        shootCommand3,
+        pathFactory.getNextPathCommand().alongWith(RunIntake3),
+        shootCommand4);
   }
 }

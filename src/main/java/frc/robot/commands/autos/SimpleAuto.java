@@ -21,26 +21,21 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoPiece extends SequentialCommandGroup {
+public class SimpleAuto extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
-  public TwoPiece(
+  public SimpleAuto(
       CommandSwerveDrivetrain swerveDrive,
       FieldSim fieldSim,
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"3Piece2Pt1", "3Piece2Pt2"};
+    String[] pathFiles = {"SimpleAuto"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     var runIntake =
-        new AutoRunIntake(
-            intake,
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
-    var runIntake2 =
         new AutoRunIntake(
             intake,
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
@@ -54,22 +49,12 @@ public class TwoPiece extends SequentialCommandGroup {
             INTAKE.STATE.NONE.get(),
             AMP.STATE.INTAKING.get());
 
-    var shootCommand2 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMP.STATE.INTAKING.get());
-
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
+    var Wait = new WaitCommand(10);
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim).alongWith(Wait),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new WaitCommand(1),
-        shootCommand,
-        pathFactory.getNextPathCommand().alongWith(runIntake2),
-        shootCommand2);
+        shootCommand);
   }
 }

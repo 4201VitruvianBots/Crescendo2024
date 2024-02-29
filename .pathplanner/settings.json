@@ -1,10 +1,14 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.76,
+  "robotWidth": 0.8382,
+  "robotLength": 0.84455,
   "holonomicMode": true,
   "pathFolders": [
+    "2PieceFar",
+    "2PieceNear",
     "3PieceAutoFar",
-    "4PieceAutoNear"
+    "4PieceAutoNear",
+    "TestAutos",
+    "SimpleAuto"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
