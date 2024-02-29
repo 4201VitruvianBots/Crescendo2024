@@ -6,13 +6,11 @@ package frc.robot.commands.climber;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
-import frc.robot.constants.USB;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
@@ -24,7 +22,8 @@ public class RunClimberJoystick extends Command {
 
   private final CommandXboxController m_xboxController;
 
-  public RunClimberJoystick(Climber climber, DoubleSupplier joystickY, CommandXboxController xboxController) {
+  public RunClimberJoystick(
+      Climber climber, DoubleSupplier joystickY, CommandXboxController xboxController) {
     m_climber = climber;
     m_joystickY = joystickY;
     m_xboxController = xboxController;
