@@ -122,7 +122,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
@@ -164,7 +164,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> xboxController.getRightY(), xboxController));
+        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
   }
 
@@ -199,7 +199,7 @@ public class RobotContainer {
     trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
 
     // switch between open loop and close loop
-    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
+    xboxController.back().onTrue(new ToggleClimberControlMode(m_climber, m_arm));
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
@@ -277,9 +277,8 @@ public class RobotContainer {
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
                 AMP.STATE.INTAKING_SLOW.get(),
                 RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
-    // button on smartdashboard to reset climber height
 
-    xboxController.start().onTrue(new ToggleClimberControlMode(m_climber));
+    // button on smartdashboard to reset climber height
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
   }
 

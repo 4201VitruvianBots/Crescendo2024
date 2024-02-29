@@ -269,7 +269,7 @@ public class Climber extends SubsystemBase {
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
 
         // TODO: Verify rotation to distance conversion before continuing
-        setPercentOutput(percentOutput, true);
+        setPercentOutput(percentOutput, false);
         break;
       default:
       case CLOSED_LOOP:
@@ -315,9 +315,5 @@ public class Climber extends SubsystemBase {
         rightElevatorSim.getPositionMeters()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
-  }
-
-  public boolean getClimberState() {
-    return getPercentOutput() > 0.05;
   }
 }

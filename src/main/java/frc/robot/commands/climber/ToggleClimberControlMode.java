@@ -7,35 +7,40 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
 public class ToggleClimberControlMode extends InstantCommand {
   private final Climber m_climber;
+  private final Arm m_arm;
 
   /** Creates a new ToggleClimberControlMode. */
-  public ToggleClimberControlMode(Climber climber) {
+  public ToggleClimberControlMode(Climber climber, Arm arm) {
     m_climber = climber;
+    m_arm = arm;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_climber);
+    addRequirements(m_climber, m_arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ROBOT.CONTROL_MODE climberControlMode = m_climber.getClosedLoopControlMode();
+    m_climber.setClimbState(!m_climber.getClimbState());
+    m_arm.setControlMode(CONTROL_MODE.OPEN_LOOP);
+//    ROBOT.CONTROL_MODE climberControlMode = m_climber.getClosedLoopControlMode();
 
-    switch (climberControlMode) {
-      case OPEN_LOOP:
-        m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-        m_climber.resetTrapezoidState();
-        m_climber.holdClimber();
-        break;
-      default:
-      case CLOSED_LOOP:
-        m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-        break;
-    }
+//    switch (climberControlMode) {
+//      case OPEN_LOOP:
+//        m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+//        m_climber.resetTrapezoidState();
+//        m_climber.holdClimber();
+//        break;
+//      default:
+//      case CLOSED_LOOP:
+//        m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+//        break;
+//    }
   }
 
   @Override
