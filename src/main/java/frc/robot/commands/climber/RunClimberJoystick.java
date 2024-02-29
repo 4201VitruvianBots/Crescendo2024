@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.constants.USB;
@@ -21,11 +22,12 @@ public class RunClimberJoystick extends Command {
 
   private final DoubleSupplier m_joystickY;
 
-  private GenericHID xBoxController = new GenericHID(USB.xBoxController); // Used to control rumble
+  private final CommandXboxController m_xboxController;
 
-  public RunClimberJoystick(Climber climber, DoubleSupplier joystickY) {
+  public RunClimberJoystick(Climber climber, DoubleSupplier joystickY, CommandXboxController xboxController) {
     m_climber = climber;
     m_joystickY = joystickY;
+    m_xboxController = xboxController;
 
     addRequirements(m_climber);
   }
@@ -57,9 +59,9 @@ public class RunClimberJoystick extends Command {
     }
 
     if (m_climber.getSupplyCurrent() >= 131.064) {
-      xBoxController.setRumble(RumbleType.kBothRumble, 0.2);
+      m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.2);
     } else {
-      xBoxController.setRumble(RumbleType.kBothRumble, 0);
+      m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
   }
 
