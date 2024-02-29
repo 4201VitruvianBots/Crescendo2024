@@ -31,6 +31,7 @@ import frc.robot.commands.climber.ClimbFinal;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimberControlMode;
+import frc.robot.commands.drive.DriveAndAimAtNote;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
@@ -169,20 +170,25 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+    // var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
-    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(2));
-    // aimNoteButton.whileTrue(
-    //     new DriveAndAimAtNote(
-    //         m_swerveDrive,
-    //         m_vision,
-    //         () -> leftJoystick.getRawAxis(1),
-    //         () -> leftJoystick.getRawAxis(0),
-    //         () -> rightJoystick.getRawAxis(0)));
+    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    
+    xboxController
+    .povLeft()
+    .whileTrue(
+        new DriveAndAimAtNote(
+            m_swerveDrive,
+            m_vision,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0),
+            () -> rightJoystick.getRawAxis(0)));
 
-    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
-    aimSpeakerButton.whileTrue(
+    // var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    xboxController
+    .povDown()
+    .whileTrue(
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
@@ -244,28 +250,28 @@ public class RobotContainer {
                 m_intake,
                 AMP.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
 
-    xboxController
-        .povLeft()
-        .whileTrue(
-            new RunAll(
-                m_intake,
-                m_shooter,
-                m_ampShooter,
-                0,
-                0,
-                0,
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
-    xboxController
-        .povDown()
-        .whileTrue(
-            new RunAll(
-                m_intake,
-                m_shooter,
-                m_ampShooter,
-                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
-                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
-                AMP.STATE.REVERSE.get(),
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+    // xboxController
+    //     .povLeft()
+    //     .whileTrue(
+    //         new RunAll(
+    //             m_intake,
+    //             m_shooter,
+    //             m_ampShooter,
+    //             0,
+    //             0,
+    //             0,
+    //             RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+    // xboxController
+    //     .povDown()
+    //     .whileTrue(
+    //         new RunAll(
+    //             m_intake,
+    //             m_shooter,
+    //             m_ampShooter,
+    //             INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+    //             INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+    //             AMP.STATE.REVERSE.get(),
+    //             RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
 
     xboxController
         .povUp()
