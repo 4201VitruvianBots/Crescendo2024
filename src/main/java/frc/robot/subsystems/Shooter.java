@@ -14,7 +14,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -30,8 +29,9 @@ public class Shooter extends SubsystemBase {
   private double m_rpmTop;
   private double m_rpmBottom;
   private boolean m_testMode = false;
-  private double m_headingOffset;
+  // private double m_headingOffset;
   private double m_desiredPercentOutput;
+  private boolean m_isShooting = false;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -51,9 +51,10 @@ public class Shooter extends SubsystemBase {
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
 
-  private final SimpleMotorFeedforward m_feedForward =
-      new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
-  private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
+  // This is currently not used
+  //   private final SimpleMotorFeedforward m_feedForward =
+  //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
+  //   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
   // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
@@ -78,6 +79,15 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotors[0].setInverted(false);
     m_shooterMotors[1].setInverted(true);
+  }
+
+  public boolean getShooterState() {
+    return (getRpmMaster() > 5 || getRpmFollower() > 5);
+  }
+
+  /** Sets a boolean for the intake's actuation */
+  public void setShooterState(boolean state) {
+    m_isShooting = state;
   }
 
   // values that we set
@@ -187,7 +197,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setSimpleMotorFeedForward(double s, double v, double a) {
-    m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
+    // m_currentFeedForward = new SimpleMotorFeedforward(s, v, a);
   }
 
   public boolean getTestMode() {

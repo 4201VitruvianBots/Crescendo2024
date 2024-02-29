@@ -28,6 +28,7 @@ public final class CtreUtils {
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0, CAN.drivebaseCanbus);
       Timer.delay(5);
+      dummy.close();
       dummy = null;
     }
     alert.setText("Phoenix Server finished Init at: " + Logger.getTimestamp() * 1.0e-6);
