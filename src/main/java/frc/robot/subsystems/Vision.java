@@ -29,13 +29,13 @@ public class Vision extends SubsystemBase {
   private final NetworkTable NoteDetectionLimelight =
       NetworkTableInstance.getDefault().getTable("limelight");
 
-  public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
-  PhotonPoseEstimator limelightPhotonPoseEstimatorA =
-      new PhotonPoseEstimator(
-          VISION.aprilTagFieldLayout,
-          PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-          aprilTagLimelightCameraA,
-          VISION.robotToAprilTagLimelightCameraA);
+  // public static final PhotonCamera aprilTagLimelightCameraA = new PhotonCamera("LimelightA");
+  // PhotonPoseEstimator limelightPhotonPoseEstimatorA =
+  //     new PhotonPoseEstimator(
+  //         VISION.aprilTagFieldLayout,
+  //         PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+  //         aprilTagLimelightCameraA,
+  //         VISION.robotToAprilTagLimelightCameraA);
 
   public static final PhotonCamera aprilTagLimelightCameraB = new PhotonCamera("LimelightB");
   PhotonPoseEstimator limelightPhotonPoseEstimatorB =
@@ -46,10 +46,10 @@ public class Vision extends SubsystemBase {
           VISION.robotToAprilTagLimelightCameraB);
 
   private VisionSystemSim visionSim;
-  private PhotonCameraSim aprilTagLimelightCameraASim;
+  // private PhotonCameraSim aprilTagLimelightCameraASim;
   private PhotonCameraSim aprilTagLimelightCameraBSim;
 
-  private Pose2d cameraAEstimatedPose = new Pose2d();
+  // private Pose2d cameraAEstimatedPose = new Pose2d();
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double cameraATimestamp, cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
@@ -69,13 +69,13 @@ public class Vision extends SubsystemBase {
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
       // targets.
-      aprilTagLimelightCameraASim = new PhotonCameraSim(aprilTagLimelightCameraA, cameraProp);
+      // aprilTagLimelightCameraASim = new PhotonCameraSim(aprilTagLimelightCameraA, cameraProp);
       aprilTagLimelightCameraBSim = new PhotonCameraSim(aprilTagLimelightCameraB, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(aprilTagLimelightCameraASim, VISION.robotToAprilTagLimelightCameraA);
+      // visionSim.addCamera(aprilTagLimelightCameraASim, VISION.robotToAprilTagLimelightCameraA);
       visionSim.addCamera(aprilTagLimelightCameraBSim, VISION.robotToAprilTagLimelightCameraB);
 
-      aprilTagLimelightCameraASim.enableDrawWireframe(false);
+      // aprilTagLimelightCameraASim.enableDrawWireframe(false);
       aprilTagLimelightCameraBSim.enableDrawWireframe(false);
     }
   }
@@ -167,15 +167,15 @@ public class Vision extends SubsystemBase {
       Logger.recordOutput(
           "vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
 
-      Logger.recordOutput(
-          "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));
-      if (isCameraConnected(aprilTagLimelightCameraA)) {
-        Logger.recordOutput(
-            "vision/LimelightA - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraA));
-        Logger.recordOutput("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
-        Logger.recordOutput("vision/limelightA - hasPose", cameraAHasPose);
-        Logger.recordOutput("vision/limelightA - EstimatedPose", cameraAEstimatedPose);
-      }
+      // Logger.recordOutput(
+      //     "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));
+      // if (isCameraConnected(aprilTagLimelightCameraA)) {
+      //   Logger.recordOutput(
+      //       "vision/LimelightA - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraA));
+      //   Logger.recordOutput("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
+      //   Logger.recordOutput("vision/limelightA - hasPose", cameraAHasPose);
+      //   Logger.recordOutput("vision/limelightA - EstimatedPose", cameraAEstimatedPose);
+      // }
 
       Logger.recordOutput(
           "vision/LimelightB - isCameraConnected", isCameraConnected(aprilTagLimelightCameraB));
@@ -238,14 +238,12 @@ public class Vision extends SubsystemBase {
     }
 
     if (m_fieldSim != null) {
-      m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
+      // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
       m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
     }
     // This method will be called once per scheduler run
-    if (!ROBOT.disableLogging) {
-      updateLog();
-      updateSmartDashboard();
-    }
+    updateLog();
+    updateSmartDashboard();
   }
 
   @Override

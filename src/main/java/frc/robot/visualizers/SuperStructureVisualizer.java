@@ -235,10 +235,10 @@ public class SuperStructureVisualizer implements AutoCloseable {
   }
 
   public void updateLimelights() {
-    updateLimelightColor(
-        m_limelightA2d,
-        m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
-        m_limelightA2d_originalColor);
+    // updateLimelightColor(
+    //     m_limelightA2d,
+    //     m_vision.isCameraConnected(Vision.aprilTagLimelightCameraA),
+    //     m_limelightA2d_originalColor);
     updateLimelightColor(
         m_limelightB2d,
         m_vision.isCameraConnected(Vision.aprilTagLimelightCameraB),
