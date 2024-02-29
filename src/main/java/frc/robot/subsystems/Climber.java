@@ -136,7 +136,9 @@ public class Climber extends SubsystemBase {
   }
 
   public double getAvgCurrentDraw() {
-    return (elevatorClimbMotors[0].getTorqueCurrent().getValue() + elevatorClimbMotors[1].getTorqueCurrent().getValue()) * 0.5;
+    return (elevatorClimbMotors[0].getTorqueCurrent().getValue()
+            + elevatorClimbMotors[1].getTorqueCurrent().getValue())
+        * 0.5;
   }
 
   // gets the position of the climber in meters

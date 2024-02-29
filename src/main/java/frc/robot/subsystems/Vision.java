@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.FIELD;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
