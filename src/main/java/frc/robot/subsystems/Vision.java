@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FIELD;
@@ -189,12 +190,6 @@ public class Vision extends SubsystemBase {
       }
 
       Logger.recordOutput("vision/poseAgreement", poseAgreement);
-      if (m_swerveDriveTrain != null) {
-        var m_goal = FIELD.redSpeaker;
-        var setPoint = m_swerveDriveTrain.getState().Pose.getTranslation().plus(m_goal);
-
-        Logger.recordOutput("vision/estimatedTargetRedAngle", setPoint.getAngle().getDegrees());
-      }
     } catch (Exception e) {
       System.out.println("Advantagekit could not update Vision logs");
     }
@@ -206,7 +201,7 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (m_swerveDriveTrain != null) {
+    if (m_swerveDriveTrain != null && !DriverStation.isAutonomous()) {
       // final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
       // globalPoseA.ifPresentOrElse(
       //     estimatedRobotPose -> {

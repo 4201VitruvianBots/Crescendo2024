@@ -135,8 +135,8 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[0].set(output);
   }
 
-  public double getSupplyCurrent() {
-    return elevatorClimbMotors[0].getSupplyCurrent().getValueAsDouble();
+  public double getAvgCurrentDraw() {
+    return (elevatorClimbMotors[0].getTorqueCurrent().getValue() + elevatorClimbMotors[1].getTorqueCurrent().getValue()) * 0.5;
   }
 
   // gets the position of the climber in meters
@@ -253,7 +253,7 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
-    Logger.recordOutput("Climber/Supply Current", getSupplyCurrent());
+    Logger.recordOutput("Climber/Supply Current", getAvgCurrentDraw());
   }
 
   @Override

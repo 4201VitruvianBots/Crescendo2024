@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getShooterState() {
-    return (getRpmMaster() > 5 || getRpmFollower() > 5);
+    return (getRpmMaster() > 500 || getRpmFollower() > 500);
   }
 
   /** Sets a boolean for the intake's actuation */
@@ -177,11 +177,11 @@ public class Shooter extends SubsystemBase {
 
   // values that we are pulling
   public double getRpmMaster() {
-    return m_shooterMotors[0].getVelocity().getValueAsDouble() * 60.0;
+    return m_shooterMotors[0].getVelocity().getValue() * 60.0;
   }
 
   public double getRpmFollower() {
-    return m_shooterMotors[1].getVelocity().getValueAsDouble() * 60.0;
+    return m_shooterMotors[1].getVelocity().getValue() * 60.0;
   }
 
   public void setPidValues(double v, double p, double i, double d) {

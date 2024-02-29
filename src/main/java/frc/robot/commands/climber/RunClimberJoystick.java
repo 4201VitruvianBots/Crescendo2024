@@ -57,7 +57,7 @@ public class RunClimberJoystick extends Command {
       m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     }
 
-    if (m_climber.getSupplyCurrent() >= 131.064) {
+    if (m_climber.getAvgCurrentDraw() >= 30) {
       m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.2);
     } else {
       m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0);

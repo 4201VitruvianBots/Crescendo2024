@@ -38,6 +38,11 @@ public class GetSubsystemStates extends Command {
     addRequirements(m_led);
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -79,10 +84,5 @@ public class GetSubsystemStates extends Command {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
   }
 }

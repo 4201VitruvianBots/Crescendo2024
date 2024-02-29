@@ -172,6 +172,14 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
+    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    aimSpeakerButton.whileTrue(
+        new DriveAndAimAtSpeaker(
+            m_swerveDrive,
+            m_vision,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0)));
+
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
     //     new DriveAndAimAtNote(
@@ -180,14 +188,6 @@ public class RobotContainer {
     //         () -> leftJoystick.getRawAxis(1),
     //         () -> leftJoystick.getRawAxis(0),
     //         () -> rightJoystick.getRawAxis(0)));
-
-    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
-    aimSpeakerButton.whileTrue(
-        new DriveAndAimAtSpeaker(
-            m_swerveDrive,
-            m_vision,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0)));
 
     xboxController
         .b()
@@ -201,7 +201,6 @@ public class RobotContainer {
     // switch between open loop and close loop
     xboxController.back().onTrue(new ToggleClimberControlMode(m_climber));
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
-    // xboxController.back().toggleOnTrue(new SetClimbState(m_climber, true));
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));

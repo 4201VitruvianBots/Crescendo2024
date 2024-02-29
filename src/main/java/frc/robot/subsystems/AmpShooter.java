@@ -43,7 +43,7 @@ public class AmpShooter extends SubsystemBase {
   }
 
   public double getRpm() {
-    return ampMotor.getVelocity().getValueAsDouble() * 60.0;
+    return ampMotor.getVelocity().getValue() * 60.0;
   }
 
   private void updateLogger() {
