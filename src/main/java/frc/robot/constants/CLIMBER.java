@@ -15,10 +15,12 @@ public final class CLIMBER {
   public static final double lowerLimitMeters = Units.inchesToMeters(0.0);
 
   public static final DCMotor gearbox = DCMotor.getKrakenX60(1);
+  // TODO: Verify gear ratio and sprocket radius. If the code stops working, then tune other values to work with the new gear ratio and sprocket radius.
   public static final double gearRatio = 594.0 / 25.0;
-  public static final double sprocketRadiusMeters = Units.inchesToMeters(1.432 / 2.0);
+  public static final double sprocketRadiusMeters = Units.inchesToMeters(1.432);
   public static final double sprocketRotationsToMeters = sprocketRadiusMeters * 2 * Math.PI;
   public static final double climberReduction = gearRatio * sprocketRotationsToMeters;
+  public static final double carriageMassKg = 3.0;
   // public static final double centerOffset = Units.inchesToMeters(14);
   // public static final double kMaxReverseOutput = -0.45;
 

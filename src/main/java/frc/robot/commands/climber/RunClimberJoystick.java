@@ -6,8 +6,11 @@ package frc.robot.commands.climber;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
+import frc.robot.constants.USB;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
@@ -16,6 +19,8 @@ public class RunClimberJoystick extends Command {
   private final Climber m_climber;
 
   private final DoubleSupplier m_joystickY;
+  
+  private GenericHID xBoxController = new GenericHID(USB.xBoxController); // Used to control rumble
 
   public RunClimberJoystick(Climber climber, DoubleSupplier joystickY) {
     m_climber = climber;
@@ -46,6 +51,12 @@ public class RunClimberJoystick extends Command {
     } else {
       m_climber.holdClimber();
       m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    }
+
+    if (m_climber.getSupplyCurrent() >= 131.064) {
+        xBoxController.setRumble(RumbleType.kBothRumble, 0.2);
+      } else {
+        xBoxController.setRumble(RumbleType.kBothRumble, 0);
     }
   }
 

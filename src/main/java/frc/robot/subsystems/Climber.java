@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -32,7 +31,7 @@ public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
-  private final StaticBrake brake = new StaticBrake();
+  
   private final Follower follower = new Follower(0, false);
 
   // Trapezoid profile setup
@@ -51,7 +50,7 @@ public class Climber extends SubsystemBase {
   private final double m_lowerLimitMeters = CLIMBER.lowerLimitMeters;
   private CLIMBER_SETPOINT m_desiredSetpoint = CLIMBER_SETPOINT.FULL_RETRACT;
 
-  private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
+  private CONTROL_MODE m_controlMode = CONTROL_MODE.OPEN_LOOP;
   // Controlled by open loop
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
@@ -65,7 +64,7 @@ public class Climber extends SubsystemBase {
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
-          3.0,
+          CLIMBER.carriageMassKg,
           CLIMBER.sprocketRadiusMeters,
           CLIMBER.lowerLimitMeters,
           CLIMBER.upperLimitMeters,
@@ -75,12 +74,13 @@ public class Climber extends SubsystemBase {
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
-          3.0,
+          CLIMBER.carriageMassKg,
           CLIMBER.sprocketRadiusMeters,
           CLIMBER.lowerLimitMeters,
           CLIMBER.upperLimitMeters,
           false,
           CLIMBER.lowerLimitMeters);
+  
   private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
   private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
 
@@ -96,8 +96,8 @@ public class Climber extends SubsystemBase {
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
-    elevatorClimbMotors[0].setInverted(true);
-    elevatorClimbMotors[1].setInverted(false);
+    
+    elevatorClimbMotors[0].setInverted(false);
     elevatorClimbMotors[1].setControl(
         follower
             .withMasterID(elevatorClimbMotors[0].getDeviceID())
@@ -133,6 +133,10 @@ public class Climber extends SubsystemBase {
     }
 
     elevatorClimbMotors[0].set(output);
+  }
+
+  public double getSupplyCurrent() {
+    return elevatorClimbMotors[0].getSupplyCurrent().getValueAsDouble();
   }
 
   // gets the position of the climber in meters
@@ -185,7 +189,7 @@ public class Climber extends SubsystemBase {
     m_goal = new TrapezoidProfile.State(rotations, 0);
   }
 
-  private double calculateFeedforward(TrapezoidProfile.State state) {
+  public double calculateFeedforward(TrapezoidProfile.State state) {
     return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
   }
 
@@ -245,13 +249,11 @@ public class Climber extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
     Logger.recordOutput("Climber/Height Meters", getHeightMeters());
-    Logger.recordOutput("Climber/Height Setpoint Meters", getDesiredPositionMeters());
     Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
     Logger.recordOutput("Climber/Motor Output", getPercentOutput());
-    Logger.recordOutput("Climber/ControlModeValue", getNeutralMode());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
-    System.out.println("JoystickInput: " + m_joystickInput);
+    Logger.recordOutput("Climber/Supply Current", getSupplyCurrent());
   }
 
   @Override
@@ -294,15 +296,15 @@ public class Climber extends SubsystemBase {
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
-
+    
     m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
-        leftElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
+        leftElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getVelocityMetersPerSecond() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
-        rightElevatorSim.getPositionMeters() * CLIMBER.sprocketRotationsToMeters);
+        rightElevatorSim.getPositionMeters() * CLIMBER.gearRatio * CLIMBER.sprocketRotationsToMeters);
   }
 
   public boolean getClimberState() {
