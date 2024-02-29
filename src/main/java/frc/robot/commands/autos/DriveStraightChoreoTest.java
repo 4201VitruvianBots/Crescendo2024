@@ -4,15 +4,10 @@
 
 package frc.robot.commands.autos;
 
-import com.choreo.lib.Choreo;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.utils.TrajectoryUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -21,21 +16,22 @@ public class DriveStraightChoreoTest extends SequentialCommandGroup {
   /** Creates a new DriveStraightTest. */
   public DriveStraightChoreoTest(CommandSwerveDrivetrain swerveDrive, FieldSim fieldSim) {
 
-    var traj = Choreo.getTrajectory("44r4r");
+    //    var traj = Choreo.getTrajectory("44r4r");
 
-    var m_ppCommand = TrajectoryUtils.generateChoreoCommand(swerveDrive, traj, 1.0, false);
+    //    var m_ppCommand = TrajectoryUtils.generateChoreoCommand(swerveDrive, traj, 1.0, false);
 
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        // new PlotAutoPath(fieldSim, "44r4r", traj),
-        new InstantCommand(() -> swerveDrive.seedFieldRelative(traj.getInitialPose())),
-        new InstantCommand(
-                () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new Rotation2d())),
-                swerveDrive)
-            .alongWith(new WaitCommand(1)),
-        m_ppCommand.andThen(() -> swerveDrive.setControl(stopRequest)));
+    //    addCommands(
+    //        // new PlotAutoPath(fieldSim, "44r4r", traj),
+    //        new InstantCommand(() -> swerveDrive.seedFieldRelative(traj.getInitialPose())),
+    //        new InstantCommand(
+    //                () -> swerveDrive.applyRequest(() -> point.withModuleDirection(new
+    // Rotation2d())),
+    //                swerveDrive)
+    //            .alongWith(new WaitCommand(1)),
+    //        m_ppCommand.andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }

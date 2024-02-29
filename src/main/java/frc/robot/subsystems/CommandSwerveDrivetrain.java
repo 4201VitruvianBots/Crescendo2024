@@ -40,7 +40,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
-  private double m_desiredHeadingRadians;
+  // private double m_desiredHeadingRadians;
   private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
   private Vision m_vision;
   private final SwerveRequest.FieldCentric m_driveReqeustFieldCentric =

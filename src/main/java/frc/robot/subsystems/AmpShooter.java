@@ -42,6 +42,10 @@ public class AmpShooter extends SubsystemBase {
     return ampMotor.get();
   }
 
+  public double getRpm() {
+    return ampMotor.getVelocity().getValue() * 60.0;
+  }
+
   private void updateLogger() {
     Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
     Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);

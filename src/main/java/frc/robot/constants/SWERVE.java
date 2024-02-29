@@ -39,13 +39,11 @@ public final class SWERVE {
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
     // In rotations
-    public static double kFrontLeftEncoderOffset = 0.02099609375;
-    public static double kFrontRightEncoderOffset = 0.3251953125;
-    public static double kBackLeftEncoderOffset = 0.295654296875;
-    public static double kBackRightEncoderOffset = -0.16796875;
+    public static double kFrontLeftEncoderOffset = 0.219970703125;
+    public static double kFrontRightEncoderOffset = 0.265380859375;
+    public static double kBackLeftEncoderOffset = -0.046875;
+    public static double kBackRightEncoderOffset = 0.09765625;
 
-    public static boolean kInvertLeftDrive = true;
-    public static boolean kInvertRightDrive = false;
     public static final boolean[] kTurnInversions = {true, false, false, false};
     public static final boolean[] kDriveInversions = {true, true, true, false};
 

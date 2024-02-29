@@ -44,10 +44,7 @@ public final class LED {
     CLIMBING,
     ENABLED,
     DISABLED,
-    UPTAKING,
-    LOW_BATTERY,
-    SCORE_ARM,
-    SCORE_SPEAKER,
-    SCORE_TRAP,
+    SHOOTING,
+    ARMSCORING
   }
 }

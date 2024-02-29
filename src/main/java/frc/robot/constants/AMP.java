@@ -29,10 +29,10 @@ public final class AMP {
 
     // Units are in Percent Output
 
-    REVERSE(-0.5),
-    REVERSE_SLOW(-0.2),
+    REVERSE(-0.75),
+    REVERSE_SLOW(-0.1),
     NONE(0),
-    INTAKING_SLOW(0.2),
+    INTAKING_SLOW(0.1),
     INTAKING(0.6),
     INTAKING1(0.85);
     private final double value;
