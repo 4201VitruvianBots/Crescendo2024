@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
@@ -171,7 +170,8 @@ public class Vision extends SubsystemBase {
       //     "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));
       // if (isCameraConnected(aprilTagLimelightCameraA)) {
       //   Logger.recordOutput(
-      //       "vision/LimelightA - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraA));
+      //       "vision/LimelightA - isAprilTagDetected",
+      // isAprilTagDetected(aprilTagLimelightCameraA));
       //   Logger.recordOutput("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
       //   Logger.recordOutput("vision/limelightA - hasPose", cameraAHasPose);
       //   Logger.recordOutput("vision/limelightA - EstimatedPose", cameraAEstimatedPose);
