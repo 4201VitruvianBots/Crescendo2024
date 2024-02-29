@@ -51,7 +51,7 @@ public class GetSubsystemStates extends Command {
     isEnabled = !isDisabled; // Done
     isIntaking = m_intake.getIntakeState(); // Done
     isShooting = m_shooter.getShooterState(); // Done
-    isClimbing = m_climber.getClimberState(); // TODO: Implement this in the climber command
+    isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
     // after it's done.
     // isArmScoring = m_arm.getArmState(); // Done
 
