@@ -43,8 +43,10 @@ public class Shooter extends SubsystemBase {
     new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
   };
 
-  private final StatusSignal<Double> m_mainVelocitySignal = m_shooterMotors[0].getVelocity().clone();
-  private final StatusSignal<Double> m_followerVelocitySignal = m_shooterMotors[1].getVelocity().clone();
+  private final StatusSignal<Double> m_mainVelocitySignal =
+      m_shooterMotors[0].getVelocity().clone();
+  private final StatusSignal<Double> m_followerVelocitySignal =
+      m_shooterMotors[1].getVelocity().clone();
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);

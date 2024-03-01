@@ -6,7 +6,6 @@ package frc.robot.commands.climber;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,30 +41,30 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
-      if (m_climber.getClimbState()) {
-        double joystickYDeadbandOutput =
-            MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
+    if (m_climber.getClimbState()) {
+      double joystickYDeadbandOutput =
+          MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
 
-        if (joystickYDeadbandOutput != 0.0) {
-          if (joystickYDeadbandOutput < 0)
-            joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
-          m_climber.setJoystickY(-joystickYDeadbandOutput);
-          m_climber.setClimbState(true);
-        }
-        if (joystickYDeadbandOutput == 0) {
-          m_climber.holdClimber();
-          m_climber.setPercentOutput(0);
-        }
-      } else {
+      if (joystickYDeadbandOutput != 0.0) {
+        if (joystickYDeadbandOutput < 0)
+          joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+        m_climber.setJoystickY(-joystickYDeadbandOutput);
+        m_climber.setClimbState(true);
+      }
+      if (joystickYDeadbandOutput == 0) {
         m_climber.holdClimber();
-        m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+        m_climber.setPercentOutput(0);
       }
+    } else {
+      m_climber.holdClimber();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    }
 
-      if (m_climber.getAvgCurrentDraw() >= 30) {
-        m_HID.setRumble(RumbleType.kBothRumble, 0.2);
-      } else {
-        m_HID.setRumble(RumbleType.kBothRumble, 0);
-      }
+    if (m_climber.getAvgCurrentDraw() >= 30) {
+      m_HID.setRumble(RumbleType.kBothRumble, 0.2);
+    } else {
+      m_HID.setRumble(RumbleType.kBothRumble, 0);
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -129,7 +129,6 @@ public class Arm extends SubsystemBase {
     return Units.rotationsToDegrees(getCurrentRotation());
   }
 
-
   public void setNeutralMode(NeutralModeValue mode) {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
