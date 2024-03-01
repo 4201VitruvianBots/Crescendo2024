@@ -172,7 +172,7 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
-    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
