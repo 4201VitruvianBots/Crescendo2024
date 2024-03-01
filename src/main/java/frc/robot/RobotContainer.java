@@ -392,7 +392,7 @@ public class RobotContainer {
     m_arm.teleopInit();
     m_climber.teleopInit();
   }
-  
+
   public void autonomousInit() {
     m_arm.autonomousInit();
   }

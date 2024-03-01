@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
     new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
   };
 
-  private final StatusSignal<Double> m_positionSignal =   m_shooterMotors[0].getVelocity().clone(); 
+  private final StatusSignal<Double> m_positionSignal = m_shooterMotors[0].getVelocity().clone();
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
@@ -178,7 +178,7 @@ public class Shooter extends SubsystemBase {
   }
 
   // values that we are pulling
-  //Changed By Sheraz to avoid Loop Overruns
+  // Changed By Sheraz to avoid Loop Overruns
   public double getRpmMaster() {
     m_positionSignal.refresh();
     return m_positionSignal.getValue();

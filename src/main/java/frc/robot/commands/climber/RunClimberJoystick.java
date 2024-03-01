@@ -20,7 +20,7 @@ public class RunClimberJoystick extends Command {
   private final Climber m_climber;
 
   private final DoubleSupplier m_joystickY;
-  
+
   private final GenericHID m_HID;
 
   public RunClimberJoystick(
@@ -43,32 +43,32 @@ public class RunClimberJoystick extends Command {
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
     if (DriverStation.isEnabled()) {
-    if (m_climber.getClimbState()) {
-      double joystickYDeadbandOutput =
-          MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
+      if (m_climber.getClimbState()) {
+        double joystickYDeadbandOutput =
+            MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
 
-      if (joystickYDeadbandOutput != 0.0) {
-        if (joystickYDeadbandOutput < 0)
-          joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
-        m_climber.setJoystickY(-joystickYDeadbandOutput);
-        m_climber.setClimbState(true);
-      }
-      if (joystickYDeadbandOutput == 0) {
+        if (joystickYDeadbandOutput != 0.0) {
+          if (joystickYDeadbandOutput < 0)
+            joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+          m_climber.setJoystickY(-joystickYDeadbandOutput);
+          m_climber.setClimbState(true);
+        }
+        if (joystickYDeadbandOutput == 0) {
+          m_climber.holdClimber();
+          m_climber.setPercentOutput(0);
+        }
+      } else {
         m_climber.holdClimber();
-        m_climber.setPercentOutput(0);
+        m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
       }
-    } else {
-      m_climber.holdClimber();
-      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
-    }
 
-    if (m_climber.getAvgCurrentDraw() >= 30) {
-      m_HID.setRumble(RumbleType.kBothRumble, 0.2);
-    } else {
-      m_HID.setRumble(RumbleType.kBothRumble, 0);
+      if (m_climber.getAvgCurrentDraw() >= 30) {
+        m_HID.setRumble(RumbleType.kBothRumble, 0.2);
+      } else {
+        m_HID.setRumble(RumbleType.kBothRumble, 0);
+      }
     }
   }
-}
 
   // Called once the command ends or is interrupted.
   @Override

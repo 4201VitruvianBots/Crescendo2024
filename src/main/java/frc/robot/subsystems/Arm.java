@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase {
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
   private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
-  
+
   private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
 
   private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
@@ -211,7 +211,7 @@ public class Arm extends SubsystemBase {
             m_kSetpoint_subscriber.get(Units.rotationsToDegrees(m_desiredRotations)));
     if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
   }
-  
+
   public void autonomousInit() {
     resetTrapezoidState();
     setDesiredSetpointRotations(getCurrentRotation());

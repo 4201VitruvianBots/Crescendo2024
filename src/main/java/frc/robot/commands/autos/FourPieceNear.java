@@ -4,30 +4,25 @@
 
 package frc.robot.commands.autos;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.arm.AutoArmSetpoints;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
-import frc.robot.constants.ARM;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TrajectoryUtils;
+import java.util.ArrayList;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -40,8 +35,8 @@ public class FourPieceNear extends SequentialCommandGroup {
       AmpShooter ampShooter,
       Intake intake,
       FieldSim fieldSim) {
- 
-   String[] pathFiles = {
+
+    String[] pathFiles = {
       "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
@@ -72,7 +67,6 @@ public class FourPieceNear extends SequentialCommandGroup {
             3);
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
-
 
     var shootCommand3 =
         new AutoRunAmpTake(
@@ -123,8 +117,8 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMPSHOOTER.STATE.INTAKING.get());
 
     addCommands(
-         new PlotAutoPath(fieldSim, "", pathsList),
-       new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
+        new PlotAutoPath(fieldSim, "", pathsList),
+        new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
         commandList.get(1).alongWith(RunIntake),
@@ -133,6 +127,6 @@ public class FourPieceNear extends SequentialCommandGroup {
         shootCommand3,
         commandList.get(3).alongWith(RunIntake3),
         shootCommand4);
-        commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
+    commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
 }
