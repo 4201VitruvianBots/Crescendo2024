@@ -36,7 +36,7 @@ public final class CLIMBER {
   public static final double kV = 0.0; // 12.57;
   public static final double kA = 0.0; // 0.04;
 
-  public static final double kP = 10.;
+  public static final double kP = 100.0;
   public static final double kI = 0.00;
   public static final double kD = 0.00;
 
