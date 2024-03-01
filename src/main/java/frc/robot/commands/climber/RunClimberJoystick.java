@@ -6,6 +6,8 @@ package frc.robot.commands.climber;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,14 +20,14 @@ public class RunClimberJoystick extends Command {
   private final Climber m_climber;
 
   private final DoubleSupplier m_joystickY;
-
-  private final CommandXboxController m_xboxController;
+  
+  private final GenericHID m_HID;
 
   public RunClimberJoystick(
       Climber climber, DoubleSupplier joystickY, CommandXboxController xboxController) {
     m_climber = climber;
     m_joystickY = joystickY;
-    m_xboxController = xboxController;
+    m_HID = xboxController.getHID();
 
     addRequirements(m_climber);
   }
@@ -38,6 +40,9 @@ public class RunClimberJoystick extends Command {
   @Override
   public void execute() {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
+    // This function was causing a lot of overruns!!!
+    // TODO: rewrite logic
+    if (DriverStation.isEnabled()) {
     if (m_climber.getClimbState()) {
       double joystickYDeadbandOutput =
           MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
@@ -58,11 +63,12 @@ public class RunClimberJoystick extends Command {
     }
 
     if (m_climber.getAvgCurrentDraw() >= 30) {
-      m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.2);
+      m_HID.setRumble(RumbleType.kBothRumble, 0.2);
     } else {
-      m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0);
+      m_HID.setRumble(RumbleType.kBothRumble, 0);
     }
   }
+}
 
   // Called once the command ends or is interrupted.
   @Override
