@@ -208,6 +208,11 @@ public class Arm extends SubsystemBase {
             m_kSetpoint_subscriber.get(Units.rotationsToDegrees(m_desiredRotations)));
     if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
   }
+  
+  public void autonomousInit() {
+    resetTrapezoidState();
+    setDesiredSetpointRotations(getCurrentRotation());
+  }
 
   public void teleopInit() {
     resetTrapezoidState();

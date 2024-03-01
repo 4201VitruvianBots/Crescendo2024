@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
+import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ResetArmPosition;
 import frc.robot.commands.arm.ToggleArmControlMode;
@@ -161,7 +162,7 @@ public class RobotContainer {
 
     // Default command to decelerate the flywheel if no other command is set
     m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
-    // m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
@@ -390,6 +391,10 @@ public class RobotContainer {
   public void teleopInit() {
     m_arm.teleopInit();
     m_climber.teleopInit();
+  }
+  
+  public void autonomousInit() {
+    m_arm.autonomousInit();
   }
 
   public void disabledInit() {
