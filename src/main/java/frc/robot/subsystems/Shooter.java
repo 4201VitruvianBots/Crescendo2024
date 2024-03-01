@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -42,6 +43,7 @@ public class Shooter extends SubsystemBase {
     new DCMotorSim(SHOOTER.ShooterTopGearbox, SHOOTER.gearRatioTop, SHOOTER.Inertia)
   };
 
+  private final StatusSignal<Double> m_positionSignal =   m_shooterMotors[0].getVelocity().clone(); 
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
@@ -176,8 +178,10 @@ public class Shooter extends SubsystemBase {
   }
 
   // values that we are pulling
+  //Changed By Sheraz to avoid Loop Overruns
   public double getRpmMaster() {
-    return m_shooterMotors[0].getVelocity().getValue() * 60.0;
+    m_positionSignal.refresh();
+    return m_positionSignal.getValue();
   }
 
   public double getRpmFollower() {
