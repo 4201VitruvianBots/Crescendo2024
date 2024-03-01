@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -18,7 +19,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.CLIMBER;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
@@ -36,6 +36,10 @@ public class Climber extends SubsystemBase {
 
   // Trapezoid profile setup
   public final PositionVoltage m_position = new PositionVoltage(0);
+  
+  private final StatusSignal<Double> m_positionSignal = elevatorClimbMotors[0].getPosition().clone();
+  private final StatusSignal<Double> m_velocitySignal = elevatorClimbMotors[0].getVelocity().clone();
+  private final StatusSignal<Double> m_currentSignal = elevatorClimbMotors[0].getTorqueCurrent().clone();
 
   public TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
@@ -90,9 +94,9 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.SensorToMechanismRatio = CLIMBER.gearRatio;
-    config.Slot0.kP = ARM.kP;
-    config.Slot0.kI = ARM.kI;
-    config.Slot0.kD = ARM.kD;
+    config.Slot0.kP = CLIMBER.kP;
+    config.Slot0.kI = CLIMBER.kI;
+    config.Slot0.kD = CLIMBER.kD;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
@@ -136,8 +140,8 @@ public class Climber extends SubsystemBase {
   }
 
   public double getAvgCurrentDraw() {
-    return (elevatorClimbMotors[0].getTorqueCurrent().getValue()
-            + elevatorClimbMotors[1].getTorqueCurrent().getValue())
+    return (m_currentSignal.getValue()
+            + m_currentSignal.getValue())
         * 0.5;
   }
 
@@ -148,7 +152,7 @@ public class Climber extends SubsystemBase {
 
   // gets the position of the climber in encoder counts
   public double getMotorRotations() {
-    return elevatorClimbMotors[0].getRotorPosition().getValue();
+    return m_positionSignal.getValue();
   }
 
   // sets position in meters
@@ -157,7 +161,7 @@ public class Climber extends SubsystemBase {
   }
 
   public double getVelocityMetersPerSecond() {
-    return elevatorClimbMotors[0].getRotorVelocity().getValue() * CLIMBER.sprocketRotationsToMeters;
+    return m_velocitySignal.getValue() * CLIMBER.sprocketRotationsToMeters;
   }
 
   public void holdClimber() {
@@ -234,6 +238,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void setClimberNeutralMode(NeutralModeValue mode) {
+    if (mode == m_neutralMode) return;
     m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
     elevatorClimbMotors[1].setNeutralMode(mode);
@@ -292,10 +297,10 @@ public class Climber extends SubsystemBase {
     m_simState2.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     leftElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
+        MathUtil.clamp(m_velocitySignal.getValue(), -12, 12));
     rightElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
-
+        MathUtil.clamp(m_velocitySignal.getValue(), -12, 12));
+    
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
 

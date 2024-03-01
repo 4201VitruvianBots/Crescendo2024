@@ -42,10 +42,10 @@ public final class SWERVE {
     public static double kFrontLeftEncoderOffset = 0.219970703125;
     public static double kFrontRightEncoderOffset = 0.265380859375;
     public static double kBackLeftEncoderOffset = -0.046875;
-    public static double kBackRightEncoderOffset = 0.09765625;
+    public static double kBackRightEncoderOffset = 0.097412109375;
 
     public static final boolean[] kTurnInversions = {true, false, false, false};
-    public static final boolean[] kDriveInversions = {true, true, true, false};
+    public static final boolean[] kDriveInversions = {false, false, false, true};
 
     public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5.0;

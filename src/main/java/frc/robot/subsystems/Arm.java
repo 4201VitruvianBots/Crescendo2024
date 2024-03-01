@@ -37,6 +37,9 @@ public class Arm extends SubsystemBase {
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
+  private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
+  
+  private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
 
   private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
 
@@ -78,7 +81,7 @@ public class Arm extends SubsystemBase {
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = m_neutralMode;
     config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Slot0.kS = ARM.kS;
     config.Slot0.kV = ARM.kV;
@@ -157,7 +160,7 @@ public class Arm extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
-    Logger.recordOutput("Arm/CurrentOutput", m_armMotor.getTorqueCurrent().getValue());
+    Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
   }
@@ -208,6 +211,11 @@ public class Arm extends SubsystemBase {
             m_kSetpoint_subscriber.get(Units.rotationsToDegrees(m_desiredRotations)));
     if (m_desiredRotations != m_oldSetpoint) setDesiredSetpointRotations(m_desiredRotations);
   }
+  
+  public void autonomousInit() {
+    resetTrapezoidState();
+    setDesiredSetpointRotations(getCurrentRotation());
+  }
 
   public void teleopInit() {
     resetTrapezoidState();
@@ -232,6 +240,14 @@ public class Arm extends SubsystemBase {
           setPercentOutput(0.0);
         }
         break;
+    }
+
+    if (DriverStation.isDisabled()) {
+      // This was also causing overruns!!!
+      if (m_neutralMode != NeutralModeValue.Coast) {
+        m_neutralMode = NeutralModeValue.Coast;
+        m_armMotor.setNeutralMode(m_neutralMode);
+      }
     }
 
     if (!ROBOT.disableLogging) updateLogger();

@@ -120,9 +120,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
       //              () ->
@@ -172,7 +172,7 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
 
-    var aimSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
@@ -292,9 +292,10 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
-    //     new AutoScore(
+    //     new AutoScore(6
     //         m_shooter,
     //         m_ampShooter,
     //         m_intake,
@@ -390,6 +391,10 @@ public class RobotContainer {
   public void teleopInit() {
     m_arm.teleopInit();
     m_climber.teleopInit();
+  }
+  
+  public void autonomousInit() {
+    m_arm.autonomousInit();
   }
 
   public void disabledInit() {

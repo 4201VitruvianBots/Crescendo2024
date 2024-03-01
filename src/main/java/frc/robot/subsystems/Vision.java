@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VISION;
@@ -200,51 +199,51 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (m_swerveDriveTrain != null && !DriverStation.isAutonomous()) {
-      // final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
-      // globalPoseA.ifPresentOrElse(
-      //     estimatedRobotPose -> {
-      //       cameraAEstimatedPose = estimatedRobotPose.estimatedPose;
-      //       cameraATimestamp = estimatedRobotPose.timestampSeconds;
-      //       cameraAHasPose = true;
-      //     },
-      //     () -> {
-      //       cameraAEstimatedPose = nullPose;
-      //       cameraAHasPose = false;
-      //     });
+    // if (m_swerveDriveTrain != null && !DriverStation.isAutonomous()) {
+    //   // final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
+    //   // globalPoseA.ifPresentOrElse(
+    //   //     estimatedRobotPose -> {
+    //   //       cameraAEstimatedPose = estimatedRobotPose.estimatedPose;
+    //   //       cameraATimestamp = estimatedRobotPose.timestampSeconds;
+    //   //       cameraAHasPose = true;
+    //   //     },
+    //   //     () -> {
+    //   //       cameraAEstimatedPose = nullPose;
+    //   //       cameraAHasPose = false;
+    //   //     });
 
-      final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
-      globalPoseB.ifPresent(
-          (estimatedRobotPose) -> {
-            cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
-            cameraBTimestamp = estimatedRobotPose.timestampSeconds;
-            cameraBHasPose = true;
-            m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
-          });
+    //   final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
+    //   globalPoseB.ifPresent(
+    //       (estimatedRobotPose) -> {
+    //         cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
+    //         cameraBTimestamp = estimatedRobotPose.timestampSeconds;
+    //         cameraBHasPose = true;
+    //         m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
+    //       });
 
-      // if (cameraAHasPose && cameraBHasPose) {
-      //   poseAgreement = checkPoseAgreement(cameraAEstimatedPose, cameraBEstimatedPose);
+    //   // if (cameraAHasPose && cameraBHasPose) {
+    //   //   poseAgreement = checkPoseAgreement(cameraAEstimatedPose, cameraBEstimatedPose);
 
-      // if (poseAgreement) {
-      //   m_swerveDriveTrain.addVisionMeasurement(
-      //       cameraAEstimatedPose.toPose2d(), cameraATimestamp);
-      //   m_swerveDriveTrain.addVisionMeasurement(
-      //       cameraBEstimatedPose.toPose2d(), cameraBTimestamp);
-      // }
+    //   // if (poseAgreement) {
+    //   //   m_swerveDriveTrain.addVisionMeasurement(
+    //   //       cameraAEstimatedPose.toPose2d(), cameraATimestamp);
+    //   //   m_swerveDriveTrain.addVisionMeasurement(
+    //   //       cameraBEstimatedPose.toPose2d(), cameraBTimestamp);
+    //   // }
 
-      // if (getTargetAmount(aprilTagLimelightCameraB) >= 2) {
-      //   m_swerveDriveTrain.addVisionMeasurement(
-      //       cameraBEstimatedPose, cameraBTimestamp);
-      // }
-    }
+    //   // if (getTargetAmount(aprilTagLimelightCameraB) >= 2) {
+    //   //   m_swerveDriveTrain.addVisionMeasurement(
+    //   //       cameraBEstimatedPose, cameraBTimestamp);
+    //   // }
+    //   }
 
-    if (m_fieldSim != null) {
-      // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
-      m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
-    }
-    // This method will be called once per scheduler run
-    updateLog();
-    updateSmartDashboard();
+    //   if (m_fieldSim != null) {
+    //     // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
+    //     m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
+    //   }
+    //   // This method will be called once per scheduler run
+    //   updateLog();
+    //   updateSmartDashboard();
   }
 
   @Override
