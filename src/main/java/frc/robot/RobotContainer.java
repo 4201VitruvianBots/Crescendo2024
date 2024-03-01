@@ -177,16 +177,16 @@ public class RobotContainer {
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0)));
+            () -> -leftJoystick.getRawAxis(1),
+            () -> -leftJoystick.getRawAxis(0)));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
     //     new DriveAndAimAtNote(
     //         m_swerveDrive,
     //         m_vision,
-    //         () -> leftJoystick.getRawAxis(1),
-    //         () -> leftJoystick.getRawAxis(0),
+    //         () -> -leftJoystick.getRawAxis(1),
+    //         () -> -leftJoystick.getRawAxis(0),
     //         () -> rightJoystick.getRawAxis(0)));
 
     xboxController

@@ -42,7 +42,6 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
-    if (DriverStation.isEnabled()) {
       if (m_climber.getClimbState()) {
         double joystickYDeadbandOutput =
             MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
@@ -67,7 +66,6 @@ public class RunClimberJoystick extends Command {
       } else {
         m_HID.setRumble(RumbleType.kBothRumble, 0);
       }
-    }
   }
 
   // Called once the command ends or is interrupted.

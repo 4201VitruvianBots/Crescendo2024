@@ -129,6 +129,13 @@ public class Arm extends SubsystemBase {
     return Units.rotationsToDegrees(getCurrentRotation());
   }
 
+
+  public void setNeutralMode(NeutralModeValue mode) {
+    if (mode == m_neutralMode) return;
+    m_neutralMode = mode;
+    m_armMotor.setNeutralMode(mode);
+  }
+
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
     if (mode == ROBOT.CONTROL_MODE.CLOSED_LOOP && m_controlMode == ROBOT.CONTROL_MODE.OPEN_LOOP)
       resetTrapezoidState();
@@ -240,14 +247,6 @@ public class Arm extends SubsystemBase {
           setPercentOutput(0.0);
         }
         break;
-    }
-
-    if (DriverStation.isDisabled()) {
-      // This was also causing overruns!!!
-      if (m_neutralMode != NeutralModeValue.Coast) {
-        m_neutralMode = NeutralModeValue.Coast;
-        m_armMotor.setNeutralMode(m_neutralMode);
-      }
     }
 
     if (!ROBOT.disableLogging) updateLogger();

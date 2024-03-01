@@ -41,8 +41,10 @@ public class Climber extends SubsystemBase {
       elevatorClimbMotors[0].getPosition().clone();
   private final StatusSignal<Double> m_velocitySignal =
       elevatorClimbMotors[0].getVelocity().clone();
-  private final StatusSignal<Double> m_currentSignal =
+  private final StatusSignal<Double> m_leftCurrentSignal =
       elevatorClimbMotors[0].getTorqueCurrent().clone();
+  private final StatusSignal<Double> m_rightCurrentSignal =
+          elevatorClimbMotors[0].getTorqueCurrent().clone();
 
   public TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
@@ -143,7 +145,7 @@ public class Climber extends SubsystemBase {
   }
 
   public double getAvgCurrentDraw() {
-    return (m_currentSignal.getValue() + m_currentSignal.getValue()) * 0.5;
+    return (m_leftCurrentSignal.getValue() + m_rightCurrentSignal.getValue()) * 0.5;
   }
 
   // gets the position of the climber in meters
@@ -297,8 +299,8 @@ public class Climber extends SubsystemBase {
     m_simState1.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_simState2.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    leftElevatorSim.setInputVoltage(MathUtil.clamp(m_velocitySignal.getValue(), -12, 12));
-    rightElevatorSim.setInputVoltage(MathUtil.clamp(m_velocitySignal.getValue(), -12, 12));
+    leftElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
+    rightElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
