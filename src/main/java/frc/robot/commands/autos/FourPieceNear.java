@@ -9,13 +9,11 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
-import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -37,8 +35,8 @@ public class FourPieceNear extends SequentialCommandGroup {
       FieldSim fieldSim) {
 
     String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", 
-    //   "FourPiecePt4.1","FourPiecePt5"
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
+      //   "FourPiecePt4.1","FourPiecePt5"
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
@@ -55,11 +53,9 @@ public class FourPieceNear extends SequentialCommandGroup {
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    
-
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
- var shootCommand =
+    var shootCommand =
         new AutoRunAmpTake(
             intake,
             ampShooter,
@@ -67,7 +63,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
-   var shootCommand2 =
+    var shootCommand2 =
         new AutoRunAmpTake(
             intake,
             ampShooter,
@@ -81,8 +77,6 @@ public class FourPieceNear extends SequentialCommandGroup {
             INTAKE.STATE.NONE.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
-
- 
 
     var shootCommand4 =
         new AutoRunAmpTake(

@@ -4,11 +4,8 @@
 
 package frc.robot.commands.autos;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
@@ -23,6 +20,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TrajectoryUtils;
+import java.util.ArrayList;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -36,7 +34,7 @@ public class TwoPiece extends SequentialCommandGroup {
       AmpShooter ampShooter,
       Shooter shooter) {
     String[] pathFiles = {"2PieceNearPart1", "2PieceNearPart2"};
-   ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
+    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
 
     for (var filename : pathFiles) {
@@ -51,13 +49,11 @@ public class TwoPiece extends SequentialCommandGroup {
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-
     var RunIntake =
         new AutoRunIntake(
             intake,
             INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
             INTAKE.STATE.BACK_ROLLER_INTAKING.get());
-
 
     var shootCommand =
         new AutoRunAmpTake(
@@ -78,7 +74,7 @@ public class TwoPiece extends SequentialCommandGroup {
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
     addCommands(
- new PlotAutoPath(fieldSim, "", pathsList),
+        new PlotAutoPath(fieldSim, "", pathsList),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
