@@ -120,8 +120,8 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
       //      m_swerveDrive.setDefaultCommand(
       //          m_swerveDrive.applyRequest(
@@ -170,15 +170,16 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpTake(m_intake, 0.5, 0.75, m_ampShooter, 0.5));
+    driveShootButton.whileTrue(new AmpTake(
+                m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(
         new DriveAndAimAtSpeaker(
             m_swerveDrive,
             m_vision,
-            () -> -leftJoystick.getRawAxis(1),
-            () -> -leftJoystick.getRawAxis(0)));
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0)));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
@@ -226,17 +227,17 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new AmpTake(
-                m_intake, 0.6, 0.75, m_ampShooter, 0.1)); // Outtake Note with Intake And Amp
+                m_intake, 0.65, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
 
     xboxController
-        .rightBumper()
+        .leftBumper()
         .whileTrue(
             new RunAmp(
                 m_ampShooter,
                 m_intake,
                 AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Intake
     xboxController
-        .leftBumper()
+        .rightBumper()
         .whileTrue(
             new RunAmp(
                 m_ampShooter,
@@ -293,6 +294,8 @@ public class RobotContainer {
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
+  
+    m_autoChooser.addOption("TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
     //     new AutoScore(6

@@ -37,7 +37,8 @@ public class FourPieceNear extends SequentialCommandGroup {
       FieldSim fieldSim) {
 
     String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", "FourPiecePt5",
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4", 
+    //   "FourPiecePt4.1","FourPiecePt5"
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
@@ -54,42 +55,41 @@ public class FourPieceNear extends SequentialCommandGroup {
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    var shootCommand =
-        new AutoScore(
-            shooter,
-            ampShooter,
-            intake,
-            AMPSHOOTER.STATE.INTAKING.get(),
-            RPM_SETPOINT.SPEAKER.get(),
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            WAIT.SHOOTING.get(),
-            3);
+    
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
+ var shootCommand =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get());
+
+   var shootCommand2 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get());
     var shootCommand3 =
         new AutoRunAmpTake(
             intake,
             ampShooter,
             INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
-    var shootCommand2 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.NONE.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
+ 
 
     var shootCommand4 =
         new AutoRunAmpTake(
             intake,
             ampShooter,
             INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
     var RunIntake =
@@ -121,12 +121,15 @@ public class FourPieceNear extends SequentialCommandGroup {
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
+        new WaitCommand(1),
         commandList.get(1).alongWith(RunIntake),
         shootCommand2,
+        new WaitCommand(1),
         commandList.get(2).alongWith(RunIntake2),
         shootCommand3,
+        new WaitCommand(1),
         commandList.get(3).alongWith(RunIntake3),
         shootCommand4);
-    commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
+    // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
 }

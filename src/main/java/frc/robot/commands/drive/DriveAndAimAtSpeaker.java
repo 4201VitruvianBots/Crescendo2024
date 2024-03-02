@@ -70,7 +70,7 @@ public class DriveAndAimAtSpeaker extends Command {
     m_SwerveDrivetrain.setChassisSpeedControl(
         new ChassisSpeeds(
             m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-            m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
+            m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond, //strafe input
             finalTurn));
   }
 

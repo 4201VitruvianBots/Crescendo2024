@@ -29,7 +29,7 @@ public class TwoPiece extends SequentialCommandGroup {
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"3Piece2Pt1", "3Piece2Pt2"};
+    String[] pathFiles = {"2PieceNearPart1", "2PieceNearPart2"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
     var point = new SwerveRequest.PointWheelsAt();
