@@ -86,6 +86,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
         new WaitCommand(1),
         commandList.get(1).alongWith(runIntake),
         commandList.get(2),
+        new WaitCommand(1),
         shootCommand2,
         commandList
             .get(3)

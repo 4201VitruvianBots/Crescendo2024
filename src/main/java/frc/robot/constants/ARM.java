@@ -20,7 +20,7 @@ public final class ARM {
 
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
-  public static final double kP = 100.0;
+  public static final double kP = 75.0;
 
   /* I value is generally used to correct steady-state error
   (e.g. your goal is 100 but you are at 99, so the sum of error
@@ -37,7 +37,7 @@ public final class ARM {
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
-    FORWARD(Units.degreesToRotations(120.0)),
+    FORWARD(Units.degreesToRotations(140.0)),
     TRAP(Units.degreesToRotations(130.0));
 
     private final double angle;
