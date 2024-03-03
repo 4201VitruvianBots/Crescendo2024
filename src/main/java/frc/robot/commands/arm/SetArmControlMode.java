@@ -5,29 +5,26 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.constants.ROBOT;
 import frc.robot.subsystems.Arm;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ResetArmPosition extends InstantCommand {
-  private final Arm m_arm;
+public class SetArmControlMode extends InstantCommand {
+  private Arm m_arm;
+  private ROBOT.CONTROL_MODE m_controlMode;
 
-  public ResetArmPosition(Arm arm) {
+  public SetArmControlMode(Arm arm, ROBOT.CONTROL_MODE controlMode) {
     m_arm = arm;
+    m_controlMode = controlMode;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_arm);
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.resetSensorPosition();
+    m_arm.setControlMode(m_controlMode);
   }
 }

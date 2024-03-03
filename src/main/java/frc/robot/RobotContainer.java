@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
-import frc.robot.commands.arm.ResetArmPosition;
+import frc.robot.commands.arm.SetArmControlMode;
 import frc.robot.commands.arm.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -34,11 +34,12 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
-import frc.robot.commands.intake.RunAll;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
+import frc.robot.constants.AMPSHOOTER.STATE;
+import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -97,7 +98,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-    SmartDashboard.putData("ResetArmPosition", new ResetArmPosition(m_arm));
 
     if (RobotBase.isSimulation()) {
       m_telemetry.registerFieldSim(m_fieldSim);
@@ -189,6 +189,8 @@ public class RobotContainer {
     //         () -> -leftJoystick.getRawAxis(0),
     //         () -> rightJoystick.getRawAxis(0)));
 
+ 
+
     xboxController
         .b()
         .whileTrue(
@@ -234,10 +236,12 @@ public class RobotContainer {
     xboxController
         .leftBumper()
         .whileTrue(
-            new RunAmp(
-                m_ampShooter,
+            new AmpTake(
                 m_intake,
-                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Intake
+                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+                m_ampShooter,
+                AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
     xboxController
         .rightBumper()
         .whileTrue(
@@ -249,37 +253,27 @@ public class RobotContainer {
     xboxController
         .povLeft()
         .whileTrue(
-            new RunAll(
-                m_intake,
-                m_shooter,
-                m_ampShooter,
-                0,
-                0,
-                0,
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+            new SetShooterRPMSetpoint(
+                m_shooter, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get(), xboxController));
     xboxController
         .povDown()
         .whileTrue(
-            new RunAll(
+            new AmpTake(
                 m_intake,
-                m_shooter,
+                INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
+                INTAKE.STATE.BACK_SLOW_REVERSE.get(),
                 m_ampShooter,
-                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
-                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
-                AMPSHOOTER.STATE.REVERSE.get(),
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+                STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povUp()
         .whileTrue(
-            new RunAll(
+            new AmpTake(
                 m_intake,
-                m_shooter,
-                m_ampShooter,
                 INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
-                AMPSHOOTER.STATE.INTAKING_SLOW.get(),
-                RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
+                m_ampShooter,
+                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     // button on smartdashboard to reset climber height
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
@@ -288,7 +282,8 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "OneWaitAuto", new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "OneWaitAuto",
+        new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));

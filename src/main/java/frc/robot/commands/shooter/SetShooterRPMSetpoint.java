@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.subsystems.Shooter;
 
 public class SetShooterRPMSetpoint extends Command {
@@ -41,8 +40,7 @@ public class SetShooterRPMSetpoint extends Command {
   public void execute() {
     // m_shooter.setRPMOutputFOC(m_RPMOutput);
     m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
-    if ((m_shooter.getRpmMaster() >= RPM_SETPOINT.MAX.get() - 300)
-        && (m_shooter.getRpmFollower() >= RPM_SETPOINT.MAX.get() - 300)) {
+    if ((m_shooter.getRpmMaster() >= 7000) && (m_shooter.getRpmFollower() >= 7000)) {
       m_hid.setRumble(RumbleType.kBothRumble, 1);
     } else {
       m_hid.setRumble(RumbleType.kBothRumble, 0);
