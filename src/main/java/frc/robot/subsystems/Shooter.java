@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getShooterState() {
-    return (getRpmMaster() > 500 || getRpmFollower() > 500);
+    return (getRpmMaster() > 6000 || getRpmFollower() > 6000);
   }
 
   /** Sets a boolean for the intake's actuation */

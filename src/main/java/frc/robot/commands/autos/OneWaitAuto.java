@@ -4,11 +4,8 @@
 
 package frc.robot.commands.autos;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
@@ -17,13 +14,13 @@ import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.constants.SHOOTER.WAIT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TrajectoryUtils;
+import java.util.ArrayList;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -36,13 +33,13 @@ public class OneWaitAuto extends SequentialCommandGroup {
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"SimpleAuto1","SimpleAuto2"};
+    String[] pathFiles = {"SimpleAuto1", "SimpleAuto2"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
-ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
+    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
     ArrayList<Command> commandList = new ArrayList<>();
     var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
- 
+
     for (var filename : pathFiles) {
       var path = PathPlannerPath.fromPathFile(filename);
       var command =
@@ -69,12 +66,11 @@ ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
 
     var Wait = new WaitCommand(8);
     addCommands(
-     Wait,
+        Wait,
         new PlotAutoPath(fieldSim, "", pathsList),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
-        commandList.get(1).alongWith(runIntake)
-    );
+        commandList.get(1).alongWith(runIntake));
   }
 }
