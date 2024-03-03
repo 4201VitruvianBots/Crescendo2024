@@ -92,7 +92,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.NONE.get());
 
     var RunIntake2 =
         new AutoRunAmpTake(
@@ -100,7 +100,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.NONE.get());
 
     var RunIntake3 =
         new AutoRunAmpTake(
@@ -108,7 +108,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
+            AMPSHOOTER.STATE.NONE.get());
 
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),

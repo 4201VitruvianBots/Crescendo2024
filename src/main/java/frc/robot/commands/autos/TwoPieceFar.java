@@ -50,9 +50,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
 
     var runIntake =
         new AutoRunIntake(
-            intake,
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+            intake, INTAKE.STATE.FRONT_ROLLER_INTAKING.get(), INTAKE.STATE.NONE.get());
 
     var runIntake2 =
         new AutoRunIntake(
@@ -72,8 +70,8 @@ public class TwoPieceFar extends SequentialCommandGroup {
         new AutoRunAmpTake(
             intake,
             ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());

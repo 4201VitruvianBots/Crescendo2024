@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.43,
-        "y": 4.15
+        "x": 3.24,
+        "y": 7.07
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.5194427190999915,
-        "y": 4.105278640450004
+        "x": 3.34,
+        "y": 7.07
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6,
-        "y": 4.15
+        "x": 8.140830696075806,
+        "y": 7.451230758317373
       },
       "prevControl": {
-        "x": 2.5835601012694642,
-        "y": 4.248639392383215
+        "x": 8.05173004365697,
+        "y": 7.405831708343419
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,8 +39,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.362336505152307,
-    "rotateFast": false
+    "rotation": 0.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SimpleAuto",

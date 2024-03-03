@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.43,
-      "y": 4.15
+      "y": 7.0
     },
     "rotation": 0
   },
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SimpleAuto"
+            "pathName": "SimpleAuto1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SimpleAuto2"
           }
         }
       ]

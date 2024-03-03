@@ -288,7 +288,7 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "SimpleAuto", new SimpleAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "OneWaitAuto", new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));

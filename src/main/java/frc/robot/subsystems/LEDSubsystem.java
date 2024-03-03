@@ -140,16 +140,17 @@ public class LEDSubsystem extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case INTAKING:
-          setPattern(LED.orange, 127, 1, ANIMATION_TYPE.Strobe);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
+          
         case SHOOTING:
-          setPattern(LED.blue, 127, 1, ANIMATION_TYPE.Solid);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case DISABLED:
-          setPattern(LED.red, 127, 1, ANIMATION_TYPE.Solid); // Solid Red
+          setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
           break;
         case ENABLED:
-          setPattern(LED.green, 127, 1, ANIMATION_TYPE.Solid); // Solid Green
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Green
           break;
         default:
           break;
