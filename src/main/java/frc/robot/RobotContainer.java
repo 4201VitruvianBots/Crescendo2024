@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
-import frc.robot.commands.arm.SetArmControlMode;
 import frc.robot.commands.arm.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -39,7 +38,6 @@ import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
-import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -188,8 +186,6 @@ public class RobotContainer {
     //         () -> -leftJoystick.getRawAxis(1),
     //         () -> -leftJoystick.getRawAxis(0),
     //         () -> rightJoystick.getRawAxis(0)));
-
- 
 
     xboxController
         .b()
