@@ -90,12 +90,8 @@ public class Shooter extends SubsystemBase {
      return (getShooterState() && (getRpmMaster() >= 7000 || getRpmFollower() >= 7000));
   }
    public boolean getUnRevedState() {
-    // if (getShooterState()){
      return (getShooterState() && (getRpmMaster() < 7000 || getRpmFollower() < 7000));
-  //   }
-  //  else {
-  //  return false;
-  //  }
+
   }
 
   /** Sets a boolean for the intake's actuation */
