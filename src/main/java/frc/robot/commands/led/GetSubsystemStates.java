@@ -23,7 +23,8 @@ public class GetSubsystemStates extends Command {
   // private final Arm m_arm;
   private boolean isIntaking;
   private boolean isClimbing;
-  private boolean isShooting;
+  private boolean isUnreved;
+  private boolean isReved;
   private boolean isDisabled;
   private boolean isEnabled;
 
@@ -52,8 +53,9 @@ public class GetSubsystemStates extends Command {
   public void execute() {
     isDisabled = DriverStation.isDisabled(); // Done
     isEnabled = !isDisabled; // Done
-    isIntaking = m_intake.getIntakeState(); // Done
-    isShooting = m_shooter.getShooterState(); // Done
+    isIntaking = m_intake.getIntakeState();
+    isUnreved = m_shooter.getUnRevedState();// Done
+    isReved = m_shooter.getRevedState(); // Done
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
     // after it's done.
     // isArmScoring = m_arm.getArmState(); // Done
@@ -63,8 +65,10 @@ public class GetSubsystemStates extends Command {
     // highest priority
     if (isIntaking) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
-    } else if (isShooting) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
+    } else if (isUnreved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
+       } else if (isReved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
     } else if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
     } else if (isEnabled) {

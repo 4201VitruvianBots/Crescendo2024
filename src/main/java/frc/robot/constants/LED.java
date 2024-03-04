@@ -44,7 +44,8 @@ public final class LED {
     CLIMBING,
     ENABLED,
     DISABLED,
-    SHOOTING,
+    UNREVED,
+    REVED,
     ARMSCORING
   }
 }

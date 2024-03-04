@@ -143,7 +143,11 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
 
-        case SHOOTING:
+          case UNREVED:
+          setPattern(LED.white, 125, 0.33, ANIMATION_TYPE.Fire);
+          break;
+
+        case REVED:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case DISABLED:

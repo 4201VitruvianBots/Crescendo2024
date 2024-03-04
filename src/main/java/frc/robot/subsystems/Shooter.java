@@ -86,8 +86,16 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setInverted(true);
   }
 
-  public boolean getShooterState() {
-    return (getRpmMaster() > 7000 || getRpmFollower() > 7000);
+  public boolean getRevedState() {
+     return (getShooterState() && getRpmMaster() >= 7000 || getRpmFollower() >= 7000);
+  }
+   public boolean getUnRevedState() {
+    if (getShooterState()){
+     return ( getRpmMaster() < 7000 || getRpmFollower() < 7000);
+    }
+   else {
+   return false;
+   }
   }
 
   /** Sets a boolean for the intake's actuation */
@@ -95,6 +103,9 @@ public class Shooter extends SubsystemBase {
     m_isShooting = state;
   }
 
+ public boolean getShooterState() {
+    return m_isShooting;
+  }
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
