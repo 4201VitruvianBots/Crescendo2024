@@ -87,15 +87,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getRevedState() {
-     return (getShooterState() && getRpmMaster() >= 7000 || getRpmFollower() >= 7000);
+     return (getShooterState() && (getRpmMaster() >= 7000 || getRpmFollower() >= 7000));
   }
    public boolean getUnRevedState() {
-    if (getShooterState()){
-     return ( getRpmMaster() < 7000 || getRpmFollower() < 7000);
-    }
-   else {
-   return false;
-   }
+    // if (getShooterState()){
+     return (getShooterState() && (getRpmMaster() < 7000 || getRpmFollower() < 7000));
+  //   }
+  //  else {
+  //  return false;
+  //  }
   }
 
   /** Sets a boolean for the intake's actuation */
