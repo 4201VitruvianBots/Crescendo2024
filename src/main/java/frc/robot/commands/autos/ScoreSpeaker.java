@@ -21,7 +21,7 @@ public class ScoreSpeaker extends SequentialCommandGroup {
                 ampShooter,
                 INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
                 INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-                AMP.STATE.INTAKING.get())
+                AMPSHOOTER.STATE.INTAKING.get())
             .withTimeout(2),
         new WaitCommand(2),
         // new AutoSetAmpSpeed(ampShooter, AMP.STATE.INTAKING).withTimeout(1),
@@ -32,7 +32,7 @@ public class ScoreSpeaker extends SequentialCommandGroup {
             ampShooter,
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
-            frc.robot.constants.AMP.STATE.INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get(),
             RPM_SETPOINT.MAX.get()));
   }
 }

@@ -7,22 +7,26 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
-public class SetClimbState extends Command {
+public class ResetClimberHeight extends Command {
   private final Climber m_climber;
-  private final boolean m_climbState;
+  private final double m_meters;
 
-  /** Creates a new SetClimbState. */
-  public SetClimbState(Climber climber, boolean climbState) {
+  /** Creates a new ResetClimberHeight. */
+  public ResetClimberHeight(Climber climber, double meters) {
     m_climber = climber;
-    m_climbState = climbState;
-    // Use addRequirements() here to declare subsystem dependencies.
+    m_meters = meters;
+    // Use addRequirements() here to declare subsystem dependencies.\
     addRequirements(m_climber);
+  }
+
+  public boolean runsWhenDisabled() {
+    return true;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climber.setClimbState(m_climbState);
+    m_climber.setSensorPosition(m_meters);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

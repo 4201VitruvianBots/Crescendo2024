@@ -23,6 +23,7 @@ public class ROBOT {
 
   public enum ROBOT_ID {
     // Robot Serial Numbers
+    FORTE("030cbc95"),
     ALPHABOT("030cbcf0"),
     GRIDLOCK("0306ce62"),
     BOBOT("030e6a97"),
@@ -58,6 +59,8 @@ public class ROBOT {
     }
   }
 
+  public static void initForte() {}
+
   public static void initAlphaBot() {}
 
   public static void initGridlock() {
@@ -65,10 +68,6 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0.04296875;
     SWERVE.DRIVE.kBackLeftEncoderOffset = 0.483642578125;
     SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
-
-    SWERVE.DRIVE.kInvertLeftDrive = false;
-    SWERVE.DRIVE.kInvertRightDrive = true;
-    SWERVE.MODULE.kTurnInverted = true;
 
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
     CAN.drivebaseCanbus = CAN.rioCanbus;
@@ -79,10 +78,6 @@ public class ROBOT {
     SWERVE.DRIVE.kFrontRightEncoderOffset = Units.degreesToRotations(34.18956);
     SWERVE.DRIVE.kBackLeftEncoderOffset = Units.degreesToRotations(77.51952);
     SWERVE.DRIVE.kBackRightEncoderOffset = Units.degreesToRotations(330.55668);
-
-    SWERVE.DRIVE.kInvertLeftDrive = false;
-    SWERVE.DRIVE.kInvertRightDrive = true;
-    SWERVE.MODULE.kTurnInverted = true;
   }
 
   public static void initSim() {
@@ -97,7 +92,11 @@ public class ROBOT {
 
   public static void initConstants() {
     var alert = new Alert("Initializing Robot Constants...", AlertType.INFO);
-    if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
+
+    if (RobotController.getSerialNumber().equals(ROBOT_ID.FORTE.getSerial())) {
+      alert.setText("Setting Robot Constants for FORTE");
+      initForte();
+    } else if (RobotController.getSerialNumber().equals(ROBOT_ID.ALPHABOT.getSerial())) {
       alert.setText("Setting Robot Constants for ALPHABOT");
       initAlphaBot();
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.GRIDLOCK.getSerial())) {

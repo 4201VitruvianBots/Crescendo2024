@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
@@ -16,24 +17,23 @@ public class AutoSetRPMSetpoint extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
+  public void initialize() {
+    m_shooter.setNeutralMode(NeutralModeValue.Coast);
     m_shooter.setRPMOutput(m_RPM);
   }
+
+  @Override
+  public void execute() {}
 
   // Called every time the scheduler runs while the command is scheduled.
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_shooter.setPercentOutput(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

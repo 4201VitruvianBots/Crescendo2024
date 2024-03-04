@@ -12,6 +12,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public final class VISION {
+  public static final double kLimelightHFOV = 62.5;
+  public static final double kLimelightVFOV = 48.9;
+  public static final double kLimelightDFOV =
+      Math.sqrt(Math.pow(kLimelightHFOV, 2) + Math.pow(kLimelightVFOV, 2));
+
   public static final double aprilTagLimelightCameraADistanceFromCenterX =
       Units.inchesToMeters(-7.590951);
   public static final double aprilTagLimelightCameraADistanceFromCenterY =
@@ -26,17 +31,16 @@ public final class VISION {
       Units.degreesToRadians(-145.513393);
 
   public static final double aprilTagLimelightCameraBDistanceFromCenterX =
-      Units.inchesToMeters(-7.590951);
-  public static final double aprilTagLimelightCameraBDistanceFromCenterY =
-      Units.inchesToMeters(9.541729);
+      Units.inchesToMeters(-7.6);
+  public static final double aprilTagLimelightCameraBDistanceFromCenterY = Units.inchesToMeters(0);
   public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
-      Units.inchesToMeters(15.184963);
+      Units.inchesToMeters(22.5);
   public static final double aprilTagLimelightCameraBOffsetInRadiansRoll =
       Units.degreesToRadians(0);
   public static final double aprilTagLimelightCameraBOffsetInRadiansPitch =
-      Units.degreesToRadians(6.172091);
+      Units.degreesToRadians(35.5);
   public static final double aprilTagLimelightCameraBOffsetInRadiansYaw =
-      Units.degreesToRadians(145.513393);
+      Units.degreesToRadians(180);
 
   public static final double noteDetectionLimelightCameraDistanceFromCenterX =
       Units.inchesToMeters(12.125);
@@ -104,7 +108,10 @@ public final class VISION {
   }
 
   public enum CAMERA_SERVER {
-    FRONT("10.42.1.11");
+    INTAKE("10.42.1.11"),
+    LIMELIGHTA("10.42.1.12"),
+    LIMELIGHTB("10.42.1.13"),
+    ;
     private final String ip;
 
     CAMERA_SERVER(final String ip) {

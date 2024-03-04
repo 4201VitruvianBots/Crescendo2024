@@ -9,7 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.AMP;
+import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
@@ -20,16 +20,16 @@ public class AmpShooter extends SubsystemBase {
   private NeutralModeValue NeutralMode;
 
   private final DCMotorSim m_ampMotorSim =
-      new DCMotorSim(AMP.AmpGearbox, AMP.gearRatio, AMP.Inertia);
+      new DCMotorSim(AMPSHOOTER.AmpGearbox, AMPSHOOTER.gearRatio, AMPSHOOTER.Inertia);
 
   private final TalonFXSimState m_ampMotorSimState = ampMotor.getSimState();
 
   public AmpShooter() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kP = AMP.kP;
-    config.Slot0.kI = AMP.kI;
-    config.Slot0.kD = AMP.kD;
-    config.Feedback.SensorToMechanismRatio = AMP.gearRatio;
+    config.Slot0.kP = AMPSHOOTER.kP;
+    config.Slot0.kI = AMPSHOOTER.kI;
+    config.Slot0.kD = AMPSHOOTER.kD;
+    config.Feedback.SensorToMechanismRatio = AMPSHOOTER.gearRatio;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(ampMotor, config);
@@ -43,12 +43,8 @@ public class AmpShooter extends SubsystemBase {
     return ampMotor.get();
   }
 
-  public void setNeutralMode(NeutralModeValue NeutralMode) {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.MotorOutput.NeutralMode = NeutralMode;
-
-    CtreUtils.configureTalonFx(ampMotor, config);
+  public double getRpm() {
+    return ampMotor.getVelocity().getValue() * 60.0;
   }
 
   private void updateLogger() {
@@ -71,8 +67,8 @@ public class AmpShooter extends SubsystemBase {
     m_ampMotorSim.update(RobotTime.getTimeDelta());
 
     m_ampMotorSimState.setRawRotorPosition(
-        m_ampMotorSim.getAngularPositionRotations() * AMP.gearRatio);
+        m_ampMotorSim.getAngularPositionRotations() * AMPSHOOTER.gearRatio);
     m_ampMotorSimState.setRotorVelocity(
-        m_ampMotorSim.getAngularVelocityRPM() * AMP.gearRatio / 60.0);
+        m_ampMotorSim.getAngularVelocityRPM() * AMPSHOOTER.gearRatio / 60.0);
   }
 }

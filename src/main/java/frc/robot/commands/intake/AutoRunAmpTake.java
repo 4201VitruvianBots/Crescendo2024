@@ -25,35 +25,29 @@ public class AutoRunAmpTake extends Command {
     m_speed2 = speed2;
     m_ampSpeed = ampSpeed;
     m_ampShooter = ampShooter;
-    addRequirements(m_intake);
+    addRequirements(m_intake, m_ampShooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setSpeed(m_speed, m_speed2);
+
+    m_ampShooter.setPercentOutput(m_ampSpeed);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_intake.setSpeed(m_speed, m_speed2);
-    if (m_intake.isIntaking() && (m_intake.getSensorInput1() || m_intake.getSensorInput2())) {
-      m_ampShooter.setPercentOutput(0);
-    } else {
-      m_ampShooter.setPercentOutput(m_ampSpeed);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    m_intake.setSpeed(0, 0);
-    m_ampShooter.setPercentOutput(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.getSensorInput1() || m_intake.getSensorInput2();
+    // return m_intake.getSensorInput1() || m_intake.getSensorInput2();
+    return true;
   }
 }

@@ -20,7 +20,7 @@ public final class ARM {
 
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
-  public static final double kP = 100.0;
+  public static final double kP = 75.0;
 
   /* I value is generally used to correct steady-state error
   (e.g. your goal is 100 but you are at 99, so the sum of error
@@ -35,8 +35,10 @@ public final class ARM {
   public static final double kMaxArmAcceleration = 10;
 
   public enum ARM_SETPOINT {
-    STOWED(Units.degreesToRotations(0.0)),
-    FORWARD(Units.degreesToRotations(120.0));
+    STOWED(Units.degreesToRotations(-40.0)),
+    STAGED(Units.degreesToRotations(75.0)),
+    FORWARD(Units.degreesToRotations(140.0)),
+    TRAP(Units.degreesToRotations(130.0));
 
     private final double angle;
 
@@ -63,24 +65,12 @@ public final class ARM {
 
   public static final double minAngleDegrees = -40;
 
-  public static final double maxAngleDegrees = 160;
+  public static final double maxAngleDegrees = 140;
 
   public static final double startingAngleDegrees = minAngleDegrees;
 
   public static final double mountingAngleDegrees = 0;
 
-  public enum ARM_STATE {
-    NONE(0),
-    SCORE(0.8);
-
-    private final double value;
-
-    ARM_STATE(final double value) {
-      this.value = value;
-    }
-
-    public double get() {
-      return value;
-    }
-  }
+  public static final double maxOutput = 1.0;
+  public static final double joystickMultiplier = maxOutput;
 }

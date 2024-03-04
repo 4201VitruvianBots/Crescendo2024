@@ -4,9 +4,13 @@
 
 package frc.robot.commands.climber;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.ROBOT.CONTROL_MODE;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.constants.CLIMBER;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
@@ -16,9 +20,13 @@ public class RunClimberJoystick extends Command {
 
   private final DoubleSupplier m_joystickY;
 
-  public RunClimberJoystick(Climber climber, DoubleSupplier joystickY) {
+  private final GenericHID m_HID;
+
+  public RunClimberJoystick(
+      Climber climber, DoubleSupplier joystickY, CommandXboxController xboxController) {
     m_climber = climber;
     m_joystickY = joystickY;
+    m_HID = xboxController.getHID();
 
     addRequirements(m_climber);
   }
@@ -31,24 +39,39 @@ public class RunClimberJoystick extends Command {
   @Override
   public void execute() {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
-    double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
+    // This function was causing a lot of overruns!!!
+    // TODO: rewrite logic
+    if (m_climber.getClimbState()) {
+      double joystickYDeadbandOutput =
+          MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
 
-    if (joystickYDeadbandOutput != 0.0) {
-      m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-      m_climber.setJoystickY(-joystickYDeadbandOutput);
-      m_climber.setClimbState(true);
+      if (joystickYDeadbandOutput != 0.0) {
+        if (joystickYDeadbandOutput < 0)
+          joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+        m_climber.setJoystickY(-joystickYDeadbandOutput);
+        m_climber.setClimbState(true);
+      }
+      if (joystickYDeadbandOutput == 0) {
+        m_climber.holdClimber();
+        m_climber.setPercentOutput(0);
+      }
+    } else {
+      m_climber.holdClimber();
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     }
-    if (joystickYDeadbandOutput == 0
-        && m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
+
+    if (m_climber.getAvgCurrentDraw() >= 30) {
+      m_HID.setRumble(RumbleType.kBothRumble, 0.2);
+    } else {
+      m_HID.setRumble(RumbleType.kBothRumble, 0);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setDesiredPositionMeters(m_climber.getHeightMeters());
-    m_climber.setClimbState(false);
+    m_climber.holdClimber();
+    m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
   }
 
   // Returns true when the command should end.

@@ -39,7 +39,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
   private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
-  private double m_desiredHeadingRadians;
+  // private double m_desiredHeadingRadians;
   private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
   private Vision m_vision;
   private final SwerveRequest.FieldCentric m_driveReqeustFieldCentric =
@@ -196,10 +196,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                   chassisSpeeds.get().omegaRadiansPerSecond);
 
           if (isRobotCentric) {
-            return m_driveReqeustRobotCentric
-                .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+            if (Controls.isRedAlliance()) {
+              return m_driveReqeustRobotCentric
+                  .withVelocityX(-m_newChassisSpeeds.vxMetersPerSecond)
+                  .withVelocityY(-m_newChassisSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(-m_newChassisSpeeds.omegaRadiansPerSecond);
+            } else {
+              return m_driveReqeustRobotCentric
+                  .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                  .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+            }
           } else {
             return m_driveReqeustFieldCentric
                 .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)

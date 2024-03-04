@@ -65,7 +65,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "TestAutos",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

@@ -47,7 +47,7 @@ public class RunAll extends Command {
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
     m_ampShooter.setPercentOutput(m_ampSpeed);
-    m_shooter.setRPMOutput(m_rpm);
+    m_shooter.setPercentOutput(m_rpm);
   }
 
   // Called once the command ends or is interrupted.
@@ -55,7 +55,7 @@ public class RunAll extends Command {
   public void end(boolean interrupted) {
     m_intake.setSpeed(0, 0);
     m_ampShooter.setPercentOutput(0);
-    m_shooter.setRPMOutput(0);
+    m_shooter.setPercentOutput(0);
   }
 
   // Returns true when the command should end.

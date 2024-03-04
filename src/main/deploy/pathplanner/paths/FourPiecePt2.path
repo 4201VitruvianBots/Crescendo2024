@@ -3,37 +3,80 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4564995705130617,
-        "y": 4.32
+        "x": 2.75,
+        "y": 3.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.543102110891505,
-        "y": 4.2700000000000005
+        "x": 1.75,
+        "y": 3.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.48,
-        "y": 5.5430292057165325
+        "x": 2.0,
+        "y": 4.6
       },
       "prevControl": {
-        "x": 2.38,
-        "y": 5.5430292057165325
+        "x": 1.9,
+        "y": 4.6
+      },
+      "nextControl": {
+        "x": 2.1,
+        "y": 4.6
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.83,
+        "y": 4.18
+      },
+      "prevControl": {
+        "x": 2.7404754351675193,
+        "y": 4.224557292237689
+      },
+      "nextControl": {
+        "x": 2.919524564832481,
+        "y": 4.13544270776231
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.35,
+        "y": 4.8349797600496105
+      },
+      "prevControl": {
+        "x": 2.030081898001634,
+        "y": 5.029118526705522
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -26.879999999999995,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.6,
+      "rotationDegrees": -26.879999999999995,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.9,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 1.5,
+      "maxWaypointRelativePos": 1.9,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
@@ -45,19 +88,19 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": false
+    "rotation": -7.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "4PieceAutoNear",
   "previewStartingState": {
-    "rotation": -30.0,
+    "rotation": -26.45999999999998,
     "velocity": 0
   },
   "useDefaultConstraints": false

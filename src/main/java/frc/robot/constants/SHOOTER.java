@@ -7,7 +7,7 @@ public final class SHOOTER {
 
   public static final int kSlotIdx = 0;
 
-  public static final double topkP = 4;
+  public static final double topkP = 6;
   public static final double topkI = 0;
   public static final double topkD = 0;
 
@@ -34,6 +34,8 @@ public final class SHOOTER {
 
   public static final double Inertia = 0.001;
 
+  public static final double flywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
+
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
     WAIT_FOR_AMP_SCORE(0.8),
@@ -51,11 +53,12 @@ public final class SHOOTER {
   }
 
   public enum RPM_SETPOINT {
-    REVERSE(-600),
+    REVERSE(-0.1),
+
     NONE(0),
     SLOW(1200),
     SPEAKER(6000),
-    MAX(7500);
+    MAX(8000);
 
     private final double value;
 

@@ -1,21 +1,32 @@
 // Copyright (c) FIRST and other WPILib contributors.
-// mason is the best at being mason and there is no other person like mason
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.climber;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Climber;
 
-public class ToggleIntakePercentOutput extends Command {
-  /** Creates a new TogglePercentOutput. */
-  public ToggleIntakePercentOutput() {
+public class ToggleClimberNeutralMode extends Command {
+  /** Creates a new ToggleElevatorCoastMode. */
+  private final Climber m_climber;
+
+  public ToggleClimberNeutralMode(Climber climber) {
+    m_climber = climber;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    NeutralModeValue neutralMode = m_climber.getNeutralMode();
+    if (neutralMode == NeutralModeValue.Coast) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    } else if (neutralMode == NeutralModeValue.Brake) {
+      m_climber.setClimberNeutralMode(NeutralModeValue.Coast);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -28,6 +39,6 @@ public class ToggleIntakePercentOutput extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
