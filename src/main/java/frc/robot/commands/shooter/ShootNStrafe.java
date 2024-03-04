@@ -27,15 +27,15 @@ import java.util.function.DoubleSupplier;
 public class ShootNStrafe extends Command {
 
   private final CommandSwerveDrivetrain m_swerveDrive;
-  private final Shooter m_shooter;
-  private final AmpShooter m_ampShooter;
-  private final Intake m_intake;
+  // private final Shooter m_shooter;
+  // private final AmpShooter m_ampShooter;
+  // private final Intake m_intake;
   private final Telemetry m_telemetry;
 
-  private double m_AmpPercentOutput;
-  private double m_RPMOutput;
-  private final double m_FrontIntakePercentOutput;
-  private final double m_BackIntakeAmpPercentOutput;
+  // private double m_AmpPercentOutput;
+  // private double m_RPMOutput;
+  // private final double m_FrontIntakePercentOutput;
+  // private final double m_BackIntakeAmpPercentOutput;
 
   private final Timer m_timer = new Timer();
   private final Timer m_reversetimer = new Timer();
@@ -69,29 +69,31 @@ public class ShootNStrafe extends Command {
   public ShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
       Telemetry telemetry,
-      AmpShooter ampShooter,
-      Shooter shooter,
-      Intake intake,
+      // AmpShooter ampShooter,
+      // Shooter shooter,
+      // Intake intake,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
-      DoubleSupplier rotationInput,
-      double AmpPercentOutput,
-      double RPMOutput,
-      double FrontIntakeAmpPercentOutput,
-      double BackIntakeAmpPercentOutput) {
+      DoubleSupplier rotationInput
+      // ,
+      // double AmpPercentOutput,
+      // double RPMOutput,
+      // double FrontIntakeAmpPercentOutput,
+      // double BackIntakeAmpPercentOutput
+      ) {
 
     m_swerveDrive = swerveDrive;
     m_telemetry = telemetry;
-    m_intake = intake;
-    m_shooter = shooter;
-    m_ampShooter = ampShooter;
+    // m_intake = intake;
+    // m_shooter = shooter;
+    // m_ampShooter = ampShooter;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    m_AmpPercentOutput = AmpPercentOutput;
-    m_FrontIntakePercentOutput = FrontIntakeAmpPercentOutput;
-    m_BackIntakeAmpPercentOutput = BackIntakeAmpPercentOutput;
-    m_RPMOutput = RPMOutput;
+    // m_AmpPercentOutput = AmpPercentOutput;
+    // m_FrontIntakePercentOutput = FrontIntakeAmpPercentOutput;
+    // m_BackIntakeAmpPercentOutput = BackIntakeAmpPercentOutput;
+    // m_RPMOutput = RPMOutput;
 
     addRequirements(m_swerveDrive);
 
@@ -105,13 +107,13 @@ public class ShootNStrafe extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_timer.stop();
-    m_timer.reset();
-    m_reversetimer.stop();
-    m_reversetimer.reset();
-    m_shoottimer.stop();
-    m_shoottimer.reset();
-    m_turnController.reset();
+    // m_timer.stop();
+    // m_timer.reset();
+    // m_reversetimer.stop();
+    // m_reversetimer.reset();
+    // m_shoottimer.stop();
+    // m_shoottimer.reset();
+    // m_turnController.reset();
   }
 
   @Override
@@ -128,7 +130,7 @@ public class ShootNStrafe extends Command {
     }
 
     Pose2d robotPose = m_swerveDrive.getState().Pose;
-    double shootAngle = m_shooter.getShootAngle(robotPose);
+    // double shootAngle = m_shooter.getShootAngle(robotPose);
 
     double effectiveDistance = 2.5; //meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
@@ -192,7 +194,10 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
     //                 / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
     //                     * VelocityShoot));
     // System.out.println(m_headingOffset * 180 / Math.PI);
-    System.out.println(getOffsetAngleDeg);
+
+
+
+    // System.out.println(getOffsetAngleDeg);
 
 
 
@@ -215,7 +220,7 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
     
     
-    m_shooter.setRPMOutput(m_RPMOutput);
+    // m_shooter.setRPMOutput(m_RPMOutput);
 
     m_swerveDrive.setControl(
         drive
@@ -225,21 +230,21 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
                     targetDelta.getRadians()+getOffsetAngleDeg)));
-    if (inZone
-        && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
-        && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
+    // if (inZone
+    //     && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
+    //     && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
 
-      m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
+    //   m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
 
-      m_reversetimer.start();
+    //   m_reversetimer.start();
 
-      if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
-        m_ampShooter.setPercentOutput(m_AmpPercentOutput);
-        m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
-        m_shoottimer.start();
-      }
+    //   if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
+    //     m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+    //     m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
+    //     m_shoottimer.start();
+    //   }
     }
-  }
+  // }
 
   // Called every time the scheduler runs while the command is scheduled.
 
@@ -247,15 +252,15 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setPercentOutput(0);
-    m_ampShooter.setPercentOutput(0);
-    m_intake.setSpeed(0, 0);
-    m_timer.stop();
-    m_timer.reset();
-    m_reversetimer.stop();
-    m_reversetimer.reset();
-    m_shoottimer.stop();
-    m_shoottimer.reset();
+    // m_shooter.setPercentOutput(0);
+    // m_ampShooter.setPercentOutput(0);
+    // m_intake.setSpeed(0, 0);
+    // m_timer.stop();
+    // m_timer.reset();
+    // m_reversetimer.stop();
+    // m_reversetimer.reset();
+    // m_shoottimer.stop();
+    // m_shoottimer.reset();
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
             .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -269,8 +274,8 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
             .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
             .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
             .withRotationalRate((m_rotationInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond));
-    m_timer.stop();
-    m_timer.reset();
+    // m_timer.stop();
+    // m_timer.reset();
   }
 
   // Returns true when the command should end.

@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -36,6 +38,7 @@ import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
+import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -169,15 +172,20 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    xboxController.y().whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(
-        new DriveAndAimAtSpeaker(
-            m_swerveDrive,
-            m_vision,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0)));
+    // var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // aimSpeakerButton.whileTrue(
+    //     new DriveAndAimAtSpeaker(
+    //         m_swerveDrive,
+    //         m_vision,
+    //         () -> leftJoystick.getRawAxis(1),
+    //         () -> leftJoystick.getRawAxis(0)));
+
+               var aimSpeakerAdjustButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    aimSpeakerAdjustButton.whileTrue(
+        new ShootNStrafe(m_swerveDrive, m_telemetry, () -> leftJoystick.getRawAxis(1), () -> leftJoystick.getRawAxis(0), () -> rightJoystick.getRawAxis(0)
+            ));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(

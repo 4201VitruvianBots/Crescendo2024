@@ -27,7 +27,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
   AmpShooter m_ampShooter;
   Arm m_arm;
   Climber m_climber;
-  //   Vision m_vision;
+  Vision m_vision;
   LEDSubsystem m_led;
 
   private final double startPointX = 0.28;
@@ -165,9 +165,9 @@ public class SuperStructureVisualizer implements AutoCloseable {
     m_climber = climber;
   }
 
-  //   public void registerVision(Vision vision) {
-  //     m_vision = vision;
-  //   }
+  public void registerVision(Vision vision) {
+    m_vision = vision;
+  }
 
   public void registerLedSubsystem(LEDSubsystem led) {
     m_led = led;
@@ -253,7 +253,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
     if (m_ampShooter != null) updateAmpShooter();
     if (m_arm != null) updateArm();
     if (m_climber != null) updateClimber();
-    // if (m_vision != null) updateLimelights();
+    if (m_vision != null) updateLimelights();
     if (m_led != null) updateLED();
   }
 

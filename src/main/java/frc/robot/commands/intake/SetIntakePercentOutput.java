@@ -4,22 +4,17 @@
 
 package frc.robot.commands.intake;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
 public class SetIntakePercentOutput extends Command {
   private final Intake m_intake;
-  private final AmpShooter m_ampShooter;
   private final double m_percentOutput1;
   private final double m_percentOutput2;
 
   /** Creates a new idk. */
-  public SetIntakePercentOutput(
-      Intake intake, AmpShooter ampShooter, double percentOutput1, double percentOutput2) {
+  public SetIntakePercentOutput(Intake intake, double percentOutput1, double percentOutput2) {
     m_intake = intake;
-    m_ampShooter = ampShooter;
     m_percentOutput1 = percentOutput1;
     m_percentOutput2 = percentOutput2;
 
@@ -34,15 +29,12 @@ public class SetIntakePercentOutput extends Command {
   @Override
   public void execute() {
     m_intake.setSpeed(m_percentOutput1, m_percentOutput2);
-    m_ampShooter.setNeutralMode(NeutralModeValue.Coast);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.setSpeed(0, 0);
-
-    m_ampShooter.setNeutralMode(NeutralModeValue.Brake);
   }
 
   // Returns true when the command should end.
