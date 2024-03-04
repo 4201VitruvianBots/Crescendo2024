@@ -172,7 +172,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    xboxController.y().whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     // var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     // aimSpeakerButton.whileTrue(
