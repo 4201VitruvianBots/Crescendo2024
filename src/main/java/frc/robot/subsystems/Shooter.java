@@ -95,6 +95,10 @@ public class Shooter extends SubsystemBase {
     m_isShooting = state;
   }
 
+  public boolean getZoneState() {
+    return true; //TODO: Change this to true only if we are in zone
+  }
+
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;

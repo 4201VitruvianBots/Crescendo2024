@@ -36,6 +36,7 @@ import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
@@ -184,8 +185,16 @@ public class RobotContainer {
 
                var aimSpeakerAdjustButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerAdjustButton.whileTrue(
-        new ShootNStrafe(m_swerveDrive, m_telemetry, () -> leftJoystick.getRawAxis(1), () -> leftJoystick.getRawAxis(0), () -> rightJoystick.getRawAxis(0)
-            ));
+        new ShootNStrafe(m_swerveDrive, m_telemetry, m_shooter, () -> leftJoystick.getRawAxis(1), () -> leftJoystick.getRawAxis(0), () -> rightJoystick.getRawAxis(0)
+            , RPM_SETPOINT.MAX.get()));
+
+                           var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    SASButton.whileTrue(
+        new AutoShootNStrafe(m_swerveDrive, m_telemetry, m_ampShooter, m_shooter, m_intake, 
+        () -> leftJoystick.getRawAxis(1), 
+        () -> leftJoystick.getRawAxis(0), 
+        () -> rightJoystick.getRawAxis(0), 
+        0, INTAKE.STATE.BACK_ROLLER_INTAKING.get(), STATE.INTAKING.get(), RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
