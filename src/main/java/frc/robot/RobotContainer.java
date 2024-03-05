@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
-import frc.robot.commands.arm.ResetArmPosition;
 import frc.robot.commands.arm.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -34,11 +33,11 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpTake;
-import frc.robot.commands.intake.RunAll;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
+import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
@@ -97,7 +96,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
-    SmartDashboard.putData("ResetArmPosition", new ResetArmPosition(m_arm));
 
     if (RobotBase.isSimulation()) {
       m_telemetry.registerFieldSim(m_fieldSim);
@@ -110,7 +108,7 @@ public class RobotContainer {
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
       m_visualizer.registerVision(m_vision);
-      // m_visualizer.registerLedSubsystem(m_led);
+      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -193,7 +191,10 @@ public class RobotContainer {
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.MAX.get(), RPM_SETPOINT.MAX.get())); // fast speaker
+                m_shooter,
+                xboxController,
+                RPM_SETPOINT.MAX.get(),
+                RPM_SETPOINT.MAX.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
@@ -231,10 +232,12 @@ public class RobotContainer {
     xboxController
         .leftBumper()
         .whileTrue(
-            new RunAmp(
-                m_ampShooter,
+            new AmpTake(
                 m_intake,
-                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Intake
+                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+                m_ampShooter,
+                AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
     xboxController
         .rightBumper()
         .whileTrue(
@@ -246,37 +249,27 @@ public class RobotContainer {
     xboxController
         .povLeft()
         .whileTrue(
-            new RunAll(
-                m_intake,
-                m_shooter,
-                m_ampShooter,
-                0,
-                0,
-                0,
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+            new SetShooterRPMSetpoint(
+                m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
     xboxController
         .povDown()
         .whileTrue(
-            new RunAll(
+            new AmpTake(
                 m_intake,
-                m_shooter,
+                INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
+                INTAKE.STATE.BACK_SLOW_REVERSE.get(),
                 m_ampShooter,
-                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
-                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
-                AMPSHOOTER.STATE.REVERSE.get(),
-                RPM_SETPOINT.REVERSE.get())); // Intake Note with Only Amp
+                STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
 
     xboxController
         .povUp()
         .whileTrue(
-            new RunAll(
+            new AmpTake(
                 m_intake,
-                m_shooter,
-                m_ampShooter,
                 INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
-                AMPSHOOTER.STATE.INTAKING_SLOW.get(),
-                RPM_SETPOINT.NONE.get())); // Intake Note with Only Amp
+                m_ampShooter,
+                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
 
     // button on smartdashboard to reset climber height
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
@@ -285,7 +278,8 @@ public class RobotContainer {
   public void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
-        "SimpleAuto", new SimpleAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "OneWaitAuto",
+        new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));

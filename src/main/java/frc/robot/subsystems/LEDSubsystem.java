@@ -142,6 +142,7 @@ public class LEDSubsystem extends SubsystemBase {
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
+
         case SHOOTING:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;

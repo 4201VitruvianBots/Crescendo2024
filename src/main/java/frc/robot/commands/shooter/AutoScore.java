@@ -81,7 +81,6 @@ public class AutoScore extends Command {
         m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
         m_shoottimer.start();
       }
-
     } else if (m_timer.hasElapsed(m_withTimeout)) {
 
       if ((m_shooter.getRpmMaster() >= minRPMThreshold)

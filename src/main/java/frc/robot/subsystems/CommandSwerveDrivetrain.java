@@ -206,10 +206,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
                 .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
           } else {
-            return m_driveReqeustFieldCentric
-                .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+            if (Controls.isRedAlliance()) {
+              return m_driveReqeustFieldCentric
+                  .withVelocityX(-m_newChassisSpeeds.vxMetersPerSecond)
+                  .withVelocityY(-m_newChassisSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+            } else {
+              return m_driveReqeustFieldCentric
+                  .withVelocityX(m_newChassisSpeeds.vxMetersPerSecond)
+                  .withVelocityY(m_newChassisSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(m_newChassisSpeeds.omegaRadiansPerSecond);
+            }
           }
         });
   }

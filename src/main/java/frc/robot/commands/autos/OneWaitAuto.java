@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autos;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
@@ -21,19 +20,16 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SimpleAuto extends SequentialCommandGroup {
+public class OneWaitAuto extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
-  public SimpleAuto(
+  public OneWaitAuto(
       CommandSwerveDrivetrain swerveDrive,
       FieldSim fieldSim,
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {"SimpleAuto"};
+    String[] pathFiles = {"SimpleAuto1", "SimpleAuto2"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
-
-    var point = new SwerveRequest.PointWheelsAt();
-    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     var runIntake =
         new AutoRunIntake(
@@ -51,10 +47,12 @@ public class SimpleAuto extends SequentialCommandGroup {
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
-    var Wait = new WaitCommand(10);
+    var Wait = new WaitCommand(8);
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim).alongWith(Wait),
+        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        Wait,
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        shootCommand);
+        shootCommand,
+        pathFactory.getNextPathCommand().alongWith(runIntake));
   }
 }

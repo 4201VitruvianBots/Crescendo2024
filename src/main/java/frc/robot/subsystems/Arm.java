@@ -155,6 +155,16 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  public void resetSensorPositionForButton(double m_angle) {
+    if (RobotBase.isReal()) {
+      m_armMotor.setPosition(Units.degreesToRotations(m_angle));
+      resetTrapezoidState();
+    } else {
+      m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+      resetTrapezoidState();
+    }
+  }
+
   public void resetTrapezoidState() {
     m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
   }

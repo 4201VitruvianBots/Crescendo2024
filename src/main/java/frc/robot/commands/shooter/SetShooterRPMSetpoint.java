@@ -5,16 +5,25 @@
 package frc.robot.commands.shooter;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Shooter;
 
 public class SetShooterRPMSetpoint extends Command {
   private final Shooter m_shooter;
   private final double m_RPMOutputBottom;
   private final double m_RPMOutputTop;
+  private final GenericHID m_hid;
 
-  public SetShooterRPMSetpoint(Shooter shooter, double RPMOutputBottom, double RPMOutputTop) {
+  public SetShooterRPMSetpoint(
+      Shooter shooter,
+      CommandXboxController xboxController,
+      double RPMOutputBottom,
+      double RPMOutputTop) {
     m_shooter = shooter;
+    m_hid = xboxController.getHID();
     m_RPMOutputBottom = RPMOutputBottom;
     m_RPMOutputTop = RPMOutputTop;
     addRequirements(m_shooter);
@@ -24,12 +33,18 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void initialize() {
     m_shooter.setNeutralMode(NeutralModeValue.Coast);
+    m_shooter.setShooterState(true);
   }
 
   @Override
   public void execute() {
     // m_shooter.setRPMOutputFOC(m_RPMOutput);
     m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
+    if ((m_shooter.getRpmMaster() >= 7000) && (m_shooter.getRpmFollower() >= 7000)) {
+      m_hid.setRumble(RumbleType.kBothRumble, 0.4);
+    } else {
+      m_hid.setRumble(RumbleType.kBothRumble, 0);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +53,7 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.setPercentOutput(0);
+    m_shooter.setShooterState(false);
   }
 
   // Returns true when the command should end.
