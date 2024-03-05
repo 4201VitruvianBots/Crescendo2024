@@ -88,7 +88,7 @@ public class RobotContainer {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    // m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -108,7 +108,7 @@ public class RobotContainer {
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
       m_visualizer.registerVision(m_vision);
-      // m_visualizer.registerLedSubsystem(m_led);
+      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -192,9 +192,9 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter,
+                xboxController,
                 RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get(),
-                xboxController)); // fast speaker
+                RPM_SETPOINT.MAX.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
@@ -250,7 +250,7 @@ public class RobotContainer {
         .povLeft()
         .whileTrue(
             new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get(), xboxController));
+                m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
     xboxController
         .povDown()
         .whileTrue(
@@ -388,12 +388,6 @@ public class RobotContainer {
   public void teleopInit() {
     m_arm.teleopInit();
     m_climber.teleopInit();
-
-    if (Controls.isRedAlliance()) {
-      m_swerveDrive.resetGyro(180);
-    } else {
-      m_swerveDrive.resetGyro(0);
-    }
   }
 
   public void autonomousInit() {

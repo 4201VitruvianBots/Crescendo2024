@@ -19,13 +19,13 @@ public class SetShooterRPMSetpoint extends Command {
 
   public SetShooterRPMSetpoint(
       Shooter shooter,
+      CommandXboxController xboxController,
       double RPMOutputBottom,
-      double RPMOutputTop,
-      CommandXboxController xboxController) {
+      double RPMOutputTop) {
     m_shooter = shooter;
+    m_hid = xboxController.getHID();
     m_RPMOutputBottom = RPMOutputBottom;
     m_RPMOutputTop = RPMOutputTop;
-    m_hid = xboxController.getHID();
     addRequirements(m_shooter);
   }
 
@@ -41,7 +41,7 @@ public class SetShooterRPMSetpoint extends Command {
     // m_shooter.setRPMOutputFOC(m_RPMOutput);
     m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
     if ((m_shooter.getRpmMaster() >= 7000) && (m_shooter.getRpmFollower() >= 7000)) {
-      m_hid.setRumble(RumbleType.kBothRumble, 1);
+      m_hid.setRumble(RumbleType.kBothRumble, 0.4);
     } else {
       m_hid.setRumble(RumbleType.kBothRumble, 0);
     }

@@ -26,7 +26,6 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  private double m_rpm;
   private double m_rpmTop;
   private double m_rpmBottom;
   private boolean m_testMode = false;
@@ -87,7 +86,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getShooterState() {
-    return (getRpmMaster() > 7000 || getRpmFollower() > 7000);
+    return (m_rpmBottom != 0 || m_rpmTop != 0);
   }
 
   /** Sets a boolean for the intake's actuation */
@@ -98,23 +97,30 @@ public class Shooter extends SubsystemBase {
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
+    m_rpmBottom = 0;
+    m_rpmTop = 0;
 
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
     m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
   public void setVoltageOutput(double voltageOut) {
+    m_rpmBottom = 0;
+    m_rpmTop = 0;
     m_shooterMotors[0].setControl(m_voltageRequest.withOutput(voltageOut));
     m_shooterMotors[1].setControl(m_voltageRequest.withOutput(voltageOut));
   }
 
   public void setFocCurrentOutput(double currentOut) {
+    m_rpmBottom = 0;
+    m_rpmTop = 0;
     m_shooterMotors[0].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
   public void setRPMOutputFOC(double rpm) {
-    m_rpm = rpm;
+    m_rpmBottom = rpm;
+    m_rpmTop = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
@@ -226,7 +232,6 @@ public class Shooter extends SubsystemBase {
         "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmsetpoint", m_rpm);
     Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
     Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
