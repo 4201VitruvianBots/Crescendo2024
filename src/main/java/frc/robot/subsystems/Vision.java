@@ -55,7 +55,8 @@ public class Vision extends SubsystemBase {
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
 
   public Vision() {
-    limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+    limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
+        PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
@@ -214,20 +215,23 @@ public class Vision extends SubsystemBase {
       //       cameraAHasPose = false;
       //     });
       limelightPhotonPoseEstimatorB.setReferencePose(m_swerveDriveTrain.getState().Pose);
-      limelightPhotonPoseEstimatorB.update().ifPresent((estimatedRobotPose)-> {
-          cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
-          cameraBTimestamp = estimatedRobotPose.timestampSeconds;
-          cameraBHasPose = true;
-          m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
-      });
-//      final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
-//      globalPoseB.ifPresent(
-//          (estimatedRobotPose) -> {
-//            cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
-//            cameraBTimestamp = estimatedRobotPose.timestampSeconds;
-//            cameraBHasPose = true;
-//            m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
-//          });
+      limelightPhotonPoseEstimatorB
+          .update()
+          .ifPresent(
+              (estimatedRobotPose) -> {
+                cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
+                cameraBTimestamp = estimatedRobotPose.timestampSeconds;
+                cameraBHasPose = true;
+                m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
+              });
+      //      final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
+      //      globalPoseB.ifPresent(
+      //          (estimatedRobotPose) -> {
+      //            cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
+      //            cameraBTimestamp = estimatedRobotPose.timestampSeconds;
+      //            cameraBHasPose = true;
+      //            m_swerveDriveTrain.addVisionMeasurement(cameraBEstimatedPose, cameraBTimestamp);
+      //          });
 
       // if (cameraAHasPose && cameraBHasPose) {
       //   poseAgreement = checkPoseAgreement(cameraAEstimatedPose, cameraBEstimatedPose);
