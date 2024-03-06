@@ -58,7 +58,6 @@ public class Intake extends SubsystemBase {
     configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor2, configback);
-    
 
     SmartDashboard.putData(this);
   }

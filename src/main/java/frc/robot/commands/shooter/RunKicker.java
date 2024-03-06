@@ -5,7 +5,6 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -20,7 +19,12 @@ public class RunKicker extends Command {
 
   /** Creates a new RunIntake. */
   public RunKicker(
-      Intake intake, Shooter shooter, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
+      Intake intake,
+      Shooter shooter,
+      double speed,
+      double speed2,
+      AmpShooter ampShooter,
+      double ampSpeed) {
     m_intake = intake;
     m_ampShooter = ampShooter;
     m_shooter = shooter;
@@ -33,19 +37,15 @@ public class RunKicker extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  
+
     m_intake.setSpeed(m_speed, m_speed2);
-      m_ampShooter.setPercentOutput(m_ampSpeed);
-    }
-  
-  
-  
+    m_ampShooter.setPercentOutput(m_ampSpeed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

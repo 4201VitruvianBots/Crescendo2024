@@ -223,7 +223,12 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             new RunKicker(
-                m_intake, m_shooter, 0.55, 0.75, m_ampShooter, 0.75)); // Intake Note with Intake And Amp
+                m_intake,
+                m_shooter,
+                0.55,
+                0.75,
+                m_ampShooter,
+                0.75)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
