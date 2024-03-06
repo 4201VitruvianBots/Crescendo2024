@@ -71,6 +71,6 @@ public final class ARM {
 
   public static final double mountingAngleDegrees = 0;
 
-  public static final double maxOutput = 1.0;
+  public static final double maxOutput = 0.4;
   public static final double joystickMultiplier = maxOutput;
 }

@@ -5,10 +5,11 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
-public class AmpTake extends Command {
+public class AmpOuttake extends Command {
   private final Intake m_intake;
   private final AmpShooter m_ampShooter;
   private final double m_speed;
@@ -16,7 +17,7 @@ public class AmpTake extends Command {
   private final double m_ampSpeed;
 
   /** Creates a new RunIntake. */
-  public AmpTake(
+  public AmpOuttake(
       Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
     m_intake = intake;
     m_ampShooter = ampShooter;
@@ -30,26 +31,21 @@ public class AmpTake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setIntakeState(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_intake.setSpeed(m_speed, m_speed2);
-    if (m_intake.getIntakeState() && (m_intake.getSensorInput1() || m_intake.getSensorInput2())) {
-      m_ampShooter.setPercentOutput(0);
-    } else {
       m_ampShooter.setPercentOutput(m_ampSpeed);
     }
-  }
+  
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.setSpeed(0.0, 0.0);
     m_ampShooter.setPercentOutput(0);
-    m_intake.setIntakeState(false);
   }
 
   // Returns true when the command should end.

@@ -27,8 +27,8 @@ public class Intake extends SubsystemBase {
   private boolean m_isIntaking = false;
 
   // Disabled until sensor installed
-  DigitalInput distanceSensorDigitalInput = new DigitalInput(1);
-  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(2);
+  DigitalInput distanceSensorDigitalInput = new DigitalInput(0);
+  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(1);
 
   // private STATE m_state = STATE.NONE;
 
@@ -58,6 +58,7 @@ public class Intake extends SubsystemBase {
     configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor2, configback);
+    
 
     SmartDashboard.putData(this);
   }
@@ -85,14 +86,14 @@ public class Intake extends SubsystemBase {
 
   public boolean getSensorInput1() {
     // Disabled until sensor installed
-    //    return distanceSensorDigitalInput.get();
-    return false;
+    return !distanceSensorDigitalInput.get();
+    // return false;
   }
 
   public boolean getSensorInput2() {
     // Disabled until sensor installed
-    //    return distanceSensorDigitalInput2.get();
-    return false;
+    return !distanceSensorDigitalInput2.get();
+    // return false;
   }
 
   public void updateSmartDashboard() {}
@@ -104,6 +105,8 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
     Logger.recordOutput("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
+    Logger.recordOutput("Intake/BeamBreak1 state", getSensorInput1());
+    Logger.recordOutput("Intake/BeamBreak2 state", getSensorInput2());
   }
 
   @Override

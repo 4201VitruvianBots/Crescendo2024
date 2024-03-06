@@ -58,7 +58,7 @@ public final class SHOOTER {
     NONE(0),
 
     SLOW(600),
-    SPEAKER(6000),
+    SPEAKER(7000),
     MAX(8000);
 
     private final double value;
