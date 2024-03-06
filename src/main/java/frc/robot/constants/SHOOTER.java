@@ -56,8 +56,9 @@ public final class SHOOTER {
     REVERSE(-0.1),
 
     NONE(0),
-    SLOW(1200),
-    SPEAKER(6000),
+
+    SLOW(600),
+    SPEAKER(7000),
     MAX(8000);
 
     private final double value;

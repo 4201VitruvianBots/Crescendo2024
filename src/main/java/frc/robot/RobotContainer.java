@@ -34,10 +34,11 @@ import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
-import frc.robot.commands.intake.AmpTake;
+import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.commands.shooter.DefaultFlywheel;
+import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.commands.shooter.ShootNStrafe;
 import frc.robot.constants.*;
@@ -93,7 +94,7 @@ public class RobotContainer {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
-    // m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
     if (ROBOT.useSysID) initSysidChooser();
@@ -113,7 +114,7 @@ public class RobotContainer {
       m_visualizer.registerArm(m_arm);
       m_visualizer.registerClimber(m_climber);
       m_visualizer.registerVision(m_vision);
-      // m_visualizer.registerLedSubsystem(m_led);
+      m_visualizer.registerLedSubsystem(m_led);
     }
   }
 
@@ -173,7 +174,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     // var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     // aimSpeakerButton.whileTrue(
@@ -210,9 +211,9 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get(),
-                xboxController)); // fast speaker
+                xboxController,
+                RPM_SETPOINT.SPEAKER.get(),
+                RPM_SETPOINT.SPEAKER.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
@@ -239,18 +240,23 @@ public class RobotContainer {
     xboxController
         .rightTrigger()
         .whileTrue(
-            new AmpTake(
-                m_intake, 0.55, 0.75, m_ampShooter, 0.75)); // Intake Note with Intake And Amp
+            new RunKicker(
+                m_intake,
+                m_shooter,
+                0.55,
+                0.75,
+                m_ampShooter,
+                0.75)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
-            new AmpTake(
-                m_intake, 0.65, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+            new AmpIntake(
+                m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
 
     xboxController
         .leftBumper()
         .whileTrue(
-            new AmpTake(
+            new frc.robot.commands.intake.AmpOuttake(
                 m_intake,
                 INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
                 INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
@@ -268,11 +274,11 @@ public class RobotContainer {
         .povLeft()
         .whileTrue(
             new SetShooterRPMSetpoint(
-                m_shooter, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get(), xboxController));
+                m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
     xboxController
         .povDown()
         .whileTrue(
-            new AmpTake(
+            new AmpIntake(
                 m_intake,
                 INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
                 INTAKE.STATE.BACK_SLOW_REVERSE.get(),
@@ -282,7 +288,7 @@ public class RobotContainer {
     xboxController
         .povUp()
         .whileTrue(
-            new AmpTake(
+            new AmpIntake(
                 m_intake,
                 INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
@@ -407,12 +413,6 @@ public class RobotContainer {
   public void teleopInit() {
     m_arm.teleopInit();
     m_climber.teleopInit();
-
-    if (Controls.isRedAlliance()) {
-      m_swerveDrive.resetGyro(180);
-    } else {
-      m_swerveDrive.resetGyro(0);
-    }
   }
 
   public void autonomousInit() {

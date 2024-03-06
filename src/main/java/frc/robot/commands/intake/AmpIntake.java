@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
-public class AmpTake extends Command {
+public class AmpIntake extends Command {
   private final Intake m_intake;
   private final AmpShooter m_ampShooter;
   private final double m_speed;
@@ -16,7 +16,7 @@ public class AmpTake extends Command {
   private final double m_ampSpeed;
 
   /** Creates a new RunIntake. */
-  public AmpTake(
+  public AmpIntake(
       Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
     m_intake = intake;
     m_ampShooter = ampShooter;

@@ -44,7 +44,7 @@ public class Climber extends SubsystemBase {
   private final StatusSignal<Double> m_leftCurrentSignal =
       elevatorClimbMotors[0].getTorqueCurrent().clone();
   private final StatusSignal<Double> m_rightCurrentSignal =
-      elevatorClimbMotors[0].getTorqueCurrent().clone();
+      elevatorClimbMotors[1].getTorqueCurrent().clone();
 
   public TrapezoidProfile.Constraints m_constraints =
       new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
