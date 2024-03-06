@@ -7,6 +7,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -71,7 +72,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    // PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -263,8 +264,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       if (m_vision.hasGamePieceTarget()) {
         // Return an optional containing the rotation override (this should be a field relative
         // rotation)
-        return Optional.of(m_vision.getRobotToGamePieceRotation());
       }
+      return Optional.of(m_vision.getRobotToGamePieceRotation());
     }
     // return an empty optional when we don't want to override the path's rotation
     return Optional.empty();
