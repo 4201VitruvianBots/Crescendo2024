@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -260,6 +261,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     var cmd = run(() -> setControl(requestSupplier.get()));
     cmd.addRequirements(this);
     return cmd;
+  }
+
+  public boolean
+      getZoneState() { // TODO: Change this to true only if we are in zone. Also, Verify if pose
+    // flips
+    if (Controls.getAllianceColor() == DriverStation.Alliance.Blue) {
+      return (getState().Pose.getX() <= 3.175);
+    } else if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
+      return (getState().Pose.getX() <= 3.175);
+    } else return false;
   }
 
   public Optional<Rotation2d> getRotationTargetOverride() {

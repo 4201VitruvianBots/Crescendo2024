@@ -163,7 +163,8 @@ public class RobotContainer {
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
-    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
+    m_led.setDefaultCommand(
+        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_swerveDrive));
   }
 
   private void configureBindings() {

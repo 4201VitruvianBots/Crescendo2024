@@ -94,6 +94,29 @@ public class LEDSubsystem extends SubsystemBase {
             new LarsonAnimation(
                 m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount, BounceMode.Front, 7);
         break;
+
+      case LarsonLeft: // a line bouncing back and forth with its width determined by size on left
+        // side
+        m_toAnimate =
+            new LarsonAnimation(
+                m_red,
+                m_green,
+                m_blue,
+                m_white,
+                m_speed,
+                LED.LEDcount / 2,
+                BounceMode.Front,
+                7,
+                LED.LEDcount / 2);
+        break;
+
+      case LarsonRight: // a line bouncing back and forth with its width determined by size on left
+        // side
+        m_toAnimate =
+            new LarsonAnimation(
+                m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount / 2, BounceMode.Front, 7);
+
+        break;
       case Rainbow: // neon cat type beat
         m_brightness = 1;
         m_toAnimate = new RainbowAnimation(m_brightness, m_speed, LED.LEDcount);
@@ -109,6 +132,18 @@ public class LEDSubsystem extends SubsystemBase {
       case Strobe: // switching between solid color and full off at high speed
         m_toAnimate = new StrobeAnimation(m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount);
         break;
+
+      case StrobeInZoneLeft: // switching between solid color and full off at high speed
+        m_toAnimate =
+            new StrobeAnimation(
+                m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount / 2 / (4), LED.LEDcount / 2);
+        break;
+
+      case StrobeInZoneRight: // switching between solid color and full off at high speed
+        m_toAnimate =
+            new StrobeAnimation(m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount / 2 / (4));
+        break;
+
       case Twinkle: // random LEDs turning on and off with certain color
         m_toAnimate =
             new TwinkleAnimation(
@@ -139,12 +174,18 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
+        case INSHOOTZONE:
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.StrobeInZoneLeft);
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.StrobeInZoneRight);
+          break;
+
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
 
-          case UNREVED:
-          setPattern(LED.white, 125, 0.33, ANIMATION_TYPE.Fire);
+        case UNREVED:
+          setPattern(LED.white, 125, 0.33, ANIMATION_TYPE.LarsonLeft);
+          setPattern(LED.white, 125, 0.33, ANIMATION_TYPE.LarsonRight);
           break;
 
         case REVED:

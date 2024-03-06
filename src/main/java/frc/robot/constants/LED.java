@@ -19,10 +19,15 @@ public final class LED {
     ColorFlow,
     Fire,
     Larson,
+
+    LarsonLeft,
+    LarsonRight,
     Rainbow,
     RgbFade,
     SingleFade,
     Strobe,
+    StrobeInZoneLeft,
+    StrobeInZoneRight,
     Twinkle,
     TwinkleOff,
     Solid
@@ -42,6 +47,7 @@ public final class LED {
   public enum SUBSYSTEM_STATES {
     INTAKING,
     CLIMBING,
+    INSHOOTZONE,
     ENABLED,
     DISABLED,
     UNREVED,
