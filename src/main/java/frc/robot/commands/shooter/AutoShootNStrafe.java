@@ -7,7 +7,6 @@ package frc.robot.commands.shooter;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,14 +47,12 @@ public class AutoShootNStrafe extends Command {
 
   private double allowableError = 300;
 
-
   private final PIDController m_turnController =
       new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
   private Translation2d m_target = new Translation2d();
-  
+
   private double m_targetx;
   private double m_targety;
-
 
   public AutoShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
@@ -66,12 +63,10 @@ public class AutoShootNStrafe extends Command {
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
-      
       double FrontIntakeAmpPercentOutput,
       double BackIntakeAmpPercentOutput,
       double AmpPercentOutput,
-      double RPMOutput
-      ) {
+      double RPMOutput) {
 
     m_swerveDrive = swerveDrive;
     m_telemetry = telemetry;
@@ -120,58 +115,45 @@ public class AutoShootNStrafe extends Command {
       m_targety = FIELD.blueSpeaker.getY();
     }
 
-
-    double effectiveDistance = 2.5; //meters
+    double effectiveDistance = 2.5; // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
-  
-   
     double PositionY = m_swerveDrive.getState().Pose.getY();
     double PositionX = m_swerveDrive.getState().Pose.getX();
     double VelocityY = m_swerveDrive.getChassisSpeed().vyMetersPerSecond;
-    double VelocityX =
-        m_swerveDrive.getChassisSpeed().vxMetersPerSecond;
+    double VelocityX = m_swerveDrive.getChassisSpeed().vxMetersPerSecond;
 
-        double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
-        double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
-
+    double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
+    double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
 
     double VelocityShoot = 11.1; // TODO: Change after testing
 
-        double virtualGoalX = m_target.getX()-VelocityShoot*(VelocityX+AccelerationX);
-    double virtualGoalY = m_target.getY()-VelocityShoot*(VelocityY+AccelerationY);
+    double virtualGoalX = m_target.getX() - VelocityShoot * (VelocityX + AccelerationX);
+    double virtualGoalY = m_target.getY() - VelocityShoot * (VelocityY + AccelerationY);
 
+    SmartDashboard.putNumber("Goal X", virtualGoalX);
+    SmartDashboard.putNumber("Goal Y", virtualGoalY);
 
-        SmartDashboard.putNumber("Goal X", virtualGoalX);
-        SmartDashboard.putNumber("Goal Y", virtualGoalY);
+    Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
 
-        Translation2d movingGoalLocation = new Translation2d(virtualGoalX,virtualGoalY);
-        
-        Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
+    Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
 
-        
-        double newDist = toMovingGoal.getDistance(new Translation2d());
+    double newDist = toMovingGoal.getDistance(new Translation2d());
 
-
-double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * PositionY)/(newDist*effectiveDistance));
-
-
-
+    double getOffsetAngleDeg =
+        Math.asin((VelocityY * PositionX + VelocityX * PositionY) / (newDist * effectiveDistance));
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
             .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
             .withRotationalDeadband(
                 SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); 
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-
-    
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
-    
+
     // all of the logic for angle is above this Comment
-    
+
     m_shooter.setRPMOutput(m_RPMOutput);
 
     m_swerveDrive.setControl(
@@ -181,7 +163,7 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                    targetDelta.getRadians()+getOffsetAngleDeg)));
+                    targetDelta.getRadians() + getOffsetAngleDeg)));
     if (m_shooter.getZoneState()
         && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
         && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
@@ -218,8 +200,7 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
             .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
             .withRotationalDeadband(
                 SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); 
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     m_swerveDrive.setControl(
         drive
@@ -232,6 +213,5 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
   @Override
   public boolean isFinished() {
     return m_shoottimer.hasElapsed(m_timeToShoot);
-  
   }
 }

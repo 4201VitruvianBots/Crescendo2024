@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -183,18 +182,32 @@ public class RobotContainer {
     //         () -> leftJoystick.getRawAxis(1),
     //         () -> leftJoystick.getRawAxis(0)));
 
-               var aimSpeakerAdjustButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    var aimSpeakerAdjustButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerAdjustButton.whileTrue(
-        new ShootNStrafe(m_swerveDrive, m_telemetry, m_shooter, () -> leftJoystick.getRawAxis(1), () -> leftJoystick.getRawAxis(0), () -> rightJoystick.getRawAxis(0)
-            , RPM_SETPOINT.MAX.get()));
+        new ShootNStrafe(
+            m_swerveDrive,
+            m_telemetry,
+            m_shooter,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0),
+            () -> rightJoystick.getRawAxis(0),
+            RPM_SETPOINT.MAX.get()));
 
-                           var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     SASButton.whileTrue(
-        new AutoShootNStrafe(m_swerveDrive, m_telemetry, m_ampShooter, m_shooter, m_intake, 
-        () -> leftJoystick.getRawAxis(1), 
-        () -> leftJoystick.getRawAxis(0), 
-        () -> rightJoystick.getRawAxis(0), 
-        0, INTAKE.STATE.BACK_ROLLER_INTAKING.get(), STATE.INTAKING.get(), RPM_SETPOINT.MAX.get()));
+        new AutoShootNStrafe(
+            m_swerveDrive,
+            m_telemetry,
+            m_ampShooter,
+            m_shooter,
+            m_intake,
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0),
+            () -> rightJoystick.getRawAxis(0),
+            0,
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            STATE.INTAKING.get(),
+            RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(

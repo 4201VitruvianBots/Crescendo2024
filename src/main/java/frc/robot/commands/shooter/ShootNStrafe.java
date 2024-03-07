@@ -16,10 +16,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
-import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Telemetry;
 import java.util.function.DoubleSupplier;
@@ -53,7 +51,7 @@ public class ShootNStrafe extends Command {
   private final PIDController m_turnController =
       new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
   private Translation2d m_target = new Translation2d();
-  
+
   private double m_targetx;
   private double m_targety;
 
@@ -131,59 +129,49 @@ public class ShootNStrafe extends Command {
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     // double shootAngle = m_shooter.getShootAngle(robotPose);
 
-    double effectiveDistance = 2.5; //meters
+    double effectiveDistance = 2.5; // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
-    double displacementY = m_swerveDrive.getState().Pose.getY()-m_targety;
-    double displacementX = m_swerveDrive.getState().Pose.getX()-m_targetx;
-    
-
-    
+    double displacementY = m_swerveDrive.getState().Pose.getY() - m_targety;
+    double displacementX = m_swerveDrive.getState().Pose.getX() - m_targetx;
 
     Translation2d robotToGoal = m_target.minus(m_swerveDrive.getState().Pose.getTranslation());
-   
+
     double PositionY = m_swerveDrive.getState().Pose.getY();
     double PositionX = m_swerveDrive.getState().Pose.getX();
     double VelocityY = m_swerveDrive.getChassisSpeed().vyMetersPerSecond;
-    double VelocityX =
-        m_swerveDrive.getChassisSpeed().vxMetersPerSecond;
+    double VelocityX = m_swerveDrive.getChassisSpeed().vxMetersPerSecond;
 
-        double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
-        double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
-
+    double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
+    double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
 
     double VelocityShoot = 11.1; // TODO: Change after testing
 
-        double virtualGoalX = m_target.getX()-VelocityShoot*(VelocityX+AccelerationX);
-    double virtualGoalY = m_target.getY()-VelocityShoot*(VelocityY+AccelerationY);
+    double virtualGoalX = m_target.getX() - VelocityShoot * (VelocityX + AccelerationX);
+    double virtualGoalY = m_target.getY() - VelocityShoot * (VelocityY + AccelerationY);
 
+    SmartDashboard.putNumber("Goal X", virtualGoalX);
+    SmartDashboard.putNumber("Goal Y", virtualGoalY);
 
-        SmartDashboard.putNumber("Goal X", virtualGoalX);
-        SmartDashboard.putNumber("Goal Y", virtualGoalY);
+    Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
 
-        Translation2d movingGoalLocation = new Translation2d(virtualGoalX,virtualGoalY);
-        
-        Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
+    Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
 
-        
-        double newDist = toMovingGoal.getDistance(new Translation2d());
+    double newDist = toMovingGoal.getDistance(new Translation2d());
 
+    /*public static double getOffsetAngleDeg(double effectiveDistance) {
+        //Pose2d goalRel = getGoalRelPose();
+        Pose2d pose = new Pose2d(robotPose.getX() - Constants.goalLocation.getX(), robotPose.getY() - Constants.goalLocation.getY(), robotPose.getRotation());
+        return Units.radiansToDegrees(
+          Math.asin(airTime *
+            (getGlobalMecVy() * pose.getX() + getGlobalMecVx() * pose.getY())
+            / (getActualDistance() * effectiveDistance)
+          )
+        );
+    */
 
-  /*public static double getOffsetAngleDeg(double effectiveDistance) {
-    //Pose2d goalRel = getGoalRelPose();
-    Pose2d pose = new Pose2d(robotPose.getX() - Constants.goalLocation.getX(), robotPose.getY() - Constants.goalLocation.getY(), robotPose.getRotation());
-    return Units.radiansToDegrees( 
-      Math.asin(airTime * 
-        (getGlobalMecVy() * pose.getX() + getGlobalMecVx() * pose.getY())
-        / (getActualDistance() * effectiveDistance)
-      )
-    );
-*/
-
-double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * PositionY)/(newDist*effectiveDistance));
-
-
-
+    double getOffsetAngleDeg =
+        Math.asin((VelocityY * PositionX + VelocityX * PositionY) / (newDist * effectiveDistance));
 
     // double m_headingOffset =
     //     Math.asin(
@@ -194,11 +182,7 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
     //                     * VelocityShoot));
     // System.out.println(m_headingOffset * 180 / Math.PI);
 
-
-
     // System.out.println(getOffsetAngleDeg);
-
-
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
@@ -208,17 +192,14 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
             .withDriveRequestType(
                 SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-
     // double rotation =
     //     (m_swerveDrive.getState().Pose.getRotation().getRadians() - shootAngle) // Jax's code
     //         + m_headingOffset; // Jadon's code
 
     // all of the logic for angle is above this Comment
 
-    
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
-    
-    
+
     m_shooter.setRPMOutput(m_RPMOutput);
 
     m_swerveDrive.setControl(
@@ -228,7 +209,7 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                    targetDelta.getRadians()+getOffsetAngleDeg)));
+                    targetDelta.getRadians() + getOffsetAngleDeg)));
     // if (inZone
     //     && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
     //     && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
@@ -242,7 +223,8 @@ double getOffsetAngleDeg  = Math.asin((VelocityY* PositionX + VelocityX * Positi
     //     m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
     //     m_shoottimer.start();
     //   }
-    }
+  }
+
   // }
 
   // Called every time the scheduler runs while the command is scheduled.

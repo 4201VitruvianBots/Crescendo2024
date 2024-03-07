@@ -96,7 +96,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getZoneState() {
-    return true; //TODO: Change this to true only if we are in zone
+    return true; // TODO: Change this to true only if we are in zone
   }
 
   // values that we set
