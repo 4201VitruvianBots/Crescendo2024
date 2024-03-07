@@ -35,7 +35,6 @@ import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
-import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.commands.shooter.DefaultFlywheel;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
@@ -173,7 +172,14 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(
+        new RunKicker(
+            m_intake,
+            m_shooter,
+            0.55,
+            0.75,
+            m_ampShooter,
+            0.75)); // Intake Note with Intake And Amp
 
     // var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     // aimSpeakerButton.whileTrue(
@@ -183,7 +189,7 @@ public class RobotContainer {
     //         () -> leftJoystick.getRawAxis(1),
     //         () -> leftJoystick.getRawAxis(0)));
 
-    var aimSpeakerAdjustButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    var aimSpeakerAdjustButton = new Trigger(() -> leftJoystick.getRawButton(2));
     aimSpeakerAdjustButton.whileTrue(
         new ShootNStrafe(
             m_swerveDrive,
@@ -192,22 +198,6 @@ public class RobotContainer {
             () -> leftJoystick.getRawAxis(1),
             () -> leftJoystick.getRawAxis(0),
             () -> rightJoystick.getRawAxis(0),
-            RPM_SETPOINT.MAX.get()));
-
-    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
-    SASButton.whileTrue(
-        new AutoShootNStrafe(
-            m_swerveDrive,
-            m_telemetry,
-            m_ampShooter,
-            m_shooter,
-            m_intake,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0),
-            () -> rightJoystick.getRawAxis(0),
-            0,
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            STATE.INTAKING.get(),
             RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
@@ -317,6 +307,9 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "OneWaitAuto",
         new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    //   m_autoChooser.addOption(
+    // "SOTMTestAuto",
+    // new AutoSOTMTest(m_swerveDrive, m_telemetry, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));

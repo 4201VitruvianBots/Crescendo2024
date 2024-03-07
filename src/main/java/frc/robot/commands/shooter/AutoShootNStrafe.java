@@ -23,7 +23,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Telemetry;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 public class AutoShootNStrafe extends Command {
 
@@ -38,16 +37,15 @@ public class AutoShootNStrafe extends Command {
   private final double m_BackIntakeAmpPercentOutput;
 
   private final Timer m_timer = new Timer();
-  private final Timer m_reversetimer = new Timer();
+  private final Timer m_waitToShootTimer = new Timer();
   private final Timer m_shoottimer = new Timer();
 
   private final Timer m_timeoutTimer = new Timer();
 
   private final double reverseTimerThreshold = 0.25;
   private final double m_timeToShoot = 0.75;
+  private final double m_waitToShoot;
   private final double m_withTimeout;
-
-  private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
   private double allowableError = 300;
 
@@ -64,12 +62,10 @@ public class AutoShootNStrafe extends Command {
       AmpShooter ampShooter,
       Shooter shooter,
       Intake intake,
-      DoubleSupplier throttleInput,
-      DoubleSupplier strafeInput,
-      DoubleSupplier rotationInput,
       double FrontIntakeAmpPercentOutput,
       double BackIntakeAmpPercentOutput,
       double AmpPercentOutput,
+      double WaitToShoot,
       double withTimeout) {
 
     m_swerveDrive = swerveDrive;
@@ -77,12 +73,10 @@ public class AutoShootNStrafe extends Command {
     m_intake = intake;
     m_shooter = shooter;
     m_ampShooter = ampShooter;
-    m_throttleInput = throttleInput;
-    m_strafeInput = strafeInput;
-    m_rotationInput = rotationInput;
     m_AmpPercentOutput = AmpPercentOutput;
     m_FrontIntakePercentOutput = FrontIntakeAmpPercentOutput;
     m_BackIntakeAmpPercentOutput = BackIntakeAmpPercentOutput;
+    m_waitToShoot = WaitToShoot;
     m_withTimeout = withTimeout;
 
     addRequirements(m_swerveDrive);
@@ -99,8 +93,8 @@ public class AutoShootNStrafe extends Command {
   public void initialize() {
     m_timer.stop();
     m_timer.reset();
-    m_reversetimer.stop();
-    m_reversetimer.reset();
+    m_waitToShootTimer.stop();
+    m_waitToShootTimer.reset();
     m_shoottimer.stop();
     m_shoottimer.reset();
     m_turnController.reset();
@@ -121,7 +115,7 @@ public class AutoShootNStrafe extends Command {
       m_targety = FIELD.blueSpeaker.getY();
     }
 
-    double effectiveDistance = 2.5; // meters
+    double effectiveDistance = Units.metersToFeet(1.5); // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
     double PositionY = m_swerveDrive.getState().Pose.getY();
@@ -160,20 +154,28 @@ public class AutoShootNStrafe extends Command {
 
     // all of the logic for angle is above this Comment
 
+    if (m_intake.getSensorInput1() == true || m_intake.getSensorInput2() == true) {
 
-    if (m_intake)
-    PPHolonomicDriveController.setRotationTargetOverride(
-        () ->
-            Optional.of(
-                Rotation2d.fromDegrees(
-                    m_turnController.calculate(
-                        m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                        targetDelta.getRadians() + getOffsetAngleDeg))));
+      m_waitToShootTimer.start();
 
-    if (m_shooter.getZoneState()) {
+      PPHolonomicDriveController.setRotationTargetOverride(
+          () ->
+              Optional.of(
+                  Rotation2d.fromDegrees(
+                      m_turnController.calculate(
+                          m_swerveDrive.getState().Pose.getRotation().getRadians(),
+                          targetDelta.getRadians() + getOffsetAngleDeg))));
+
+      if (m_waitToShootTimer.hasElapsed(m_waitToShoot)) {
+        m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+        m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
+        m_shoottimer.start();
+      } else {
+        m_ampShooter.setPercentOutput(0);
+      }
+    } else {
       m_ampShooter.setPercentOutput(m_AmpPercentOutput);
       m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
-      m_shoottimer.start();
     }
   }
 
@@ -188,8 +190,8 @@ public class AutoShootNStrafe extends Command {
     m_intake.setSpeed(0, 0);
     m_timer.stop();
     m_timer.reset();
-    m_reversetimer.stop();
-    m_reversetimer.reset();
+    m_waitToShootTimer.stop();
+    m_waitToShootTimer.reset();
     m_shoottimer.stop();
     m_shoottimer.reset();
     m_timeoutTimer.stop();

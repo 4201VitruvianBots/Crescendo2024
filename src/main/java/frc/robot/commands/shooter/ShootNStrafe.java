@@ -129,7 +129,7 @@ public class ShootNStrafe extends Command {
     Pose2d robotPose = m_swerveDrive.getState().Pose;
     // double shootAngle = m_shooter.getShootAngle(robotPose);
 
-    double effectiveDistance = 2.5; // meters
+    double effectiveDistance = Units.metersToFeet(1.5); // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
     double displacementY = m_swerveDrive.getState().Pose.getY() - m_targety;
@@ -204,8 +204,8 @@ public class ShootNStrafe extends Command {
 
     m_swerveDrive.setControl(
         drive
-            .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
-            .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityX((-m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityY((-m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
@@ -224,6 +224,10 @@ public class ShootNStrafe extends Command {
     //     m_shoottimer.start();
     //   }
   }
+
+  // Math.atan2(
+  //       (SHOOTER.NoteVelocity * Math.sin(getShootAngle(robotPose)) - RobotVelocityY),
+  //       (SHOOTER.NoteVelocity * Math.cos(getShootAngle(robotPose)) - RobotVelocityX));
 
   // }
 
