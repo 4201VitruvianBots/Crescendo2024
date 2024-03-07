@@ -153,8 +153,10 @@ public class FourPieceNear extends SequentialCommandGroup {
         new WaitCommand(1),
         commandList.get(3).alongWith(RunIntake3),
         shootCommand4,
+         new WaitCommand(1),
         commandList.get(4).alongWith(RunIntake4),
         shootCommand5,
+         new WaitCommand(1),
     commandList.get(5).alongWith(RunIntake5),
     shootCommand6
     );
