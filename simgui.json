@@ -22,6 +22,11 @@
       "/SmartDashboard/toggleShooterTestMode": "Command"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Climber": {
         "window": {
           "visible": true

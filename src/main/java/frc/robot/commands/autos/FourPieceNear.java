@@ -35,7 +35,7 @@ public class FourPieceNear extends SequentialCommandGroup {
       FieldSim fieldSim) {
 
     String[] pathFiles = {
-      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4","FourPiecePt5"
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4","FourPiecePt4.1","FourPiecePt5"
       //   "FourPiecePt4.1","FourPiecePt5"
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
@@ -86,6 +86,20 @@ public class FourPieceNear extends SequentialCommandGroup {
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
+                var shootCommand5 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get());
+                var shootCommand6 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            INTAKE.STATE.NONE.get(),
+            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.INTAKING.get());
     var RunIntake =
         new AutoRunAmpTake(
             intake,
@@ -93,7 +107,22 @@ public class FourPieceNear extends SequentialCommandGroup {
             STATE.FRONT_ROLLER_INTAKING.get(),
             STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.NONE.get());
-
+ var RunIntake4 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.NONE.get());
+             
+            var RunIntake5 =
+        new AutoRunAmpTake(
+            intake,
+            ampShooter,
+            STATE.FRONT_ROLLER_INTAKING.get(),
+            STATE.BACK_ROLLER_INTAKING.get(),
+            AMPSHOOTER.STATE.NONE.get());
+            
     var RunIntake2 =
         new AutoRunAmpTake(
             intake,
@@ -124,8 +153,11 @@ public class FourPieceNear extends SequentialCommandGroup {
         new WaitCommand(1),
         commandList.get(3).alongWith(RunIntake3),
         shootCommand4,
-        commandList.get(4).alongWith(RunIntake3),
-        shootCommand4);
+        commandList.get(4).alongWith(RunIntake4),
+        shootCommand5,
+    commandList.get(5).alongWith(RunIntake5),
+    shootCommand6
+    );
 
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
