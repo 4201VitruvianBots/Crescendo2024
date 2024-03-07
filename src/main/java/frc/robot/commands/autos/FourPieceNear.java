@@ -39,8 +39,7 @@ public class FourPieceNear extends SequentialCommandGroup {
       "FourPiecePt2",
       "FourPiecePt3",
       "FourPiecePt4",
-      "FourPiecePt4.1",
-      "FourPiecePt5"
+     
       //   "FourPiecePt4.1","FourPiecePt5"
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
@@ -157,12 +156,7 @@ public class FourPieceNear extends SequentialCommandGroup {
         shootCommand3,
         new WaitCommand(1),
         commandList.get(3).alongWith(RunIntake3),
-        shootCommand4,
-        new WaitCommand(1),
-        commandList.get(4).alongWith(RunIntake4),
-        new WaitCommand(1),
-        commandList.get(5).alongWith(RunIntake5),
-        shootCommand6);
+        shootCommand4);
 
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
