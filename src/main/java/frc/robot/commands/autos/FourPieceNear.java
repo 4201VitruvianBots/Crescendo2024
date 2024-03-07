@@ -35,11 +35,8 @@ public class FourPieceNear extends SequentialCommandGroup {
       FieldSim fieldSim) {
 
     String[] pathFiles = {
-      "FourPiecePt1",
-      "FourPiecePt2",
-      "FourPiecePt3",
-      "FourPiecePt4",
-     
+      "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
+
       //   "FourPiecePt4.1","FourPiecePt5"
     };
     ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
