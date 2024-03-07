@@ -1,22 +1,23 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Shooter;
 
 public class DriverScore extends Command {
   private final Shooter m_shooter;
   private final AmpShooter m_ampShooter;
-  private double m_AmpPercentOutput;
-  private double m_RPMOutput;
-  private final double allowableError = 200; // in RPM
+  private final double m_AmpPercentOutput;
+  private final double m_RPMOutput;
+  private final double allowableError = RPM_SETPOINT.TOLERANCE.get(); // in RPM
 
   public DriverScore(
-      Shooter shooter, AmpShooter ampShooter, double AmpPercentOutput, double RPMOutput) {
+      Shooter shooter, AmpShooter ampShooter, double RPMOutput, double AmpPercentOutput) {
     m_shooter = shooter;
     m_ampShooter = ampShooter;
-    m_AmpPercentOutput = AmpPercentOutput;
     m_RPMOutput = RPMOutput;
+    m_AmpPercentOutput = AmpPercentOutput;
     addRequirements(m_shooter);
   }
 
