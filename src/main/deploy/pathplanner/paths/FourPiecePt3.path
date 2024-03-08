@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.44,
+        "x": 3.35,
         "y": 4.83
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4729208334699522,
-        "y": 4.2804115265319895
+        "x": 1.395123696400606,
+        "y": 4.246854531334102
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "4shootend2"
     },
     {
       "anchor": {
@@ -32,43 +32,37 @@
     },
     {
       "anchor": {
-        "x": 3.52,
+        "x": 3.3,
         "y": 5.54
       },
       "prevControl": {
-        "x": 3.42,
+        "x": 3.1999999999999997,
         "y": 5.54
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "4shoot3"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceAutoNear",
+  "folder": "4PieceAutoNearNew",
   "previewStartingState": {
-    "rotation": -26.45999999999998,
+    "rotation": -7.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

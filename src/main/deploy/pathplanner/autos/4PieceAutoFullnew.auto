@@ -8,31 +8,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "FourPiecePt1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "FourPiecePt2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
+            "pathName": "FourPiecePt3"
           }
         },
         {
