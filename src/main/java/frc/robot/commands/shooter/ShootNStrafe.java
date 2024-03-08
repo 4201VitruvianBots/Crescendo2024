@@ -92,7 +92,9 @@ public class ShootNStrafe extends Command {
       m_targety = FIELD.blueSpeaker.getY();
     }
 
-    double effectiveDistance = Units.metersToFeet(1.5); // meters
+    var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
+
+    double effectiveDistance = 3; // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
     double PositionY = m_swerveDrive.getState().Pose.getY();
@@ -108,17 +110,23 @@ public class ShootNStrafe extends Command {
     double virtualGoalX = m_target.getX() - VelocityShoot * (VelocityX + AccelerationX);
     double virtualGoalY = m_target.getY() - VelocityShoot * (VelocityY + AccelerationY);
 
-    SmartDashboard.putNumber("Goal X", virtualGoalX);
-    SmartDashboard.putNumber("Goal Y", virtualGoalY);
-
     Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
 
     Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
 
     double newDist = toMovingGoal.getDistance(new Translation2d());
 
+    // double jaxOffset =
+    // Math.atan2(
+    //     (SHOOTER.NoteVelocity * Math.sin(targetDelta.getRadians()) - VelocityY),
+    //     (SHOOTER.NoteVelocity * Math.cos(targetDelta.getRadians()) - VelocityX));
+
     double getOffsetAngleDeg =
         Math.asin((VelocityY * PositionX + VelocityX * PositionY) / (newDist * effectiveDistance));
+
+    SmartDashboard.putNumber("SOTM/ AngleOffset", getOffsetAngleDeg);
+    SmartDashboard.putNumber("SOTM/ Angle", ((targetDelta.getDegrees() + 360) % 360));
+    SmartDashboard.putNumber("SOTM/ Velocity", VelocityY);
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
@@ -127,8 +135,6 @@ public class ShootNStrafe extends Command {
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     // all of the logic for angle is above this Comment
-
-    var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
 
     m_shooter.setRPMOutput(m_RPMOutput);
 
@@ -139,7 +145,8 @@ public class ShootNStrafe extends Command {
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                    targetDelta.getRadians() + getOffsetAngleDeg)));
+                    ((targetDelta.getRadians() + (2 * Math.PI) % (2 * Math.PI))
+                        + getOffsetAngleDeg))));
   }
 
   @Override

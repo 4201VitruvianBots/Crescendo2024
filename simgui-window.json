@@ -1,9 +1,6 @@
 {
   "Docking": {
-    "Data": [
-      "DockNode  ID=0x00000001 Pos=6,349 Size=192,218 Selected=0x2D9B9756",
-      "DockNode  ID=0x00000002 Pos=647,125 Size=637,554 Selected=0x13523E9B"
-    ]
+    "Data": []
   },
   "MainWindow": {
     "GLOBAL": {
@@ -18,6 +15,16 @@
     }
   },
   "Table": {
+    "0x542B5671,2": {
+      "Column 0  Width": "213",
+      "Column 1  Width": "205",
+      "RefScale": "13"
+    },
+    "0xAB127179,2": {
+      "Column 0  Width": "130",
+      "Column 1  Weight": "1.0000",
+      "RefScale": "13"
+    },
     "0xE56EC1C2,4": {
       "Column 0  Weight": "1.0000",
       "Column 1  Weight": "1.0000",
@@ -44,7 +51,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "143,354",
-      "Size": "148,86"
+      "Size": "236,86"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -53,25 +60,23 @@
     },
     "###/SmartDashboard/Field2d": {
       "Collapsed": "0",
-      "DockId": "0x00000002,1",
-      "Pos": "647,125",
+      "Pos": "351,173",
       "Size": "637,554"
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
-      "DockId": "0x00000002,0",
       "Pos": "647,125",
       "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "0",
-      "Pos": "-50,376",
+      "Pos": "174,336",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "19,570",
-      "Size": "283,140"
+      "Size": "169,184"
     },
     "###Joysticks": {
       "Collapsed": "0",
@@ -85,13 +90,12 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "DockId": "0x00000001,1",
-      "Pos": "6,349",
-      "Size": "192,218"
+      "Pos": "1368,60",
+      "Size": "456,558"
     },
     "###NetworkTables Info": {
       "Collapsed": "0",
-      "Pos": "865,629",
+      "Pos": "1177,411",
       "Size": "750,305"
     },
     "###Other Devices": {
@@ -101,7 +105,6 @@
     },
     "###System Joysticks": {
       "Collapsed": "0",
-      "DockId": "0x00000001,0",
       "Pos": "6,349",
       "Size": "192,218"
     },

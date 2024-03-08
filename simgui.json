@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -86,11 +93,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/SuperStructure Sim": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/VisionSystemSim-main/Sim Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -108,16 +110,34 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
+          "AmpShooter": {
+            "open": true
+          },
           "Swerve": {
             "open": true
           },
           "open": true
         },
         "open": true
+      },
+      "SmartDashboard": {
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
+    "AdvantageScope@1": {
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }
