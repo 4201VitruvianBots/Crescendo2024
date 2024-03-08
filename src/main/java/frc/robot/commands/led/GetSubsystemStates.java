@@ -7,10 +7,7 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
 
@@ -20,20 +17,25 @@ public class GetSubsystemStates extends Command {
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
+  private final Vision m_vision;
   // private final Arm m_arm;
-  private boolean isIntaking;
   private boolean isClimbing;
   private boolean isShooting;
-  private boolean isDisabled;
+  private boolean isIntaking;
   private boolean isEnabled;
+  private boolean isSetup;
+  private boolean isLocalized;
+  private boolean isDisabled;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(LEDSubsystem led, Intake intake, Climber climber, Shooter shooter) {
+  public GetSubsystemStates(
+      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
     // m_arm = arm;
     m_shooter = shooter;
+    m_vision = vision;
 
     addRequirements(m_led);
   }
@@ -50,11 +52,13 @@ public class GetSubsystemStates extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isDisabled = DriverStation.isDisabled(); // Done
-    isEnabled = !isDisabled; // Done
-    isIntaking = m_intake.getIntakeState(); // Done
-    isShooting = m_shooter.getShooterState(); // Done
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
+    isShooting = m_shooter.getShooterState(); // Done
+    isIntaking = m_intake.getIntakeState(); // Done
+    isEnabled = DriverStation.isEnabled();
+    isSetup = Controls.getInitState();
+    isLocalized = m_vision.getInitialLocalization();
+    isDisabled = DriverStation.isDisabled(); // Done
     // after it's done.
     // isArmScoring = m_arm.getArmState(); // Done
 
@@ -69,6 +73,10 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
+    } else if (isDisabled) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
+    } else if (isLocalized) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
     } else if (isDisabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
     }

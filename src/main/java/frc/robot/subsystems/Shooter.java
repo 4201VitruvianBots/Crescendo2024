@@ -245,7 +245,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleboard();
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override

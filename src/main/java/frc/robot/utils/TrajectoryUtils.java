@@ -48,7 +48,7 @@ public class TrajectoryUtils {
         swerveDrive::setChassisSpeedControlNormal,
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-            new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
+            new PIDConstants(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
             maxSpeed,
             //            0.898744,
             SWERVE.DRIVE.kDriveBaseRadius,
@@ -74,7 +74,7 @@ public class TrajectoryUtils {
   //        () -> swerveDrive.getState().Pose,
   //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
   //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-  //        new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
+  //        new PIDController(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
   //        swerveDrive::setChassisSpeedControlNormal,
   //        () -> flipPath,
   //        swerveDrive);
