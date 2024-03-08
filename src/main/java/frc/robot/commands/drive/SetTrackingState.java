@@ -9,7 +9,6 @@ import frc.robot.constants.VISION;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class SetTrackingState extends Command {
-  /** Creates a new RestGyro. */
   private final CommandSwerveDrivetrain m_swerveDrive;
 
   private final VISION.TRACKING_STATE m_state;
