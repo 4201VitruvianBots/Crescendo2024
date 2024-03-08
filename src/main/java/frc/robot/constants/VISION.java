@@ -124,18 +124,9 @@ public final class VISION {
     }
   }
 
-  public enum TARGET_STATE {
-    NONE(0),
-    SPEAKER(1),
-    NOTE(2);
-    private final int state;
-
-    TARGET_STATE(final int state) {
-      this.state = state;
-    }
-
-    public int get() {
-      return state;
-    }
+  public enum TRACKING_STATE {
+    NONE,
+    SPEAKER,
+    NOTE
   }
 }

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FIELD;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
@@ -56,6 +57,8 @@ public class Vision extends SubsystemBase {
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
+
+  private boolean m_localized;
 
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
@@ -142,7 +145,7 @@ public class Vision extends SubsystemBase {
     return String.join(" ", targets.stream().map(PhotonTrackedTarget::toString).toList());
   }
 
-  public Boolean hasGamePieceTarget() {
+  public boolean hasGamePieceTarget() {
     NetworkTableEntry tv = NoteDetectionLimelight.getEntry("tv");
     return tv.getDouble(0.0) == 1;
   }
@@ -160,34 +163,36 @@ public class Vision extends SubsystemBase {
     return Rotation2d.fromDegrees(getRobotToGamePieceDegrees());
   }
 
-  public Integer getTargetAmount(PhotonCamera camera) {
+  public int getTargetAmount(PhotonCamera camera) {
     var result = camera.getLatestResult();
     List<PhotonTrackedTarget> targets = result.getTargets();
     return targets.size();
   }
 
+  public boolean getInitialLocalization() {
+    return m_localized;
+  }
+
   private void updateAngleToSpeaker() {
     if (m_swerveDriveTrain != null) {
-      if (hasGamePieceTarget()) {
-        m_swerveDriveTrain.setAngleToNote(
-            m_swerveDriveTrain.getState().Pose.getRotation().plus(getRobotToGamePieceRotation()));
+      if (DriverStation.isDisabled()) {
+        m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
+      m_swerveDriveTrain.setAngleToSpeaker(
+          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
     }
   }
 
   private void updateAngleToNote() {
     if (m_swerveDriveTrain != null) {
-      if (DriverStation.isDisabled()) {
-        if (Controls.isBlueAlliance()) {
-          m_goal = FIELD.blueSpeaker;
-        } else {
-          m_goal = FIELD.redSpeaker;
-        }
+      if (hasGamePieceTarget()) {
+        m_swerveDriveTrain.setAngleToNote(getRobotToGamePieceRotation());
       }
-
-      m_swerveDriveTrain.setAngleToSpeaker(
-          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
     }
+  }
+
+  private void updateSmartDashboard() {
+    // Implement the smartDashboard method here
   }
 
   private void updateLog() {
@@ -212,23 +217,23 @@ public class Vision extends SubsystemBase {
       if (isCameraConnected(aprilTagLimelightCameraB)) {
         Logger.recordOutput(
             "vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
-        // Logger.recordOutput("vision/limelightB - targets", getTargets(aprilTagLimelightCameraB));
+        //        Logger.recordOutput("vision/limelightB - targets",
+        // getTargets(aprilTagLimelightCameraB));
         Logger.recordOutput("vision/limelightB - hasPose", cameraBHasPose);
         Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
       }
 
       //      Logger.recordOutput("vision/poseAgreement", poseAgreement);
     } catch (Exception e) {
-      System.out.println("Advantagekit could not update Vision logs");
+      System.out.println("AdvantageKit could not update Vision logs");
     }
-  }
-
-  private void updateSmartDashboard() {
-    // Implement the smartDashboard method here
   }
 
   @Override
   public void periodic() {
+    if (DriverStation.isDisabled()) {
+      if (cameraBHasPose) m_localized = true;
+    }
     if (m_swerveDriveTrain != null && !DriverStation.isAutonomous()) {
       // final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
       // globalPoseA.ifPresentOrElse(
@@ -276,15 +281,16 @@ public class Vision extends SubsystemBase {
       // }
     }
 
+    updateAngleToSpeaker();
+    updateAngleToNote();
+    // This method will be called once per scheduler run
+    updateSmartDashboard();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLog();
+
     if (m_fieldSim != null) {
       // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
       m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
     }
-    updateAngleToSpeaker();
-    updateAngleToNote();
-    // This method will be called once per scheduler run
-    updateLog();
-    updateSmartDashboard();
   }
 
   @Override

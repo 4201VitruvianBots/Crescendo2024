@@ -258,7 +258,7 @@ public class Arm extends SubsystemBase {
         break;
     }
 
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override
