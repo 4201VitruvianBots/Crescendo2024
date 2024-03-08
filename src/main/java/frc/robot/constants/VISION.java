@@ -123,4 +123,10 @@ public final class VISION {
       return ip;
     }
   }
+
+  public enum TRACKING_STATE {
+    NONE,
+    SPEAKER,
+    NOTE
+  }
 }

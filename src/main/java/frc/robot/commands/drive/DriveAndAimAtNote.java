@@ -22,7 +22,7 @@ public class DriveAndAimAtNote extends Command {
   private final DoubleSupplier m_strafeInput;
   private final DoubleSupplier m_turnInput;
   private final PIDController m_PidController =
-      new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
+      new PIDController(SWERVE.DRIVE.kAutoP_Theta, SWERVE.DRIVE.kAutoI_Theta, SWERVE.DRIVE.kAutoD_Theta);
   double finalTurn = 0.0;
 
   /** Creates a new rotateRobotToGoal. */
