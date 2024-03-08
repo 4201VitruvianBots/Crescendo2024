@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
@@ -185,7 +186,8 @@ public class Vision extends SubsystemBase {
       if (isCameraConnected(aprilTagLimelightCameraB)) {
         Logger.recordOutput(
             "vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
-        Logger.recordOutput("vision/limelightB - targets", getTargets(aprilTagLimelightCameraB));
+        //        Logger.recordOutput("vision/limelightB - targets",
+        // getTargets(aprilTagLimelightCameraB));
         Logger.recordOutput("vision/limelightB - hasPose", cameraBHasPose);
         Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
       }
@@ -254,7 +256,7 @@ public class Vision extends SubsystemBase {
       m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
     }
     // This method will be called once per scheduler run
-    updateLog();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLog();
     updateSmartDashboard();
   }
 

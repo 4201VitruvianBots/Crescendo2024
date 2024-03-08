@@ -184,6 +184,6 @@ public class LEDSubsystem extends SubsystemBase {
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
 
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) updateLogger();
   }
 }

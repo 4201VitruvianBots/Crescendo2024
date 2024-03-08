@@ -32,7 +32,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   public Controls() {
     m_initState = false;
 
-    if (!ROBOT.disableLogging)
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get())
       Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
@@ -154,7 +154,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     updateInitState();
 
     // This method will be called once per scheduler run
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override
