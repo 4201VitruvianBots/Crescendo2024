@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,7 +70,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SwerveRequest.ApplyChassisSpeeds();
 
   private final PIDController m_pidController =
-      new PIDController(SWERVE.DRIVE.kTeleP_Theta, SWERVE.DRIVE.kTeleI_Theta, SWERVE.DRIVE.kAutoD_Theta);
+      new PIDController(
+          SWERVE.DRIVE.kTeleP_Theta, SWERVE.DRIVE.kTeleI_Theta, SWERVE.DRIVE.kAutoD_Theta);
   private Rotation2d m_targetAngle = new Rotation2d();
   private Rotation2d m_angleToSpeaker = new Rotation2d();
   private Rotation2d m_angleToNote = new Rotation2d();
@@ -211,10 +211,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
           m_twistFromPose = new Pose2d().log(m_futurePose);
 
-          var rotationSpeed =
-              m_trackingState == VISION.TRACKING_STATE.NONE
-                  ? chassisSpeeds.get().omegaRadiansPerSecond
-                  : calculateRotationToTarget();
+          var rotationSpeed = chassisSpeeds.get().omegaRadiansPerSecond;
+          if (m_trackingState != VISION.TRACKING_STATE.NONE) {
+            if (m_trackingState == VISION.TRACKING_STATE.NOTE) {
+              if (m_vision != null) {
+                if (m_vision.hasGamePieceTarget()) {
+                  rotationSpeed = calculateRotationToTarget();
+                }
+              }
+            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER) {
+              rotationSpeed = calculateRotationToTarget();
+            }
+          }
 
           m_newChassisSpeeds =
               new ChassisSpeeds(
@@ -303,10 +311,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
 
     return turnRate;
-//    return MathUtil.clamp(
-//        turnRate,
-//        -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
-//        SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
+    //    return MathUtil.clamp(
+    //        turnRate,
+    //        -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
+    //        SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
   }
 
   private void updateTargetAngle() {
@@ -316,6 +324,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         break;
       case NOTE:
         m_targetAngle = m_angleToNote;
+        break;
     }
   }
 

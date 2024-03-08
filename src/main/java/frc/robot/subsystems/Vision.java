@@ -28,6 +28,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
   private FieldSim m_fieldSim;
+  private Translation2d m_goal = new Translation2d();
 
   private final NetworkTable NoteDetectionLimelight =
       NetworkTableInstance.getDefault().getTable("limelight");
@@ -57,7 +58,6 @@ public class Vision extends SubsystemBase {
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
 
-  private Translation2d m_goal = new Translation2d();
   private boolean m_localized;
 
   public Vision() {

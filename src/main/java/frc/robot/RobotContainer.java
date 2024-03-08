@@ -40,6 +40,7 @@ import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdShooterUtils;
@@ -146,7 +147,7 @@ public class RobotContainer {
 
       m_testController
           .cross()
-          .whileTrue(new SetTrackingState(m_swerveDrive, m_vision, VISION.TRACKING_STATE.SPEAKER));
+          .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
     }
 
     // Default command to decelerate the flywheel if no other command is set
@@ -163,7 +164,7 @@ public class RobotContainer {
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, m_vision, VISION.TRACKING_STATE.SPEAKER));
+    aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
