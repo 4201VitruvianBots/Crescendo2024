@@ -79,7 +79,6 @@ public class IntakeTestVison extends SequentialCommandGroup {
     addCommands(
         new PlotAutoPath(fieldSim, "", pathsList),
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
-        commandList.get(0).alongWith(runIntake)
-    );
+        commandList.get(0).alongWith(runIntake));
   }
 }

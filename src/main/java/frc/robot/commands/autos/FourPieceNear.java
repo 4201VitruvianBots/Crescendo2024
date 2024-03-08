@@ -145,13 +145,13 @@ public class FourPieceNear extends SequentialCommandGroup {
         new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
         commandList.get(0).alongWith(flywheelCommandContinuous),
         shootCommand,
-        new WaitCommand(1),
+        new WaitCommand(0.75),
         commandList.get(1).alongWith(RunIntake),
         shootCommand2,
-        new WaitCommand(1),
+        new WaitCommand(0.75),
         commandList.get(2).alongWith(RunIntake2),
         shootCommand3,
-        new WaitCommand(1),
+        new WaitCommand(0.75),
         commandList.get(3).alongWith(RunIntake3),
         shootCommand4);
 

@@ -316,9 +316,9 @@ public class RobotContainer {
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
         "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-        m_autoChooser.addOption(
-            "IntakeTestVison", new IntakeTestVison(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter)
-        );
+    m_autoChooser.addOption(
+        "IntakeTestVison",
+        new IntakeTestVison(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "TwoPieceFar",
