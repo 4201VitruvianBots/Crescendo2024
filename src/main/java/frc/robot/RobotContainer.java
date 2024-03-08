@@ -32,9 +32,10 @@ import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.DriveAndAimAtSpeaker;
 import frc.robot.commands.drive.ResetGyro;
-import frc.robot.commands.intake.AmpTake;
+import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
+import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
@@ -168,7 +169,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpTake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(
@@ -193,8 +194,8 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get())); // fast speaker
+                RPM_SETPOINT.SPEAKER.get(),
+                RPM_SETPOINT.SPEAKER.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
@@ -221,18 +222,23 @@ public class RobotContainer {
     xboxController
         .rightTrigger()
         .whileTrue(
-            new AmpTake(
-                m_intake, 0.55, 0.75, m_ampShooter, 0.75)); // Intake Note with Intake And Amp
+            new RunKicker(
+                m_intake,
+                m_shooter,
+                0.55,
+                0.75,
+                m_ampShooter,
+                0.75)); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
-            new AmpTake(
-                m_intake, 0.65, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+            new AmpIntake(
+                m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
 
     xboxController
         .leftBumper()
         .whileTrue(
-            new AmpTake(
+            new frc.robot.commands.intake.AmpOuttake(
                 m_intake,
                 INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
                 INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
@@ -254,7 +260,7 @@ public class RobotContainer {
     xboxController
         .povDown()
         .whileTrue(
-            new AmpTake(
+            new AmpIntake(
                 m_intake,
                 INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
                 INTAKE.STATE.BACK_SLOW_REVERSE.get(),
@@ -264,7 +270,7 @@ public class RobotContainer {
     xboxController
         .povUp()
         .whileTrue(
-            new AmpTake(
+            new AmpIntake(
                 m_intake,
                 INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
                 INTAKE.STATE.BACK_SLOW_INTAKING.get(),
