@@ -27,6 +27,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
+
   private FieldSim m_fieldSim;
   private Translation2d m_goal = new Translation2d();
 
