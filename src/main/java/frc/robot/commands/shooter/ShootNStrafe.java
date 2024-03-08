@@ -92,7 +92,7 @@ public class ShootNStrafe extends Command {
       m_targety = FIELD.blueSpeaker.getY();
     }
 
-    double effectiveDistance = 2; // meters
+    double effectiveDistance = Units.metersToFeet(1.5); // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
     double PositionY = m_swerveDrive.getState().Pose.getY();
