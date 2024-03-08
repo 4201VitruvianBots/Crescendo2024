@@ -55,6 +55,8 @@ public class Vision extends SubsystemBase {
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
 
+  private boolean m_localized;
+
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
@@ -158,10 +160,14 @@ public class Vision extends SubsystemBase {
     return Rotation2d.fromDegrees(getRobotToGamePieceDegrees());
   }
 
-  public Integer getTargetAmount(PhotonCamera camera) {
+  public int getTargetAmount(PhotonCamera camera) {
     var result = camera.getLatestResult();
     List<PhotonTrackedTarget> targets = result.getTargets();
     return targets.size();
+  }
+
+  public boolean getInitialLocalization() {
+    return m_localized;
   }
 
   private void updateLog() {
@@ -204,6 +210,9 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (DriverStation.isDisabled()) {
+      if (cameraBHasPose) m_localized = true;
+    }
     if (m_swerveDriveTrain != null && !DriverStation.isAutonomous()) {
       // final var globalPoseA = getEstimatedGlobalPose(limelightPhotonPoseEstimatorA);
       // globalPoseA.ifPresentOrElse(

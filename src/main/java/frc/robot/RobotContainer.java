@@ -91,11 +91,7 @@ public class RobotContainer {
     m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
     configureBindings();
-    if (ROBOT.useSysID) initSysidChooser();
-    else initAutoChooser();
-
-    SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
-    //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
+    initSmartDashboard();
 
     if (RobotBase.isSimulation()) {
       m_telemetry.registerFieldSim(m_fieldSim);
@@ -163,7 +159,8 @@ public class RobotContainer {
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
-    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter));
+    m_led.setDefaultCommand(
+        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision));
   }
 
   private void configureBindings() {
@@ -280,7 +277,18 @@ public class RobotContainer {
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
   }
 
-  public void initAutoChooser() {
+  private void initSmartDashboard() {
+    if (ROBOT.useSysID) initSysidChooser();
+    else initAutoChooser();
+
+    SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
+    SmartDashboard.putData(
+        "ResetSetupCheck", new InstantCommand(Controls::resetInitState).ignoringDisable(true));
+
+    //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
+  }
+
+  private void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "OneWaitAuto",
@@ -312,7 +320,7 @@ public class RobotContainer {
     //        "ScoreSpeakerTesting", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
   }
 
-  public void initSysidChooser() {
+  private void initSysidChooser() {
     SignalLogger.setPath("/media/sda1/");
     var shooterSysId = SysIdShooterUtils.createShooterRoutines(m_shooter);
 

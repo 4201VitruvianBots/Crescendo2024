@@ -139,18 +139,23 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case INTAKING:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
-          break;
-
         case SHOOTING:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
-        case DISABLED:
-          setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
+        case INTAKING:
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
         case ENABLED:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Green
+          break;
+        case SETUP_READY:
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe);
+          break;
+        case SETUP_LOCALIZED:
+          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Strobe);
+          break;
+        case DISABLED:
+          setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
           break;
         default:
           break;
