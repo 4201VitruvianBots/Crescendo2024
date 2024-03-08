@@ -376,8 +376,13 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    if (DriverStation.isDisabled()) {
-      m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
+    try {
+      if (DriverStation.isDisabled()) {
+        m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
+      }
+    } catch (Exception e) {
+      System.out.println("Got the following Error:");
+      e.printStackTrace();
     }
 
     if (m_visualizer != null) m_visualizer.periodic();
