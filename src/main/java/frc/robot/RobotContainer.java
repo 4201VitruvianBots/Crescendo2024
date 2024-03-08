@@ -30,8 +30,7 @@ import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimbMode;
-import frc.robot.commands.drive.DriveAndAimAtSpeaker;
-import frc.robot.commands.drive.ResetGyro;
+import frc.robot.commands.drive.*;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.DefaultFlywheel;
@@ -41,6 +40,7 @@ import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
+import frc.robot.constants.VISION.TARGET_STATE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdShooterUtils;
@@ -172,12 +172,7 @@ public class RobotContainer {
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(
-        new DriveAndAimAtSpeaker(
-            m_swerveDrive,
-            m_vision,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0)));
+    aimSpeakerButton.whileTrue(new SetTargetState(m_swerveDrive, TARGET_STATE.SPEAKER));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(

@@ -3,12 +3,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.FIELD;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
   private FieldSim m_fieldSim;
+  private Translation2d m_goal = new Translation2d();
 
   private final NetworkTable NoteDetectionLimelight =
       NetworkTableInstance.getDefault().getTable("limelight");
@@ -163,6 +166,30 @@ public class Vision extends SubsystemBase {
     return targets.size();
   }
 
+  private void updateAngleToSpeaker() {
+    if (m_swerveDriveTrain != null) {
+      if (hasGamePieceTarget()) {
+        m_swerveDriveTrain.setAngleToNote(
+            m_swerveDriveTrain.getState().Pose.getRotation().plus(getRobotToGamePieceRotation()));
+      }
+    }
+  }
+
+  private void updateAngleToNote() {
+    if (m_swerveDriveTrain != null) {
+      if (DriverStation.isDisabled()) {
+        if (Controls.isBlueAlliance()) {
+          m_goal = FIELD.blueSpeaker;
+        } else {
+          m_goal = FIELD.redSpeaker;
+        }
+      }
+
+      m_swerveDriveTrain.setAngleToSpeaker(
+          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+    }
+  }
+
   private void updateLog() {
     try {
       Logger.recordOutput("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
@@ -185,7 +212,7 @@ public class Vision extends SubsystemBase {
       if (isCameraConnected(aprilTagLimelightCameraB)) {
         Logger.recordOutput(
             "vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
-        Logger.recordOutput("vision/limelightB - targets", getTargets(aprilTagLimelightCameraB));
+        // Logger.recordOutput("vision/limelightB - targets", getTargets(aprilTagLimelightCameraB));
         Logger.recordOutput("vision/limelightB - hasPose", cameraBHasPose);
         Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
       }
@@ -253,6 +280,8 @@ public class Vision extends SubsystemBase {
       // m_fieldSim.updateVisionAPose(cameraAEstimatedPose);
       m_fieldSim.updateVisionBPose(cameraBEstimatedPose);
     }
+    updateAngleToSpeaker();
+    updateAngleToNote();
     // This method will be called once per scheduler run
     updateLog();
     updateSmartDashboard();

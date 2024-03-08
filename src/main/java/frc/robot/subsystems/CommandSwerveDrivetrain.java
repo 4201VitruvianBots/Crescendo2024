@@ -7,7 +7,8 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
+import frc.robot.constants.VISION.TARGET_STATE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
@@ -67,12 +69,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private final SwerveRequest.ApplyChassisSpeeds m_chassisSpeedRequest =
       new SwerveRequest.ApplyChassisSpeeds();
 
+  private final PIDController m_PidController =
+      new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
+
+  private Rotation2d m_targetAngle = new Rotation2d();
+  private Rotation2d m_angleToSpeaker = new Rotation2d();
+  private Rotation2d m_angleToNote = new Rotation2d();
+  private TARGET_STATE m_targetState = TARGET_STATE.NONE;
+
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
       double OdometryUpdateFrequency,
       SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    m_PidController.setTolerance(Units.degreesToRadians(2));
+    m_PidController.enableContinuousInput(-Math.PI, Math.PI);
 
     if (Utils.isSimulation()) {
       startSimThread();
@@ -194,11 +205,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
           m_twistFromPose = new Pose2d().log(m_futurePose);
 
+          var rotationRate = chassisSpeeds.get().omegaRadiansPerSecond;
+          if (m_targetState != TARGET_STATE.NONE) rotationRate = getTurnRateToTarget();
+
           m_newChassisSpeeds =
               new ChassisSpeeds(
-                  m_twistFromPose.dx / loopPeriod,
-                  m_twistFromPose.dy / loopPeriod,
-                  chassisSpeeds.get().omegaRadiansPerSecond);
+                  m_twistFromPose.dx / loopPeriod, m_twistFromPose.dy / loopPeriod, rotationRate);
 
           if (isRobotCentric) {
             return m_driveReqeustRobotCentric
@@ -262,13 +274,49 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return cmd;
   }
 
+  public void setAngleToSpeaker(Rotation2d angle) {
+    m_angleToSpeaker = angle;
+  }
+
+  public void setAngleToNote(Rotation2d angle) {
+    m_angleToNote = angle;
+  }
+
+  public double getTurnRateToTarget() {
+    var turnRate =
+        m_PidController.calculate(
+            getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
+    return MathUtil.clamp(
+        turnRate,
+        -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
+        SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
+  }
+
+  public void setTargetState(TARGET_STATE state) {
+    if (m_targetState != state) {
+      m_PidController.reset();
+      switch (state) {
+        case SPEAKER:
+          m_targetAngle = m_angleToSpeaker;
+          break;
+        case NOTE:
+          m_targetAngle = m_angleToNote;
+          break;
+        case NONE:
+        default:
+          break;
+      }
+      m_targetState = state;
+    }
+  }
+
   public Optional<Rotation2d> getRotationTargetOverride() {
     // Some condition that should decide if we want to override rotation
     if (m_vision != null) {
       if (m_vision.hasGamePieceTarget()) {
         // Return an optional containing the rotation override (this should be a field relative
         // rotation)
-        return Optional.of(m_vision.getRobotToGamePieceRotation());
+        return Optional.of(m_targetAngle);
       }
     }
     // return an empty optional when we don't want to override the path's rotation
