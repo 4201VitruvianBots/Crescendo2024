@@ -17,6 +17,14 @@ public final class ARM {
   For example, when controlling velocity using a duty cycle closed loop,
   the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps. */
   public static final double kV = 0;
+  
+  /* Acceleration Feedforward Gain
+  The units for this gain is dependent on the control mode.
+  Since this gain is multiplied by the requested acceleration,
+  the units should be defined as units of output per unit of requested input acceleration.
+  For example, when controlling velocity using a duty cycle closed loop,
+  the units for the acceleration feedfoward gain will be duty cycle per requested rps/s, or 1/(rps/s). */
+  public static final double kA = 0.01; // TODO: Change this value
 
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
@@ -31,8 +39,9 @@ public final class ARM {
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 0.0;
 
-  public static final double kMaxArmVelocity = 10;
-  public static final double kMaxArmAcceleration = 10;
+  public static final double kAccel = 160;
+  public static final double kCruiseVel = 80;
+  public static final double kJerk = 1600; // TODO: Change this value
 
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),

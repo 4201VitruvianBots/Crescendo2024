@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -43,14 +45,7 @@ public class Arm extends SubsystemBase {
 
   private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
 
-  private final PositionVoltage m_position = new PositionVoltage(m_desiredRotations);
-
-  private TrapezoidProfile.Constraints m_constraints =
-      new TrapezoidProfile.Constraints(ARM.kMaxArmVelocity, ARM.kMaxArmAcceleration);
-  private final TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
-
-  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+  private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(getCurrentRotation());
 
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
@@ -69,11 +64,13 @@ public class Arm extends SubsystemBase {
   // Test mode setup
   private DoubleSubscriber m_kS_subscriber,
       m_kV_subscriber,
+      m_kA_subscriber,
       m_kP_subscriber,
       m_kI_subscriber,
       m_kD_subscriber,
-      m_kMaxArmVelocity_subscriber,
-      m_kMaxArmAcceleration_subscriber,
+      m_kAccel_subscriber,
+      m_kCruiseVel_subscriber,
+      m_kJerk_subscriber,
       m_kSetpoint_subscriber;
   private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
@@ -84,12 +81,17 @@ public class Arm extends SubsystemBase {
     config.MotorOutput.NeutralMode = m_neutralMode;
     config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Slot0.kS = ARM.kS;
+    config.Slot0.kA = ARM.kA;
     config.Slot0.kV = ARM.kV;
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
     config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
     config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
+    
+    config.MotionMagic.MotionMagicAcceleration = ARM.kAccel;
+    config.MotionMagic.MotionMagicCruiseVelocity = ARM.kCruiseVel;
+    config.MotionMagic.MotionMagicJerk = ARM.kJerk;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     // Simulation setup
@@ -113,7 +115,6 @@ public class Arm extends SubsystemBase {
             rotations,
             Units.degreesToRotations(ARM.minAngleDegrees),
             Units.degreesToRotations(ARM.maxAngleDegrees));
-    m_goal = new TrapezoidProfile.State(m_desiredRotations, 0);
   }
 
   public double getDesiredSetpointRotations() {
@@ -137,7 +138,7 @@ public class Arm extends SubsystemBase {
 
   public void setControlMode(ROBOT.CONTROL_MODE mode) {
     if (mode == ROBOT.CONTROL_MODE.CLOSED_LOOP && m_controlMode == ROBOT.CONTROL_MODE.OPEN_LOOP)
-      resetTrapezoidState();
+      resetMotionMagicState();
     m_controlMode = mode;
   }
 
@@ -148,25 +149,26 @@ public class Arm extends SubsystemBase {
   public void resetSensorPosition() {
     if (RobotBase.isReal()) {
       m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetTrapezoidState();
+      resetMotionMagicState();
     } else {
       m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetTrapezoidState();
+      resetMotionMagicState();
     }
   }
 
   public void resetSensorPositionForButton(double m_angle) {
     if (RobotBase.isReal()) {
       m_armMotor.setPosition(Units.degreesToRotations(m_angle));
-      resetTrapezoidState();
+      resetMotionMagicState();
     } else {
       m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetTrapezoidState();
+      resetMotionMagicState();
     }
   }
 
-  public void resetTrapezoidState() {
-    m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
+  public void resetMotionMagicState() {
+    m_desiredRotations = getCurrentRotation();
+    m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
   }
 
   public TalonFX getMotor() {
@@ -184,12 +186,14 @@ public class Arm extends SubsystemBase {
   public void testInit() {
     armTab.getDoubleTopic("kS").publish().set(ARM.kS);
     armTab.getDoubleTopic("kV").publish().set(ARM.kV);
+    armTab.getDoubleTopic("kA").publish().set(ARM.kA);
     armTab.getDoubleTopic("kP").publish().set(ARM.kP);
     armTab.getDoubleTopic("kI").publish().set(ARM.kI);
     armTab.getDoubleTopic("kD").publish().set(ARM.kD);
 
-    armTab.getDoubleTopic("kMaxVel").publish().set(ARM.kMaxArmVelocity);
-    armTab.getDoubleTopic("kMaxAccel").publish().set(ARM.kMaxArmAcceleration);
+    armTab.getDoubleTopic("kAccel").publish().set(ARM.kAccel);
+    armTab.getDoubleTopic("kCruiseVel").publish().set(ARM.kCruiseVel);
+    armTab.getDoubleTopic("kJerk").publish().set(ARM.kJerk);
 
     armTab.getDoubleTopic("kSetpoint").publish().set(getCurrentAngle());
 
@@ -199,9 +203,9 @@ public class Arm extends SubsystemBase {
     m_kI_subscriber = armTab.getDoubleTopic("kI").subscribe(ARM.kI);
     m_kD_subscriber = armTab.getDoubleTopic("kD").subscribe(ARM.kD);
 
-    m_kMaxArmVelocity_subscriber = armTab.getDoubleTopic("kMaxVel").subscribe(ARM.kMaxArmVelocity);
-    m_kMaxArmAcceleration_subscriber =
-        armTab.getDoubleTopic("kMaxAccel").subscribe(ARM.kMaxArmAcceleration);
+    m_kAccel_subscriber = armTab.getDoubleTopic("kAccel").subscribe(ARM.kAccel);
+    m_kCruiseVel_subscriber = armTab.getDoubleTopic("kCruiseVel").subscribe(ARM.kCruiseVel);
+    m_kJerk_subscriber = armTab.getDoubleTopic("kJerk").subscribe(ARM.kJerk);
 
     m_kSetpoint_subscriber =
         armTab.getDoubleTopic("kSetpoint").subscribe(Units.rotationsToDegrees(m_desiredRotations));
@@ -211,16 +215,21 @@ public class Arm extends SubsystemBase {
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kS = m_kS_subscriber.get(ARM.kS);
     slot0Configs.kV = m_kV_subscriber.get(ARM.kV);
+    slot0Configs.kA = m_kA_subscriber.get(ARM.kA);
     slot0Configs.kP = m_kP_subscriber.get(ARM.kP);
     slot0Configs.kI = m_kI_subscriber.get(ARM.kI);
     slot0Configs.kD = m_kD_subscriber.get(ARM.kD);
 
     m_armMotor.getConfigurator().apply(slot0Configs);
 
-    m_constraints =
-        new TrapezoidProfile.Constraints(
-            m_kMaxArmVelocity_subscriber.get(), m_kMaxArmAcceleration_subscriber.get());
-
+    MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+    
+    motionMagicConfigs.MotionMagicAcceleration = m_kAccel_subscriber.get(ARM.kAccel);
+    motionMagicConfigs.MotionMagicCruiseVelocity = m_kCruiseVel_subscriber.get(ARM.kCruiseVel);
+    motionMagicConfigs.MotionMagicJerk = m_kJerk_subscriber.get(ARM.kJerk);
+    
+    m_armMotor.getConfigurator().apply(motionMagicConfigs);
+    
     double m_oldSetpoint = Units.rotationsToDegrees(m_desiredRotations);
     m_desiredRotations =
         Units.degreesToRotations(
@@ -229,12 +238,12 @@ public class Arm extends SubsystemBase {
   }
 
   public void autonomousInit() {
-    resetTrapezoidState();
+    resetMotionMagicState();
     setDesiredSetpointRotations(getCurrentRotation());
   }
 
   public void teleopInit() {
-    resetTrapezoidState();
+    resetMotionMagicState();
     setDesiredSetpointRotations(getCurrentRotation());
   }
 
@@ -244,11 +253,7 @@ public class Arm extends SubsystemBase {
       case CLOSED_LOOP:
         // This method will be called once per scheduler run
         // periodic, update the profile setpoint for 20 ms loop time
-        m_setpoint = m_profile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
-        // apply the setpoint to the control request
-        m_position.Position = m_setpoint.position;
-        m_position.Velocity = m_setpoint.velocity;
-        if (DriverStation.isEnabled()) m_armMotor.setControl(m_position);
+        if (DriverStation.isEnabled()) m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
         break;
       default:
       case OPEN_LOOP:
@@ -257,7 +262,7 @@ public class Arm extends SubsystemBase {
         }
         break;
     }
-
+    
     if (!ROBOT.disableLogging) updateLogger();
   }
 
