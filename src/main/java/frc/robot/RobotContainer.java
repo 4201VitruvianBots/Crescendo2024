@@ -28,6 +28,7 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
+import frc.robot.commands.climber.AutoClimbSequence;
 import frc.robot.commands.climber.ResetClimberHeight;
 import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimbMode;
@@ -207,7 +208,8 @@ public class RobotContainer {
     xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
 
     // toggles the climb sequence when presses and cuts the command when pressed again
-    //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    trigger.onTrue(new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    
     xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
 
     // switch between open loop and close loop
@@ -293,6 +295,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "ResetSetupCheck", new InstantCommand(Controls::resetInitState).ignoringDisable(true));
 
+    SmartDashboard.putData("AutoClimbSequence", new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber)); // put on SmartDashboard for testing purposes
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
   }
 

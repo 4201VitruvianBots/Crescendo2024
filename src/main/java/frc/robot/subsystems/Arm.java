@@ -168,6 +168,11 @@ public class Arm extends SubsystemBase {
   public void resetTrapezoidState() {
     m_setpoint = new TrapezoidProfile.State(getCurrentRotation(), 0);
   }
+  
+  // Returns true if the arm is within 1 degree of the setpoint.
+  public boolean hasReachedSetpoint() {
+    return MathUtil.applyDeadband(getCurrentAngle() - Units.rotationsToDegrees(getDesiredSetpointRotations()), 1) == 0;
+  }
 
   public TalonFX getMotor() {
     return m_armMotor;
