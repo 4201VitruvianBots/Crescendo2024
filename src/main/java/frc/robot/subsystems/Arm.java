@@ -38,8 +38,9 @@ import org.littletonrobotics.junction.Logger;
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
+
   private CANcoder m_armEncoder;
-  
+
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
@@ -49,7 +50,8 @@ public class Arm extends SubsystemBase {
 
   private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
 
-  private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(getCurrentRotation());
+  private final MotionMagicTorqueCurrentFOC m_request =
+      new MotionMagicTorqueCurrentFOC(getCurrentRotation());
 
   // Simulation setup
   private final SingleJointedArmSim m_armSim =
@@ -85,9 +87,9 @@ public class Arm extends SubsystemBase {
     config.MotorOutput.NeutralMode = m_neutralMode;
     config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     if (RobotBase.isReal()) {
-        m_armEncoder = new CANcoder(CAN.armCanCoder);
-        config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
-        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+      m_armEncoder = new CANcoder(CAN.armCanCoder);
+      config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
+      config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     }
     config.Slot0.kS = ARM.kS;
     config.Slot0.kA = ARM.kA;
@@ -97,18 +99,19 @@ public class Arm extends SubsystemBase {
     config.Slot0.kD = ARM.kD;
     config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
     config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
-    
+
     config.MotionMagic.MotionMagicAcceleration = ARM.kAccel;
     config.MotionMagic.MotionMagicCruiseVelocity = ARM.kCruiseVel;
     config.MotionMagic.MotionMagicJerk = ARM.kJerk;
     CtreUtils.configureTalonFx(m_armMotor, config);
-    
+
     if (RobotBase.isReal()) {
-        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
-        CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
+      CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+      canCoderConfig.MagnetSensor.AbsoluteSensorRange =
+          AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+      canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+      canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
+      CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
     }
 
     // Simulation setup
@@ -240,13 +243,13 @@ public class Arm extends SubsystemBase {
     m_armMotor.getConfigurator().apply(slot0Configs);
 
     MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-    
+
     motionMagicConfigs.MotionMagicAcceleration = m_kAccel_subscriber.get(ARM.kAccel);
     motionMagicConfigs.MotionMagicCruiseVelocity = m_kCruiseVel_subscriber.get(ARM.kCruiseVel);
     motionMagicConfigs.MotionMagicJerk = m_kJerk_subscriber.get(ARM.kJerk);
-    
+
     m_armMotor.getConfigurator().apply(motionMagicConfigs);
-    
+
     double m_oldSetpoint = Units.rotationsToDegrees(m_desiredRotations);
     m_desiredRotations =
         Units.degreesToRotations(
@@ -270,7 +273,8 @@ public class Arm extends SubsystemBase {
       case CLOSED_LOOP:
         // This method will be called once per scheduler run
         // periodic, update the profile setpoint for 20 ms loop time
-        if (DriverStation.isEnabled()) m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
+        if (DriverStation.isEnabled())
+          m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
         break;
       default:
       case OPEN_LOOP:
@@ -279,7 +283,7 @@ public class Arm extends SubsystemBase {
         }
         break;
     }
-    
+
     if (!ROBOT.disableLogging) updateLogger();
   }
 

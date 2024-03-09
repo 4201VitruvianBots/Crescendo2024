@@ -17,7 +17,7 @@ public final class ARM {
   For example, when controlling velocity using a duty cycle closed loop,
   the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps. */
   public static final double kV = 0;
-  
+
   /* Acceleration Feedforward Gain
   The units for this gain is dependent on the control mode.
   Since this gain is multiplied by the requested acceleration,
