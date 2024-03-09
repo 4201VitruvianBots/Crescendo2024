@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
           ARM.armLength,
           Units.degreesToRadians(ARM.minAngleDegrees),
           Units.degreesToRadians(ARM.maxAngleDegrees - ARM.minAngleDegrees),
-          false,
+          true,
           Units.degreesToRadians(ARM.startingAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
@@ -87,7 +87,7 @@ public class Arm extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = m_neutralMode;
-//    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
+    // config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Feedback.RotorToSensorRatio = ARM.gearRatio;
     config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
     // Simulation setup
     SmartDashboard.putData(this);
 
-//    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
     m_armEncoder.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
@@ -217,6 +217,7 @@ public class Arm extends SubsystemBase {
 
     m_kS_subscriber = armTab.getDoubleTopic("kS").subscribe(ARM.kS);
     m_kV_subscriber = armTab.getDoubleTopic("kV").subscribe(ARM.kV);
+    m_kA_subscriber = armTab.getDoubleTopic("kA").subscribe(ARM.kA);
     m_kP_subscriber = armTab.getDoubleTopic("kP").subscribe(ARM.kP);
     m_kI_subscriber = armTab.getDoubleTopic("kI").subscribe(ARM.kI);
     m_kD_subscriber = armTab.getDoubleTopic("kD").subscribe(ARM.kD);

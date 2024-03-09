@@ -37,7 +37,7 @@ public final class ARM {
 
   /* D is generally used to 'predict' the next output using the slope of the error,
   so it is usually used with P to get a fast, but accurate response. */
-  public static final double kD = 0.0;
+  public static final double kD = 30.0;
 
   public static final double kAccel = 160;
   public static final double kCruiseVel = 80;
