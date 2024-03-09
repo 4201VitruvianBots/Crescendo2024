@@ -49,20 +49,16 @@ public class FivePiece extends SequentialCommandGroup {
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
         pathFactory.getNextPathCommand(),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
-        pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
+         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
         pathFactory.getNextPathCommand(),
-        ShooteFactory.generateShootCommand());
+        ShooteFactory.generateShootCommand().withTimeout(0.75));
   }
 }

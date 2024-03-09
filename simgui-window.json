@@ -37,7 +37,7 @@
     },
     "###/SmartDashboard/Auto Chooser": {
       "Collapsed": "0",
-      "Pos": "60,60",
+      "Pos": "275,95",
       "Size": "307,60"
     },
     "###/SmartDashboard/AutoChooser": {
@@ -62,18 +62,18 @@
     },
     "###/SmartDashboard/SuperStructure Sim": {
       "Collapsed": "0",
-      "Pos": "154,248",
+      "Pos": "960,174",
       "Size": "637,554"
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "0",
-      "Pos": "-50,376",
+      "Pos": "418,309",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "19,570",
-      "Size": "202,214"
+      "Size": "336,158"
     },
     "###Joysticks": {
       "Collapsed": "0",

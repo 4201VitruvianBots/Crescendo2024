@@ -16,6 +16,7 @@
       "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/ResetClimberHeight": "Command",
       "/SmartDashboard/ResetGyro": "Command",
+      "/SmartDashboard/ResetSetupCheck": "Command",
       "/SmartDashboard/SuperStructure Sim": "Mechanism2d",
       "/SmartDashboard/SysID Chooser": "String Chooser",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
@@ -98,6 +99,10 @@
         }
       },
       "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "Robot": {
+          "arrowSize": 0,
+          "style": "Line (Closed)"
+        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
