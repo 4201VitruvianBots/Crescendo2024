@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
@@ -39,9 +40,10 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
-  private CANcoder m_armEncoder;
-
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
+
+  private CANcoder m_armEncoder = new CANcoder(CAN.armCanCoder);
+  private CANcoderSimState m_armEncoderSimState = m_armEncoder.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
   private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
@@ -85,12 +87,10 @@ public class Arm extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = m_neutralMode;
-    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
-    if (RobotBase.isReal()) {
-      m_armEncoder = new CANcoder(CAN.armCanCoder);
-      config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
-      config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    }
+//    config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
+    config.Feedback.RotorToSensorRatio = ARM.gearRatio;
+    config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     config.Slot0.kS = ARM.kS;
     config.Slot0.kA = ARM.kA;
     config.Slot0.kV = ARM.kV;
@@ -105,19 +105,17 @@ public class Arm extends SubsystemBase {
     config.MotionMagic.MotionMagicJerk = ARM.kJerk;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
-    if (RobotBase.isReal()) {
-      CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-      canCoderConfig.MagnetSensor.AbsoluteSensorRange =
-          AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-      canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-      canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
-      CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
-    }
+    CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
+    CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
     // Simulation setup
     SmartDashboard.putData(this);
 
-    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+//    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    m_armEncoder.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
   // Get the percent output of the arm motor.
@@ -301,5 +299,8 @@ public class Arm extends SubsystemBase {
 
     m_simState.setRotorVelocity(
         Units.radiansToRotations(m_armSim.getVelocityRadPerSec()) * ARM.gearRatio);
+
+    m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
+    m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
   }
 }
