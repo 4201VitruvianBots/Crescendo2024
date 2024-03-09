@@ -226,6 +226,14 @@ public class Shooter extends SubsystemBase {
     m_testMode = mode;
   }
 
+  public double getTopRPMsetpoint() {
+    return m_rpmTop;
+  }
+
+  public double getBottomRPMsetpoint() {
+    return m_rpmBottom;
+  }
+
   private void updateShuffleboard() {}
 
   // values that we are pulling

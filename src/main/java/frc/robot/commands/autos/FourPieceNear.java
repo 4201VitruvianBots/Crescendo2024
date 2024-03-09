@@ -42,14 +42,11 @@ public class FourPieceNear extends SequentialCommandGroup {
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(0.75),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand(),
-        new WaitCommand(0.75),
+        ShooteFactory.generateShootCommand().withTimeout(1),
         pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
         ShooteFactory.generateShootCommand());
 
