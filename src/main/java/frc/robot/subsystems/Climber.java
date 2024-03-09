@@ -7,14 +7,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,9 +33,6 @@ public class Climber extends SubsystemBase {
 
   private final Follower follower = new Follower(0, false);
 
-  // Trapezoid profile setup
-  public final PositionVoltage m_position = new PositionVoltage(0);
-
   private final StatusSignal<Double> m_positionSignal =
       elevatorClimbMotors[0].getPosition().clone();
   private final StatusSignal<Double> m_velocitySignal =
@@ -46,13 +42,8 @@ public class Climber extends SubsystemBase {
   private final StatusSignal<Double> m_rightCurrentSignal =
       elevatorClimbMotors[1].getTorqueCurrent().clone();
 
-  public TrapezoidProfile.Constraints m_constraints =
-      new TrapezoidProfile.Constraints(CLIMBER.kMaxVel, CLIMBER.kMaxAccel);
-  private final TrapezoidProfile m_currentProfile = new TrapezoidProfile(m_constraints);
-  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-  private final SimpleMotorFeedforward m_feedForward =
-      new SimpleMotorFeedforward(CLIMBER.kG, CLIMBER.kV, CLIMBER.kA);
+  private final MotionMagicTorqueCurrentFOC m_request =
+      new MotionMagicTorqueCurrentFOC(getHeightMeters());
 
   private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
   private final double m_upperLimitMeters = CLIMBER.upperLimitMeters;
@@ -102,6 +93,11 @@ public class Climber extends SubsystemBase {
     config.Slot0.kP = CLIMBER.kP;
     config.Slot0.kI = CLIMBER.kI;
     config.Slot0.kD = CLIMBER.kD;
+    config.Slot0.kA = CLIMBER.kA;
+    config.Slot0.kV = CLIMBER.kV;
+
+    config.MotionMagic.MotionMagicAcceleration = CLIMBER.kMaxAccel;
+    config.MotionMagic.MotionMagicCruiseVelocity = CLIMBER.kMaxVel;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
@@ -171,7 +167,7 @@ public class Climber extends SubsystemBase {
     setDesiredPositionMeters(getHeightMeters());
   }
 
-  public void setDesiredSetpoint(CLIMBER_SETPOINT desiredSetpoint) {
+  public void setDesiredSetpoint(double desiredSetpoint) {
     setDesiredPositionMeters(m_desiredSetpoint.getSetpointMeters());
   }
 
@@ -180,8 +176,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void setDesiredPositionMeters(double setpoint) {
-    m_desiredPositionMeters = setpoint;
-    setSetpointTrapezoidState(m_desiredPositionMeters / CLIMBER.sprocketRotationsToMeters);
+    m_desiredPositionMeters =
+        MathUtil.clamp(setpoint, CLIMBER.lowerLimitMeters, CLIMBER.upperLimitMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -189,17 +185,9 @@ public class Climber extends SubsystemBase {
   }
 
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
-  public void resetTrapezoidState() {
-    m_goal = new TrapezoidProfile.State(getHeightMeters(), getVelocityMetersPerSecond());
-  }
-
-  // Sets the calculated trapezoid state of the motors
-  public void setSetpointTrapezoidState(double rotations) {
-    m_goal = new TrapezoidProfile.State(rotations, 0);
-  }
-
-  public double calculateFeedforward(TrapezoidProfile.State state) {
-    return (m_feedForward.calculate(state.position, state.velocity) / 12.0);
+  public void resetMotionMagicState() {
+    m_desiredPositionMeters = getHeightMeters();
+    elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
   }
 
   public double getLowerLimitMeters() {
@@ -252,7 +240,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void teleopInit() {
-    resetTrapezoidState();
+    resetMotionMagicState();
     setDesiredPositionMeters(getHeightMeters());
   }
 
@@ -278,17 +266,15 @@ public class Climber extends SubsystemBase {
 
         // TODO: Verify rotation to distance conversion before continuing
         setPercentOutput(percentOutput, false);
+
+        if (DriverStation.isDisabled()) {
+          setPercentOutput(0);
+        }
         break;
       default:
       case CLOSED_LOOP:
-        // Updates our trapezoid profile state based on the time since our last periodic and our
-        // recorded change in height
-        m_setpoint = m_currentProfile.calculate(RobotTime.getTimeDelta(), m_setpoint, m_goal);
-        m_position.Position = m_setpoint.position;
-        m_position.Velocity = m_setpoint.velocity;
-
-        // TODO: Verify rotation to distance conversion before continuing
-        elevatorClimbMotors[0].setControl(m_position);
+        if (DriverStation.isEnabled())
+          elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
         break;
     }
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
