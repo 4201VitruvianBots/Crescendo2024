@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -60,14 +61,39 @@ public class Vision extends SubsystemBase {
 
   private boolean m_localized;
 
+  double PositionY = m_swerveDriveTrain.getState().Pose.getY();
+  double PositionX = m_swerveDriveTrain.getState().Pose.getX();
+  double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
+  double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
+
+  double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
+  double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
+
+  double VelocityShoot = 11.1; // TODO: Change after testing
+
+  double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
+  double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+
+  Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
+  Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
+  Translation2d toMovingGoal = movingGoalLocation.minus(currentPose);
+
+  double newDist = toMovingGoal.getDistance(new Translation2d());
+
+  double airtime = newDist / VelocityShoot;
+
+  double ED = Units.metersToFeet(1.5);
+
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
+
       // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
       visionSim.addAprilTags(VISION.aprilTagFieldLayout);
+
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
@@ -75,11 +101,14 @@ public class Vision extends SubsystemBase {
       cameraProp.setFPS(45);
       cameraProp.setAvgLatencyMs(100);
       cameraProp.setLatencyStdDevMs(15);
+
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
       // targets.
       // aprilTagLimelightCameraASim = new PhotonCameraSim(aprilTagLimelightCameraA, cameraProp);
+
       aprilTagLimelightCameraBSim = new PhotonCameraSim(aprilTagLimelightCameraB, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
+      
       // visionSim.addCamera(aprilTagLimelightCameraASim, VISION.robotToAprilTagLimelightCameraA);
       visionSim.addCamera(aprilTagLimelightCameraBSim, VISION.robotToAprilTagLimelightCameraB);
 
@@ -179,9 +208,20 @@ public class Vision extends SubsystemBase {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
       m_swerveDriveTrain.setAngleToSpeaker(
-          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+              .getTranslation()
+              .minus(m_goal)
+              .getAngle()
+              .plus(
+                  new Rotation2d(
+                      (Math.asin(
+                          ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * ED))))));
     }
   }
+
+
 
   private void updateAngleToNote() {
     if (m_swerveDriveTrain != null) {
@@ -258,7 +298,7 @@ public class Vision extends SubsystemBase {
               });
       //      final var globalPoseB = getEstimatedGlobalPose(limelightPhotonPoseEstimatorB);
       //      globalPoseB.ifPresent(
-      //          (estimatedRobotPose) -> {
+              //  (estimatedRobotPose) -> {
       //            cameraBEstimatedPose = estimatedRobotPose.estimatedPose.toPose2d();
       //            cameraBTimestamp = estimatedRobotPose.timestampSeconds;
       //            cameraBHasPose = true;

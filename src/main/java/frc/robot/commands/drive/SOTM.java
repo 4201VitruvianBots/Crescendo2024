@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
@@ -60,7 +59,6 @@ public class SOTM extends Command {
       m_goal = FIELD.redSpeaker;
     }
 
-    
     double PositionY = m_SwerveDrivetrain.getState().Pose.getY();
     double PositionX = m_SwerveDrivetrain.getState().Pose.getX();
     double VelocityY = m_SwerveDrivetrain.getChassisSpeed().vyMetersPerSecond;
@@ -84,11 +82,10 @@ public class SOTM extends Command {
 
     double ED = Units.metersToFeet(1.5);
 
-   double getOffsetAngleDeg =
-        Math.asin(((VelocityY * PositionX + VelocityX * PositionY)) / (newDist*ED));
+    double getOffsetAngleDeg =
+        Math.asin(((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * ED));
 
-
-//SOTM math above
+    // SOTM math above
     var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
     var turnRate =
         m_PidController.calculate(
@@ -103,7 +100,7 @@ public class SOTM extends Command {
         new ChassisSpeeds(
             m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
             m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond, // strafe input
-            finalTurn+getOffsetAngleDeg));
+            finalTurn + getOffsetAngleDeg));
   }
 
   // Called once the command ends or is interrupted.
