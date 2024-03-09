@@ -6,6 +6,7 @@ package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -46,28 +47,28 @@ public class FourPieceNear extends SequentialCommandGroup {
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(1),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand());
 
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));

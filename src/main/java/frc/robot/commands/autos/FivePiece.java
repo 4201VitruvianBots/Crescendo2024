@@ -5,6 +5,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
@@ -40,39 +41,39 @@ public class FivePiece extends SequentialCommandGroup {
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
         pathFactory
             .getNextPathCommand()
-            .alongWith(new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
+            .alongWith(new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
         pathFactory
             .getNextPathCommand()
-            .alongWith(new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
+            .alongWith(new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
         shooterFactory.generateShootCommand().withTimeout(0.75));
   }
 }
