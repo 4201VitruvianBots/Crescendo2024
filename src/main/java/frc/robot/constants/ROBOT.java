@@ -7,10 +7,10 @@ import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
 public class ROBOT {
   public static String robotName = "";
-  public static final boolean disableLogging = false;
   public static final boolean disableVisualization = false;
   public static final boolean useSysID = false;
   public static final boolean useReplayLogs = false;
+  public static LOG_MODE logMode = LOG_MODE.NORMAL;
 
   public static final double drivebaseWidth = Units.inchesToMeters(26.0);
   public static final double drivebaseLength = Units.inchesToMeters(27.5);
@@ -81,6 +81,8 @@ public class ROBOT {
   }
 
   public static void initSim() {
+    logMode = LOG_MODE.DEBUG;
+
     SWERVE.DRIVE.kFrontLeftEncoderOffset = 0;
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
     SWERVE.DRIVE.kBackLeftEncoderOffset = 0;
@@ -116,5 +118,20 @@ public class ROBOT {
               AlertType.WARNING);
     }
     alert.set(true);
+  }
+
+  public enum LOG_MODE {
+    DEBUG(0),
+    NORMAL(1);
+
+    private final double log_level;
+
+    LOG_MODE(final double log_level) {
+      this.log_level = log_level;
+    }
+
+    public double get() {
+      return log_level;
+    }
   }
 }

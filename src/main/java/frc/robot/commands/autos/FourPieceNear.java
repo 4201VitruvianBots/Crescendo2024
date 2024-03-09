@@ -5,9 +5,7 @@
 package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
@@ -19,8 +17,6 @@ import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.utils.TrajectoryUtils;
-import java.util.ArrayList;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -39,19 +35,8 @@ public class FourPieceNear extends SequentialCommandGroup {
 
       //   "FourPiecePt4.1","FourPiecePt5"
     };
-    ArrayList<PathPlannerPath> pathsList = new ArrayList<>();
-    ArrayList<Command> commandList = new ArrayList<>();
+    var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
-    for (var filename : pathFiles) {
-      var path = PathPlannerPath.fromPathFile(filename);
-      var command =
-          TrajectoryUtils.generatePPHolonomicCommand(
-              swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
-      pathsList.add(path);
-      commandList.add(command);
-    }
-
-    var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
@@ -141,9 +126,8 @@ public class FourPieceNear extends SequentialCommandGroup {
             AMPSHOOTER.STATE.NONE.get());
 
     addCommands(
-        new PlotAutoPath(fieldSim, "", pathsList),
-        new SetRobotPose(swerveDrive, pathsList.get(0).getPreviewStartingHolonomicPose()),
-        commandList.get(0).alongWith(flywheelCommandContinuous),
+        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand,
         new WaitCommand(0.75),
         commandList.get(1).alongWith(RunIntake),

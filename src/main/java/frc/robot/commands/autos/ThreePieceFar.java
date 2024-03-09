@@ -28,7 +28,6 @@ public class ThreePieceFar extends SequentialCommandGroup {
     };
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
 
-    var point = new SwerveRequest.PointWheelsAt();
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     addCommands(
