@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
+  private final Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
@@ -163,8 +165,25 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    xboxController
+        .povRight()
+        .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    //    SASButton.whileTrue(
+    //        new AutoShootNStrafe(
+    //            m_swerveDrive,
+    //            m_telemetry,
+    //            m_ampShooter,
+    //            m_shooter,
+    //            m_intake,
+    //            () -> leftJoystick.getRawAxis(1),
+    //            () -> leftJoystick.getRawAxis(0),
+    //            () -> rightJoystick.getRawAxis(0),
+    //            0,
+    //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    //            STATE.INTAKING.get(),
+    //            RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
@@ -285,6 +304,12 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "FourPieceNear",
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
+    m_autoChooser.addOption(
+        "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption(
+        "IntakeTestVison",
+        new IntakeTestVison(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));

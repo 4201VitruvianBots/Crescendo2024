@@ -6,9 +6,11 @@
     "2PieceFar",
     "2PieceNear",
     "3PieceAutoFar",
-    "4PieceAutoNear",
-    "TestAutos",
-    "SimpleAuto"
+    "4PieceAutoNearNew",
+    "5PieceAutoNear",
+    "4PieceAutoNearold",
+    "SimpleAuto",
+    "TestAutos"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

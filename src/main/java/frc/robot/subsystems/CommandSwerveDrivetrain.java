@@ -156,10 +156,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public void resetGyro(double angle) {
-    getPigeon2().setYaw(angle);
-  }
-
   public Command turnInPlace(Rotation2d angle, BooleanSupplier flipAngle) {
     if (flipAngle.getAsBoolean()) {
       angle = new Rotation2d(Math.PI).minus(angle);
@@ -363,6 +359,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     SignalLogger.setPath(signalLoggerDir.getAbsolutePath());
     m_alert.setText("Finished Initializing Drive Settings");
     m_alert.set(true);
+  }
+
+  public void resetGyro(double angle) {
+    getPigeon2().setYaw(angle);
   }
 
   public void initTurnSysid() {
