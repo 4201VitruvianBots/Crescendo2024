@@ -169,21 +169,21 @@ public class RobotContainer {
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
-    SASButton.whileTrue(
-        new AutoShootNStrafe(
-            m_swerveDrive,
-            m_telemetry,
-            m_ampShooter,
-            m_shooter,
-            m_intake,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0),
-            () -> rightJoystick.getRawAxis(0),
-            0,
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            STATE.INTAKING.get(),
-            RPM_SETPOINT.MAX.get()));
+//    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+//    SASButton.whileTrue(
+//        new AutoShootNStrafe(
+//            m_swerveDrive,
+//            m_telemetry,
+//            m_ampShooter,
+//            m_shooter,
+//            m_intake,
+//            () -> leftJoystick.getRawAxis(1),
+//            () -> leftJoystick.getRawAxis(0),
+//            () -> rightJoystick.getRawAxis(0),
+//            0,
+//            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+//            STATE.INTAKING.get(),
+//            RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
