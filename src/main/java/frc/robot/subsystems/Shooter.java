@@ -94,6 +94,10 @@ public class Shooter extends SubsystemBase {
     m_isShooting = state;
   }
 
+  public boolean getZoneState() {
+    return true; // TODO: Change this to true only if we are in zone
+  }
+
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
@@ -241,7 +245,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     updateShuffleboard();
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override

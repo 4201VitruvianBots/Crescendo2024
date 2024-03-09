@@ -7,7 +7,6 @@ package frc.robot.commands.shooter;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -16,24 +15,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
+import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Telemetry;
 import java.util.function.DoubleSupplier;
 
-public class ShootNStrafe extends Command {
+public class AutoShootNStrafe extends Command {
 
   private final CommandSwerveDrivetrain m_swerveDrive;
   private final Shooter m_shooter;
-  // private final AmpShooter m_ampShooter;
-  // private final Intake m_intake;
+  private final AmpShooter m_ampShooter;
+  private final Intake m_intake;
   private final Telemetry m_telemetry;
 
-  // private double m_AmpPercentOutput;
+  private double m_AmpPercentOutput;
   private double m_RPMOutput;
-  // private final double m_FrontIntakePercentOutput;
-  // private final double m_BackIntakeAmpPercentOutput;
+  private final double m_FrontIntakePercentOutput;
+  private final double m_BackIntakeAmpPercentOutput;
 
   private final Timer m_timer = new Timer();
   private final Timer m_reversetimer = new Timer();
@@ -46,50 +47,38 @@ public class ShootNStrafe extends Command {
 
   private double allowableError = 300;
 
-  public final int hehe = 69; // Mano's work
-
   private final PIDController m_turnController =
-      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+      new PIDController(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta);
   private Translation2d m_target = new Translation2d();
 
   private double m_targetx;
   private double m_targety;
 
-  //   private final SwerveRequest.FieldCentric drive =
-  //       new SwerveRequest.FieldCentric()
-  //           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
-  //           .withRotationalDeadband(
-  //               SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-  //           .withDriveRequestType(
-  //               SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-
-  public ShootNStrafe(
+  public AutoShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
       Telemetry telemetry,
-      // AmpShooter ampShooter,
+      AmpShooter ampShooter,
       Shooter shooter,
-      // Intake intake,
+      Intake intake,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
-      // double AmpPercentOutput,
-      double RPMOutput
-      // ,
-      // double FrontIntakeAmpPercentOutput,
-      // double BackIntakeAmpPercentOutput
-      ) {
+      double FrontIntakeAmpPercentOutput,
+      double BackIntakeAmpPercentOutput,
+      double AmpPercentOutput,
+      double RPMOutput) {
 
     m_swerveDrive = swerveDrive;
     m_telemetry = telemetry;
-    // m_intake = intake;
+    m_intake = intake;
     m_shooter = shooter;
-    // m_ampShooter = ampShooter;
+    m_ampShooter = ampShooter;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    // m_AmpPercentOutput = AmpPercentOutput;
-    // m_FrontIntakePercentOutput = FrontIntakeAmpPercentOutput;
-    // m_BackIntakeAmpPercentOutput = BackIntakeAmpPercentOutput;
+    m_AmpPercentOutput = AmpPercentOutput;
+    m_FrontIntakePercentOutput = FrontIntakeAmpPercentOutput;
+    m_BackIntakeAmpPercentOutput = BackIntakeAmpPercentOutput;
     m_RPMOutput = RPMOutput;
 
     addRequirements(m_swerveDrive);
@@ -104,13 +93,13 @@ public class ShootNStrafe extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_timer.stop();
-    // m_timer.reset();
-    // m_reversetimer.stop();
-    // m_reversetimer.reset();
-    // m_shoottimer.stop();
-    // m_shoottimer.reset();
-    // m_turnController.reset();
+    m_timer.stop();
+    m_timer.reset();
+    m_reversetimer.stop();
+    m_reversetimer.reset();
+    m_shoottimer.stop();
+    m_shoottimer.reset();
+    m_turnController.reset();
   }
 
   @Override
@@ -126,16 +115,8 @@ public class ShootNStrafe extends Command {
       m_targety = FIELD.blueSpeaker.getY();
     }
 
-    Pose2d robotPose = m_swerveDrive.getState().Pose;
-    // double shootAngle = m_shooter.getShootAngle(robotPose);
-
     double effectiveDistance = 2.5; // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
-
-    double displacementY = m_swerveDrive.getState().Pose.getY() - m_targety;
-    double displacementX = m_swerveDrive.getState().Pose.getX() - m_targetx;
-
-    Translation2d robotToGoal = m_target.minus(m_swerveDrive.getState().Pose.getTranslation());
 
     double PositionY = m_swerveDrive.getState().Pose.getY();
     double PositionX = m_swerveDrive.getState().Pose.getX();
@@ -159,46 +140,19 @@ public class ShootNStrafe extends Command {
 
     double newDist = toMovingGoal.getDistance(new Translation2d());
 
-    /*public static double getOffsetAngleDeg(double effectiveDistance) {
-        //Pose2d goalRel = getGoalRelPose();
-        Pose2d pose = new Pose2d(robotPose.getX() - Constants.goalLocation.getX(), robotPose.getY() - Constants.goalLocation.getY(), robotPose.getRotation());
-        return Units.radiansToDegrees(
-          Math.asin(airTime *
-            (getGlobalMecVy() * pose.getX() + getGlobalMecVx() * pose.getY())
-            / (getActualDistance() * effectiveDistance)
-          )
-        );
-    */
-
     double getOffsetAngleDeg =
         Math.asin((VelocityY * PositionX + VelocityX * PositionY) / (newDist * effectiveDistance));
-
-    // double m_headingOffset =
-    //     Math.asin(
-    //         displacementY * VelocityX
-    //             - displacementX
-    //                 * VelocityY
-    //                 / ((Math.sqrt(Math.pow(displacementX, 2) + Math.pow(displacementY, 2)))
-    //                     * VelocityShoot));
-    // System.out.println(m_headingOffset * 180 / Math.PI);
-
-    // System.out.println(getOffsetAngleDeg);
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
             .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
             .withRotationalDeadband(
                 SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-
-    // double rotation =
-    //     (m_swerveDrive.getState().Pose.getRotation().getRadians() - shootAngle) // Jax's code
-    //         + m_headingOffset; // Jadon's code
-
-    // all of the logic for angle is above this Comment
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
+
+    // all of the logic for angle is above this Comment
 
     m_shooter.setRPMOutput(m_RPMOutput);
 
@@ -210,22 +164,21 @@ public class ShootNStrafe extends Command {
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
                     targetDelta.getRadians() + getOffsetAngleDeg)));
-    // if (inZone
-    //     && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
-    //     && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
+    if (m_shooter.getZoneState()
+        && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
+        && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
 
-    //   m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
+      m_ampShooter.setPercentOutput(-m_AmpPercentOutput);
 
-    //   m_reversetimer.start();
+      m_reversetimer.start();
 
-    //   if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
-    //     m_ampShooter.setPercentOutput(m_AmpPercentOutput);
-    //     m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
-    //     m_shoottimer.start();
-    //   }
+      if (m_reversetimer.hasElapsed(reverseTimerThreshold)) {
+        m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+        m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
+        m_shoottimer.start();
+      }
+    }
   }
-
-  // }
 
   // Called every time the scheduler runs while the command is scheduled.
 
@@ -234,35 +187,31 @@ public class ShootNStrafe extends Command {
   public void end(boolean interrupted) {
 
     m_shooter.setPercentOutput(0);
-    // m_ampShooter.setPercentOutput(0);
-    // m_intake.setSpeed(0, 0);
-    // m_timer.stop();
-    // m_timer.reset();
-    // m_reversetimer.stop();
-    // m_reversetimer.reset();
-    // m_shoottimer.stop();
-    // m_shoottimer.reset();
+    m_ampShooter.setPercentOutput(0);
+    m_intake.setSpeed(0, 0);
+    m_timer.stop();
+    m_timer.reset();
+    m_reversetimer.stop();
+    m_reversetimer.reset();
+    m_shoottimer.stop();
+    m_shoottimer.reset();
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()
             .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
             .withRotationalDeadband(
                 SWERVE.DRIVE.kMaxRotationRadiansPerSecond * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     m_swerveDrive.setControl(
         drive
             .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
             .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
             .withRotationalRate((m_rotationInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond));
-    // m_timer.stop();
-    // m_timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return m_shoottimer.hasElapsed(m_timeToShoot);
-    return false;
+    return m_shoottimer.hasElapsed(m_timeToShoot);
   }
 }

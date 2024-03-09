@@ -21,7 +21,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private Pose2d m_startPose = new Pose2d(-1, -1, new Rotation2d());
   private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
 
-  private boolean m_initState;
+  private static boolean m_initState;
   private final Alert m_initStateAlert =
       new Alert("RobotInit", "Robot is not ready to start a match!", Alert.AlertType.ERROR);
   private final Alert m_initPoseAlert =
@@ -32,7 +32,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   public Controls() {
     m_initState = false;
 
-    if (!ROBOT.disableLogging)
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get())
       Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
@@ -65,8 +65,12 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     // pdh.setSwitchableChannel(on);
   }
 
-  public boolean getInitState() {
+  public static boolean getInitState() {
     return m_initState;
+  }
+
+  public static void resetInitState() {
+    m_initState = false;
   }
 
   public Pose2d getStartPose() {
@@ -154,7 +158,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     updateInitState();
 
     // This method will be called once per scheduler run
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override

@@ -3,72 +3,66 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.51,
-        "y": 4.83
+        "x": 2.5,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5551236964006054,
-        "y": 4.246854531334102
+        "x": 2.5936427470132224,
+        "y": 7.03508612164115
       },
       "isLocked": false,
-      "linkedName": "4shootend2"
+      "linkedName": "ShootEnd"
     },
     {
       "anchor": {
-        "x": 2.2,
-        "y": 5.54
+        "x": 2.7476160301299584,
+        "y": 7.013157295615431
       },
       "prevControl": {
-        "x": 2.1,
-        "y": 5.54
+        "x": 2.6706293885715904,
+        "y": 7.024121708628291
       },
       "nextControl": {
-        "x": 2.5700000000000003,
-        "y": 5.54
+        "x": 2.8246026716883263,
+        "y": 7.0021928826025714
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.52,
-        "y": 5.54
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 3.42,
-        "y": 5.54
+        "x": 2.9,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4shoot3"
+      "linkedName": "ShootEnd2"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 30.77,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceAutoNearNew",
+  "folder": "5PieceAutoNear",
   "previewStartingState": {
-    "rotation": -7.0,
+    "rotation": 25.2,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

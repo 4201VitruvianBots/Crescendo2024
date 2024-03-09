@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.52,
-        "y": 5.54
+        "x": 3.8904036723907955,
+        "y": 5.9022616190738795
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.62,
-        "y": 5.54
+        "x": 4.791570414132633,
+        "y": 6.3357342290256495
       },
       "isLocked": false,
-      "linkedName": "4shoot3"
+      "linkedName": "ShootEnd4"
     },
     {
       "anchor": {
-        "x": 2.3,
-        "y": 6.7
+        "x": 8.35,
+        "y": 5.796864090161846
       },
       "prevControl": {
-        "x": 2.213397459621556,
-        "y": 6.65
-      },
-      "nextControl": {
-        "x": 2.3866025403784437,
-        "y": 6.75
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.34,
-        "y": 6.76
-      },
-      "prevControl": {
-        "x": 3.2493692212963348,
-        "y": 6.717738173825929
+        "x": 7.478893497229958,
+        "y": 6.287958236768938
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FarEnd2"
     }
   ],
   "rotationTargets": [],
@@ -55,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.79,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceAutoNearNew",
+  "folder": "5PieceAutoNear",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 7.91,
     "velocity": 0
   },
   "useDefaultConstraints": true

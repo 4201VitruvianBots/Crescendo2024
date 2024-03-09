@@ -3,61 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.75,
-        "y": 3.0
+        "x": 3.2814401720101576,
+        "y": 6.358984244359359
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.75,
-        "y": 3.0
+        "x": 3.3814401720101577,
+        "y": 6.358984244359359
       },
       "isLocked": false,
-      "linkedName": "4shootend"
+      "linkedName": "ShootEnd3"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.6
+        "x": 2.1454890270693507,
+        "y": 6.05450249416904
       },
       "prevControl": {
-        "x": 1.9,
-        "y": 4.6
+        "x": 2.1671820728512166,
+        "y": 6.152121200187436
       },
       "nextControl": {
-        "x": 2.1,
-        "y": 4.6
+        "x": 2.123795981287485,
+        "y": 5.956883788150645
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.83,
-        "y": 4.18
+        "x": 2.8481392198162414,
+        "y": 5.539225686154654
       },
       "prevControl": {
-        "x": 2.740475435167519,
-        "y": 4.224557292237689
+        "x": 2.7481392198162418,
+        "y": 5.539225686154654
       },
       "nextControl": {
-        "x": 2.9195245648324812,
-        "y": 4.13544270776231
+        "x": 2.948139219816241,
+        "y": 5.539225686154654
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.51,
-        "y": 4.83
+        "x": 3.8904036723907955,
+        "y": 5.9022616190738795
       },
       "prevControl": {
-        "x": 2.1850610515379785,
-        "y": 4.945917137854385
+        "x": 3.791355126435451,
+        "y": 5.8884998770281936
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4shootend2"
+      "linkedName": "ShootEnd4"
     }
   ],
   "rotationTargets": [],
@@ -71,13 +71,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -5.0,
+    "rotation": 7.91,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceAutoNearNew",
+  "folder": "5PieceAutoNear",
   "previewStartingState": {
-    "rotation": -40.0,
+    "rotation": 19.03,
     "velocity": 0
   },
   "useDefaultConstraints": true
