@@ -95,10 +95,10 @@ public class ShootNStrafe extends Command {
 
     double airtime = newDist / VelocityShoot;
 
-    // double ED = Units.metersToFeet(1.5);
+    double ED = Units.metersToFeet(1.5);
 
    double getOffsetAngleDeg =
-        Math.asin((airtime * (VelocityY * PositionX + VelocityX * PositionY)) / (newDist));
+        Math.asin(((VelocityY * PositionX + VelocityX * PositionY)) / (newDist*ED));
 
     SmartDashboard.putNumber("SOTM/ AngleOffset", getOffsetAngleDeg);
     SmartDashboard.putNumber("SOTM/ Angle", ((targetDelta.getDegrees() + 360) % 360));
