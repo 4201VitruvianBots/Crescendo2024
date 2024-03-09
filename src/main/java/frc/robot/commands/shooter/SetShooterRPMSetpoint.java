@@ -35,7 +35,6 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void initialize() {
     m_shooter.setNeutralMode(NeutralModeValue.Coast);
-    m_shooter.setShooterState(true);
   }
 
   @Override
@@ -56,7 +55,6 @@ public class SetShooterRPMSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.setPercentOutput(0);
-    m_shooter.setShooterState(false);
   }
 
   // Returns true when the command should end.

@@ -17,7 +17,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
-  private NeutralModeValue NeutralMode;
 
   private final DCMotorSim m_ampMotorSim =
       new DCMotorSim(AMPSHOOTER.AmpGearbox, AMPSHOOTER.gearRatio, AMPSHOOTER.Inertia);

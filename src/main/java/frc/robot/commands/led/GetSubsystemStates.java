@@ -53,7 +53,7 @@ public class GetSubsystemStates extends Command {
   @Override
   public void execute() {
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
-    isShooting = m_shooter.getShooterState(); // Done
+    isShooting = m_shooter.getIsShooting(); // Done
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
