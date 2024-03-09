@@ -43,6 +43,7 @@ import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
+import frc.robot.utils.SysIdArmUtils;
 import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
@@ -316,6 +317,7 @@ public class RobotContainer {
   public void initSysidChooser() {
     SignalLogger.setPath("/media/sda1/");
     var shooterSysId = SysIdShooterUtils.createShooterRoutines(m_shooter);
+    var armSysId = SysIdArmUtils.createArmRoutines(m_arm);
 
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
@@ -367,6 +369,18 @@ public class RobotContainer {
 
     m_sysidChooser.addOption(
         "ShooterQuasistaticReverse", shooterSysId.quasistatic(SysIdRoutine.Direction.kReverse));
+    
+    m_sysidChooser.addOption(
+        "ArmDynamicForward", armSysId.dynamic(SysIdRoutine.Direction.kForward));
+    
+    m_sysidChooser.addOption(
+        "ArmDynamicReverse", armSysId.dynamic(SysIdRoutine.Direction.kReverse));
+        
+    m_sysidChooser.addOption(
+        "ArmQuasistaticForward", armSysId.quasistatic(SysIdRoutine.Direction.kForward));
+        
+    m_sysidChooser.addOption(
+        "ArmQuasistaticReverse", armSysId.quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command getAutonomousCommand() {

@@ -34,6 +34,7 @@ import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -82,7 +83,7 @@ public class Arm extends SubsystemBase {
       m_kSetpoint_subscriber;
   private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
-
+  
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -191,6 +192,26 @@ public class Arm extends SubsystemBase {
 
   public TalonFX getMotor() {
     return m_armMotor;
+  }
+  
+  public SingleJointedArmSim getSim() {
+    return m_armSim;
+  }
+  
+  public double getInputVoltage() {
+    if (RobotBase.isReal()) {
+        return m_armMotor.getSupplyVoltage().getValueAsDouble();
+    } else {
+        return MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12);
+    }
+  }
+  
+  public double getRotationalVelocity() {
+    if (RobotBase.isReal()) {
+        return m_armMotor.getVelocity().getValueAsDouble();
+    } else {
+        return Units.radiansToRotations(m_armSim.getVelocityRadPerSec());
+    }
   }
 
   private void updateLogger() {
