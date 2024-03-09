@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.CLIMBER;
+import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
@@ -41,7 +42,7 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
-    if (m_climber.getClimbState()) {
+    if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       double joystickYDeadbandOutput =
           MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
 
@@ -72,6 +73,7 @@ public class RunClimberJoystick extends Command {
   public void end(boolean interrupted) {
     m_climber.holdClimber();
     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    m_climber.setClimbState(false);
   }
 
   // Returns true when the command should end.
