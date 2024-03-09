@@ -57,8 +57,10 @@ public class Vision extends SubsystemBase {
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
-
   private boolean m_localized;
+
+
+ 
 
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
@@ -178,8 +180,24 @@ public class Vision extends SubsystemBase {
       if (DriverStation.isDisabled()) {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
+
+      //SOTM stuff
+   double VelocityShoot = 11.1;
+    double PositionY = m_swerveDriveTrain.getState().Pose.getY();
+    double PositionX = m_swerveDriveTrain.getState().Pose.getX();
+    double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
+    double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
+    double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
+    double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
+    double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
+    double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+    Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
+    Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
+    double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+
       m_swerveDriveTrain.setAngleToSpeaker(
-          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+        m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle().plus(Rotation2d.fromRadians(Math.asin(((VelocityY * PositionX + VelocityX * PositionY)) / (newDist*5)))));
+  
     }
   }
 
