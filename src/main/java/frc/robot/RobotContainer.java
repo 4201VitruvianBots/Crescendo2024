@@ -35,7 +35,6 @@ import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
-import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
@@ -169,21 +168,21 @@ public class RobotContainer {
     var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-//    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
-//    SASButton.whileTrue(
-//        new AutoShootNStrafe(
-//            m_swerveDrive,
-//            m_telemetry,
-//            m_ampShooter,
-//            m_shooter,
-//            m_intake,
-//            () -> leftJoystick.getRawAxis(1),
-//            () -> leftJoystick.getRawAxis(0),
-//            () -> rightJoystick.getRawAxis(0),
-//            0,
-//            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-//            STATE.INTAKING.get(),
-//            RPM_SETPOINT.MAX.get()));
+    //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    //    SASButton.whileTrue(
+    //        new AutoShootNStrafe(
+    //            m_swerveDrive,
+    //            m_telemetry,
+    //            m_ampShooter,
+    //            m_shooter,
+    //            m_intake,
+    //            () -> leftJoystick.getRawAxis(1),
+    //            () -> leftJoystick.getRawAxis(0),
+    //            () -> rightJoystick.getRawAxis(0),
+    //            0,
+    //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    //            STATE.INTAKING.get(),
+    //            RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
@@ -307,8 +306,8 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
-        "IntakeTestVison",
-        new IntakeTestVison(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "IntakeTestVision",
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "TwoPieceFar",
@@ -432,5 +431,6 @@ public class RobotContainer {
     m_shooter.setRPMOutput(0);
     m_shooter.setPercentOutput(0);
     m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
+    m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
   }
 }

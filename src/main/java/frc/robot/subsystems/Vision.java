@@ -60,9 +60,6 @@ public class Vision extends SubsystemBase {
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
   private boolean m_localized;
 
-
- 
-
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
@@ -183,7 +180,7 @@ public class Vision extends SubsystemBase {
       }
 
       m_swerveDriveTrain.setAngleToSpeaker(
-              m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
     }
   }
 

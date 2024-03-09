@@ -6,8 +6,10 @@ package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -28,27 +30,45 @@ public class FourPieceNear extends SequentialCommandGroup {
 
     String[] pathFiles = {
       "FourPiecePt1", "FourPiecePt2", "FourPiecePt3", "FourPiecePt4",
-
       //   "FourPiecePt4.1","FourPiecePt5"
     };
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
-    var IntakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
-    var ShooteFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
+    var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
+    var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
+    // TODO: After testing vision, make shoot command check for angle to speaker with a tolerance
+    // value
+    // TODO: Need to think about how long to aim before shooting?
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        ShooteFactory.generateShootCommand().withTimeout(0.75),
-        pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand().withTimeout(0.75),
-        pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand().withTimeout(1),
-        pathFactory.getNextPathCommand().alongWith(IntakeFactory.generateIntakeCommand()),
-        ShooteFactory.generateShootCommand());
+        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(1),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new SetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand());
 
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
