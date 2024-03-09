@@ -35,7 +35,6 @@ import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.led.GetSubsystemStates;
-import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
@@ -170,21 +169,21 @@ public class RobotContainer {
         .povRight()
         .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-//    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
-//    SASButton.whileTrue(
-//        new AutoShootNStrafe(
-//            m_swerveDrive,
-//            m_telemetry,
-//            m_ampShooter,
-//            m_shooter,
-//            m_intake,
-//            () -> leftJoystick.getRawAxis(1),
-//            () -> leftJoystick.getRawAxis(0),
-//            () -> rightJoystick.getRawAxis(0),
-//            0,
-//            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-//            STATE.INTAKING.get(),
-//            RPM_SETPOINT.MAX.get()));
+    //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    //    SASButton.whileTrue(
+    //        new AutoShootNStrafe(
+    //            m_swerveDrive,
+    //            m_telemetry,
+    //            m_ampShooter,
+    //            m_shooter,
+    //            m_intake,
+    //            () -> leftJoystick.getRawAxis(1),
+    //            () -> leftJoystick.getRawAxis(0),
+    //            () -> rightJoystick.getRawAxis(0),
+    //            0,
+    //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    //            STATE.INTAKING.get(),
+    //            RPM_SETPOINT.MAX.get()));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(
