@@ -171,7 +171,7 @@ public class LEDSubsystem extends SubsystemBase {
   private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
 
-    if(ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
       Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
       Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
       Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
