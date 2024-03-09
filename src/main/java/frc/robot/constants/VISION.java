@@ -70,7 +70,7 @@ public final class VISION {
               aprilTagLimelightCameraAOffsetInRadiansPitch,
               aprilTagLimelightCameraAOffsetInRadiansYaw));
 
-  // Camera offset from robot center. Camera A is on the left side of the robot from front view.
+  // Camera offset from robot center. Camera B is on the left side of the robot from front view.
   public static final Transform3d robotToAprilTagLimelightCameraB =
       new Transform3d(
           new Translation3d(
