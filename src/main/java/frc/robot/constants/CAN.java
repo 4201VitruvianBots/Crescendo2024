@@ -11,6 +11,8 @@ public final class CAN {
   public static final int frontRightCanCoder = 11;
   public static final int backLeftCanCoder = 12;
   public static final int backRightCanCoder = 13;
+  
+  public static final int armCanCoder = 14;
 
   public static final int frontLeftDriveMotor = 20;
   public static final int frontLeftTurnMotor = 21;

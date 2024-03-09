@@ -5,17 +5,20 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -35,7 +38,8 @@ import org.littletonrobotics.junction.Logger;
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
-
+  private CANcoder m_armEncoder;
+  
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
@@ -80,6 +84,11 @@ public class Arm extends SubsystemBase {
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = m_neutralMode;
     config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
+    if (RobotBase.isReal()) {
+        m_armEncoder = new CANcoder(CAN.armCanCoder);
+        config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    }
     config.Slot0.kS = ARM.kS;
     config.Slot0.kA = ARM.kA;
     config.Slot0.kV = ARM.kV;
@@ -93,6 +102,14 @@ public class Arm extends SubsystemBase {
     config.MotionMagic.MotionMagicCruiseVelocity = ARM.kCruiseVel;
     config.MotionMagic.MotionMagicJerk = ARM.kJerk;
     CtreUtils.configureTalonFx(m_armMotor, config);
+    
+    if (RobotBase.isReal()) {
+        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
+        CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
+    }
 
     // Simulation setup
     SmartDashboard.putData(this);
