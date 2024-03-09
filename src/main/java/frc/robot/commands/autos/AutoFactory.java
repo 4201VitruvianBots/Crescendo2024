@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.SetRobotPose;
+import frc.robot.commands.intake.AutoRunAmpTakeTwo;
+import frc.robot.commands.intake.AutoRunIntake;
+import frc.robot.constants.AMPSHOOTER;
+import frc.robot.constants.INTAKE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -81,10 +85,40 @@ public class AutoFactory {
   }
 
   public static class ShootFactory {
-    public ShootFactory(Intake intake, AmpShooter ampShooter, Shooter shooter) {}
+    private Intake m_Intake;
+    private AmpShooter m_AmpShooter;
+    private Shooter m_Shooter;
+
+    public ShootFactory(Intake intake, AmpShooter ampShooter, Shooter shooter) {
+      m_Intake = intake;
+      m_AmpShooter = ampShooter;
+      m_Shooter = shooter;
+    }
+
+    public Command generateShootCommand() {
+      return new AutoRunAmpTakeTwo(
+          m_Intake,
+          m_AmpShooter,
+          INTAKE.STATE.NONE.get(),
+          INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+          AMPSHOOTER.STATE.INTAKING.get());
+    }
   }
 
   public static class IntakeFactory {
-    public IntakeFactory(Intake intake, AmpShooter ampShooter) {}
+    private Intake m_Intake;
+    private AmpShooter m_AmpShooter;
+
+    public IntakeFactory(Intake intake, AmpShooter ampShooter) {
+      m_Intake = intake;
+      m_AmpShooter = ampShooter;
+    }
+
+    public Command generateIntakeCommand() {
+      return new AutoRunIntake(
+          m_Intake,
+          INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+          INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+    }
   }
 }

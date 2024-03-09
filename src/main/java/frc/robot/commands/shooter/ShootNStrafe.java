@@ -49,7 +49,8 @@ public class ShootNStrafe extends Command {
   public final int hehe = 69; // Mano's work
 
   private final PIDController m_turnController =
-      new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
+      new PIDController(
+          SWERVE.DRIVE.kTeleP_Theta, SWERVE.DRIVE.kTeleI_Theta, SWERVE.DRIVE.kTeleD_Theta);
   private Translation2d m_target = new Translation2d();
 
   private double m_targetx;
