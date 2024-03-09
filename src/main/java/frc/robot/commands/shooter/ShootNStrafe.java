@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
@@ -23,60 +24,41 @@ import java.util.function.DoubleSupplier;
 public class ShootNStrafe extends Command {
 
   private final CommandSwerveDrivetrain m_swerveDrive;
-  private final Shooter m_shooter;
-  // private final AmpShooter m_ampShooter;
-  // private final Intake m_intake;
-  private final Telemetry m_telemetry;
 
-  private double m_RPMOutput;
 
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
   public final int hehe = 69; // Mano's work
 
   private final PIDController m_turnController =
-      new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
+      new PIDController(SWERVE.DRIVE.kTeleP_Theta, SWERVE.DRIVE.kTeleI_Theta, SWERVE.DRIVE.kTeleD_Theta);
   private Translation2d m_target = new Translation2d();
-
-  private double m_targetx;
-  private double m_targety;
 
   public ShootNStrafe(
       CommandSwerveDrivetrain swerveDrive,
-      Telemetry telemetry,
-      Shooter shooter,
+      
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
-      DoubleSupplier rotationInput,
-      double RPMOutput) {
+      DoubleSupplier rotationInput) {
 
     m_swerveDrive = swerveDrive;
-    m_telemetry = telemetry;
-    m_shooter = shooter;
+ 
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    m_RPMOutput = RPMOutput;
 
     addRequirements(m_swerveDrive);
 
     m_turnController.enableContinuousInput(-Math.PI, Math.PI);
     m_turnController.setTolerance(Units.degreesToRadians(2.0));
 
-    // TODO: None of this will work if the math is out here and not in execute()
 
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_timer.stop();
-    // m_timer.reset();
-    // m_reversetimer.stop();
-    // m_reversetimer.reset();
-    // m_shoottimer.stop();
-    // m_shoottimer.reset();
-    // m_turnController.reset();
+
   }
 
   @Override
@@ -84,17 +66,12 @@ public class ShootNStrafe extends Command {
     if (Controls.isRedAlliance()) {
       m_target = FIELD.redSpeaker;
 
-      m_targetx = FIELD.redSpeaker.getX();
-      m_targety = FIELD.redSpeaker.getY();
+    
     } else {
       m_target = FIELD.blueSpeaker;
-      m_targetx = FIELD.blueSpeaker.getX();
-      m_targety = FIELD.blueSpeaker.getY();
     }
 
     var targetDelta = (m_swerveDrive.getState().Pose.getTranslation().minus(m_target).getAngle());
-
-    double effectiveDistance = 3; // meters
     Translation2d currentPose = m_swerveDrive.getState().Pose.getTranslation();
 
     double PositionY = m_swerveDrive.getState().Pose.getY();
@@ -116,13 +93,12 @@ public class ShootNStrafe extends Command {
 
     double newDist = toMovingGoal.getDistance(new Translation2d());
 
-    // double jaxOffset =
-    // Math.atan2(
-    //     (SHOOTER.NoteVelocity * Math.sin(targetDelta.getRadians()) - VelocityY),
-    //     (SHOOTER.NoteVelocity * Math.cos(targetDelta.getRadians()) - VelocityX));
+    double airtime = newDist / VelocityShoot;
 
-    double getOffsetAngleDeg =
-        Math.asin((VelocityY * PositionX + VelocityX * PositionY) / (newDist * effectiveDistance));
+    // double ED = Units.metersToFeet(1.5);
+
+   double getOffsetAngleDeg =
+        Math.asin((airtime * (VelocityY * PositionX + VelocityX * PositionY)) / (newDist));
 
     SmartDashboard.putNumber("SOTM/ AngleOffset", getOffsetAngleDeg);
     SmartDashboard.putNumber("SOTM/ Angle", ((targetDelta.getDegrees() + 360) % 360));
@@ -136,8 +112,7 @@ public class ShootNStrafe extends Command {
 
     // all of the logic for angle is above this Comment
 
-    m_shooter.setRPMOutput(m_RPMOutput);
-
+    if (Controls.getAllianceColor() == DriverStation.Alliance.Red) {
     m_swerveDrive.setControl(
         drive
             .withVelocityX((-m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
@@ -145,14 +120,29 @@ public class ShootNStrafe extends Command {
             .withRotationalRate(
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
-                    ((targetDelta.getRadians() + (2 * Math.PI) % (2 * Math.PI))
+                    (targetDelta.getRadians()
                         + getOffsetAngleDeg))));
+
+    }
+
+    else if (Controls.getAllianceColor() == DriverStation.Alliance.Blue) {
+
+m_swerveDrive.setControl(
+        drive
+            .withVelocityX((m_throttleInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withVelocityY((m_strafeInput.getAsDouble()) * DRIVE.kMaxSpeedMetersPerSecond)
+            .withRotationalRate(
+                m_turnController.calculate(
+                    m_swerveDrive.getState().Pose.getRotation().getRadians(),
+                    (targetDelta.getRadians()
+                        + getOffsetAngleDeg))));
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
 
-    m_shooter.setPercentOutput(0);
+    // m_shooter.setPercentOutput(0);
 
     final SwerveRequest.FieldCentric drive =
         new SwerveRequest.FieldCentric()

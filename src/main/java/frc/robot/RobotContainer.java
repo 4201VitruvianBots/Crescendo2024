@@ -163,7 +163,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    var driveShootButton = new Trigger(() -> rightJoystick.getRawButton(1));
     driveShootButton.whileTrue(
         new RunKicker(
             m_intake,
@@ -173,18 +173,15 @@ public class RobotContainer {
             m_ampShooter,
             0.75)); // Intake Note with Intake And Amp
 
-    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
-    var aimSpeakerAdjustButton = new Trigger(() -> leftJoystick.getRawButton(2));
+    // var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    var aimSpeakerAdjustButton = new Trigger(() -> leftJoystick.getRawButton(1));
     aimSpeakerAdjustButton.whileTrue(
         new ShootNStrafe(
             m_swerveDrive,
-            m_telemetry,
-            m_shooter,
             () -> leftJoystick.getRawAxis(1),
             () -> leftJoystick.getRawAxis(0),
-            () -> rightJoystick.getRawAxis(0),
-            RPM_SETPOINT.MAX.get()));
+            () -> rightJoystick.getRawAxis(0)));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(

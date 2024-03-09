@@ -20,7 +20,8 @@ public class GetSubsystemStates extends Command {
   private final Vision m_vision;
   // private final Arm m_arm;
   private boolean isClimbing;
-  private boolean isShooting;
+  private boolean isReved;
+  private boolean isUnreved;
   private boolean isIntaking;
   private boolean isEnabled;
   private boolean isSetup;
@@ -53,7 +54,8 @@ public class GetSubsystemStates extends Command {
   @Override
   public void execute() {
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
-    isShooting = m_shooter.getShooterState(); // Done
+    isReved= m_shooter.getShooterState(); // Done
+    isUnreved = m_shooter.getShooterState(); // Done
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
@@ -67,14 +69,16 @@ public class GetSubsystemStates extends Command {
     // highest priority
     if (isIntaking) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
-    } else if (isShooting) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
+    } else if (isReved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
+       } else if (isUnreved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
     } else if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
-    } else if (isDisabled) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
+    // } else if (isDisabled) {
+    //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
     } else if (isLocalized) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
     } else if (isDisabled) {

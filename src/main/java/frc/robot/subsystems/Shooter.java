@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getShooterState() {
-    return (m_rpmBottom != 0 || m_rpmTop != 0);
+    return m_isShooting;
   }
 
   /** Sets a boolean for the intake's actuation */
@@ -94,6 +94,20 @@ public class Shooter extends SubsystemBase {
     m_isShooting = state;
   }
 
+  public boolean getUnrevedState() {
+    if (m_isShooting) {
+      return (getRpmFollower() <= 7000 && getRpmMaster() <= 7000);}
+
+      else return false;
+    }
+
+    public boolean getRevedState() {
+  if (m_isShooting) {
+    return (getRpmFollower() >= 7000 && getRpmMaster() >= 7000);
+  }
+
+    else return false;
+  }
   public boolean getZoneState() {
     return true; // TODO: Change this to true only if we are in zone
   }

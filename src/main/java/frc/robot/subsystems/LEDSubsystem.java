@@ -86,8 +86,8 @@ public class LEDSubsystem extends SubsystemBase {
         break;
       case Fire: // red and orange LEDs flaming up and down the LED strip
         m_brightness = 0.5;
-        m_speed = 0.7;
-        m_toAnimate = new FireAnimation(m_brightness, m_speed, LED.LEDcount, 0.7, 0.5);
+        m_speed = 0.85;
+        m_toAnimate = new FireAnimation(m_brightness, m_speed, LED.LEDcount, 0.85, 0.5);
         break;
       case Larson: // a line bouncing back and forth with its width determined by size
         m_toAnimate =
@@ -139,8 +139,12 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case SHOOTING:
+        case REVED:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
+          break;
+
+          case UNREVED:
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Fire);
           break;
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
@@ -157,7 +161,7 @@ public class LEDSubsystem extends SubsystemBase {
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
           break;
-        default:
+        default: setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); 
           break;
       }
       currentRobotState = state;
