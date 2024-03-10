@@ -41,14 +41,12 @@ public class FivePiece extends SequentialCommandGroup {
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(1.5),
+        shooterFactory.generateShootCommand().withTimeout(2.5),
         pathFactory
             .getNextPathCommand()
             .alongWith(
-                intakeFactory.generateIntakeCommand(),
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(1.5)
+                intakeFactory.generateIntakeCommand()),
+        shooterFactory.generateShootCommand()
         // pathFactory
         //     .getNextPathCommand()
         //     .alongWith(

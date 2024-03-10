@@ -66,13 +66,10 @@ public class AutoRunAmpTakeTwo extends Command {
               >= (m_shooter.getTopRPMsetpoint() - SHOOTER.RPM_SETPOINT.TOLERANCE.get())) {
         readyToFire = true;
       }
-    }
-
-    if (readyToFire) {
+    } else {
       m_ampShooter.setPercentOutput(m_ampSpeed);
 
       if (!m_intake.getSensorInput1() && !m_intake.getSensorInput2() && !sensorClear) {
-
         startTime = Timer.getFPGATimestamp();
         sensorClear = true;
       }
@@ -88,6 +85,6 @@ public class AutoRunAmpTakeTwo extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return sensorClear && (Timer.getFPGATimestamp() - startTime) > 0.5;
+    return sensorClear && (Timer.getFPGATimestamp() - startTime) > 0.75;
   }
 }

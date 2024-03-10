@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.SetRobotPose;
+import frc.robot.commands.intake.AutoAmpIntake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.constants.AMPSHOOTER;
@@ -99,7 +100,7 @@ public class AutoFactory {
       return new AutoRunAmpTakeTwo(
           m_Intake,
           m_AmpShooter,
-          INTAKE.STATE.NONE.get(),
+          INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
           INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
           AMPSHOOTER.STATE.SHOOTING.get(),
           m_Shooter);
@@ -116,10 +117,12 @@ public class AutoFactory {
     }
 
     public Command generateIntakeCommand() {
-      return new AutoRunIntake(
+      return new AutoAmpIntake(
           m_Intake,
           INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-          INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+          INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+          m_AmpShooter,
+          AMPSHOOTER.STATE.INTAKING.get());
     }
   }
 }

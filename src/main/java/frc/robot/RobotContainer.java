@@ -91,6 +91,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_swerveDrive.registerVisionSubsystem(m_vision);
+    m_ampShooter.registerIntake(m_intake);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerArm(m_arm);
     m_vision.registerSwerveDrive(m_swerveDrive);
@@ -331,7 +333,7 @@ public class RobotContainer {
                 new AutoRunAmpTakeTwo(
                     m_intake,
                     m_ampShooter,
-                    INTAKE.STATE.NONE.get(),
+                    INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
                     INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
                     AMPSHOOTER.STATE.INTAKING.get(),
                     m_shooter)));
