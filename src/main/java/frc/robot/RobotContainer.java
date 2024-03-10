@@ -166,8 +166,7 @@ public class RobotContainer {
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(2));
-    targetSpeakerButton
-        .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(

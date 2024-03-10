@@ -58,8 +58,14 @@ public class Vision extends SubsystemBase {
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
   private boolean m_localized;
 
-
- 
+  // SOTM stuff
+  // Approximate note velocity
+  // TODO: have this based off of flywheel RPM
+  private boolean useSOTM = true;
+  double VelocityShoot = 11.1;
+  private Translation2d m_virtualGoal = new Translation2d();
+  private Rotation2d m_sotmRotationAdjust = new Rotation2d();
+  private double lastRotationalVelocity;
 
   public Vision() {
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
@@ -176,23 +182,37 @@ public class Vision extends SubsystemBase {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
 
-      //SOTM stuff
-   double VelocityShoot = 11.1;
-    double PositionY = m_swerveDriveTrain.getState().Pose.getY();
-    double PositionX = m_swerveDriveTrain.getState().Pose.getX();
-    double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
-    double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
-    double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
-    double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
-    double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
-    double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
-    Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
-    Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
-    double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+      if (useSOTM) {
+        var translationDelta =
+            new Translation2d(
+                (m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond
+                        + 0.5 * m_swerveDriveTrain.getPigeon2().getAccelerationX().getValue())
+                    * RobotTime.getTimeDelta(),
+                (m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond
+                        + 0.5 * m_swerveDriveTrain.getPigeon2().getAccelerationY().getValue())
+                    * RobotTime.getTimeDelta());
+
+        m_virtualGoal = m_goal.plus(translationDelta);
+
+        m_sotmRotationAdjust =
+            Rotation2d.fromRadians(
+                (m_swerveDriveTrain.getChassisSpeed().omegaRadiansPerSecond
+                        + 0.5
+                            * (m_swerveDriveTrain.getChassisSpeed().omegaRadiansPerSecond
+                                - lastRotationalVelocity))
+                    * RobotTime.getTimeDelta());
+
+        lastRotationalVelocity = m_swerveDriveTrain.getChassisSpeed().omegaRadiansPerSecond;
+      }
 
       m_swerveDriveTrain.setAngleToSpeaker(
-        m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle().plus(Rotation2d.fromRadians(Math.asin(((VelocityY * PositionX + VelocityX * PositionY)) / (newDist*5)))));
-  
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+              .getTranslation()
+              .minus(m_goal)
+              .getAngle()
+              .plus(m_sotmRotationAdjust));
     }
   }
 
@@ -234,6 +254,9 @@ public class Vision extends SubsystemBase {
         // getTargets(aprilTagLimelightCameraB));
         Logger.recordOutput("vision/limelightB - hasPose", cameraBHasPose);
         Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
+
+        Logger.recordOutput(
+            "vision/VirtualGoal", new Pose2d(m_virtualGoal, Rotation2d.fromDegrees(0)));
       }
 
       //      Logger.recordOutput("vision/poseAgreement", poseAgreement);
