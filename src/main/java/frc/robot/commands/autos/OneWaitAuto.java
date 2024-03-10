@@ -49,7 +49,7 @@ public class OneWaitAuto extends SequentialCommandGroup {
 
     var Wait = new WaitCommand(8);
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         Wait,
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand,

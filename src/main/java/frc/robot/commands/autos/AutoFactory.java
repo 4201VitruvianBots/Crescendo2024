@@ -21,11 +21,20 @@ import java.util.ArrayList;
 
 public class AutoFactory {
   public static class PathFactory {
+    CommandSwerveDrivetrain m_swerveDrive;
+    FieldSim m_fieldSim;
+
     private ArrayList<PathPlannerPath> pathList = new ArrayList<>();
     private ArrayList<Command> commandList = new ArrayList<>();
     private int pathCounter;
 
     public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames) {
+      this(swerveDrive, pathNames, null);
+    }
+
+    public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames, FieldSim fieldSim) {
+      m_swerveDrive = swerveDrive;
+      m_fieldSim = fieldSim;
       for (var filename : pathNames) {
         var path = PathPlannerPath.fromPathFile(filename);
         var command =
@@ -50,37 +59,24 @@ public class AutoFactory {
     public Pose2d getStartingPose() {
       return pathList.get(0).getPreviewStartingHolonomicPose();
     }
-  }
 
-  public static SequentialCommandGroup createAutoInit(
-      CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory) {
-    return new AutoInit(swerveDrive, pathFactory);
-  }
-
-  public static SequentialCommandGroup createAutoInit(
-      CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory, FieldSim fieldSim) {
-    return new AutoInit(swerveDrive, pathFactory, fieldSim);
-  }
-
-  private static class AutoInit extends SequentialCommandGroup {
-    static SwerveRequest.PointWheelsAt swervePointRequest = new SwerveRequest.PointWheelsAt();
-
-    public AutoInit(CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory) {
-      addCommands(
-          new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
-          new InstantCommand(
-              () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+    public SequentialCommandGroup createAutoInit() {
+      return new AutoInit(m_swerveDrive, this, m_fieldSim);
     }
 
-    public AutoInit(
-        CommandSwerveDrivetrain swerveDrive,
-        AutoFactory.PathFactory pathFactory,
-        FieldSim fieldSim) {
-      addCommands(
-          new PlotAutoPath(fieldSim, "", pathFactory.getPathList()),
-          new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
-          new InstantCommand(
-              () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+    private class AutoInit extends SequentialCommandGroup {
+      static SwerveRequest.PointWheelsAt swervePointRequest = new SwerveRequest.PointWheelsAt();
+
+      public AutoInit(
+          CommandSwerveDrivetrain swerveDrive,
+          AutoFactory.PathFactory pathFactory,
+          FieldSim fieldSim) {
+        addCommands(
+            new PlotAutoPath(fieldSim, "", pathFactory.getPathList()),
+//            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
+            new InstantCommand(
+                () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+      }
     }
   }
 

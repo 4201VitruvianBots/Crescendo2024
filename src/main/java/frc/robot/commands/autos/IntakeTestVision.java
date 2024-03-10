@@ -30,7 +30,7 @@ public class IntakeTestVision extends SequentialCommandGroup {
     var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory
             .getNextPathCommand()
             .alongWith(

@@ -38,7 +38,7 @@ public class FivePiece extends SequentialCommandGroup {
     // value
     // TODO: Need to think about how long to aim before shooting?
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(2.5),

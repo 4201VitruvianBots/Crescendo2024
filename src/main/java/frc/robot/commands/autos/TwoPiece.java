@@ -59,7 +59,7 @@ public class TwoPiece extends SequentialCommandGroup {
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         shootCommand,
         new WaitCommand(1),

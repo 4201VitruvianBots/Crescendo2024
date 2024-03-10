@@ -52,7 +52,7 @@ public class TrajectoryUtils {
             maxSpeed,
             //            0.898744,
             SWERVE.DRIVE.kDriveBaseRadius,
-            new ReplanningConfig(false, false, 1.0, 0.25)),
+            new ReplanningConfig(true, false, 1.0, 0.25)),
         () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
   }

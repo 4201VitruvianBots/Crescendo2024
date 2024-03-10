@@ -31,7 +31,7 @@ public class ThreePieceFar extends SequentialCommandGroup {
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand(),
         pathFactory.getNextPathCommand(),
         pathFactory.getNextPathCommand(),

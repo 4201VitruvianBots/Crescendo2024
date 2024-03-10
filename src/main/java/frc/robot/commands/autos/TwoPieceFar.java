@@ -66,7 +66,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
