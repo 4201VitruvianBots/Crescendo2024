@@ -6,7 +6,6 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.AutoSetTrackingState;
-import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;

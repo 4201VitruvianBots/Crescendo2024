@@ -133,7 +133,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpm) {
-    setRPMOutput(rpm, rpm);
+    // setRPMOutput(rpm, rpm);
+    setRPMOutputFOC(rpm);
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {

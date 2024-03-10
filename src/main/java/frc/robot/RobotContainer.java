@@ -34,7 +34,9 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
+import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
@@ -199,12 +201,18 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.SPEAKER.get(),
-                RPM_SETPOINT.SPEAKER.get())); // fast speaker
+                RPM_SETPOINT.MAX.get(),
+                RPM_SETPOINT.MAX.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
-    xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
-
+    xboxController
+        .x()
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter,
+                xboxController,
+                RPM_SETPOINT.SPEAKERBOTTOM.get(),
+                RPM_SETPOINT.SPEAKERBOTTOM.get()));
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
     xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
@@ -233,7 +241,7 @@ public class RobotContainer {
                 0.55,
                 0.75,
                 m_ampShooter,
-                0.75)); // Intake Note with Intake And Amp
+                AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
@@ -316,6 +324,17 @@ public class RobotContainer {
 
     m_autoChooser.addOption(
         "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption(
+        "TestAutoShoot",
+        new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
+            .andThen(
+                new AutoRunAmpTakeTwo(
+                    m_intake,
+                    m_ampShooter,
+                    INTAKE.STATE.NONE.get(),
+                    INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+                    AMPSHOOTER.STATE.INTAKING.get(),
+                    m_shooter)));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
     //     new AutoScore(6

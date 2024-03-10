@@ -101,7 +101,7 @@ public class AutoFactory {
           m_AmpShooter,
           INTAKE.STATE.NONE.get(),
           INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-          AMPSHOOTER.STATE.INTAKING.get(),
+          AMPSHOOTER.STATE.SHOOTING.get(),
           m_Shooter);
     }
   }

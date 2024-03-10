@@ -8,7 +8,8 @@ public final class AUTO {
   public enum START_POSE {
     NONE(new Pose2d(-1, -1, new Rotation2d())),
     FOUR_PIECE_NEAR(new Pose2d(1.4, 4.15, new Rotation2d())),
-    THREE_PIECE_FAR(new Pose2d(1.40, 2.36, new Rotation2d()));
+    THREE_PIECE_FAR(new Pose2d(1.40, 2.36, new Rotation2d())),
+    FIVE_PIECE(new Pose2d(1.38, 6.6, Rotation2d.fromDegrees(42.50)));
 
     private final Pose2d pose;
 
@@ -24,5 +25,6 @@ public final class AUTO {
   public static final Map<String, START_POSE> AUTO_POSE_MAP =
       Map.ofEntries(
           Map.entry("FourPieceNear", START_POSE.FOUR_PIECE_NEAR),
-          Map.entry("ThreePieceFar", START_POSE.THREE_PIECE_FAR));
+          Map.entry("ThreePieceFar", START_POSE.THREE_PIECE_FAR),
+          Map.entry("FivePiece", START_POSE.FIVE_PIECE));
 }

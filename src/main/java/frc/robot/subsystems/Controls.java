@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
 import frc.robot.constants.FIELD;
@@ -137,6 +138,25 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   public void updateStartPose(String autoName) {
     if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
       m_startPose = FIELD.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
+    }
+
+    if (m_swerveDrive != null) {
+      var deltaTranslation =
+          m_startPose.getTranslation().minus(m_swerveDrive.getState().Pose.getTranslation());
+      var deltaRotation =
+          m_startPose.getRotation().minus(m_swerveDrive.getState().Pose.getRotation());
+
+      Logger.recordOutput("Controls/startDeltaTranslation", deltaTranslation);
+      SmartDashboard.putNumber("Controls/robotPoseX", m_swerveDrive.getState().Pose.getX());
+      SmartDashboard.putNumber("Controls/robotPoseY", m_swerveDrive.getState().Pose.getY());
+      SmartDashboard.putNumber(
+          "Controls/robotPoseDegrees", m_swerveDrive.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("Controls/startPoseX", m_startPose.getX());
+      SmartDashboard.putNumber("Controls/startPoseY", m_startPose.getY());
+      SmartDashboard.putNumber("Controls/startPoseDegrees", m_startPose.getRotation().getDegrees());
+      SmartDashboard.putNumber("Controls/startDeltaTranslationX", deltaTranslation.getX());
+      SmartDashboard.putNumber("Controls/startDeltaTranslationY", deltaTranslation.getY());
+      SmartDashboard.putNumber("Controls/startDeltaRotation", deltaRotation.getDegrees());
     }
   }
 

@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
-        "y": 7.0
+        "x": 2.6,
+        "y": 7.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5936427470132224,
-        "y": 7.03508612164115
+        "x": 2.6936427470132225,
+        "y": 7.73508612164115
       },
       "isLocked": false,
       "linkedName": "ShootEnd"
     },
     {
       "anchor": {
-        "x": 2.7476160301299584,
-        "y": 7.013157295615431
+        "x": 2.2,
+        "y": 6.74
       },
       "prevControl": {
-        "x": 2.6706293885715904,
-        "y": 7.024121708628291
+        "x": 2.123013358441632,
+        "y": 6.75096441301286
       },
       "nextControl": {
-        "x": 2.8246026716883263,
-        "y": 7.0021928826025714
+        "x": 2.279200802828742,
+        "y": 6.728720246843006
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
+        "x": 3.3,
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.9,
+        "x": 3.1999999999999997,
         "y": 7.0
       },
       "nextControl": null,
@@ -48,8 +48,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -64,5 +64,5 @@
     "rotation": 25.2,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -7,7 +7,6 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.AutoSetTrackingState;
-import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.VISION;
@@ -39,7 +38,7 @@ public class FourPieceNear extends SequentialCommandGroup {
 
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
     // TODO: After testing vision, make shoot command check for angle to speaker with a tolerance
     // value

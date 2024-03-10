@@ -7,11 +7,11 @@ public final class SHOOTER {
 
   public static final int kSlotIdx = 0;
 
-  public static final double topkP = 6;
+  public static final double topkP = 7;
   public static final double topkI = 0;
   public static final double topkD = 0;
 
-  public static final double bottomkP = 4;
+  public static final double bottomkP = 7;
   public static final double bottomkI = 0;
   public static final double bottomkD = 0;
 
@@ -54,13 +54,19 @@ public final class SHOOTER {
 
   public enum RPM_SETPOINT {
     REVERSE(-0.1),
-    TOLERANCE(200),
+    TOLERANCE(300),
+    // TOLERANCE_AUTO(600),
 
     NONE(0),
 
     SLOW(600),
+
+    SPEAKERBOTTOM(8000),
+    SPEAKERTOP(6000),
+
     SPEAKER(7000),
-    MAX(8000);
+    AUTO_RPM(7600),
+    MAX(8200); // This is actually 8000
 
     private final double value;
 

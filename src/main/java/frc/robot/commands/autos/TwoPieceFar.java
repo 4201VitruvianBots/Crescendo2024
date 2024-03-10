@@ -6,12 +6,14 @@ package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -32,6 +34,8 @@ public class TwoPieceFar extends SequentialCommandGroup {
     String[] pathFiles = {"TwoPieceFarPt1", "TwoPieceFarPt2", "TwoPieceFarPt3", "TwoPieceFarPt4"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
+    var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
+    var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
     var runIntake =
         new AutoRunIntake(
@@ -59,21 +63,26 @@ public class TwoPieceFar extends SequentialCommandGroup {
             INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
             AMPSHOOTER.STATE.INTAKING.get());
 
-    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
     addCommands(
         AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        shootCommand,
-        new WaitCommand(1),
-        pathFactory.getNextPathCommand().alongWith(runIntake),
-        pathFactory.getNextPathCommand(),
-        new WaitCommand(1),
-        shootCommand2,
-        new WaitCommand(1),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
-            .alongWith(runIntake2)
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        pathFactory.getNextPathCommand(),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE))
             .andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
