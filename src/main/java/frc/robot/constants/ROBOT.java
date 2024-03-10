@@ -10,6 +10,7 @@ public class ROBOT {
   public static final boolean disableVisualization = false;
   public static final boolean useSysID = false;
   public static final boolean useReplayLogs = false;
+  public static boolean usePerforamceLog = false;
   public static LOG_MODE logMode = LOG_MODE.NORMAL;
 
   public static final double drivebaseWidth = Units.inchesToMeters(26.0);
@@ -118,6 +119,10 @@ public class ROBOT {
               AlertType.WARNING);
     }
     alert.set(true);
+    
+    if (System.getenv("USE_PERFORMANCE_LOG") == "true") {
+      usePerforamceLog = true;
+    }
   }
 
   public enum LOG_MODE {

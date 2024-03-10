@@ -75,11 +75,42 @@ jobs:
     # Runs a single command using the runners shell
     - name: Applying spotless formatting
       run: ./gradlew spotlessApply
-
+    
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build -x test
     
     # Runs a single command using the runners shell
+    - name: Temporarily setting an environment variable
+      run: echo "false" >> $USE_PERFORMANCE_LOG
+    
+    # Runs a single command using the runners shell
     - name: Run the robot code in a simulator
-      run: timeout 30 ./gradlew simulateJava || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+      id: run
+      run: timeout 20 ./gradlew simulateJava || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+    
+    # Runs a single command using the runners shell
+    - name: Temporarily setting an environment variable
+      run: echo "true" >> $USE_PERFORMANCE_LOG
+    
+    # Runs a single command using the runners shell
+    - name: Run the robot code in a simulator
+      id: run-with-performance
+      run: timeout 20 ./gradlew simulateJava || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+    
+    - name: Warn user about issues
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const pr = context.payload.pull_request
+          if (steps['run-command'].outcome == 'failure') {
+            const runUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+            github.issues.createComment({
+              issue_number: pr.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `The previous command failed. Please check the action run for details. [Check the action run here](${runUrl}).`
+            })
+          }
+      

@@ -43,6 +43,7 @@ import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.PerformanceLog;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
@@ -71,6 +72,7 @@ public class RobotContainer {
   private final LEDSubsystem m_led = new LEDSubsystem();
 
   private final FieldSim m_fieldSim = new FieldSim();
+  private final PerformanceLog m_performanceLog = new PerformanceLog();
   private SuperStructureVisualizer m_visualizer;
 
   private final LoggedDashboardChooser<Command> m_autoChooser =
@@ -406,6 +408,7 @@ public class RobotContainer {
     }
 
     if (m_visualizer != null) m_visualizer.periodic();
+    if (ROBOT.usePerforamceLog) m_performanceLog.periodic();
   }
 
   public void testInit() {
