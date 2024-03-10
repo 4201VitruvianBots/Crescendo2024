@@ -12,10 +12,9 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public final class VISION {
-  public static final double kLimelightHFOV = 62.5;
-  public static final double kLimelightVFOV = 48.9;
-  public static final double kLimelightDFOV =
-      Math.sqrt(Math.pow(kLimelightHFOV, 2) + Math.pow(kLimelightVFOV, 2));
+  public static final double kLimelightHFOV = 63.12;
+  public static final double kLimelightVFOV = 49.54;
+  public static final double kLimelightDFOV = 75.07;
 
   public static final double aprilTagLimelightCameraADistanceFromCenterX =
       Units.inchesToMeters(-7.590951);
@@ -31,14 +30,14 @@ public final class VISION {
       Units.degreesToRadians(-145.513393);
 
   public static final double aprilTagLimelightCameraBDistanceFromCenterX =
-      Units.inchesToMeters(-7.6);
-  public static final double aprilTagLimelightCameraBDistanceFromCenterY = Units.inchesToMeters(0);
+      Units.inchesToMeters(-6.875);
+  public static final double aprilTagLimelightCameraBDistanceFromCenterY = Units.inchesToMeters(-1.5);
   public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
-      Units.inchesToMeters(22.5);
+      Units.inchesToMeters(21.875);
   public static final double aprilTagLimelightCameraBOffsetInRadiansRoll =
       Units.degreesToRadians(0);
   public static final double aprilTagLimelightCameraBOffsetInRadiansPitch =
-      Units.degreesToRadians(35.5);
+      Units.degreesToRadians(-35);
   public static final double aprilTagLimelightCameraBOffsetInRadiansYaw =
       Units.degreesToRadians(180);
 
