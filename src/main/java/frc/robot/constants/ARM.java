@@ -24,7 +24,7 @@ public final class ARM {
   the units should be defined as units of output per unit of requested input acceleration.
   For example, when controlling velocity using a duty cycle closed loop,
   the units for the acceleration feedfoward gain will be duty cycle per requested rps/s, or 1/(rps/s). */
-  public static final double kA = 0.01;
+  public static final double kA = 0;
 
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
@@ -41,7 +41,7 @@ public final class ARM {
 
   public static final double kAccel = 160;
   public static final double kCruiseVel = 80;
-  public static final double kJerk = 1600;
+  public static final double kJerk = 0;
 
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),

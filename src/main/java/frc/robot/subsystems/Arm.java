@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -65,7 +66,7 @@ public class Arm extends SubsystemBase {
           ARM.armLength,
           Units.degreesToRadians(ARM.minAngleDegrees),
           Units.degreesToRadians(ARM.maxAngleDegrees - ARM.minAngleDegrees),
-          true,
+          false,
           Units.degreesToRadians(ARM.startingAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
@@ -88,12 +89,10 @@ public class Arm extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = m_neutralMode;
-    // config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
     config.Feedback.RotorToSensorRatio = ARM.gearRatio;
     config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     config.Slot0.kS = ARM.kS;
-    config.Slot0.kA = ARM.kA;
     config.Slot0.kV = ARM.kV;
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
@@ -114,8 +113,7 @@ public class Arm extends SubsystemBase {
 
     // Simulation setup
     SmartDashboard.putData(this);
-
-    // m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    
     m_armEncoder.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
   }
 
