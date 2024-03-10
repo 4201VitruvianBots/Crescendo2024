@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoAmpIntake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.simulation.FieldSim;

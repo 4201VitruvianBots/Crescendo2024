@@ -26,6 +26,7 @@ public class AmpShooter extends SubsystemBase {
       new DCMotorSim(AMPSHOOTER.AmpGearbox, AMPSHOOTER.gearRatio, AMPSHOOTER.Inertia);
 
   private final TalonFXSimState m_ampMotorSimState = ampMotor.getSimState();
+
   public AmpShooter() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0.kP = AMPSHOOTER.kP;
@@ -68,8 +69,8 @@ public class AmpShooter extends SubsystemBase {
   public void periodic() {
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
 
-    if(m_intake != null) {
-      if(DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
+    if (m_intake != null) {
+      if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
         if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
           setPercentOutput(0);
         } else {
