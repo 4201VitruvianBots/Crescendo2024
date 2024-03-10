@@ -68,7 +68,7 @@ public class AutoRunAmpTakeTwo extends Command {
     } else {
       m_ampShooter.setPercentOutput(m_ampSpeed);
 
-      if (!m_intake.getSensorInput1() && !m_intake.getSensorInput2() && !sensorClear) {
+      if (!m_intake.checkBothIntakeSensorClear() && !sensorClear) {
         startTime = Timer.getFPGATimestamp();
         sensorClear = true;
       }

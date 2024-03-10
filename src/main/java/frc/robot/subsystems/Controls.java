@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.Logger;
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
   private CommandSwerveDrivetrain m_swerveDrive;
+  private Intake m_intake;
   private Arm m_arm;
   private Pose2d m_startPose = new Pose2d(-1, -1, new Rotation2d());
   private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
@@ -39,6 +40,10 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   public void registerDriveTrain(CommandSwerveDrivetrain swerveDrive) {
     m_swerveDrive = swerveDrive;
+  }
+
+  public void registerIntake(Intake intake) {
+    m_intake = intake;
   }
 
   public void registerArm(Arm arm) {
@@ -110,6 +115,11 @@ public class Controls extends SubsystemBase implements AutoCloseable {
           m_initPoseAlert.setText("Robot Pose is in the correct location!");
           m_initPoseAlert.set(false);
         }
+      }
+
+      // Check if the intake detects a note
+      if (m_intake != null) {
+        m_initState = !m_intake.checkEitherIntakeSensorActive();
       }
 
       // Check if the robot arm was initialized

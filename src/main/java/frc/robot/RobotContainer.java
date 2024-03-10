@@ -94,6 +94,7 @@ public class RobotContainer {
     m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
     m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
     m_vision.registerSwerveDrive(m_swerveDrive);
     initializeSubsystems();
