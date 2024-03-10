@@ -26,6 +26,7 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
+
   private double m_rpmTop;
   private double m_rpmBottom;
   private boolean m_testMode = false;
@@ -55,6 +56,9 @@ public class Shooter extends SubsystemBase {
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
 
+    
+
+
   // This is currently not used
   //   private final SimpleMotorFeedforward m_feedForward =
   //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
@@ -83,6 +87,8 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotors[0].setInverted(false);
     m_shooterMotors[1].setInverted(true);
+
+    SHOOTER.SPEAKER.initConstants(Controls.isBlueAlliance());
   }
 
   public boolean getShooterState() {
@@ -155,35 +161,38 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShootAngle(Pose2d robotPose) {
-    if (Controls.isBlueAlliance()) {
+    
       return (Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerTLX - robotPose.getX()))
+                  (SHOOTER.SPEAKER.SpeakerTopLeftY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.SpeakerTopLeftX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerTRX - robotPose.getX()))
+                  (SHOOTER.SPEAKER.SpeakerTopRightY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.SpeakerTopRightX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerBLX - robotPose.getX()))
+                  (SHOOTER.SPEAKER.SpeakerBottomLeftY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.SpeakerBottomLeftX - robotPose.getX()))
               + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerBRX - robotPose.getX())))
+                  (SHOOTER.SPEAKER.SpeakerBottomRightY - robotPose.getY()),
+                  (SHOOTER.SPEAKER.SpeakerBottomRightX- robotPose.getX())))
           / 4;
-    } else {
-      return (Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerTLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerTRX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerBLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerBRX - robotPose.getX())))
-          / 4;
-    }
+  }
+
+  //checks if
+  public boolean isValidShotPose(Pose2d robotpose)
+  {
+      return (
+          ((2.35862448414 < Math.sqrt(
+              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerBottomRightX, 2) 
+              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomRightY, 2))) 
+          && (2.5501296438 > Math.sqrt(
+              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopLeftX, 2) 
+              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopLeftY, 2))))
+          || ((2.35862448414 < Math.sqrt(
+              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerBottomLeftX, 2) 
+              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomLeftY, 2)))
+          && (2.35862448414 > Math.sqrt(
+              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopRightX, 2) 
+              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopRightY, 2)))));
   }
 
   // values that we are pulling

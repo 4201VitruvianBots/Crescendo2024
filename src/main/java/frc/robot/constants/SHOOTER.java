@@ -77,28 +77,30 @@ public final class SHOOTER {
 
   public static class SPEAKER {
 
-    public static final double BlueSpeakerTLY = 6.1478414;
-    public static final double BlueSpeakerTLX = 0.464947;
 
-    public static final double BlueSpeakerTRY = 5.0232564;
-    public static final double BlueSpeakerTRX = 0.464947;
+    public static final double SpeakerTopLeftY = 6.1478414;
+    public static double SpeakerTopLeftX = 0.464947;
 
-    public static final double BlueSpeakerBLY = 6.1478414;
-    public static final double BlueSpeakerBLX = 0;
+    public static final double SpeakerTopRightY = 5.0232564;
+    public static double SpeakerTopRightX = 0.464947;
 
-    public static final double BlueSpeakerBRY = 5.0232564;
-    public static final double BlueSpeakerBRX = 0;
+    public static final double SpeakerBottomLeftY = 6.1478414;
+    public static double SpeakerBottomLeftX = 0;
 
-    public static final double RedSpeakerTLY = 6.1478414;
-    public static final double RedSpeakerTLX = 16.0697672;
+    public static final double SpeakerBottomRightY = 5.0232564;
+    public static double SpeakerBottomRightX = 0;
 
-    public static final double RedSpeakerTRY = 5.0232564;
-    public static final double RedSpeakerTRX = 16.0697672;
 
-    public static final double RedSpeakerBLY = 6.1478414;
-    public static final double RedSpeakerBLX = 16.5410642;
+    public static void initConstants(boolean isBlueAlliance) {
+      if(isBlueAlliance)
+      {
+        SpeakerTopLeftX = 16.0697672;
+        SpeakerTopRightX = 16.0697672;
+        SpeakerBottomLeftX = 16.5410642;
+        SpeakerBottomRightX = 16.5410642;
+      }
 
-    public static final double RedSpeakerBRY = 5.0232564;
-    public static final double RedSpeakerBRX = 16.5410642;
+    }
+
   }
 }

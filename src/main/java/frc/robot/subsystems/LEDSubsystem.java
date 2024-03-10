@@ -157,6 +157,10 @@ public class LEDSubsystem extends SubsystemBase {
         case DISABLED:
           setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
           break;
+        case VALID_SHOT_POSE:
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
+          break;
+
         default:
           break;
       }

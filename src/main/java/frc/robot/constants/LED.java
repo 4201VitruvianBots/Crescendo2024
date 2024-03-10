@@ -47,6 +47,7 @@ public final class LED {
     INTAKING,
     SHOOTING,
     ARMSCORING,
-    CLIMBING
+    CLIMBING,
+    VALID_SHOT_POSE
   }
 }

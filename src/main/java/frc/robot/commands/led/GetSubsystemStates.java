@@ -18,6 +18,7 @@ public class GetSubsystemStates extends Command {
   private final Intake m_intake;
   private final Shooter m_shooter;
   private final Vision m_vision;
+  CommandSwerveDrivetrain m_SwerveDrivetrain;
   // private final Arm m_arm;
   private boolean isClimbing;
   private boolean isShooting;
@@ -26,14 +27,16 @@ public class GetSubsystemStates extends Command {
   private boolean isSetup;
   private boolean isLocalized;
   private boolean isDisabled;
+  private boolean isValidShotPose;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision) {
+      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision, CommandSwerveDrivetrain swerveDrive ) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
     // m_arm = arm;
+    m_SwerveDrivetrain = swerveDrive;
     m_shooter = shooter;
     m_vision = vision;
 
@@ -58,7 +61,9 @@ public class GetSubsystemStates extends Command {
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
     isLocalized = m_vision.getInitialLocalization();
-    isDisabled = DriverStation.isDisabled(); // Done
+    isDisabled = DriverStation.isDisabled();
+    isValidShotPose = m_shooter.isValidShotPose(m_SwerveDrivetrain.getState().Pose);
+     // Done
     // after it's done.
     // isArmScoring = m_arm.getArmState(); // Done
 
@@ -71,7 +76,9 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
     } else if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
-    } else if (isEnabled) {
+    } else if (isValidShotPose) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.VALID_SHOT_POSE);
+    }else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
     } else if (isDisabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
