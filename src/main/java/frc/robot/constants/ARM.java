@@ -82,6 +82,6 @@ public final class ARM {
 
   public static final double maxOutput = 0.6;
   public static final double joystickMultiplier = maxOutput;
-  
+
   public static final boolean limitOpenLoop = false;
 }
