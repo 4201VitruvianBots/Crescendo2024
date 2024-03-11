@@ -63,18 +63,18 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
     configBottom.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
-    configBottom.Slot0.kP = SHOOTER.bottomkP;
-    configBottom.Slot0.kI = SHOOTER.bottomkI;
-    configBottom.Slot0.kD = SHOOTER.bottomkD;
+    configBottom.Slot0.kP = SHOOTER.kPBottom;
+    configBottom.Slot0.kI = SHOOTER.kIBottom;
+    configBottom.Slot0.kD = SHOOTER.kDBottom;
     configBottom.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
-    configTop.Slot0.kP = SHOOTER.topkP;
-    configTop.Slot0.kI = SHOOTER.topkI;
-    configTop.Slot0.kD = SHOOTER.topkD;
+    configTop.Slot0.kP = SHOOTER.kPTop;
+    configTop.Slot0.kI = SHOOTER.kITop;
+    configTop.Slot0.kD = SHOOTER.kDTop;
     configTop.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
@@ -125,7 +125,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpm) {
-    setRPMOutput(rpm, rpm);
+    // setRPMOutput(rpm, rpm);
+    setRPMOutputFOC(rpm);
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {
@@ -179,6 +180,14 @@ public class Shooter extends SubsystemBase {
     m_testMode = mode;
   }
 
+  public double getTopRPMsetpoint() {
+    return m_topRpmSetpoint;
+  }
+
+  public double getBottomRPMsetpoint() {
+    return m_bottomRpmSetpoint;
+  }
+
   private void updateShuffleboard() {}
 
   // values that we are pulling
@@ -189,8 +198,8 @@ public class Shooter extends SubsystemBase {
         "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmsetpointTop", m_topRpmSetpoint);
-    Logger.recordOutput("Shooter/rpmsetpointBottom", m_bottomRpmSetpoint);
+    Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
+    Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }

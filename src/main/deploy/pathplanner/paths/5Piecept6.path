@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8904036723907955,
-        "y": 5.9022616190738795
+        "x": 3.95,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.791570414132633,
-        "y": 6.3357342290256495
+        "x": 4.840023577479395,
+        "y": 6.608963500380638
       },
       "isLocked": false,
       "linkedName": "ShootEnd4"
@@ -20,8 +20,8 @@
         "y": 5.796864090161846
       },
       "prevControl": {
-        "x": 7.478893497229958,
-        "y": 6.287958236768938
+        "x": 7.673003876678222,
+        "y": 6.5463576290918635
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

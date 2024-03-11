@@ -4,8 +4,9 @@
 
 package frc.robot.commands.autos;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.AutoSetTrackingState;
+import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -15,26 +16,25 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreePieceFar extends SequentialCommandGroup {
+public class IntakeTestVision extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
-  public ThreePieceFar(
+  public IntakeTestVision(
       CommandSwerveDrivetrain swerveDrive,
       FieldSim fieldSim,
       Intake intake,
       AmpShooter ampShooter,
       Shooter shooter) {
-    String[] pathFiles = {
-      "3Piece2Pt1", "3Piece2Pt2", "3Piece2Pt3", "3Piece2Pt4",
-    };
+    String[] pathFiles = {"DriveForward"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
-
-    var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
+    var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
+    var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
     addCommands(
         pathFactory.createAutoInit(),
-        pathFactory.getNextPathCommand(),
-        pathFactory.getNextPathCommand(),
-        pathFactory.getNextPathCommand(),
-        pathFactory.getNextPathCommand());
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)));
   }
 }

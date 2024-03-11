@@ -10,15 +10,13 @@ import frc.robot.constants.LED;
 import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
-
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LEDSubsystem m_led;
-
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
   private final Vision m_vision;
   // private final Arm m_arm;
+
   private boolean isClimbing;
   private boolean isShooting;
   private boolean isIntaking;
@@ -73,7 +71,7 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
-    } else if (isDisabled) {
+    } else if (isSetup) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
     } else if (isLocalized) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);

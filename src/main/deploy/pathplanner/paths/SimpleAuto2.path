@@ -12,15 +12,15 @@
         "y": 7.07
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SimpleShoot"
     },
     {
       "anchor": {
-        "x": 8.140830696075806,
+        "x": 8.35,
         "y": 7.451230758317373
       },
       "prevControl": {
-        "x": 8.05173004365697,
+        "x": 8.260899347581164,
         "y": 7.405831708343419
       },
       "nextControl": null,
@@ -44,6 +44,9 @@
   },
   "reversed": false,
   "folder": "SimpleAuto",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 27.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

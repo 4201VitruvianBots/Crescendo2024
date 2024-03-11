@@ -13,8 +13,8 @@ public class AutoScore extends Command {
   private final AmpShooter m_ampShooter;
   private final Intake m_intake;
   private final double allowableError = 350; // in RPM
-  private double m_AmpPercentOutput;
-  private double m_RPMOutput;
+  private final double m_AmpPercentOutput;
+  private final double m_RPMOutput;
   private final double m_FrontIntakePercentOutput;
   private final double m_BackIntakeAmpPercentOutput;
   private final double m_timeToShoot;

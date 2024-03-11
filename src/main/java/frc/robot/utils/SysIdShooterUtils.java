@@ -3,7 +3,6 @@ package frc.robot.utils;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Voltage;
@@ -12,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.subsystems.Shooter;
 
 public class SysIdShooterUtils {
-  final TorqueCurrentFOC m_TorqueCurrentFOC = new TorqueCurrentFOC(0);
-
   public static SysIdRoutine createShooterRoutines(Shooter shooter) {
     return new SysIdRoutine(
         new SysIdRoutine.Config(

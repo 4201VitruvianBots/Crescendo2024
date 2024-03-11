@@ -32,9 +32,8 @@ import frc.robot.constants.LED.*;
 import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
-// There are 26 LED's on the robot.
 public class LEDSubsystem extends SubsystemBase {
-  /** Creates a new LED. */
+  /** Creates a new LEDSubsystem */
   private final CANdle m_candle = new CANdle(CAN.CANdle);
 
   private Color8Bit m_color = new Color8Bit();
@@ -170,11 +169,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
-    Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
-    Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
-    Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
-    Logger.recordOutput("LEDSubsystem/LED WHITE", m_white);
-    Logger.recordOutput("LEDSubsystem/LED SPEED", m_speed);
+
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
+      Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
+      Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
+      Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
+      Logger.recordOutput("LEDSubsystem/LED WHITE", m_white);
+      Logger.recordOutput("LEDSubsystem/LED SPEED", m_speed);
+    }
   }
 
   @Override
@@ -189,6 +191,6 @@ public class LEDSubsystem extends SubsystemBase {
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
 
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 }

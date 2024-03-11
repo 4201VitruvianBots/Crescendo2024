@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -56,12 +57,18 @@ public class Vision extends SubsystemBase {
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
-
   private boolean m_localized;
 
   public Vision() {
+    // Port Forwarding to access limelight on USB Ethernet
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, VISION.CAMERA_SERVER.INTAKE.toString(), port);
+    }
+
+    PortForwarder.add(5800, VISION.CAMERA_SERVER.LIMELIGHTB.toString(), 5800);
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
@@ -70,8 +77,8 @@ public class Vision extends SubsystemBase {
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
-      cameraProp.setCalibError(0.35, 0.10);
-      cameraProp.setFPS(45);
+      cameraProp.setCalibError(0.80, 0.215);
+      cameraProp.setFPS(24);
       cameraProp.setAvgLatencyMs(100);
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
@@ -168,11 +175,16 @@ public class Vision extends SubsystemBase {
     return m_localized;
   }
 
+  public void resetInitialLocalization() {
+    m_localized = false;
+  }
+
   private void updateAngleToSpeaker() {
     if (m_swerveDriveTrain != null) {
       if (DriverStation.isDisabled()) {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
+
       m_swerveDriveTrain.setAngleToSpeaker(
           m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
     }

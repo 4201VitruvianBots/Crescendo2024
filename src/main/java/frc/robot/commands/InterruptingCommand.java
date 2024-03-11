@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 // Interrupting command
 // Interrupting comma-
 public class InterruptingCommand extends Command {
-  private final Command m_interruptible;
+  private final Command m_interruptable;
   private final Command m_interrupt;
   private Command m_selectedCommand;
   private final BooleanSupplier m_condition;
@@ -21,22 +21,22 @@ public class InterruptingCommand extends Command {
   /**
    * Runs a command until a condition is met, then interrupts it to run another command
    *
-   * @param interruptible The command to run initially that will be interrupted
+   * @param interruptable The command to run initially that will be interrupted
    * @param interrupt The command that interrupts the first command
    * @param condition When to interrupt the first command
    */
-  public InterruptingCommand(Command interruptible, Command interrupt, BooleanSupplier condition) {
-    m_interruptible = interruptible;
+  public InterruptingCommand(Command interruptable, Command interrupt, BooleanSupplier condition) {
+    m_interruptable = interruptable;
     m_interrupt = interrupt;
     m_condition = condition;
-    m_requirements.addAll(interruptible.getRequirements());
+    m_requirements.addAll(interruptable.getRequirements());
     m_requirements.addAll(interrupt.getRequirements());
   }
 
   @Override
   public void initialize() {
     hasInterrupted = false;
-    m_selectedCommand = m_interruptible;
+    m_selectedCommand = m_interruptable;
     m_selectedCommand.initialize();
   }
 

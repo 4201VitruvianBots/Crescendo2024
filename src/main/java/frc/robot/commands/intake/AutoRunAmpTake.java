@@ -12,9 +12,10 @@ public class AutoRunAmpTake extends Command {
   /** Creates a new AutoRunIntake. */
   Intake m_intake;
 
+  AmpShooter m_ampShooter;
+
   double m_speed;
   double m_speed2;
-  AmpShooter m_ampShooter;
   double m_ampSpeed;
 
   public AutoRunAmpTake(
@@ -47,7 +48,7 @@ public class AutoRunAmpTake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return m_intake.getSensorInput1() || m_intake.getSensorInput2();
+    // return m_intake.checkEitherIntakeSensor();
     return true;
   }
 }
