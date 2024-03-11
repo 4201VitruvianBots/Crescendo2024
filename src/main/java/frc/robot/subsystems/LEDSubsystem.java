@@ -138,8 +138,11 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case SHOOTING:
+        case REVED:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
+          break;
+        case UNREVED:
+          setPattern(LED.white, 0, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);

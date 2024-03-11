@@ -45,7 +45,8 @@ public final class LED {
     SETUP_READY,
     ENABLED,
     INTAKING,
-    SHOOTING,
+    REVED,
+    UNREVED,
     ARMSCORING,
     CLIMBING
   }
