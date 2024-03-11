@@ -44,13 +44,15 @@ public class ArmJoystick extends Command {
                 Units.degreesToRotations(ARM.maxAngleDegrees));
         m_arm.setDesiredSetpointRotations(rotationSetpoint);
       } else if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP) {
-        //        // Upper limit
-        //        if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
-        //          m_joystickDeadband = Math.min(m_joystickDeadband, 0);
-        //
-        //        // Lower limit
-        //        if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
-        //          m_joystickDeadband = Math.max(m_joystickDeadband, 0);
+        if (ARM.limitOpenLoop) {
+            // Upper limit
+            if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
+                m_joystickDeadband = Math.min(m_joystickDeadband, 0);
+        
+            // Lower limit
+            if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
+                m_joystickDeadband = Math.max(m_joystickDeadband, 0);
+        }
         m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
       }
     } else {
