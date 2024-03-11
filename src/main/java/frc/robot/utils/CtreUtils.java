@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,7 +25,7 @@ public final class CtreUtils {
         new Alert("Starting Phoenix Server at: " + Logger.getTimestamp() * 1.0e-6, AlertType.INFO);
     alert.set(true);
     if (RobotBase.isReal()) {
-      TalonFX dummy = new TalonFX(0, CAN.drivebaseCanbus);
+      TalonFX dummy = new TalonFX(0, CAN.driveBaseCanbus);
       Timer.delay(5);
       dummy.close();
       dummy = null;
@@ -94,41 +93,6 @@ public final class CtreUtils {
     return driveMotorConfig;
   }
 
-  public static CANcoderConfiguration generateCanCoderConfig() {
-    CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
-
-    //    sensorConfig.MagnetSensor.SensorDirection =
-    // SensorDirectionValue.CounterClockwise_Positive;
-    //    sensorConfig.MagnetSensor.AbsoluteSensorRange =
-    //        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
-
-    return sensorConfig;
-  }
-
-  public static boolean configureTalonFx(TalonFX motor, SwerveModuleConstants constants) {
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-    int deviceType = motor.getDeviceID() % 2; // 1 == Turn, 0 == Drive;
-    if (deviceType == 0) {
-      motorConfig.Slot0 = constants.DriveMotorGains;
-      motorConfig.Feedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
-      motorConfig.MotorOutput.Inverted =
-          constants.DriveMotorInverted
-              ? InvertedValue.CounterClockwise_Positive
-              : InvertedValue.Clockwise_Positive;
-    } else if (deviceType == 1) {
-      motorConfig.Slot0 = constants.SteerMotorGains;
-      motorConfig.Feedback.SensorToMechanismRatio = constants.SteerMotorGearRatio;
-      motorConfig.Feedback.RotorToSensorRatio = constants.CouplingGearRatio;
-      motorConfig.MotorOutput.Inverted =
-          constants.SteerMotorInverted
-              ? InvertedValue.CounterClockwise_Positive
-              : InvertedValue.Clockwise_Positive;
-    }
-
-    return configureTalonFx(motor, motorConfig);
-  }
-
   public static boolean configureTalonFx(TalonFX motor, TalonFXConfiguration config) {
     if (20 <= motor.getDeviceID() || motor.getDeviceID() <= 27) {
       checkSwerveConfigs(motor, config);
@@ -169,23 +133,23 @@ public final class CtreUtils {
   }
 
   public static boolean configureCANCoder(CANcoder cancoder, CANcoderConfiguration config) {
-    StatusCode cancoderStatus = StatusCode.StatusCodeNotInitialized;
+    StatusCode canCoderStatus = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
-      cancoderStatus = cancoder.getConfigurator().apply(config);
-      if (cancoderStatus.isOK()) break;
+      canCoderStatus = cancoder.getConfigurator().apply(config);
+      if (canCoderStatus.isOK()) break;
       if (RobotBase.isReal()) Timer.delay(0.02);
     }
-    if (!cancoderStatus.isOK()) {
+    if (!canCoderStatus.isOK()) {
       var alert =
           new Alert(
               "Could not apply configs to CANCoder ID: "
                   + cancoder.getDeviceID()
                   + ". Error code: "
-                  + cancoderStatus,
+                  + canCoderStatus,
               AlertType.ERROR);
       alert.set(true);
     } else
       System.out.println("CANCoder ID: " + cancoder.getDeviceID() + " - Successfully configured!");
-    return cancoderStatus.isOK();
+    return canCoderStatus.isOK();
   }
 }

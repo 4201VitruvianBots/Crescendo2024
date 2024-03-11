@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -64,7 +63,6 @@ public class RobotContainer {
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
-  private final Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();

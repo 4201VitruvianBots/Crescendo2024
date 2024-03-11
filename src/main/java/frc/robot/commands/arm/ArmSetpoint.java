@@ -11,7 +11,7 @@ import frc.robot.subsystems.Arm;
 
 public class ArmSetpoint extends Command {
   private final Arm m_arm;
-  private ARM.ARM_SETPOINT m_setpoint;
+  private final ARM.ARM_SETPOINT m_setpoint;
 
   /** Creates a new ArmForward. */
   public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint) {

@@ -16,11 +16,13 @@ import java.util.function.DoubleSupplier;
 public class DriveAndAimAtNote extends Command {
   private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   private final Vision m_vision;
+
+  private final PIDController m_PidController =
+      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+
   private final DoubleSupplier m_throttleInput;
   private final DoubleSupplier m_strafeInput;
   private final DoubleSupplier m_turnInput;
-  private final PIDController m_PidController =
-      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
 
   /** Creates a new rotateRobotToGoal. */
   public DriveAndAimAtNote(

@@ -6,7 +6,4 @@ public final class USB {
   public static final int xBoxController = 2;
 
   public static final int testController = 3;
-
-  public static final int kLeftJoystickButton = 10;
-  public static final int kRightJoystickButton = 11;
 }

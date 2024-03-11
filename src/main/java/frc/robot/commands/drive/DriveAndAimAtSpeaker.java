@@ -19,11 +19,13 @@ import java.util.function.DoubleSupplier;
 public class DriveAndAimAtSpeaker extends Command {
   private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   private final Vision m_vision;
-  private final DoubleSupplier m_throttleInput;
-  private final DoubleSupplier m_turnInput;
+
   private final PIDController m_PidController =
       new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
   Translation2d m_goal = new Translation2d();
+
+  private final DoubleSupplier m_throttleInput;
+  private final DoubleSupplier m_turnInput;
 
   /** Creates a new rotateRobotToGoal. */
   public DriveAndAimAtSpeaker(

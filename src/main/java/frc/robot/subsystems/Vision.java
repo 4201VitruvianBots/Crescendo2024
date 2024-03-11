@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -59,8 +60,15 @@ public class Vision extends SubsystemBase {
   private boolean m_localized;
 
   public Vision() {
+    // Port Forwarding to access limelight on USB Ethernet
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, VISION.CAMERA_SERVER.INTAKE.toString(), port);
+    }
+
+    PortForwarder.add(5800, VISION.CAMERA_SERVER.LIMELIGHTB.toString(), 5800);
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");

@@ -11,6 +11,7 @@ import frc.robot.subsystems.Intake;
 public class AmpIntake extends Command {
   private final Intake m_intake;
   private final AmpShooter m_ampShooter;
+
   private final double m_speed;
   private final double m_speed2;
   private final double m_ampSpeed;

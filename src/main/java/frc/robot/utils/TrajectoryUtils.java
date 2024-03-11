@@ -56,27 +56,4 @@ public class TrajectoryUtils {
         () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
   }
-
-  //  public static Command generateChoreoCommand(
-  //      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
-  //    ChoreoTrajectory traj = Choreo.getTrajectory(pathName);
-  //
-  //    return generateChoreoCommand(swerveDrive, traj, maxSpeed, flipPath);
-  //  }
-  //
-  //  public static Command generateChoreoCommand(
-  //      CommandSwerveDrivetrain swerveDrive,
-  //      ChoreoTrajectory traj,
-  //      double maxSpeed,
-  //      boolean flipPath) {
-  //    return Choreo.choreoSwerveCommand(
-  //        traj,
-  //        () -> swerveDrive.getState().Pose,
-  //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-  //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-  //        new PIDController(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
-  //        swerveDrive::setChassisSpeedControlNormal,
-  //        () -> flipPath,
-  //        swerveDrive);
-  //  }
 }

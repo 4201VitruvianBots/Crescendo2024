@@ -15,7 +15,7 @@ public final class AMPSHOOTER {
   public static final double kP = 0.085;
 
   /* I value is generally used to correct steady-state error
-  (e.g. your goal is 100 but you are at 99, so the sum of error
+  (e.g. your goal is 100, but you are at 99, so the sum of error
   over time will let it correct for that final error). */
   public static final double kI = 0.0;
 

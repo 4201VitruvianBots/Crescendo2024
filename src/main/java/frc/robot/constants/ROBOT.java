@@ -12,8 +12,8 @@ public class ROBOT {
   public static final boolean useReplayLogs = false;
   public static LOG_MODE logMode = LOG_MODE.NORMAL;
 
-  public static final double drivebaseWidth = Units.inchesToMeters(26.0);
-  public static final double drivebaseLength = Units.inchesToMeters(27.5);
+  public static final double driveBaseWidth = Units.inchesToMeters(26.0);
+  public static final double driveBaseLength = Units.inchesToMeters(27.5);
   public static final double robotHeight = Units.inchesToMeters(27.5);
 
   public enum CONTROL_MODE {
@@ -70,7 +70,7 @@ public class ROBOT {
     SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
 
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
-    CAN.drivebaseCanbus = CAN.rioCanbus;
+    CAN.driveBaseCanbus = CAN.rioCanbus;
   }
 
   public static void initBobot() {
