@@ -15,9 +15,7 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
-import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -167,6 +165,10 @@ public class Vision extends SubsystemBase {
 
   public boolean getInitialLocalization() {
     return m_localized;
+  }
+
+  public void resetInitialLocalization() {
+    m_localized = false;
   }
 
   private void updateAngleToSpeaker() {

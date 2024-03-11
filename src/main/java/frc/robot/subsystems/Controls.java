@@ -20,6 +20,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   private CommandSwerveDrivetrain m_swerveDrive;
   private Intake m_intake;
   private Arm m_arm;
+  private Vision m_vision;
   private Pose2d m_startPose = new Pose2d(-1, -1, new Rotation2d());
   private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
 
@@ -50,6 +51,10 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     m_arm = arm;
   }
 
+  public void registerVision(Vision vision) {
+    m_vision = vision;
+  }
+
   /**
    * Returns the robot's current alliance color
    *
@@ -75,8 +80,12 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     return m_initState;
   }
 
-  public static void resetInitState() {
+  public void resetInitState() {
     m_initState = false;
+
+    if (m_vision != null) {
+      m_vision.resetInitialLocalization();
+    }
   }
 
   public Pose2d getStartPose() {

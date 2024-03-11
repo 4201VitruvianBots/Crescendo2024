@@ -34,6 +34,7 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
+import frc.robot.commands.intake.AmpOuttake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
@@ -93,10 +94,11 @@ public class RobotContainer {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
@@ -254,7 +256,7 @@ public class RobotContainer {
     xboxController
         .leftBumper()
         .whileTrue(
-            new frc.robot.commands.intake.AmpOuttake(
+            new AmpOuttake(
                 m_intake,
                 INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
                 INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
@@ -301,7 +303,7 @@ public class RobotContainer {
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
     SmartDashboard.putData(
-        "ResetSetupCheck", new InstantCommand(Controls::resetInitState).ignoringDisable(true));
+        "ResetSetupCheck", new InstantCommand(m_controls::resetInitState).ignoringDisable(true));
 
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
   }
