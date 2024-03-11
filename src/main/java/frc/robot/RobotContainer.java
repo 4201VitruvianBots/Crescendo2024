@@ -34,6 +34,7 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
+import frc.robot.commands.intake.AmpOuttake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
@@ -93,10 +94,11 @@ public class RobotContainer {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
@@ -170,8 +172,8 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    var aimSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    aimSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(
@@ -254,7 +256,7 @@ public class RobotContainer {
     xboxController
         .leftBumper()
         .whileTrue(
-            new frc.robot.commands.intake.AmpOuttake(
+            new AmpOuttake(
                 m_intake,
                 INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
                 INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
@@ -301,7 +303,7 @@ public class RobotContainer {
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
     SmartDashboard.putData(
-        "ResetSetupCheck", new InstantCommand(Controls::resetInitState).ignoringDisable(true));
+        "ResetSetupCheck", new InstantCommand(m_controls::resetInitState).ignoringDisable(true));
 
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
   }
@@ -326,8 +328,8 @@ public class RobotContainer {
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
-            "IntakeTestVision",
-            new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "IntakeTestVision",
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TestAutoShoot",
         new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())

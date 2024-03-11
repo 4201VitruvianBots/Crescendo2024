@@ -8,16 +8,16 @@ import frc.robot.subsystems.Shooter;
 public class DriverScore extends Command {
   private final Shooter m_shooter;
   private final AmpShooter m_ampShooter;
-  private final double m_AmpPercentOutput;
-  private final double m_RPMOutput;
+  private final double m_ampPercentOutput;
+  private final double m_rpmOutput;
   private final double allowableError = RPM_SETPOINT.TOLERANCE.get(); // in RPM
 
   public DriverScore(
-      Shooter shooter, AmpShooter ampShooter, double RPMOutput, double AmpPercentOutput) {
+      Shooter shooter, AmpShooter ampShooter, double rpmOutput, double ampPercentOutput) {
     m_shooter = shooter;
     m_ampShooter = ampShooter;
-    m_RPMOutput = RPMOutput;
-    m_AmpPercentOutput = AmpPercentOutput;
+    m_rpmOutput = rpmOutput;
+    m_ampPercentOutput = ampPercentOutput;
     addRequirements(m_shooter);
   }
 
@@ -27,11 +27,10 @@ public class DriverScore extends Command {
 
   @Override
   public void execute() {
+    if ((m_shooter.getRpmMaster() >= (m_rpmOutput - allowableError))
+        && (m_shooter.getRpmFollower() >= (m_rpmOutput - allowableError))) {
 
-    if ((m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError))
-        && (m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError))) {
-
-      m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+      m_ampShooter.setPercentOutput(m_ampPercentOutput);
     }
   }
 

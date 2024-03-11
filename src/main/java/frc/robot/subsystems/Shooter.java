@@ -15,7 +15,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,12 +25,11 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  private double m_rpmTop;
-  private double m_rpmBottom;
+  private double m_topRpmSetpoint;
+  private double m_bottomRpmSetpoint;
   private boolean m_testMode = false;
   // private double m_headingOffset;
   private double m_desiredPercentOutput;
-  private boolean m_isShooting = false;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -60,7 +58,6 @@ public class Shooter extends SubsystemBase {
   //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
   //   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
-  // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
@@ -85,13 +82,8 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setInverted(true);
   }
 
-  public boolean getShooterState() {
-    return (m_rpmBottom != 0 || m_rpmTop != 0);
-  }
-
-  /** Sets a boolean for the intake's actuation */
-  public void setShooterState(boolean state) {
-    m_isShooting = state;
+  public boolean getIsShooting() {
+    return (m_bottomRpmSetpoint != 0 || m_topRpmSetpoint != 0);
   }
 
   public boolean getZoneState() {
@@ -101,30 +93,30 @@ public class Shooter extends SubsystemBase {
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
 
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
     m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
   public void setVoltageOutput(double voltageOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_voltageRequest.withOutput(voltageOut));
     m_shooterMotors[1].setControl(m_voltageRequest.withOutput(voltageOut));
   }
 
   public void setFocCurrentOutput(double currentOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
   public void setRPMOutputFOC(double rpm) {
-    m_rpmBottom = rpm;
-    m_rpmTop = rpm;
+    m_bottomRpmSetpoint = rpm;
+    m_topRpmSetpoint = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
@@ -138,8 +130,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {
-    m_rpmBottom = rpmBottom;
-    m_rpmTop = rpmTop;
+    m_bottomRpmSetpoint = rpmBottom;
+    m_topRpmSetpoint = rpmTop;
     // Phoenix 6 uses rotations per second for velocity control
     var rpsBottom = rpmBottom / 60.0;
     var rpsTop = rpmTop / 60.0;
@@ -150,45 +142,6 @@ public class Shooter extends SubsystemBase {
   public void setNeutralMode(NeutralModeValue mode) {
     m_shooterMotors[0].setNeutralMode(mode);
     m_shooterMotors[1].setNeutralMode(mode);
-  }
-
-  public double getShootNStrafeAngle(
-      Pose2d robotPose, double RobotVelocityX, double RobotVelocityY) {
-    return Math.atan2(
-        (SHOOTER.NoteVelocity * Math.sin(getShootAngle(robotPose)) - RobotVelocityY),
-        (SHOOTER.NoteVelocity * Math.cos(getShootAngle(robotPose)) - RobotVelocityX));
-  }
-
-  public double getShootAngle(Pose2d robotPose) {
-    if (Controls.isBlueAlliance()) {
-      return (Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerTLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerTRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerTRX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerBLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.BlueSpeakerBRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.BlueSpeakerBRX - robotPose.getX())))
-          / 4;
-    } else {
-      return (Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerTLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerTRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerTRX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBLY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerBLX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.RedSpeakerBRY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.RedSpeakerBRX - robotPose.getX())))
-          / 4;
-    }
   }
 
   // values that we are pulling
@@ -228,11 +181,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getTopRPMsetpoint() {
-    return m_rpmTop;
+    return m_topRpmSetpoint;
   }
 
   public double getBottomRPMsetpoint() {
-    return m_rpmBottom;
+    return m_bottomRpmSetpoint;
   }
 
   private void updateShuffleboard() {}
@@ -245,8 +198,8 @@ public class Shooter extends SubsystemBase {
         "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
-    Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
+    Logger.recordOutput("Shooter/rpmsetpointTop", m_topRpmSetpoint);
+    Logger.recordOutput("Shooter/rpmsetpointBottom", m_bottomRpmSetpoint);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }

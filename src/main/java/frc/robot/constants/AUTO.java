@@ -11,7 +11,7 @@ public final class AUTO {
     FOUR_PIECE_NEAR(new Pose2d(1.4, 4.15, new Rotation2d())),
     FIVE_PIECE(new Pose2d(1.38, 6.6, Rotation2d.fromDegrees(42.50))),
     TWO_PIECE(new Pose2d(0, 0, new Rotation2d())),
-    TWO_PIECE_FAR(new Pose2d(1.50,3.02, Rotation2d.fromDegrees(42.50))),
+    TWO_PIECE_FAR(new Pose2d(1.50, 3.02, Rotation2d.fromDegrees(42.50))),
     THREE_PIECE_FAR(new Pose2d(1.40, 2.36, new Rotation2d()));
 
     private final Pose2d pose;
@@ -32,6 +32,6 @@ public final class AUTO {
           Map.entry("FivePiece", START_POSE.FIVE_PIECE),
           Map.entry("TwoPieceAuto", START_POSE.TWO_PIECE),
           Map.entry("TwoPieceFar", START_POSE.TWO_PIECE_FAR)
-          //Map.entry("ThreePieceFar", START_POSE.THREE_PIECE_FAR),
+          // Map.entry("ThreePieceFar", START_POSE.THREE_PIECE_FAR),
           );
 }

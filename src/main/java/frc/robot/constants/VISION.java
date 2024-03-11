@@ -31,7 +31,8 @@ public final class VISION {
 
   public static final double aprilTagLimelightCameraBDistanceFromCenterX =
       Units.inchesToMeters(-6.875);
-  public static final double aprilTagLimelightCameraBDistanceFromCenterY = Units.inchesToMeters(-1.5);
+  public static final double aprilTagLimelightCameraBDistanceFromCenterY =
+      Units.inchesToMeters(-1.5);
   public static final double aprilTagLimelightCameraBDistanceFromGroundZ =
       Units.inchesToMeters(21.875);
   public static final double aprilTagLimelightCameraBOffsetInRadiansRoll =
