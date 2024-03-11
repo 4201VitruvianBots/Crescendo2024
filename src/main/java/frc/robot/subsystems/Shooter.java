@@ -25,8 +25,8 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  private double m_rpmTop;
-  private double m_rpmBottom;
+  private double m_topRpmSetpoint;
+  private double m_bottomRpmSetpoint;
   private boolean m_testMode = false;
   // private double m_headingOffset;
   private double m_desiredPercentOutput;
@@ -58,7 +58,6 @@ public class Shooter extends SubsystemBase {
   //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
   //   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
-  // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
@@ -83,8 +82,8 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setInverted(true);
   }
 
-  public boolean getShooterState() {
-    return (m_rpmBottom != 0 || m_rpmTop != 0);
+  public boolean getIsShooting() {
+    return (m_bottomRpmSetpoint != 0 || m_topRpmSetpoint != 0);
   }
 
   public boolean getZoneState() {
@@ -94,30 +93,30 @@ public class Shooter extends SubsystemBase {
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
 
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
     m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
   public void setVoltageOutput(double voltageOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_voltageRequest.withOutput(voltageOut));
     m_shooterMotors[1].setControl(m_voltageRequest.withOutput(voltageOut));
   }
 
   public void setFocCurrentOutput(double currentOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
   public void setRPMOutputFOC(double rpm) {
-    m_rpmBottom = rpm;
-    m_rpmTop = rpm;
+    m_bottomRpmSetpoint = rpm;
+    m_topRpmSetpoint = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
@@ -131,8 +130,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {
-    m_rpmBottom = rpmBottom;
-    m_rpmTop = rpmTop;
+    m_bottomRpmSetpoint = rpmBottom;
+    m_topRpmSetpoint = rpmTop;
     // Phoenix 6 uses rotations per second for velocity control
     var rpsBottom = rpmBottom / 60.0;
     var rpsTop = rpmTop / 60.0;
@@ -182,11 +181,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getTopRPMsetpoint() {
-    return m_rpmTop;
+    return m_topRpmSetpoint;
   }
 
   public double getBottomRPMsetpoint() {
-    return m_rpmBottom;
+    return m_bottomRpmSetpoint;
   }
 
   private void updateShuffleboard() {}
@@ -199,8 +198,8 @@ public class Shooter extends SubsystemBase {
         "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
-    Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
+    Logger.recordOutput("Shooter/rpmsetpointTop", m_topRpmSetpoint);
+    Logger.recordOutput("Shooter/rpmsetpointBottom", m_bottomRpmSetpoint);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }

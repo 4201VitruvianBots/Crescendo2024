@@ -60,11 +60,12 @@ public class SuperStructureVisualizer implements AutoCloseable {
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, -90));
   private final ShooterVisualizer m_intakeVisualizer = new ShooterVisualizer("intake", m_intake2d);
 
-  private final MechanismLigament2d m_led2d =
-      m_superStructureRoot.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   private final MechanismLigament2d m_shooter2d =
       m_superStructureRoot.append(
           new MechanismLigament2d("superStructure", Units.inchesToMeters(20), 83.442));
+
+  private final MechanismLigament2d m_led2d =
+      m_shooter2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 186));
 
   private final ArmVisualizer m_armVisualizer = new ArmVisualizer("m_arm2d");
   private final MechanismLigament2d m_arm2d =
