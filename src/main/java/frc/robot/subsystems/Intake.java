@@ -27,8 +27,8 @@ public class Intake extends SubsystemBase {
   private boolean m_isIntaking = false;
 
   // Disabled until sensor installed
-  DigitalInput distanceSensorDigitalInput = new DigitalInput(0);
-  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(1);
+  DigitalInput distanceSensorDigitalInput = new DigitalInput(2);
+  DigitalInput distanceSensorDigitalInput2 = new DigitalInput(3);
 
   // private STATE m_state = STATE.NONE;
 
@@ -81,6 +81,12 @@ public class Intake extends SubsystemBase {
 
   public boolean getIntakeState() {
     return m_isIntaking;
+  }
+  public boolean getIntaked() {
+    if (m_isIntaking && (getSensorInput1() || getSensorInput2())) {
+      return true;
+    }
+    else return false;
   }
 
   public boolean getSensorInput1() {
