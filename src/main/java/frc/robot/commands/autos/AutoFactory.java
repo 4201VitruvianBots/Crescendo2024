@@ -6,7 +6,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.drive.SetRobotPose;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.intake.AutoAmpIntake;
+import frc.robot.commands.intake.AutoRunAmpTakeTwo;
+import frc.robot.constants.AMPSHOOTER;
+import frc.robot.constants.INTAKE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -17,11 +21,20 @@ import java.util.ArrayList;
 
 public class AutoFactory {
   public static class PathFactory {
-    private ArrayList<PathPlannerPath> pathList = new ArrayList<>();
-    private ArrayList<Command> commandList = new ArrayList<>();
+    CommandSwerveDrivetrain m_swerveDrive;
+    FieldSim m_fieldSim;
+
+    private final ArrayList<PathPlannerPath> pathList = new ArrayList<>();
+    private final ArrayList<Command> commandList = new ArrayList<>();
     private int pathCounter;
 
     public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames) {
+      this(swerveDrive, pathNames, null);
+    }
+
+    public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames, FieldSim fieldSim) {
+      m_swerveDrive = swerveDrive;
+      m_fieldSim = fieldSim;
       for (var filename : pathNames) {
         var path = PathPlannerPath.fromPathFile(filename);
         var command =
@@ -46,45 +59,70 @@ public class AutoFactory {
     public Pose2d getStartingPose() {
       return pathList.get(0).getPreviewStartingHolonomicPose();
     }
-  }
 
-  public static SequentialCommandGroup createAutoInit(
-      CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory) {
-    return new AutoInit(swerveDrive, pathFactory);
-  }
-
-  public static SequentialCommandGroup createAutoInit(
-      CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory, FieldSim fieldSim) {
-    return new AutoInit(swerveDrive, pathFactory, fieldSim);
-  }
-
-  private static class AutoInit extends SequentialCommandGroup {
-    static SwerveRequest.PointWheelsAt swervePointRequest = new SwerveRequest.PointWheelsAt();
-
-    public AutoInit(CommandSwerveDrivetrain swerveDrive, AutoFactory.PathFactory pathFactory) {
-      addCommands(
-          new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
-          new InstantCommand(
-              () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+    public SequentialCommandGroup createAutoInit() {
+      return new AutoInit(m_swerveDrive, this, m_fieldSim);
     }
 
-    public AutoInit(
-        CommandSwerveDrivetrain swerveDrive,
-        AutoFactory.PathFactory pathFactory,
-        FieldSim fieldSim) {
-      addCommands(
-          new PlotAutoPath(fieldSim, "", pathFactory.getPathList()),
-          new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
-          new InstantCommand(
-              () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+    private class AutoInit extends SequentialCommandGroup {
+      static SwerveRequest.PointWheelsAt swervePointRequest = new SwerveRequest.PointWheelsAt();
+
+      public AutoInit(
+          CommandSwerveDrivetrain swerveDrive,
+          AutoFactory.PathFactory pathFactory,
+          FieldSim fieldSim) {
+        Command plotAutoPath;
+        if (fieldSim != null)
+          plotAutoPath = new PlotAutoPath(fieldSim, "", pathFactory.getPathList());
+        else plotAutoPath = new WaitCommand(0);
+
+        addCommands(
+            plotAutoPath,
+            //            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
+            new InstantCommand(
+                () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
+      }
     }
   }
 
   public static class ShootFactory {
-    public ShootFactory(Intake intake, AmpShooter ampShooter, Shooter shooter) {}
+    private final Intake m_Intake;
+    private final AmpShooter m_AmpShooter;
+    private final Shooter m_Shooter;
+
+    public ShootFactory(Intake intake, AmpShooter ampShooter, Shooter shooter) {
+      m_Intake = intake;
+      m_AmpShooter = ampShooter;
+      m_Shooter = shooter;
+    }
+
+    public Command generateShootCommand() {
+      return new AutoRunAmpTakeTwo(
+          m_Intake,
+          m_AmpShooter,
+          INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+          INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+          AMPSHOOTER.STATE.SHOOTING.get(),
+          m_Shooter);
+    }
   }
 
   public static class IntakeFactory {
-    public IntakeFactory(Intake intake, AmpShooter ampShooter) {}
+    private final Intake m_Intake;
+    private final AmpShooter m_AmpShooter;
+
+    public IntakeFactory(Intake intake, AmpShooter ampShooter) {
+      m_Intake = intake;
+      m_AmpShooter = ampShooter;
+    }
+
+    public Command generateIntakeCommand() {
+      return new AutoAmpIntake(
+          m_Intake,
+          INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+          INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+          m_AmpShooter,
+          AMPSHOOTER.STATE.INTAKING.get());
+    }
   }
 }

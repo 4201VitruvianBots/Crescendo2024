@@ -4,14 +4,12 @@
 
 package frc.robot.commands.drive;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
-import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
@@ -21,12 +19,13 @@ import java.util.function.DoubleSupplier;
 public class DriveAndAimAtSpeaker extends Command {
   private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   private final Vision m_vision;
+
+  private final PIDController m_PidController =
+      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+  Translation2d m_goal = new Translation2d();
+
   private final DoubleSupplier m_throttleInput;
   private final DoubleSupplier m_turnInput;
-  private final PIDController m_PidController =
-      new PIDController(SWERVE.DRIVE.kP_Theta, SWERVE.DRIVE.kI_Theta, SWERVE.DRIVE.kD_Theta);
-  Translation2d m_goal = new Translation2d();
-  double finalTurn = 0.0;
 
   /** Creates a new rotateRobotToGoal. */
   public DriveAndAimAtSpeaker(
@@ -62,16 +61,11 @@ public class DriveAndAimAtSpeaker extends Command {
         m_PidController.calculate(
             m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),
             setPoint.getAngle().getRadians());
-    finalTurn =
-        -MathUtil.clamp(
-            turnRate,
-            -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
-            SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
     m_SwerveDrivetrain.setChassisSpeedControl(
         new ChassisSpeeds(
             m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
             m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond, // strafe input
-            finalTurn));
+            turnRate));
   }
 
   // Called once the command ends or is interrupted.

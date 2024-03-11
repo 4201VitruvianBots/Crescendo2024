@@ -48,7 +48,7 @@ public class TrajectoryUtils {
         swerveDrive::setChassisSpeedControlNormal,
         new HolonomicPathFollowerConfig(
             new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-            new PIDConstants(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
+            new PIDConstants(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
             maxSpeed,
             //            0.898744,
             SWERVE.DRIVE.kDriveBaseRadius,
@@ -56,27 +56,4 @@ public class TrajectoryUtils {
         () -> manualFlip || Controls.isRedAlliance(),
         swerveDrive);
   }
-
-  //  public static Command generateChoreoCommand(
-  //      CommandSwerveDrivetrain swerveDrive, String pathName, double maxSpeed, boolean flipPath) {
-  //    ChoreoTrajectory traj = Choreo.getTrajectory(pathName);
-  //
-  //    return generateChoreoCommand(swerveDrive, traj, maxSpeed, flipPath);
-  //  }
-  //
-  //  public static Command generateChoreoCommand(
-  //      CommandSwerveDrivetrain swerveDrive,
-  //      ChoreoTrajectory traj,
-  //      double maxSpeed,
-  //      boolean flipPath) {
-  //    return Choreo.choreoSwerveCommand(
-  //        traj,
-  //        () -> swerveDrive.getState().Pose,
-  //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-  //        new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-  //        new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta),
-  //        swerveDrive::setChassisSpeedControlNormal,
-  //        () -> flipPath,
-  //        swerveDrive);
-  //  }
 }

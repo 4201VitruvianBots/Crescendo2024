@@ -50,14 +50,14 @@ public class Intake extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor1, config);
-    TalonFXConfiguration configback = new TalonFXConfiguration();
-    configback.Slot0.kP = INTAKE.kP;
-    configback.Slot0.kI = INTAKE.kI;
-    configback.Slot0.kD = INTAKE.kD;
-    configback.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
-    configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    CtreUtils.configureTalonFx(intakeMotor2, configback);
+    TalonFXConfiguration configBack = new TalonFXConfiguration();
+    configBack.Slot0.kP = INTAKE.kP;
+    configBack.Slot0.kI = INTAKE.kI;
+    configBack.Slot0.kD = INTAKE.kD;
+    configBack.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
+    configBack.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    configBack.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    CtreUtils.configureTalonFx(intakeMotor2, configBack);
 
     SmartDashboard.putData(this);
   }
@@ -86,13 +86,23 @@ public class Intake extends SubsystemBase {
   public boolean getSensorInput1() {
     // Disabled until sensor installed
     return !distanceSensorDigitalInput.get();
-    // return false;
   }
 
   public boolean getSensorInput2() {
     // Disabled until sensor installed
     return !distanceSensorDigitalInput2.get();
-    // return false;
+  }
+
+  public boolean checkEitherIntakeSensorActive() {
+    return getSensorInput1() || getSensorInput2();
+  }
+
+  public boolean checkBothIntakeSensorActive() {
+    return getSensorInput1() && getSensorInput2();
+  }
+
+  public boolean checkBothIntakeSensorClear() {
+    return !getSensorInput1() && !getSensorInput2();
   }
 
   public void updateSmartDashboard() {}
@@ -112,7 +122,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-    if (!ROBOT.disableLogging) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override
