@@ -24,8 +24,8 @@ public class AutoFactory {
     CommandSwerveDrivetrain m_swerveDrive;
     FieldSim m_fieldSim;
 
-    private ArrayList<PathPlannerPath> pathList = new ArrayList<>();
-    private ArrayList<Command> commandList = new ArrayList<>();
+    private final ArrayList<PathPlannerPath> pathList = new ArrayList<>();
+    private final ArrayList<Command> commandList = new ArrayList<>();
     private int pathCounter;
 
     public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames) {
@@ -86,9 +86,9 @@ public class AutoFactory {
   }
 
   public static class ShootFactory {
-    private Intake m_Intake;
-    private AmpShooter m_AmpShooter;
-    private Shooter m_Shooter;
+    private final Intake m_Intake;
+    private final AmpShooter m_AmpShooter;
+    private final Shooter m_Shooter;
 
     public ShootFactory(Intake intake, AmpShooter ampShooter, Shooter shooter) {
       m_Intake = intake;
@@ -108,8 +108,8 @@ public class AutoFactory {
   }
 
   public static class IntakeFactory {
-    private Intake m_Intake;
-    private AmpShooter m_AmpShooter;
+    private final Intake m_Intake;
+    private final AmpShooter m_AmpShooter;
 
     public IntakeFactory(Intake intake, AmpShooter ampShooter) {
       m_Intake = intake;

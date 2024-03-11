@@ -50,14 +50,14 @@ public class Intake extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(intakeMotor1, config);
-    TalonFXConfiguration configback = new TalonFXConfiguration();
-    configback.Slot0.kP = INTAKE.kP;
-    configback.Slot0.kI = INTAKE.kI;
-    configback.Slot0.kD = INTAKE.kD;
-    configback.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
-    configback.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configback.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    CtreUtils.configureTalonFx(intakeMotor2, configback);
+    TalonFXConfiguration configBack = new TalonFXConfiguration();
+    configBack.Slot0.kP = INTAKE.kP;
+    configBack.Slot0.kI = INTAKE.kI;
+    configBack.Slot0.kD = INTAKE.kD;
+    configBack.Feedback.SensorToMechanismRatio = INTAKE.gearRatio;
+    configBack.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    configBack.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    CtreUtils.configureTalonFx(intakeMotor2, configBack);
 
     SmartDashboard.putData(this);
   }

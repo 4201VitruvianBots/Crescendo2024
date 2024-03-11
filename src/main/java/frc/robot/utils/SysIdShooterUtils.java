@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.subsystems.Shooter;
 
 public class SysIdShooterUtils {
-  final TorqueCurrentFOC m_TorqueCurrentFOC = new TorqueCurrentFOC(0);
-
   public static SysIdRoutine createShooterRoutines(Shooter shooter) {
     return new SysIdRoutine(
         new SysIdRoutine.Config(

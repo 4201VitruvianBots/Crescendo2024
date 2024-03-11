@@ -34,7 +34,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private final double startPointY = 0.2;
 
   private final Mechanism2d m_mech2d =
-      new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
+      new Mechanism2d(ROBOT.driveBaseLength * 2, ROBOT.driveBaseLength * 2);
 
   private final MechanismRoot2d m_drivebaseRoot2d =
       m_mech2d.getRoot("startRoot", startPointX, startPointY);
@@ -47,7 +47,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   private final MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(
-          new MechanismLigament2d("drivebase", INTAKE.intakeLength + ROBOT.drivebaseLength, 0));
+          new MechanismLigament2d("drivebase", INTAKE.intakeLength + ROBOT.driveBaseLength, 0));
   private final MechanismLigament2d m_limelightA2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(

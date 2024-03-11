@@ -14,7 +14,6 @@ import frc.robot.subsystems.Shooter;
 public class AutoRunAmpTakeTwo extends Command {
   /** Creates a new AutoRunIntake. */
   Intake m_intake;
-
   AmpShooter m_ampShooter;
   Shooter m_shooter;
 

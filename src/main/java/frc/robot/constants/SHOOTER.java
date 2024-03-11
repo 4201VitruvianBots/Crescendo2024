@@ -4,16 +4,13 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class SHOOTER {
+  public static final double kPBottom = 7;
+  public static final double kIBottom = 0;
+  public static final double kDBottom = 0;
 
-  public static final int kSlotIdx = 0;
-
-  public static final double topkP = 7;
-  public static final double topkI = 0;
-  public static final double topkD = 0;
-
-  public static final double bottomkP = 7;
-  public static final double bottomkI = 0;
-  public static final double bottomkD = 0;
+  public static final double kPTop = 7;
+  public static final double kITop = 0;
+  public static final double kDTop = 0;
 
   public static final double kS = 0.0;
   public static final double kV = 0.0;
@@ -21,10 +18,10 @@ public final class SHOOTER {
 
   public static final double kShooterAngle = Units.degreesToRadians(35);
 
-  public static final double kTopFlywheelDistanceFromIntake = Units.inchesToMeters(22.4);
-  public static final double kTopFlywheelDistanceFromDriveBase = Units.inchesToMeters(11.5);
   public static final double kBottomFlywheelDistanceFromIntake = Units.inchesToMeters(25.9);
   public static final double kBottomFlywheelDistanceFromDriveBase = Units.inchesToMeters(6.6);
+  public static final double kTopFlywheelDistanceFromIntake = Units.inchesToMeters(22.4);
+  public static final double kTopFlywheelDistanceFromDriveBase = Units.inchesToMeters(11.5);
 
   public static final double gearRatioBottom = 20.0 / 28.0;
   public static final DCMotor ShooterBottomGearbox = DCMotor.getKrakenX60(1);
@@ -80,31 +77,4 @@ public final class SHOOTER {
   }
 
   public static final double NoteVelocity = 0; // add note velocity
-
-  public static class SPEAKER {
-
-    public static final double BlueSpeakerTLY = 6.1478414;
-    public static final double BlueSpeakerTLX = 0.464947;
-
-    public static final double BlueSpeakerTRY = 5.0232564;
-    public static final double BlueSpeakerTRX = 0.464947;
-
-    public static final double BlueSpeakerBLY = 6.1478414;
-    public static final double BlueSpeakerBLX = 0;
-
-    public static final double BlueSpeakerBRY = 5.0232564;
-    public static final double BlueSpeakerBRX = 0;
-
-    public static final double RedSpeakerTLY = 6.1478414;
-    public static final double RedSpeakerTLX = 16.0697672;
-
-    public static final double RedSpeakerTRY = 5.0232564;
-    public static final double RedSpeakerTRX = 16.0697672;
-
-    public static final double RedSpeakerBLY = 6.1478414;
-    public static final double RedSpeakerBLX = 16.5410642;
-
-    public static final double RedSpeakerBRY = 5.0232564;
-    public static final double RedSpeakerBRX = 16.5410642;
-  }
 }

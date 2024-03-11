@@ -14,7 +14,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class AutoClimbSequence extends SequentialCommandGroup {
 
   public AutoClimbSequence(
-      AmpShooter ampshooter, CommandSwerveDrivetrain swerveDrive, Arm arm, Climber climber) {
+          CommandSwerveDrivetrain swerveDrive, Climber climber, Arm arm, AmpShooter ampshooter) {
 
     addCommands(
 

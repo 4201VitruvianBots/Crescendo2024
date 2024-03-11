@@ -12,8 +12,9 @@ import frc.robot.subsystems.Shooter;
 public class AutoRunAll extends Command {
   Intake m_intake;
   AmpShooter m_ampShooter;
-  double m_speed;
   Shooter m_shooter;
+
+  double m_speed;
   double m_speed2;
   double m_ampSpeed;
   double m_rpm;

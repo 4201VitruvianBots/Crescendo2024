@@ -31,6 +31,7 @@ public class RunKicker extends Command {
     m_speed = speed;
     m_speed2 = speed2;
     m_ampSpeed = ampSpeed;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake, m_ampShooter);
   }
@@ -42,7 +43,6 @@ public class RunKicker extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     m_intake.setSpeed(m_speed, m_speed2);
     m_ampShooter.setPercentOutput(m_ampSpeed);
   }
