@@ -316,17 +316,18 @@ public class RobotContainer {
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
         "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption(
-        "IntakeTestVision",
-        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
-
     m_autoChooser.addOption(
         "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+
+    // Test autos
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+            "IntakeTestVision",
+            new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TestAutoShoot",
         new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
