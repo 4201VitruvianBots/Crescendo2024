@@ -142,7 +142,7 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case UNREVED:
-          setPattern(LED.white, 0, 0.5, ANIMATION_TYPE.ColorFlow);
+          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);

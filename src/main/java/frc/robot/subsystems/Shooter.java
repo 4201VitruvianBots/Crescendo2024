@@ -96,13 +96,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean getReved() {
-    if (m_isShooting) {
+    if (getShootingState()) {
       return (getRpmFollower() >= 7000 && getRpmMaster() >= 7000);
     } else return false;
   }
 
   public boolean getUnreved() {
-    if (m_isShooting) {
+    if (getShootingState()) {
       return (getRpmFollower() < 7000 && getRpmMaster() < 7000);
     } else return false;
   }

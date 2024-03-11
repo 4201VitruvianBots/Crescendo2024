@@ -52,8 +52,8 @@ public class GetSubsystemStates extends Command {
   @Override
   public void execute() {
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
-    isReved = m_shooter.getIsShooting();
-    isUnreved = m_shooter.getIsShooting(); // Done
+    isReved = m_shooter.getReved();
+    isUnreved = m_shooter.getUnreved(); // Done
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
@@ -70,7 +70,7 @@ public class GetSubsystemStates extends Command {
     } else if (isReved) {
       m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
     } else if (isUnreved) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
+      m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
     } else if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
     } else if (isEnabled) {
