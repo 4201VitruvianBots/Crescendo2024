@@ -412,16 +412,16 @@ public class RobotContainer {
 
     m_sysidChooser.addOption(
         "ShooterQuasistaticReverse", shooterSysId.quasistatic(SysIdRoutine.Direction.kReverse));
-    
+
     m_sysidChooser.addOption(
         "ArmDynamicForward", armSysId.dynamic(SysIdRoutine.Direction.kForward));
-    
+
     m_sysidChooser.addOption(
         "ArmDynamicReverse", armSysId.dynamic(SysIdRoutine.Direction.kReverse));
-        
+
     m_sysidChooser.addOption(
         "ArmQuasistaticForward", armSysId.quasistatic(SysIdRoutine.Direction.kForward));
-        
+
     m_sysidChooser.addOption(
         "ArmQuasistaticReverse", armSysId.quasistatic(SysIdRoutine.Direction.kReverse));
   }
