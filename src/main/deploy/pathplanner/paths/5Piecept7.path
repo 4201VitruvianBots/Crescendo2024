@@ -20,8 +20,8 @@
         "y": 6.45267093672561
       },
       "prevControl": {
-        "x": 3.5273677394715697,
-        "y": 6.792285196553275
+        "x": 3.785811711383495,
+        "y": 6.524611082787351
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,15 +32,15 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
     "rotation": 21.16,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "5PieceAutoNear",

@@ -39,8 +39,8 @@ public class SetShooterRPMSetpoint extends Command {
 
   @Override
   public void execute() {
-    // m_shooter.setRPMOutputFOC(m_RPMOutput);
-    m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
+    m_shooter.setRPMOutputFOC(m_RPMOutputBottom);
+    // m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
     if ((m_shooter.getRpmMaster() >= (m_RPMOutputBottom - allowableError))
         && (m_shooter.getRpmFollower() >= m_RPMOutputTop - allowableError)) {
       m_hid.setRumble(RumbleType.kBothRumble, 0.4);

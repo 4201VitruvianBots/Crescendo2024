@@ -34,7 +34,8 @@ public final class AMPSHOOTER {
     NONE(0),
     INTAKING_SLOW(0.1),
     INTAKING(0.6),
-    INTAKING1(0.85);
+    INTAKING1(0.85),
+    SHOOTING(0.75);
     private final double value;
 
     STATE(final double value) {

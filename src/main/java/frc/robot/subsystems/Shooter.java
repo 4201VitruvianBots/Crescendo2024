@@ -125,7 +125,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpm) {
-    setRPMOutput(rpm, rpm);
+    // setRPMOutput(rpm, rpm);
+    setRPMOutputFOC(rpm);
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {
@@ -177,6 +178,14 @@ public class Shooter extends SubsystemBase {
 
   public void setTestMode(boolean mode) {
     m_testMode = mode;
+  }
+
+  public double getTopRPMsetpoint() {
+    return m_topRpmSetpoint;
+  }
+
+  public double getBottomRPMsetpoint() {
+    return m_bottomRpmSetpoint;
   }
 
   private void updateShuffleboard() {}

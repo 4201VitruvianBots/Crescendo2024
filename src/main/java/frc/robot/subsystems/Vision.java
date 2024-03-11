@@ -56,7 +56,6 @@ public class Vision extends SubsystemBase {
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
-
   private boolean m_localized;
 
   public Vision() {
@@ -70,8 +69,8 @@ public class Vision extends SubsystemBase {
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
-      cameraProp.setCalibError(0.35, 0.10);
-      cameraProp.setFPS(45);
+      cameraProp.setCalibError(0.80, 0.215);
+      cameraProp.setFPS(24);
       cameraProp.setAvgLatencyMs(100);
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
@@ -168,11 +167,16 @@ public class Vision extends SubsystemBase {
     return m_localized;
   }
 
+  public void resetInitialLocalization() {
+    m_localized = false;
+  }
+
   private void updateAngleToSpeaker() {
     if (m_swerveDriveTrain != null) {
       if (DriverStation.isDisabled()) {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
+
       m_swerveDriveTrain.setAngleToSpeaker(
           m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
     }

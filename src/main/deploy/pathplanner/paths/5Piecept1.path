@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3842846515935527,
-        "y": 6.72
+        "x": 0.7,
+        "y": 6.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4779273986067751,
-        "y": 6.755086121641151
+        "x": 0.7500000000000001,
+        "y": 6.736602540378445
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SubwooferTop"
     },
     {
       "anchor": {
-        "x": 2.5,
-        "y": 7.0
+        "x": 2.8,
+        "y": 7.7
       },
       "prevControl": {
-        "x": 2.4063572529867776,
-        "y": 6.96491387835885
+        "x": 2.715195190384357,
+        "y": 7.647008073576679
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,21 +32,21 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.2,
+    "rotation": 32.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "5PieceAutoNear",
   "previewStartingState": {
-    "rotation": 25.2,
+    "rotation": 60.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

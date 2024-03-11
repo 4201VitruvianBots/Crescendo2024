@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
 import frc.robot.constants.FIELD;
@@ -17,7 +18,9 @@ import org.littletonrobotics.junction.Logger;
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
   private CommandSwerveDrivetrain m_swerveDrive;
+  private Intake m_intake;
   private Arm m_arm;
+  private Vision m_vision;
   private Pose2d m_startPose = new Pose2d(-1, -1, new Rotation2d());
   private static DriverStation.Alliance m_allianceColor = DriverStation.Alliance.Red;
 
@@ -40,8 +43,16 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     m_swerveDrive = swerveDrive;
   }
 
+  public void registerIntake(Intake intake) {
+    m_intake = intake;
+  }
+
   public void registerArm(Arm arm) {
     m_arm = arm;
+  }
+
+  public void registerVision(Vision vision) {
+    m_vision = vision;
   }
 
   /**
@@ -69,8 +80,12 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     return m_initState;
   }
 
-  public static void resetInitState() {
+  public void resetInitState() {
     m_initState = false;
+
+    if (m_vision != null) {
+      m_vision.resetInitialLocalization();
+    }
   }
 
   public Pose2d getStartPose() {
@@ -111,6 +126,11 @@ public class Controls extends SubsystemBase implements AutoCloseable {
         }
       }
 
+      // Check if the intake detects a note
+      if (m_intake != null) {
+        m_initState = !m_intake.checkEitherIntakeSensorActive();
+      }
+
       // Check if the robot arm was initialized
       if (m_arm != null) {
         // TODO: Check if this is valid
@@ -137,6 +157,25 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   public void updateStartPose(String autoName) {
     if (autoName != null && AUTO_POSE_MAP.containsKey(autoName)) {
       m_startPose = FIELD.allianceFlip(AUTO_POSE_MAP.get(autoName).get());
+    }
+
+    if (m_swerveDrive != null) {
+      var deltaTranslation =
+          m_startPose.getTranslation().minus(m_swerveDrive.getState().Pose.getTranslation());
+      var deltaRotation =
+          m_startPose.getRotation().minus(m_swerveDrive.getState().Pose.getRotation());
+
+      Logger.recordOutput("Controls/startDeltaTranslation", deltaTranslation);
+      SmartDashboard.putNumber("Controls/robotPoseX", m_swerveDrive.getState().Pose.getX());
+      SmartDashboard.putNumber("Controls/robotPoseY", m_swerveDrive.getState().Pose.getY());
+      SmartDashboard.putNumber(
+          "Controls/robotPoseDegrees", m_swerveDrive.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("Controls/startPoseX", m_startPose.getX());
+      SmartDashboard.putNumber("Controls/startPoseY", m_startPose.getY());
+      SmartDashboard.putNumber("Controls/startPoseDegrees", m_startPose.getRotation().getDegrees());
+      SmartDashboard.putNumber("Controls/startDeltaTranslationX", deltaTranslation.getX());
+      SmartDashboard.putNumber("Controls/startDeltaTranslationY", deltaTranslation.getY());
+      SmartDashboard.putNumber("Controls/startDeltaRotation", deltaRotation.getDegrees());
     }
   }
 

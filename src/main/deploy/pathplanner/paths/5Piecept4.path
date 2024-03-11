@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.35,
-        "y": 7.46
+        "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
         "x": 8.45,
-        "y": 7.46
+        "y": 7.6
       },
       "isLocked": false,
       "linkedName": "FarEnd1"
@@ -32,15 +32,15 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
     "rotation": 19.03,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "5PieceAutoNear",
@@ -48,5 +48,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -86,13 +86,23 @@ public class Intake extends SubsystemBase {
   public boolean getSensorInput1() {
     // Disabled until sensor installed
     return !distanceSensorDigitalInput.get();
-    // return false;
   }
 
   public boolean getSensorInput2() {
     // Disabled until sensor installed
     return !distanceSensorDigitalInput2.get();
-    // return false;
+  }
+
+  public boolean checkEitherIntakeSensorActive() {
+    return getSensorInput1() || getSensorInput2();
+  }
+
+  public boolean checkBothIntakeSensorActive() {
+    return getSensorInput1() && getSensorInput2();
+  }
+
+  public boolean checkBothIntakeSensorClear() {
+    return !getSensorInput1() && !getSensorInput2();
   }
 
   public void updateSmartDashboard() {}

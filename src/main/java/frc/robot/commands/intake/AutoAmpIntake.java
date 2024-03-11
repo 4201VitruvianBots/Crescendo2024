@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 
-public class AmpIntake extends Command {
+public class AutoAmpIntake extends Command {
   private final Intake m_intake;
   private final AmpShooter m_ampShooter;
   private final double m_speed;
@@ -16,7 +16,7 @@ public class AmpIntake extends Command {
   private final double m_ampSpeed;
 
   /** Creates a new RunIntake. */
-  public AmpIntake(
+  public AutoAmpIntake(
       Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
     m_intake = intake;
     m_ampShooter = ampShooter;
@@ -30,31 +30,21 @@ public class AmpIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setIntakeState(true);
+    m_intake.setSpeed(m_speed, m_speed2);
+    m_ampShooter.setAutoPercentOutput(m_ampSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_intake.setSpeed(m_speed, m_speed2);
-    if (m_intake.getIntakeState() && (m_intake.checkEitherIntakeSensorActive())) {
-      m_ampShooter.setPercentOutput(0);
-    } else {
-      m_ampShooter.setPercentOutput(m_ampSpeed);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intake.setSpeed(0.0, 0.0);
-    m_ampShooter.setPercentOutput(0);
-    m_intake.setIntakeState(false);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

@@ -48,7 +48,8 @@ public class AutoShootNStrafe extends Command {
   private double allowableError = 300;
 
   private final PIDController m_turnController =
-      new PIDController(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta);
+      new PIDController(
+          SWERVE.DRIVE.kAutoP_Theta, SWERVE.DRIVE.kAutoI_Theta, SWERVE.DRIVE.kAutoD_Theta);
   private Translation2d m_target = new Translation2d();
 
   private double m_targetx;
