@@ -43,7 +43,7 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_white = 0;
   private double m_brightness = 0;
   private double m_speed = 0;
-  private SUBSYSTEM_STATES currentRobotState = SUBSYSTEM_STATES.DISABLED;
+  private SUBSYSTEM_STATES currentRobotState = SUBSYSTEM_STATES.SINGLEFADE;
   private boolean setSolid;
   private Animation m_toAnimate = null;
 
@@ -138,27 +138,37 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case REVED:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
+        case SOLID:
+          setPattern(LED.white, 125, 0, ANIMATION_TYPE.Solid);
           break;
-        case UNREVED:
-          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
+        case COLORFLOW:
+          setPattern(LED.blue, 0, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
-        case INTAKING:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
+        case STROBE:
+          setPattern(LED.orange, 0, 0.5, ANIMATION_TYPE.Strobe);
           break;
-        case ENABLED:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Green
+        case FIRE:
+          setPattern(LED.yellow, 0, 0, ANIMATION_TYPE.Fire); // Solid Green
           break;
-        case SETUP_READY:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe);
+        case RAINBOW:
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Rainbow);
           break;
-        case SETUP_LOCALIZED:
-          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Strobe);
+        case RGBFADE:
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.RgbFade);
           break;
-        case DISABLED:
-          setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
+        case SINGLEFADE:
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.SingleFade); // Solid Red
           break;
+          //    case LARSON:
+          // setPattern(LED.green, 0, 0, ANIMATION_TYPE.Larson); // Solid Red
+          // break;
+          //  case TWINKLE:
+          // setPattern(LED.green, 0, 0, ANIMATION_TYPE.Twinkle); // Solid Red
+          // break;
+          //  case TWINKLEOFF:
+          // setPattern(LED.green, 0, 0, ANIMATION_TYPE.TwinkleOff); // Solid Red
+          // break;
+        
         default:
           break;
       }

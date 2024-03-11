@@ -35,12 +35,13 @@ import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.intake.AmpOuttake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
-import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.led.SetSubsystemStates;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
+import frc.robot.constants.LED.SUBSYSTEM_STATES;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
@@ -162,136 +163,146 @@ public class RobotContainer {
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
-    m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision));
-  }
+ }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    xboxController.a().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.SOLID));
+    xboxController.b().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.COLORFLOW));
+        xboxController.x().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.STROBE));
+    xboxController.y().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.FIRE));
+    xboxController.povLeft().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.RAINBOW));
+    xboxController.povRight().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.RGBFADE));
+    xboxController.povUp().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.SINGLEFADE));
+    // xboxController.povDown().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.LARSON));
+    // xboxController.rightBumper().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.TWINKLE));
+    //     xboxController.leftBumper().whileTrue(new SetSubsystemStates(m_led, SUBSYSTEM_STATES.TWINKLEOFF));
 
-    //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
-    //    SASButton.whileTrue(
-    //        new AutoShootNStrafe(
-    //            m_swerveDrive,
-    //            m_telemetry,
-    //            m_ampShooter,
-    //            m_shooter,
-    //            m_intake,
-    //            () -> leftJoystick.getRawAxis(1),
-    //            () -> leftJoystick.getRawAxis(0),
-    //            () -> rightJoystick.getRawAxis(0),
-    //            0,
-    //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-    //            STATE.INTAKING.get(),
-    //            RPM_SETPOINT.MAX.get()));
+// var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    // aimNoteButton.whileTrue(
-    //     new DriveAndAimAtNote(
-    //         m_swerveDrive,
-    //         m_vision,
-    //         () -> -leftJoystick.getRawAxis(1),
-    //         () -> -leftJoystick.getRawAxis(0),
-    //         () -> rightJoystick.getRawAxis(0)));
+    // var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    xboxController
-        .b()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter,
-                xboxController,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get())); // fast speaker
+    // //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    // //    SASButton.whileTrue(
+    // //        new AutoShootNStrafe(
+    // //            m_swerveDrive,
+    // //            m_telemetry,
+    // //            m_ampShooter,
+    // //            m_shooter,
+    // //            m_intake,
+    // //            () -> leftJoystick.getRawAxis(1),
+    // //            () -> leftJoystick.getRawAxis(0),
+    // //            () -> rightJoystick.getRawAxis(0),
+    // //            0,
+    // //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    // //            STATE.INTAKING.get(),
+    // //            RPM_SETPOINT.MAX.get()));
 
-    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
-    xboxController
-        .x()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter,
-                xboxController,
-                RPM_SETPOINT.SPEAKERBOTTOM.get(),
-                RPM_SETPOINT.SPEAKERBOTTOM.get()));
-    // toggles the climb sequence when presses and cuts the command when pressed again
-    //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
-
-    // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
+    // // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // // aimNoteButton.whileTrue(
+    // //     new DriveAndAimAtNote(
+    // //         m_swerveDrive,
+    // //         m_vision,
+    // //         () -> -leftJoystick.getRawAxis(1),
+    // //         () -> -leftJoystick.getRawAxis(0),
+    // //         () -> rightJoystick.getRawAxis(0)));
 
     // xboxController
-    //     .y()
+    //     .b()
     //     .whileTrue(
-    //         new ShootNStrafe(
-    //             m_swerveDrive,
-    //             m_ampShooter,
+    //         new SetShooterRPMSetpoint(
     //             m_shooter,
-    //             () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             SHOOTER.RPM_SETPOINT.SPEAKER.get()));
+    //             xboxController,
+    //             RPM_SETPOINT.MAX.get(),
+    //             RPM_SETPOINT.MAX.get())); // fast speaker
 
-    xboxController
-        .rightTrigger()
-        .whileTrue(
-            new RunKicker(
-                m_intake,
-                m_shooter,
-                0.55,
-                0.75,
-                m_ampShooter,
-                AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
-    xboxController
-        .leftTrigger()
-        .whileTrue(
-            new AmpIntake(
-                m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+    // xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+    // xboxController
+    //     .x()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter,
+    //             xboxController,
+    //             RPM_SETPOINT.SPEAKERBOTTOM.get(),
+    //             RPM_SETPOINT.SPEAKERBOTTOM.get()));
+    // // toggles the climb sequence when presses and cuts the command when pressed again
+    // //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    // xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
 
-    xboxController
-        .leftBumper()
-        .whileTrue(
-            new AmpOuttake(
-                m_intake,
-                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
-                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
-                m_ampShooter,
-                AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
-    xboxController
-        .rightBumper()
-        .whileTrue(
-            new RunAmp(
-                m_ampShooter,
-                m_intake,
-                AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
+    // // switch between open loop and close loop
+    // xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
 
-    xboxController
-        .povLeft()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
-    xboxController
-        .povDown()
-        .whileTrue(
-            new AmpIntake(
-                m_intake,
-                INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
-                INTAKE.STATE.BACK_SLOW_REVERSE.get(),
-                m_ampShooter,
-                STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
+    // // xboxController
+    // //     .y()
+    // //     .whileTrue(
+    // //         new ShootNStrafe(
+    // //             m_swerveDrive,
+    // //             m_ampShooter,
+    // //             m_shooter,
+    // //             () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+    // //             () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+    // //             () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
+    // //             SHOOTER.RPM_SETPOINT.SPEAKER.get()));
 
-    xboxController
-        .povUp()
-        .whileTrue(
-            new AmpIntake(
-                m_intake,
-                INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
-                INTAKE.STATE.BACK_SLOW_INTAKING.get(),
-                m_ampShooter,
-                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+    // xboxController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         new RunKicker(
+    //             m_intake,
+    //             m_shooter,
+    //             0.55,
+    //             0.75,
+    //             m_ampShooter,
+    //             AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
+    // xboxController
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new AmpIntake(
+    //             m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+
+    // xboxController
+    //     .leftBumper()
+    //     .whileTrue(
+    //         new AmpOuttake(
+    //             m_intake,
+    //             INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+    //             INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+    //             m_ampShooter,
+    //             AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
+    // xboxController
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new RunAmp(
+    //             m_ampShooter,
+    //             m_intake,
+    //             AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
+
+    // xboxController
+    //     .povLeft()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
+    // xboxController
+    //     .povDown()
+    //     .whileTrue(
+    //         new AmpIntake(
+    //             m_intake,
+    //             INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
+    //             INTAKE.STATE.BACK_SLOW_REVERSE.get(),
+    //             m_ampShooter,
+    //             STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
+
+    // xboxController
+    //     .povUp()
+    //     .whileTrue(
+    //         new AmpIntake(
+    //             m_intake,
+    //             INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
+    //             INTAKE.STATE.BACK_SLOW_INTAKING.get(),
+    //             m_ampShooter,
+    //             AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
   }
 
   private void initSmartDashboard() {

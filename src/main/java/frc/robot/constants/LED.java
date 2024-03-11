@@ -40,14 +40,17 @@ public final class LED {
   public static final Color8Bit turquoise = new Color8Bit(24, 94, 89);
 
   public enum SUBSYSTEM_STATES {
-    DISABLED,
-    SETUP_LOCALIZED,
-    SETUP_READY,
-    ENABLED,
-    INTAKING,
-    REVED,
-    UNREVED,
+    SINGLEFADE,
+    RGBFADE,
+    RAINBOW,
+    FIRE,
+    STROBE,
+    SOLID,
+    COLORFLOW,
     ARMSCORING,
+    TWINKLE,
+    TWINKLEOFF,
+    LARSON,
     CLIMBING
   }
 }
