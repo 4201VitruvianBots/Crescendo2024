@@ -5,12 +5,15 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.autos.AutoFactory.ShootFactory;
+import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.intake.AutoRunAmpTake;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -30,20 +33,12 @@ public class OneWaitAuto extends SequentialCommandGroup {
       Shooter shooter) {
     String[] pathFiles = {"SimpleAuto1", "SimpleAuto2"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
+    var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
+    var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
-    var runIntake =
-        new AutoRunIntake(
-            intake,
-            INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get());
+   
 
-    var shootCommand =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.NONE.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
+   
 
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
@@ -52,7 +47,9 @@ public class OneWaitAuto extends SequentialCommandGroup {
         pathFactory.createAutoInit(),
         Wait,
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        shootCommand,
-        pathFactory.getNextPathCommand().alongWith(runIntake));
-  }
+          new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+          shooterFactory.generateShootCommand().withTimeout(0.75),
+          pathFactory.getNextPathCommand().alongWith( intakeFactory.generateIntakeCommand(), new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)
+          ));
+      }
 }

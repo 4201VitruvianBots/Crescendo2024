@@ -7,11 +7,11 @@ import java.util.Map;
 public final class AUTO {
   public enum START_POSE {
     NONE(new Pose2d(-1, -1, new Rotation2d())),
-    ONE_WAIT_AUTO(new Pose2d(0, 0, new Rotation2d())),
+    ONE_WAIT_AUTO(new Pose2d(0.43, 7, new Rotation2d())),
     FOUR_PIECE_NEAR(new Pose2d(1.4, 4.15, new Rotation2d())),
     FIVE_PIECE(new Pose2d(1.38, 6.6, Rotation2d.fromDegrees(42.50))),
     TWO_PIECE(new Pose2d(0, 0, new Rotation2d())),
-    TWO_PIECE_FAR(new Pose2d(0,0, Rotation2d.fromDegrees(42.50))),
+    TWO_PIECE_FAR(new Pose2d(1.50,3.02, Rotation2d.fromDegrees(42.50))),
     THREE_PIECE_FAR(new Pose2d(1.40, 2.36, new Rotation2d()));
 
     private final Pose2d pose;

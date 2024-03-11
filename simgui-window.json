@@ -1,8 +1,6 @@
 {
   "Docking": {
-    "Data": [
-      "DockNode  ID=0x00000001 Pos=6,349 Size=273,290 Selected=0x2D9B9756"
-    ]
+    "Data": []
   },
   "MainWindow": {
     "GLOBAL": {
@@ -38,7 +36,7 @@
     "###/SmartDashboard/Auto Chooser": {
       "Collapsed": "0",
       "Pos": "275,95",
-      "Size": "361,66"
+      "Size": "307,60"
     },
     "###/SmartDashboard/AutoChooser": {
       "Collapsed": "0",
@@ -48,7 +46,7 @@
     "###/SmartDashboard/Climber": {
       "Collapsed": "0",
       "Pos": "143,354",
-      "Size": "337,110"
+      "Size": "286,98"
     },
     "###/SmartDashboard/Climber2d": {
       "Collapsed": "0",
@@ -67,18 +65,18 @@
     },
     "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
       "Collapsed": "0",
-      "Pos": "418,309",
+      "Pos": "757,478",
       "Size": "785,331"
     },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "19,570",
-      "Size": "235,244"
+      "Size": "202,214"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "388,773",
-      "Size": "1156,316"
+      "Size": "976,239"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -102,14 +100,13 @@
     },
     "###System Joysticks": {
       "Collapsed": "0",
-      "DockId": "0x00000001,0",
       "Pos": "6,349",
-      "Size": "273,290"
+      "Size": "232,254"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "5,150",
-      "Size": "197,215"
+      "Size": "169,194"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -119,7 +116,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "126,152"
+      "Size": "109,134"
     }
   }
 }
