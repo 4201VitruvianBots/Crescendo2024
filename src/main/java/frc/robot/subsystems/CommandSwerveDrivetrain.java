@@ -261,7 +261,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private double calculateRotationToTarget() {
     return m_pidController.calculate(
-                    getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
+        getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
   }
 
   private void updateTargetAngle() {

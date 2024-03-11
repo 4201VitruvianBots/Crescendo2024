@@ -67,7 +67,7 @@ public class Vision extends SubsystemBase {
 
     PortForwarder.add(5800, VISION.CAMERA_SERVER.LIMELIGHTB.toString(), 5800);
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
-            PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+        PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
 
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.

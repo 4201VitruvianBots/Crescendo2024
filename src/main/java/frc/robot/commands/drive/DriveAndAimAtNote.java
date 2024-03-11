@@ -18,7 +18,7 @@ public class DriveAndAimAtNote extends Command {
   private final Vision m_vision;
 
   private final PIDController m_PidController =
-          new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
 
   private final DoubleSupplier m_throttleInput;
   private final DoubleSupplier m_strafeInput;

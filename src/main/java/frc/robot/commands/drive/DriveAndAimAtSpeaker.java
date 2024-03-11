@@ -21,7 +21,7 @@ public class DriveAndAimAtSpeaker extends Command {
   private final Vision m_vision;
 
   private final PIDController m_PidController =
-          new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
   Translation2d m_goal = new Translation2d();
 
   private final DoubleSupplier m_throttleInput;

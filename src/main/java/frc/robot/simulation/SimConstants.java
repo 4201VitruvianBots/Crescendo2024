@@ -1,4 +1,3 @@
-
 package frc.robot.simulation;
 
 public final class SimConstants {
