@@ -326,8 +326,8 @@ public class RobotContainer {
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
-            "IntakeTestVision",
-            new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "IntakeTestVision",
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TestAutoShoot",
         new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())

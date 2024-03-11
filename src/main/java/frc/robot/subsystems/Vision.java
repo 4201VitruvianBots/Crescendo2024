@@ -96,10 +96,6 @@ public class Vision extends SubsystemBase {
     m_fieldSim = fieldSim;
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
-    return photonEstimator.update();
-  }
-
   public boolean checkPoseAgreement(Pose3d a, Pose3d b) {
     var poseDelta = a.minus(b);
 

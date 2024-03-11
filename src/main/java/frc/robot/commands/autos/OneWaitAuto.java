@@ -5,13 +5,8 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.autos.AutoFactory.ShootFactory;
 import frc.robot.commands.drive.AutoSetTrackingState;
-import frc.robot.commands.intake.AutoRunAmpTake;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
-import frc.robot.constants.AMPSHOOTER;
-import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
@@ -36,10 +31,6 @@ public class OneWaitAuto extends SequentialCommandGroup {
     var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
     var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
-   
-
-   
-
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
 
     var Wait = new WaitCommand(8);
@@ -47,9 +38,12 @@ public class OneWaitAuto extends SequentialCommandGroup {
         pathFactory.createAutoInit(),
         Wait,
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-          new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-          shooterFactory.generateShootCommand().withTimeout(0.75),
-          pathFactory.getNextPathCommand().alongWith( intakeFactory.generateIntakeCommand(), new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)
-          ));
-      }
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)));
+  }
 }
