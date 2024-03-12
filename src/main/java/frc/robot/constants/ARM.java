@@ -73,7 +73,7 @@ public final class ARM {
   public static final double mass = Units.lbsToKilograms(7.0);
 
   // 166 degrees of motion
-  
+
   public static final double minAngleDegrees = -36;
 
   public static final double maxAngleDegrees = 130;

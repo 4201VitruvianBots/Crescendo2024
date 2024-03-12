@@ -217,7 +217,9 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
-    Logger.recordOutput("Arm/CanCoderAbsolutePos360", m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360); // Testing
+    Logger.recordOutput(
+        "Arm/CanCoderAbsolutePos360",
+        m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360); // Testing
   }
 
   public void testInit() {
