@@ -163,11 +163,11 @@ public class Arm extends SubsystemBase {
     return m_controlMode;
   }
 
-  public void resetSensorPosition() {
-    resetSensorPositionForButton(ARM.startingAngleDegrees);
+  public void resetSensorPositionHome() {
+    resetSensorPosition(ARM.startingAngleDegrees);
   }
 
-  public void resetSensorPositionForButton(double m_angle) {
+  public void resetSensorPosition(double m_angle) {
     m_armMotor.setPosition(Units.degreesToRotations(m_angle));
     resetMotionMagicState();
   }
