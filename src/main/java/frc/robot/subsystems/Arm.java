@@ -108,7 +108,7 @@ public class Arm extends SubsystemBase {
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     canCoderConfig.MagnetSensor.MagnetOffset = 0.201416015625;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
-    
+
     m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
 
     SmartDashboard.putData(this);
