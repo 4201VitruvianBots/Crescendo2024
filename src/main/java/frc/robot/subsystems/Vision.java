@@ -60,15 +60,16 @@ public class Vision extends SubsystemBase {
   private boolean m_localized;
 
   public Vision() {
+
     // Port Forwarding to access limelight on USB Ethernet
     for (int port = 5800; port <= 5807; port++) {
       PortForwarder.add(port, VISION.CAMERA_SERVER.INTAKE.toString(), port);
     }
 
     PortForwarder.add(5800, VISION.CAMERA_SERVER.LIMELIGHTB.toString(), 5800);
+
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
-
     if (RobotBase.isSimulation()) {
       // Create the vision system simulation which handles cameras and targets on the field.
       visionSim = new VisionSystemSim("main");
@@ -77,8 +78,8 @@ public class Vision extends SubsystemBase {
       // Create simulated camera properties. These can be set to mimic your actual camera.
       var cameraProp = new SimCameraProperties();
       cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(VISION.kLimelightDFOV));
-      cameraProp.setCalibError(0.80, 0.215);
-      cameraProp.setFPS(24);
+      cameraProp.setCalibError(0.35, 0.10);
+      cameraProp.setFPS(45);
       cameraProp.setAvgLatencyMs(100);
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
@@ -185,8 +186,31 @@ public class Vision extends SubsystemBase {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
 
+      // SOTM stuff
+      double VelocityShoot = 11.1;
+      double PositionY = m_swerveDriveTrain.getState().Pose.getY();
+      double PositionX = m_swerveDriveTrain.getState().Pose.getX();
+      double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
+      double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
+      double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
+      double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
+      double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
+      double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+      Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
+      Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
+      double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+
       m_swerveDriveTrain.setAngleToSpeaker(
-          m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+              .getTranslation()
+              .minus(m_goal)
+              .getAngle()
+              .plus(
+                  Rotation2d.fromRadians(
+                      Math.asin(
+                          ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
     }
   }
 

@@ -51,11 +51,15 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private final MechanismLigament2d m_limelightA2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
-              "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+              "LimelightA",
+              VISION.aprilTagLimelightCameraADistanceFromGroundZ - INTAKE.intakeLength,
+              90));
   private final MechanismLigament2d m_limelightB2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
-              "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
+              "LimelightB",
+              VISION.aprilTagLimelightCameraADistanceFromGroundZ - INTAKE.intakeLength,
+              0));
   private final MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, -90));
   private final ShooterVisualizer m_intakeVisualizer = new ShooterVisualizer("intake", m_intake2d);

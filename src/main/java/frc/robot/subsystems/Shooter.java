@@ -28,6 +28,7 @@ public class Shooter extends SubsystemBase {
   private double m_topRpmSetpoint;
   private double m_bottomRpmSetpoint;
   private boolean m_testMode = false;
+  private boolean m_isShooting = false;
   // private double m_headingOffset;
   private double m_desiredPercentOutput;
 
@@ -84,6 +85,26 @@ public class Shooter extends SubsystemBase {
 
   public boolean getIsShooting() {
     return (m_bottomRpmSetpoint != 0 || m_topRpmSetpoint != 0);
+  }
+
+  public void setShootingState(boolean state) {
+    m_isShooting = state;
+  }
+
+  public boolean getShootingState() {
+    return m_isShooting;
+  }
+
+  public boolean getReved() {
+    if (getShootingState()) {
+      return (getRpmFollower() >= 7000 && getRpmMaster() >= 7000);
+    } else return false;
+  }
+
+  public boolean getUnreved() {
+    if (getShootingState()) {
+      return (getRpmFollower() < 7000 && getRpmMaster() < 7000);
+    } else return false;
   }
 
   public boolean getZoneState() {
