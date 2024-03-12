@@ -39,25 +39,9 @@
         "x": 2.740475435167519,
         "y": 4.224557292237689
       },
-      "nextControl": {
-        "x": 2.9195245648324812,
-        "y": 4.13544270776231
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.51,
-        "y": 4.83
-      },
-      "prevControl": {
-        "x": 2.1850610515379785,
-        "y": 4.945917137854385
-      },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "4shootend2"
+      "linkedName": "4shoot2"
     }
   ],
   "rotationTargets": [],
@@ -71,7 +55,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -5.0,
+    "rotation": -26.75007473675458,
     "rotateFast": false
   },
   "reversed": false,
