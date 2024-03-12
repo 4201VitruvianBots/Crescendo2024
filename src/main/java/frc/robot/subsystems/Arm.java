@@ -25,7 +25,6 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -107,13 +106,12 @@ public class Arm extends SubsystemBase {
     CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
     canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = -0.0009765625;
+    canCoderConfig.MagnetSensor.MagnetOffset = 0.201416015625;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
+    
+    m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
 
-    // Simulation setup
     SmartDashboard.putData(this);
-
-    m_armMotor.setPosition(m_armEncoder.getPosition().getValueAsDouble());
   }
 
   // Get the percent output of the arm motor.
@@ -163,23 +161,13 @@ public class Arm extends SubsystemBase {
   }
 
   public void resetSensorPosition() {
-    if (RobotBase.isReal()) {
-      m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetMotionMagicState();
-    } else {
-      m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetMotionMagicState();
-    }
+    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    resetMotionMagicState();
   }
 
   public void resetSensorPositionForButton(double m_angle) {
-    if (RobotBase.isReal()) {
-      m_armMotor.setPosition(Units.degreesToRotations(m_angle));
-      resetMotionMagicState();
-    } else {
-      m_simState.setRawRotorPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-      resetMotionMagicState();
-    }
+    m_armMotor.setPosition(Units.degreesToRotations(m_angle));
+    resetMotionMagicState();
   }
 
   public void resetMotionMagicState() {
@@ -196,19 +184,11 @@ public class Arm extends SubsystemBase {
   }
 
   public double getInputVoltage() {
-    if (RobotBase.isReal()) {
-      return m_armMotor.getSupplyVoltage().getValueAsDouble();
-    } else {
-      return MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12);
-    }
+    return m_armMotor.getMotorVoltage().getValue();
   }
 
   public double getRotationalVelocity() {
-    if (RobotBase.isReal()) {
-      return m_armMotor.getVelocity().getValueAsDouble();
-    } else {
-      return Units.radiansToRotations(m_armSim.getVelocityRadPerSec());
-    }
+    return m_armMotor.getVelocity().getValue();
   }
 
   private void updateLogger() {

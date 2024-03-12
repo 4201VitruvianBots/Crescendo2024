@@ -23,12 +23,12 @@ public final class ARM {
   Since this gain is multiplied by the requested acceleration,
   the units should be defined as units of output per unit of requested input acceleration.
   For example, when controlling velocity using a duty cycle closed loop,
-  the units for the acceleration feedfoward gain will be duty cycle per requested rps/s, or 1/(rps/s). */
+  the units for the acceleration feedforward gain will be duty cycle per requested rps/s, or 1/(rps/s). */
   public static final double kA = 0;
 
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
-  public static final double kP = 75.0;
+  public static final double kP = 100.0;
 
   /* I value is generally used to correct steady-state error
   (e.g. your goal is 100, but you are at 99, so the sum of error
@@ -39,8 +39,8 @@ public final class ARM {
   so it is usually used with P to get a fast, but accurate response. */
   public static final double kD = 30.0;
 
-  public static final double kAccel = 160;
-  public static final double kCruiseVel = 80;
+  public static final double kAccel = 480;
+  public static final double kCruiseVel = 90;
   public static final double kJerk = 0;
 
   public enum ARM_SETPOINT {
