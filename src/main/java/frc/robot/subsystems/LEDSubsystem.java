@@ -83,13 +83,13 @@ public class LEDSubsystem extends SubsystemBase {
             new ColorFlowAnimation(
                 m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount, Direction.Forward);
         break;
-        case ColorFlowLong: // stripe of color flowing through the LED strip
+      case ColorFlowLong: // stripe of color flowing through the LED strip
         m_toAnimate =
             new ColorFlowAnimation(
-                m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount+15, Direction.Forward);
+                m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount + 15, Direction.Forward);
         break;
 
-     case Fire: // red and orange LEDs flaming up and down the LED strip
+      case Fire: // red and orange LEDs flaming up and down the LED strip
         m_brightness = 0.5;
         m_speed = 0.7;
         m_toAnimate = new FireAnimation(m_brightness, m_speed, LED.LEDcount, 0.7, 0.5);
@@ -151,7 +151,7 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
 
-                  case INTAKED:
+        case INTAKED:
           setPattern(LED.purple, 0, 0.5, ANIMATION_TYPE.Strobe);
           break;
         case INTAKING:

@@ -82,11 +82,11 @@ public class Intake extends SubsystemBase {
   public boolean getIntakeState() {
     return m_isIntaking;
   }
+
   public boolean getIntaked() {
     if (m_isIntaking && (getSensorInput1() || getSensorInput2())) {
       return true;
-    }
-    else return false;
+    } else return false;
   }
 
   public boolean getSensorInput1() {
