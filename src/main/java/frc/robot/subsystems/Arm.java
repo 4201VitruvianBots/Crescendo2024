@@ -95,6 +95,7 @@ public class Arm extends SubsystemBase {
     config.Slot0.kP = ARM.kP;
     config.Slot0.kI = ARM.kI;
     config.Slot0.kD = ARM.kD;
+    config.ClosedLoopGeneral.ContinuousWrap = false;
     config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
     config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
 
@@ -104,15 +105,15 @@ public class Arm extends SubsystemBase {
     CtreUtils.configureTalonFx(m_armMotor, config);
 
     CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = 0.4;
+    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    canCoderConfig.MagnetSensor.MagnetOffset = -0.0009765625;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
     // Simulation setup
     SmartDashboard.putData(this);
 
-    m_armEncoder.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    m_armMotor.setPosition(m_armEncoder.getPosition().getValueAsDouble());
   }
 
   // Get the percent output of the arm motor.
@@ -216,6 +217,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
+    Logger.recordOutput("Arm/CanCoderAbsolutePos360", m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360); // Testing
   }
 
   public void testInit() {
