@@ -55,7 +55,7 @@ public class GetSubsystemStates extends Command {
     isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
-    isIntaked = m_intake.getIntaked();
+    isIntaked = m_intake.checkEitherIntakeSensorActive();
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
