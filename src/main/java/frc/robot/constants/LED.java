@@ -17,6 +17,7 @@ public final class LED {
   /** Different LED animation types */
   public enum ANIMATION_TYPE {
     ColorFlow,
+    ColorFlowLong,
     Fire,
     Larson,
     Rainbow,
@@ -44,6 +45,7 @@ public final class LED {
     SETUP_LOCALIZED,
     SETUP_READY,
     ENABLED,
+    INTAKED,
     INTAKING,
     REVED,
     UNREVED,
