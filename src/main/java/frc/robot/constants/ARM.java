@@ -74,7 +74,7 @@ public final class ARM {
 
   // 166 degrees of motion
 
-  public static final double minAngleDegrees = -36;
+  public static final double minAngleDegrees = -40;
 
   public static final double maxAngleDegrees = 130;
 
@@ -83,6 +83,7 @@ public final class ARM {
   public static final double mountingAngleDegrees = 0;
 
   public static final double maxOutput = 0.6;
+
   public static final double joystickMultiplier = maxOutput;
 
   public static final boolean limitOpenLoop = false;

@@ -41,8 +41,8 @@ public class Arm extends SubsystemBase {
 
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
-  private CANcoder m_armEncoder = new CANcoder(CAN.armCanCoder);
-  private CANcoderSimState m_armEncoderSimState = m_armEncoder.getSimState();
+  private final CANcoder m_armEncoder = new CANcoder(CAN.armCanCoder);
+  private final CANcoderSimState m_armEncoderSimState = m_armEncoder.getSimState();
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
   private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
@@ -144,6 +144,9 @@ public class Arm extends SubsystemBase {
     return Units.rotationsToDegrees(getCurrentRotation());
   }
 
+  public double getCANcoderAngle() {
+    return m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360;
+  }
   public void setNeutralMode(NeutralModeValue mode) {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
@@ -161,8 +164,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void resetSensorPosition() {
-    m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
-    resetMotionMagicState();
+    resetSensorPositionForButton(ARM.startingAngleDegrees);
   }
 
   public void resetSensorPositionForButton(double m_angle) {
@@ -198,8 +200,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
     Logger.recordOutput(
-        "Arm/CanCoderAbsolutePos360",
-        m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360); // Testing
+        "Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
   public void testInit() {

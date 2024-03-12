@@ -463,11 +463,12 @@ public class RobotContainer {
   }
 
   public void disabledInit() {
+    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
+    m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
     m_intake.setSpeed(0, 0);
     m_ampShooter.setPercentOutput(0);
     m_shooter.setRPMOutput(0);
     m_shooter.setPercentOutput(0);
-    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
-    m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
+    m_arm.resetMotionMagicState();
   }
 }
