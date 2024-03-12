@@ -147,6 +147,7 @@ public class Arm extends SubsystemBase {
   public double getCANcoderAngle() {
     return m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360;
   }
+
   public void setNeutralMode(NeutralModeValue mode) {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
@@ -199,8 +200,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
-    Logger.recordOutput(
-        "Arm/CanCoderAbsolutePos360", getCANcoderAngle());
+    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
   public void testInit() {
