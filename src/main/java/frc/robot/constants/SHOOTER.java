@@ -36,6 +36,8 @@ public final class SHOOTER {
 
   public static final double flywheelSize = Units.inchesToMeters((3.4 * Math.PI) / 8);
 
+  public static final double robotshooterheight = Units.inchesToMeters(15);
+
   public enum WAIT {
     WAIT_FOR_FLYWHEEL_SETPOINT(3),
     WAIT_FOR_AMP_SCORE(0.8),
@@ -77,7 +79,8 @@ public final class SHOOTER {
 
   public static class SPEAKER {
 
-
+    public static final double SpeakerTopZ = 2.105733279;
+    public static final double SpeakerBottomZ = 1.9844639;
     public static final double SpeakerTopLeftY = 6.1478414;
     public static double SpeakerTopLeftX = 0.464947;
 
@@ -89,6 +92,7 @@ public final class SHOOTER {
 
     public static final double SpeakerBottomRightY = 5.0232564;
     public static double SpeakerBottomRightX = 0;
+    
 
 
     public static void initConstants(boolean isBlueAlliance) {
@@ -99,7 +103,6 @@ public final class SHOOTER {
         SpeakerBottomLeftX = 16.5410642;
         SpeakerBottomRightX = 16.5410642;
       }
-
     }
 
   }

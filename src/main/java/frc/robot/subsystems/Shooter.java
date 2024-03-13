@@ -56,9 +56,6 @@ public class Shooter extends SubsystemBase {
   private final TalonFXSimState m_shooterMotorBottomSimState = m_shooterMotors[0].getSimState();
   private final TalonFXSimState m_shooterMotorTopSimState = m_shooterMotors[1].getSimState();
 
-    
-
-
   // This is currently not used
   //   private final SimpleMotorFeedforward m_feedForward =
   //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
@@ -87,7 +84,7 @@ public class Shooter extends SubsystemBase {
 
     m_shooterMotors[0].setInverted(false);
     m_shooterMotors[1].setInverted(true);
-
+    
     SHOOTER.SPEAKER.initConstants(Controls.isBlueAlliance());
   }
 
@@ -181,18 +178,22 @@ public class Shooter extends SubsystemBase {
   public boolean isValidShotPose(Pose2d robotpose)
   {
       return (
-          ((2.35862448414 < Math.sqrt(
-              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerBottomRightX, 2) 
-              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomRightY, 2))) 
-          && (2.5501296438 > Math.sqrt(
-              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopLeftX, 2) 
-              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopLeftY, 2))))
-          || ((2.35862448414 < Math.sqrt(
+            (((SHOOTER.robotshooterheight - SHOOTER.SPEAKER.SpeakerBottomZ) / Math.tan(SHOOTER.kShooterAngle) 
+              < Math.sqrt(
+                  Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerBottomRightX, 2) 
+                + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomRightY, 2))) 
+          && ((SHOOTER.robotshooterheight - SHOOTER.SPEAKER.SpeakerTopZ) / Math.tan(SHOOTER.kShooterAngle) 
+              > Math.sqrt(
+                  Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopLeftX, 2) 
+                + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopLeftY, 2))))
+          || (((SHOOTER.robotshooterheight - SHOOTER.SPEAKER.SpeakerBottomZ) / Math.tan(SHOOTER.kShooterAngle)
+              < Math.sqrt(
               Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerBottomLeftX, 2) 
-              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomLeftY, 2)))
-          && (2.35862448414 > Math.sqrt(
-              Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopRightX, 2) 
-              + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopRightY, 2)))));
+            + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerBottomLeftY, 2)))
+          && ((SHOOTER.robotshooterheight - SHOOTER.SPEAKER.SpeakerTopZ) / Math.tan(SHOOTER.kShooterAngle)
+              > Math.sqrt(
+                  Math.pow(robotpose.getX() - SHOOTER.SPEAKER.SpeakerTopRightX, 2) 
+                + Math.pow(robotpose.getY() - SHOOTER.SPEAKER.SpeakerTopRightY, 2)))));
   }
 
   // values that we are pulling
