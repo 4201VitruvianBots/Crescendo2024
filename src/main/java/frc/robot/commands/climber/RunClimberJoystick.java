@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.CLIMBER;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
@@ -43,8 +42,7 @@ public class RunClimberJoystick extends Command {
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
     if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      double joystickYDeadbandOutput =
-          MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
+      double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
       if (joystickYDeadbandOutput != 0.0) {
         // if (joystickYDeadbandOutput < 0)

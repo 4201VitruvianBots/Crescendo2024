@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
   public void setPercentOutput(double speed) {
     m_armMotor.set(speed);
   }
-  
+
   public void setFocOutput(double output) {
     m_armMotor.setControl(m_torqueCurrentFOC.withOutput(output * 327.0));
   }
