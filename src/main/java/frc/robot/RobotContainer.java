@@ -156,7 +156,7 @@ public class RobotContainer {
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 
-    var targetSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(2));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
