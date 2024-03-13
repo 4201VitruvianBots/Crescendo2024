@@ -16,19 +16,25 @@
     },
     {
       "anchor": {
-        "x": 2.8,
-        "y": 7.7
+        "x": 2.6,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 2.715195190384357,
-        "y": 7.647008073576679
+        "x": 2.5151951903843575,
+        "y": 7.447008073576679
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "ShootEnd"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 40.09,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,7 +45,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.0,
+    "rotation": 40.09,
     "rotateFast": false
   },
   "reversed": false,
