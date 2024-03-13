@@ -103,10 +103,7 @@ public class Climber extends SubsystemBase {
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
     elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setControl(
-        follower
-            .withMasterID(elevatorClimbMotors[0].getDeviceID())
-            .withOpposeMasterDirection(true));
+    elevatorClimbMotors[1].setInverted(true);
 
     SmartDashboard.putData(this);
   }
@@ -129,15 +126,18 @@ public class Climber extends SubsystemBase {
 
   // sets the percent output of the elevator based on its position
   public void setPercentOutput(double output, boolean enforceLimits) {
-    if (enforceLimits) {
-      if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
-        output = Math.min(output, 0);
+    // if (enforceLimits) {
+    //   if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+    //     output = Math.min(output, 0);
 
-      if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
-        output = Math.max(output, 0);
-    }
+    //   if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
+    //     output = Math.max(output, 0);
+
+    // }
 
     elevatorClimbMotors[0].set(output);
+    elevatorClimbMotors[1].set(output);
+
   }
 
   public double getAvgCurrentDraw() {
@@ -258,23 +258,19 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
-      case OPEN_LOOP:
-        double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
-
-        if (m_limitJoystickInput)
-          percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
-
-        // TODO: Verify rotation to distance conversion before continuing
-        setPercentOutput(percentOutput, false);
-
-        if (DriverStation.isDisabled()) {
-          setPercentOutput(0);
-        }
-        break;
-      default:
       case CLOSED_LOOP:
         if (DriverStation.isEnabled())
           elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+        break;
+      case OPEN_LOOP:
+      default:
+        double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
+
+        // if (m_limitJoystickInput)
+        // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
+
+        // TODO: Verify rotation to distance conversion before continuing
+        setPercentOutput(percentOutput, false);
         break;
     }
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -47,6 +48,7 @@ public class Arm extends SubsystemBase {
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
   private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
 
+  private TorqueCurrentFOC m_torqueCurrentFOC = new TorqueCurrentFOC(0);
   private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
 
   private double m_desiredRotations = ARM.ARM_SETPOINT.STOWED.get();
@@ -106,7 +108,7 @@ public class Arm extends SubsystemBase {
     CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
     canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = 0.201416015625;
+    canCoderConfig.MagnetSensor.MagnetOffset = 0.201171875;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
     m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
@@ -117,6 +119,10 @@ public class Arm extends SubsystemBase {
   // Get the percent output of the arm motor.
   public void setPercentOutput(double speed) {
     m_armMotor.set(speed);
+  }
+  
+  public void setFocOutput(double output) {
+    m_armMotor.setControl(m_torqueCurrentFOC.withOutput(output * 327.0));
   }
 
   public double getPercentOutput() {
@@ -199,7 +205,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
+    Logger.recordOutput("Arm/PercentOutput", m_armMotor.getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
