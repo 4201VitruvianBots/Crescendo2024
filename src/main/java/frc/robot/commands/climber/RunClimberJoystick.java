@@ -44,12 +44,12 @@ public class RunClimberJoystick extends Command {
     // TODO: rewrite logic
     if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       double joystickYDeadbandOutput =
-          MathUtil.applyDeadband(Math.pow(m_joystickY.getAsDouble(), 3), 0.1);
+          MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
       if (joystickYDeadbandOutput != 0.0) {
-        if (joystickYDeadbandOutput < 0)
-          joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
-        m_climber.setJoystickY(-joystickYDeadbandOutput);
+        // if (joystickYDeadbandOutput < 0)
+        //   joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+        m_climber.setJoystickY(joystickYDeadbandOutput);
         m_climber.setClimbState(true);
       }
       if (joystickYDeadbandOutput == 0) {
