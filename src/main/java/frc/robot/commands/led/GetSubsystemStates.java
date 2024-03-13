@@ -27,6 +27,7 @@ public class GetSubsystemStates extends Command {
   private boolean isLocalized;
   private boolean isDisabled;
   private boolean isValidShotPose;
+  private boolean isIntaked;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
