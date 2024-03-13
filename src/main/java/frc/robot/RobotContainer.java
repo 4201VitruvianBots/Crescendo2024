@@ -126,24 +126,6 @@ public class RobotContainer {
                       leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //      m_swerveDrive.setDefaultCommand(
-      //          m_swerveDrive.applyRequest(
-      //              () ->
-      //                  drive
-      //                      .withVelocityX(
-      //                          leftJoystick.getRawAxis(1)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-      //                      // negative Y (forward)
-      //                      .withVelocityY(
-      //                          leftJoystick.getRawAxis(0)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
-      // X (left)
-      //                      .withRotationalRate(
-      //                          rightJoystick.getRawAxis(0)
-      //                              * DRIVE
-      //                                  .kMaxRotationRadiansPerSecond))); // Drive
-      // counterclockwise with
-      //      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -171,6 +153,9 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
+    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // aimNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
+
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
@@ -190,15 +175,6 @@ public class RobotContainer {
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
 
-    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    // aimNoteButton.whileTrue(
-    //     new DriveAndAimAtNote(
-    //         m_swerveDrive,
-    //         m_vision,
-    //         () -> -leftJoystick.getRawAxis(1),
-    //         () -> -leftJoystick.getRawAxis(0),
-    //         () -> rightJoystick.getRawAxis(0)));
-
     xboxController
         .b()
         .whileTrue(
@@ -217,24 +193,13 @@ public class RobotContainer {
                 xboxController,
                 RPM_SETPOINT.SPEAKERBOTTOM.get(),
                 RPM_SETPOINT.SPEAKERBOTTOM.get()));
+
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
     xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
 
     // switch between open loop and close loop
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
-
-    // xboxController
-    //     .y()
-    //     .whileTrue(
-    //         new ShootNStrafe(
-    //             m_swerveDrive,
-    //             m_ampShooter,
-    //             m_shooter,
-    //             () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             SHOOTER.RPM_SETPOINT.SPEAKER.get()));
 
     xboxController
         .rightTrigger()
