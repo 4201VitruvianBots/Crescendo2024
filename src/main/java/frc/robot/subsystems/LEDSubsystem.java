@@ -32,9 +32,8 @@ import frc.robot.constants.LED.*;
 import frc.robot.constants.ROBOT;
 import org.littletonrobotics.junction.Logger;
 
-// There are 26 LED's on the robot.
 public class LEDSubsystem extends SubsystemBase {
-  /** Creates a new LED. */
+  /** Creates a new LEDSubsystem */
   private final CANdle m_candle = new CANdle(CAN.CANdle);
 
   private Color8Bit m_color = new Color8Bit();
@@ -84,6 +83,12 @@ public class LEDSubsystem extends SubsystemBase {
             new ColorFlowAnimation(
                 m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount, Direction.Forward);
         break;
+      case ColorFlowLong: // stripe of color flowing through the LED strip
+        m_toAnimate =
+            new ColorFlowAnimation(
+                m_red, m_green, m_blue, m_white, m_speed, LED.LEDcount + 15, Direction.Forward);
+        break;
+
       case Fire: // red and orange LEDs flaming up and down the LED strip
         m_brightness = 0.5;
         m_speed = 0.7;
@@ -139,8 +144,15 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case SHOOTING:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
+        case REVED:
+          setPattern(LED.blue, 0, 0.0025, ANIMATION_TYPE.Strobe);
+          break;
+        case UNREVED:
+          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
+          break;
+
+        case INTAKED:
+          setPattern(LED.purple, 0, 0.5, ANIMATION_TYPE.Strobe);
           break;
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
@@ -155,7 +167,7 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.white, 0, 0, ANIMATION_TYPE.Strobe);
           break;
         case DISABLED:
-          setPattern(LED.red, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
+          setPattern(LED.red, 0, 0.25, ANIMATION_TYPE.ColorFlowLong); // Solid Red
           break;
         case VALID_SHOT_POSE:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid); // Solid Red
@@ -174,11 +186,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   private void updateLogger() {
     Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
-    Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
-    Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
-    Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
-    Logger.recordOutput("LEDSubsystem/LED WHITE", m_white);
-    Logger.recordOutput("LEDSubsystem/LED SPEED", m_speed);
+
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
+      Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
+      Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
+      Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
+      Logger.recordOutput("LEDSubsystem/LED WHITE", m_white);
+      Logger.recordOutput("LEDSubsystem/LED SPEED", m_speed);
+    }
   }
 
   @Override
@@ -193,6 +208,6 @@ public class LEDSubsystem extends SubsystemBase {
     }
     SmartDashboard.putString("LED Mode", currentRobotState.toString());
 
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 }

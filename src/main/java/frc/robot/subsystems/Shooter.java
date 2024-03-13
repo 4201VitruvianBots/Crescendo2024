@@ -15,7 +15,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,13 +25,15 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
+  private double m_topRpmSetpoint;
+  private double m_bottomRpmSetpoint;
 
   private double m_rpmTop;
   private double m_rpmBottom;
   private boolean m_testMode = false;
+  private boolean m_isShooting = false;
   // private double m_headingOffset;
   private double m_desiredPercentOutput;
-  private boolean m_isShooting = false;
 
   private final TalonFX[] m_shooterMotors = {
     new TalonFX(CAN.flywheel1), new TalonFX(CAN.flywheel2) // Flywheel[0] is bottom
@@ -61,24 +62,23 @@ public class Shooter extends SubsystemBase {
   //       new SimpleMotorFeedforward(SHOOTER.kS, SHOOTER.kV, SHOOTER.kA);
   //   private SimpleMotorFeedforward m_currentFeedForward = m_feedForward;
 
-  // private final ConfigFactoryDefault configSelectedFeedbackSensor = new Config
   /* Creates a new Intake. */
   public Shooter() {
     TalonFXConfiguration configBottom = new TalonFXConfiguration();
     configBottom.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configBottom.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioBottom;
-    configBottom.Slot0.kP = SHOOTER.bottomkP;
-    configBottom.Slot0.kI = SHOOTER.bottomkI;
-    configBottom.Slot0.kD = SHOOTER.bottomkD;
+    configBottom.Slot0.kP = SHOOTER.kPBottom;
+    configBottom.Slot0.kI = SHOOTER.kIBottom;
+    configBottom.Slot0.kD = SHOOTER.kDBottom;
     configBottom.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[0], configBottom);
 
     TalonFXConfiguration configTop = new TalonFXConfiguration();
     configTop.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     configTop.Feedback.SensorToMechanismRatio = SHOOTER.gearRatioTop;
-    configTop.Slot0.kP = SHOOTER.topkP;
-    configTop.Slot0.kI = SHOOTER.topkI;
-    configTop.Slot0.kD = SHOOTER.topkD;
+    configTop.Slot0.kP = SHOOTER.kPTop;
+    configTop.Slot0.kI = SHOOTER.kITop;
+    configTop.Slot0.kD = SHOOTER.kDTop;
     configTop.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.5;
     CtreUtils.configureTalonFx(m_shooterMotors[1], configTop);
 
@@ -88,42 +88,61 @@ public class Shooter extends SubsystemBase {
     SHOOTER.SPEAKER.initConstants(Controls.isBlueAlliance());
   }
 
-  public boolean getShooterState() {
-    return (m_rpmBottom != 0 || m_rpmTop != 0);
+  public boolean getIsShooting() {
+    return (m_bottomRpmSetpoint != 0 || m_topRpmSetpoint != 0);
   }
 
-  /** Sets a boolean for the intake's actuation */
-  public void setShooterState(boolean state) {
+  public void setShootingState(boolean state) {
     m_isShooting = state;
+  }
+
+  public boolean getShootingState() {
+    return m_isShooting;
+  }
+
+  public boolean getReved() {
+    if (getShootingState()) {
+      return (getRpmFollower() >= 7000 && getRpmMaster() >= 7000);
+    } else return false;
+  }
+
+  public boolean getUnreved() {
+    if (getShootingState()) {
+      return (getRpmFollower() < 7000 && getRpmMaster() < 7000);
+    } else return false;
+  }
+
+  public boolean getZoneState() {
+    return true; // TODO: Change this to true only if we are in zone
   }
 
   // values that we set
   public void setPercentOutput(double percentOutput) {
     m_desiredPercentOutput = percentOutput;
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
 
     m_shooterMotors[0].setControl(m_dutyCycleRequest.withOutput(percentOutput));
     m_shooterMotors[1].setControl(m_dutyCycleRequest.withOutput(percentOutput));
   }
 
   public void setVoltageOutput(double voltageOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_voltageRequest.withOutput(voltageOut));
     m_shooterMotors[1].setControl(m_voltageRequest.withOutput(voltageOut));
   }
 
   public void setFocCurrentOutput(double currentOut) {
-    m_rpmBottom = 0;
-    m_rpmTop = 0;
+    m_bottomRpmSetpoint = 0;
+    m_topRpmSetpoint = 0;
     m_shooterMotors[0].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
     m_shooterMotors[1].setControl(m_TorqueCurrentFOC.withOutput(currentOut));
   }
 
   public void setRPMOutputFOC(double rpm) {
-    m_rpmBottom = rpm;
-    m_rpmTop = rpm;
+    m_bottomRpmSetpoint = rpm;
+    m_topRpmSetpoint = rpm;
 
     // Phoenix 6 uses rotations per second for velocity control
     var rps = rpm / 60.0;
@@ -132,12 +151,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMOutput(double rpm) {
-    setRPMOutput(rpm, rpm);
+    // setRPMOutput(rpm, rpm);
+    setRPMOutputFOC(rpm);
   }
 
   public void setRPMOutput(double rpmBottom, double rpmTop) {
-    m_rpmBottom = rpmBottom;
-    m_rpmTop = rpmTop;
+    m_bottomRpmSetpoint = rpmBottom;
+    m_topRpmSetpoint = rpmTop;
     // Phoenix 6 uses rotations per second for velocity control
     var rpsBottom = rpmBottom / 60.0;
     var rpsTop = rpmTop / 60.0;
@@ -150,29 +170,6 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setNeutralMode(mode);
   }
 
-  public double getShootNStrafeAngle(
-      Pose2d robotPose, double RobotVelocityX, double RobotVelocityY) {
-    return Math.atan2(
-        (SHOOTER.NoteVelocity * Math.sin(getShootAngle(robotPose)) - RobotVelocityY),
-        (SHOOTER.NoteVelocity * Math.cos(getShootAngle(robotPose)) - RobotVelocityX));
-  }
-
-  public double getShootAngle(Pose2d robotPose) {
-    
-      return (Math.atan2(
-                  (SHOOTER.SPEAKER.SpeakerTopLeftY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.SpeakerTopLeftX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.SpeakerTopRightY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.SpeakerTopRightX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.SpeakerBottomLeftY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.SpeakerBottomLeftX - robotPose.getX()))
-              + Math.atan2(
-                  (SHOOTER.SPEAKER.SpeakerBottomRightY - robotPose.getY()),
-                  (SHOOTER.SPEAKER.SpeakerBottomRightX- robotPose.getX())))
-          / 4;
-  }
 
   //checks if
   public boolean isValidShotPose(Pose2d robotpose)
@@ -232,6 +229,14 @@ public class Shooter extends SubsystemBase {
     m_testMode = mode;
   }
 
+  public double getTopRPMsetpoint() {
+    return m_topRpmSetpoint;
+  }
+
+  public double getBottomRPMsetpoint() {
+    return m_bottomRpmSetpoint;
+  }
+
   private void updateShuffleboard() {}
 
   // values that we are pulling
@@ -242,8 +247,8 @@ public class Shooter extends SubsystemBase {
         "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput(
         "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmsetpointTop", m_rpmTop);
-    Logger.recordOutput("Shooter/rpmsetpointBottom", m_rpmBottom);
+    Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
+    Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
     Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
     Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }

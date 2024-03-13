@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.35,
+        "y": 7.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.45,
+        "y": 7.6
+      },
+      "isLocked": false,
+      "linkedName": "FarEnd1"
+    },
+    {
+      "anchor": {
+        "x": 3.2814401720101576,
+        "y": 6.358984244359359
+      },
+      "prevControl": {
+        "x": 3.1814401720101575,
+        "y": 6.358984244359359
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ShootEnd3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 19.03,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "5PieceAutoNear",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -4,12 +4,10 @@
 
 package frc.robot.commands.drive;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.SWERVE;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
@@ -18,13 +16,13 @@ import java.util.function.DoubleSupplier;
 public class DriveAndAimAtNote extends Command {
   private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   private final Vision m_vision;
+
+  private final PIDController m_PidController =
+      new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
+
   private final DoubleSupplier m_throttleInput;
   private final DoubleSupplier m_strafeInput;
   private final DoubleSupplier m_turnInput;
-  private final PIDController m_PidController =
-      new PIDController(
-          SWERVE.DRIVE.kAutoP_Theta, SWERVE.DRIVE.kAutoI_Theta, SWERVE.DRIVE.kAutoD_Theta);
-  double finalTurn = 0.0;
 
   /** Creates a new rotateRobotToGoal. */
   public DriveAndAimAtNote(
@@ -62,16 +60,11 @@ public class DriveAndAimAtNote extends Command {
       var turnRate =
           m_PidController.calculate(
               m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(), setPoint.getRadians());
-      finalTurn =
-          MathUtil.clamp(
-              turnRate,
-              -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
-              SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
       m_SwerveDrivetrain.setChassisSpeedControl(
           new ChassisSpeeds(
               m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
               m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-              finalTurn));
+              turnRate));
     } else {
       m_SwerveDrivetrain.setChassisSpeedControl(
           new ChassisSpeeds(

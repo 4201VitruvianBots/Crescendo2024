@@ -12,8 +12,8 @@ import frc.robot.subsystems.Arm;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SetArmControlMode extends InstantCommand {
-  private Arm m_arm;
-  private ROBOT.CONTROL_MODE m_controlMode;
+  private final Arm m_arm;
+  private final ROBOT.CONTROL_MODE m_controlMode;
 
   public SetArmControlMode(Arm arm, ROBOT.CONTROL_MODE controlMode) {
     m_arm = arm;

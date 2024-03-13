@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,9 +16,7 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
-import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -28,6 +26,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
+
   private FieldSim m_fieldSim;
   private Translation2d m_goal = new Translation2d();
 
@@ -58,7 +57,6 @@ public class Vision extends SubsystemBase {
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
   private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
-
   private boolean m_localized;
 
   double PositionY = m_swerveDriveTrain.getState().Pose.getY();
@@ -85,6 +83,14 @@ public class Vision extends SubsystemBase {
   double ED = Units.metersToFeet(1.5);
 
   public Vision() {
+
+    // Port Forwarding to access limelight on USB Ethernet
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, VISION.CAMERA_SERVER.INTAKE.toString(), port);
+    }
+
+    PortForwarder.add(5800, VISION.CAMERA_SERVER.LIMELIGHTB.toString(), 5800);
+
     limelightPhotonPoseEstimatorB.setMultiTagFallbackStrategy(
         PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
     if (RobotBase.isSimulation()) {
@@ -123,10 +129,6 @@ public class Vision extends SubsystemBase {
 
   public void registerFieldSim(FieldSim fieldSim) {
     m_fieldSim = fieldSim;
-  }
-
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonPoseEstimator photonEstimator) {
-    return photonEstimator.update();
   }
 
   public boolean checkPoseAgreement(Pose3d a, Pose3d b) {
@@ -202,11 +204,30 @@ public class Vision extends SubsystemBase {
     return m_localized;
   }
 
+  public void resetInitialLocalization() {
+    m_localized = false;
+  }
+
   private void updateAngleToSpeaker() {
     if (m_swerveDriveTrain != null) {
       if (DriverStation.isDisabled()) {
         m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
+
+      // SOTM stuff
+      double VelocityShoot = 9.255586759; // Previously 11.1 m/s
+      double PositionY = m_swerveDriveTrain.getState().Pose.getY();
+      double PositionX = m_swerveDriveTrain.getState().Pose.getX();
+      double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
+      double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
+      double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
+      double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
+      double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
+      double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+      Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
+      Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
+      double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+
       m_swerveDriveTrain.setAngleToSpeaker(
           m_swerveDriveTrain
               .getState()
@@ -215,9 +236,9 @@ public class Vision extends SubsystemBase {
               .minus(m_goal)
               .getAngle()
               .plus(
-                  new Rotation2d(
-                      (Math.asin(
-                          ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * ED))))));
+                  Rotation2d.fromRadians(
+                      Math.asin(
+                          ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
     }
   }
 

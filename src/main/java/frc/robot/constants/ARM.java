@@ -18,21 +18,30 @@ public final class ARM {
   the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps. */
   public static final double kV = 0;
 
+  /* Acceleration Feedforward Gain
+  The units for this gain is dependent on the control mode.
+  Since this gain is multiplied by the requested acceleration,
+  the units should be defined as units of output per unit of requested input acceleration.
+  For example, when controlling velocity using a duty cycle closed loop,
+  the units for the acceleration feedforward gain will be duty cycle per requested rps/s, or 1/(rps/s). */
+  public static final double kA = 0;
+
   /* A higher P value means you will put more effort into correcting the measured error,
   but it means you can overshoot your target and then the response will look like an oscillating graph. */
-  public static final double kP = 75.0;
+  public static final double kP = 100.0;
 
   /* I value is generally used to correct steady-state error
-  (e.g. your goal is 100 but you are at 99, so the sum of error
+  (e.g. your goal is 100, but you are at 99, so the sum of error
   over time will let it correct for that final error). */
   public static final double kI = 0.0;
 
   /* D is generally used to 'predict' the next output using the slope of the error,
   so it is usually used with P to get a fast, but accurate response. */
-  public static final double kD = 0.0;
+  public static final double kD = 30.0;
 
-  public static final double kMaxArmVelocity = 10;
-  public static final double kMaxArmAcceleration = 10;
+  public static final double kAccel = 480;
+  public static final double kCruiseVel = 90;
+  public static final double kJerk = 0;
 
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),
@@ -54,8 +63,8 @@ public final class ARM {
 
   public static final DCMotor gearBox = DCMotor.getKrakenX60(1);
 
-  // Jacob said the gear ratio is 1:140 but WPILIB doesn't seem to like that
-  public static final double gearRatio = 140.0 / 1.0;
+  // Jacob said the gear ratio is 1:216 (10 tooth) but WPILIB doesn't seem to like that
+  public static final double gearRatio = 216.0 / 1.0;
 
   public static final double jointLength = Units.inchesToMeters(5);
   public static final double armVisualizerLength = Units.inchesToMeters(17);
@@ -63,14 +72,19 @@ public final class ARM {
 
   public static final double mass = Units.lbsToKilograms(7.0);
 
+  // 166 degrees of motion
+
   public static final double minAngleDegrees = -40;
 
-  public static final double maxAngleDegrees = 140;
+  public static final double maxAngleDegrees = 130;
 
   public static final double startingAngleDegrees = minAngleDegrees;
 
   public static final double mountingAngleDegrees = 0;
 
-  public static final double maxOutput = 0.4;
+  public static final double maxOutput = 0.6;
+
   public static final double joystickMultiplier = maxOutput;
+
+  public static final boolean limitOpenLoop = false;
 }

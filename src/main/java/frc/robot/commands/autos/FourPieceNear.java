@@ -6,12 +6,10 @@ package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.intake.AutoRunAmpTake;
+import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
-import frc.robot.constants.AMPSHOOTER;
-import frc.robot.constants.INTAKE;
-import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
+import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -35,79 +33,43 @@ public class FourPieceNear extends SequentialCommandGroup {
       //   "FourPiecePt4.1","FourPiecePt5"
     };
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
+    var intakeFactory = new AutoFactory.IntakeFactory(intake, ampShooter);
+    var shooterFactory = new AutoFactory.ShootFactory(intake, ampShooter, shooter);
 
     var stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.MAX.get());
+    var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
-    var shootCommand =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
-
-    var shootCommand2 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
-    var shootCommand3 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
-
-    var shootCommand4 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            INTAKE.STATE.NONE.get(),
-            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.INTAKING.get());
-
-    var RunIntake =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            STATE.FRONT_ROLLER_INTAKING.get(),
-            STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.NONE.get());
-
-    var RunIntake2 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            STATE.FRONT_ROLLER_INTAKING.get(),
-            STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.NONE.get());
-
-    var RunIntake3 =
-        new AutoRunAmpTake(
-            intake,
-            ampShooter,
-            STATE.FRONT_ROLLER_INTAKING.get(),
-            STATE.BACK_ROLLER_INTAKING.get(),
-            AMPSHOOTER.STATE.NONE.get());
-
+    // TODO: After testing vision, make shoot command check for angle to speaker with a tolerance
+    // value
+    // TODO: Need to think about how long to aim before shooting?
     addCommands(
-        AutoFactory.createAutoInit(swerveDrive, pathFactory, fieldSim),
+        pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        shootCommand,
-        new WaitCommand(1),
-        pathFactory.getNextPathCommand().alongWith(RunIntake),
-        shootCommand2,
-        new WaitCommand(1),
-        pathFactory.getNextPathCommand().alongWith(RunIntake2),
-        shootCommand3,
-        new WaitCommand(1),
-        pathFactory.getNextPathCommand().alongWith(RunIntake3),
-        shootCommand4);
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand().withTimeout(1),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        shooterFactory.generateShootCommand());
+
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }
 }
