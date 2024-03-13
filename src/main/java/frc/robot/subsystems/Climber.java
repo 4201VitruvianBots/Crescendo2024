@@ -12,7 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +53,7 @@ public class Climber extends SubsystemBase {
   // Controlled by open loop
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
+  private boolean m_enforceLimits;
   private boolean m_userSetpoint;
 
   private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
@@ -102,7 +103,11 @@ public class Climber extends SubsystemBase {
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
     elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setInverted(true);
+    //    elevatorClimbMotors[1].setInverted(true);
+    elevatorClimbMotors[1].setControl(
+        follower
+            .withMasterID(elevatorClimbMotors[0].getDeviceID())
+            .withOpposeMasterDirection(true));
 
     SmartDashboard.putData(this);
   }
@@ -116,24 +121,11 @@ public class Climber extends SubsystemBase {
   }
 
   public double getPercentOutput() {
-    return elevatorClimbMotors[0].get();
-  }
-
-  public void setPercentOutput(double output) {
-    setPercentOutput(output, false);
+    return elevatorClimbMotors[0].getMotorVoltage().getValue() / 12.0;
   }
 
   // sets the percent output of the elevator based on its position
-  public void setPercentOutput(double output, boolean enforceLimits) {
-    // if (enforceLimits) {
-    //   if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
-    //     output = Math.min(output, 0);
-
-    //   if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
-    //     output = Math.max(output, 0);
-
-    // }
-
+  public void setPercentOutput(double output) {
     elevatorClimbMotors[0].set(output);
     elevatorClimbMotors[1].set(output);
   }
@@ -186,6 +178,7 @@ public class Climber extends SubsystemBase {
   public void resetMotionMagicState() {
     m_desiredPositionMeters = getHeightMeters();
     elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+    //    elevatorClimbMotors[1].setControl(m_request.withPosition(m_desiredPositionMeters));
   }
 
   public double getLowerLimitMeters() {
@@ -230,7 +223,7 @@ public class Climber extends SubsystemBase {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
-    elevatorClimbMotors[1].setNeutralMode(mode);
+    //    elevatorClimbMotors[1].setNeutralMode(mode);
   }
 
   public NeutralModeValue getNeutralMode() {
@@ -257,8 +250,7 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
       case CLOSED_LOOP:
-        if (DriverStation.isEnabled())
-          elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+        elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
         break;
       case OPEN_LOOP:
       default:
@@ -266,9 +258,15 @@ public class Climber extends SubsystemBase {
 
         // if (m_limitJoystickInput)
         // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
+        if (m_enforceLimits) {
+          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+            percentOutput = Math.min(percentOutput, 0);
 
-        // TODO: Verify rotation to distance conversion before continuing
-        setPercentOutput(percentOutput, false);
+          if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
+            percentOutput = Math.max(percentOutput, 0);
+        }
+
+        setPercentOutput(percentOutput);
         break;
     }
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
@@ -279,28 +277,26 @@ public class Climber extends SubsystemBase {
     m_simState1.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_simState2.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    leftElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
-    rightElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
+    leftElevatorSim.setInputVoltage(MathUtil.clamp(m_simState1.getMotorVoltage(), -12, 12));
+    rightElevatorSim.setInputVoltage(MathUtil.clamp(m_simState2.getMotorVoltage(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
 
-    m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
         leftElevatorSim.getPositionMeters()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
-    m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond()
+    m_simState1.setRotorVelocity(
+        leftElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
         rightElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
+    m_simState2.setRotorVelocity(
+        rightElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
   }

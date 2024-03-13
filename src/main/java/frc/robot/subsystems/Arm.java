@@ -108,7 +108,7 @@ public class Arm extends SubsystemBase {
     CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
     canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = 0.201171875;
+    canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
     m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
@@ -126,7 +126,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getPercentOutput() {
-    return m_armMotor.get();
+    return m_armMotor.getMotorVoltage().getValue() / 12.0;
   }
 
   public void setDesiredSetpointRotations(double rotations) {
@@ -205,7 +205,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/PercentOutput", m_armMotor.getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput("Arm/PercentOutput", getPercentOutput());
     Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
@@ -280,8 +280,7 @@ public class Arm extends SubsystemBase {
       case CLOSED_LOOP:
         // This method will be called once per scheduler run
         // periodic, update the profile setpoint for 20 ms loop time
-        if (DriverStation.isEnabled())
-          m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
+        m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
         break;
       default:
       case OPEN_LOOP:

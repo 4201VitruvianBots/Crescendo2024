@@ -53,11 +53,11 @@ public class ArmJoystick extends Command {
         //   if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
         //     m_joystickDeadband = Math.max(m_joystickDeadband, 0);
         // }
-        m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
+        //        m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
+        m_arm.setFocOutput(m_joystickDeadband * ARM.joystickMultiplier);
       }
     } else {
-      if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP)
-        m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
+      m_arm.setPercentOutput(0.0);
     }
   }
 
