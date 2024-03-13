@@ -150,13 +150,13 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    var driveShootButton = new Trigger(() -> rightJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
     // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
     // aimNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 
-    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    var targetSpeakerButton = new Trigger(() -> leftJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));

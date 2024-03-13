@@ -195,7 +195,7 @@ public class Vision extends SubsystemBase {
       double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
       double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
       double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
-      double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+      double virtualGoalY = (m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY));
       Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
       Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
       double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
@@ -210,7 +210,7 @@ public class Vision extends SubsystemBase {
               .plus(
                   Rotation2d.fromRadians(
                       Math.asin(
-                          ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
+                          (((VelocityY*0.75) * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
     }
   }
 
