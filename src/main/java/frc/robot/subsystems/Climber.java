@@ -259,7 +259,9 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
       case OPEN_LOOP:
-        double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
+      
+        double joystickYDeadband = MathUtil.applyDeadband(m_joystickInput, 0.1);
+        double percentOutput = joystickYDeadband * CLIMBER.kPercentOutputMultiplier;
 
         if (m_limitJoystickInput)
           percentOutput = m_joystickInput * CLIMBER.kLimitedPercentOutputMultiplier;
