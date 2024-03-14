@@ -225,16 +225,18 @@ public class SuperStructureVisualizer implements AutoCloseable {
   }
 
   public void updateArm() {
-    m_armVisualizer.update(m_arm.getCurrentAngle() + 170, m_arm.getPercentOutput());
+    m_armVisualizer.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
     if (m_armVisualizer2 != null)
       m_armVisualizer2.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
   }
 
   public void updateClimber() {
+    m_climberVisualizer.update(
+        m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
 
-    m_climberVisualizer.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
     if (m_climberVisualizer2 != null)
-      m_climberVisualizer2.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
+      m_climberVisualizer2.update(
+          m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
   }
 
   public void updateLimelights() {

@@ -52,7 +52,7 @@ public class GetSubsystemStates extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
+    isClimbing = m_climber.getClimbState();
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
     isIntaked = m_intake.checkEitherIntakeSensorActive();

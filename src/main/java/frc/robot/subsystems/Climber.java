@@ -30,10 +30,10 @@ public class Climber extends SubsystemBase {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
 
-  private final Follower follower = new Follower(0, false);
-
   private final StatusSignal<Double> m_positionSignal =
       elevatorClimbMotors[0].getPosition().clone();
+  private final StatusSignal<Double> m_positionSignal2 =
+      elevatorClimbMotors[1].getPosition().clone();
   private final StatusSignal<Double> m_velocitySignal =
       elevatorClimbMotors[0].getVelocity().clone();
   private final StatusSignal<Double> m_leftCurrentSignal =
@@ -41,8 +41,7 @@ public class Climber extends SubsystemBase {
   private final StatusSignal<Double> m_rightCurrentSignal =
       elevatorClimbMotors[1].getTorqueCurrent().clone();
 
-  private final MotionMagicTorqueCurrentFOC m_request =
-      new MotionMagicTorqueCurrentFOC(getHeightMeters());
+  private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(0);
 
   private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
   private final double m_upperLimitMeters = CLIMBER.upperLimitMeters;
@@ -60,7 +59,7 @@ public class Climber extends SubsystemBase {
 
   private boolean elevatorClimbSate;
 
-  public final ElevatorSim leftElevatorSim =
+  private final ElevatorSim leftElevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
@@ -70,7 +69,7 @@ public class Climber extends SubsystemBase {
           CLIMBER.upperLimitMeters,
           false,
           CLIMBER.lowerLimitMeters);
-  public final ElevatorSim rightElevatorSim =
+  private final ElevatorSim rightElevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
@@ -96,18 +95,14 @@ public class Climber extends SubsystemBase {
     config.Slot0.kA = CLIMBER.kA;
     config.Slot0.kV = CLIMBER.kV;
 
-    config.MotionMagic.MotionMagicAcceleration = CLIMBER.kMaxAccel;
-    config.MotionMagic.MotionMagicCruiseVelocity = CLIMBER.kMaxVel;
+    config.MotionMagic.MotionMagicCruiseVelocity = 100;
+    config.MotionMagic.MotionMagicAcceleration = 200;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
     elevatorClimbMotors[0].setInverted(false);
-    //    elevatorClimbMotors[1].setInverted(true);
-    elevatorClimbMotors[1].setControl(
-        follower
-            .withMasterID(elevatorClimbMotors[0].getDeviceID())
-            .withOpposeMasterDirection(true));
+    elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
 
     SmartDashboard.putData(this);
   }
@@ -120,14 +115,30 @@ public class Climber extends SubsystemBase {
     return elevatorClimbSate;
   }
 
-  public double getPercentOutput() {
-    return elevatorClimbMotors[0].getMotorVoltage().getValue() / 12.0;
+  public double getPercentOutputMotor1() {
+    return elevatorClimbMotors[0].get();
+  }
+
+  public double getPercentOutputMotor2() {
+    return elevatorClimbMotors[1].get();
+  }
+
+  private void setPercentOutput(double output) {
+    setPercentOutput(output, false);
   }
 
   // sets the percent output of the elevator based on its position
-  public void setPercentOutput(double output) {
+  private void setPercentOutput(double output, boolean enforceLimits) {
+    if (enforceLimits) {
+      if (getHeightMetersMotor1() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+        output = Math.min(output, 0);
+
+      if (getHeightMetersMotor1() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
+        output = Math.max(output, 0);
+    }
+
     elevatorClimbMotors[0].set(output);
-    elevatorClimbMotors[1].set(output);
+    // elevatorClimbMotors[1].set(output);
   }
 
   public double getAvgCurrentDraw() {
@@ -135,13 +146,23 @@ public class Climber extends SubsystemBase {
   }
 
   // gets the position of the climber in meters
-  public double getHeightMeters() {
-    return getMotorRotations() * CLIMBER.sprocketRotationsToMeters;
+  public double getHeightMetersMotor1() {
+    return getMotor1Rotations() * CLIMBER.sprocketRotationsToMeters;
+  }
+
+  public double getHeightMetersMotor2() {
+    return getMotor2Rotations() * CLIMBER.sprocketRotationsToMeters;
   }
 
   // gets the position of the climber in encoder counts
-  public double getMotorRotations() {
+  public double getMotor1Rotations() {
+    m_positionSignal.refresh();
     return m_positionSignal.getValue();
+  }
+
+  public double getMotor2Rotations() {
+    m_positionSignal2.refresh();
+    return m_positionSignal2.getValue();
   }
 
   // sets position in meters
@@ -154,11 +175,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void holdClimber() {
-    setDesiredPositionMeters(getHeightMeters());
-  }
-
-  public void setDesiredSetpoint(double desiredSetpoint) {
-    setDesiredPositionMeters(m_desiredSetpoint.getSetpointMeters());
+    setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   public double getDesiredSetpoint() {
@@ -176,9 +193,7 @@ public class Climber extends SubsystemBase {
 
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
   public void resetMotionMagicState() {
-    m_desiredPositionMeters = getHeightMeters();
-    elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
-    //    elevatorClimbMotors[1].setControl(m_request.withPosition(m_desiredPositionMeters));
+    m_desiredPositionMeters = getHeightMetersMotor1();
   }
 
   public double getLowerLimitMeters() {
@@ -223,7 +238,7 @@ public class Climber extends SubsystemBase {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
-    //    elevatorClimbMotors[1].setNeutralMode(mode);
+    elevatorClimbMotors[1].setNeutralMode(mode);
   }
 
   public NeutralModeValue getNeutralMode() {
@@ -232,15 +247,18 @@ public class Climber extends SubsystemBase {
 
   public void teleopInit() {
     resetMotionMagicState();
-    setDesiredPositionMeters(getHeightMeters());
+    setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   private void updateLogger() {
     Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
-    Logger.recordOutput("Climber/Height Meters", getHeightMeters());
-    Logger.recordOutput("Climber/Motor Rotations", getMotorRotations());
+    Logger.recordOutput("Climber/Height MetersMotor1", getHeightMetersMotor1());
+    Logger.recordOutput("Climber/Motor1 Rotations", getMotor1Rotations());
+    Logger.recordOutput("Climber/Height MetersMotor2", getHeightMetersMotor2());
+    Logger.recordOutput("Climber/Motor2 Rotations", getMotor2Rotations());
     Logger.recordOutput("Climber/Climb State", getClimbState());
-    Logger.recordOutput("Climber/Motor Output", getPercentOutput());
+    Logger.recordOutput("Climber/Motor1 Output", getPercentOutputMotor1());
+    Logger.recordOutput("Climber/Motor2 Output", getPercentOutputMotor2());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
     Logger.recordOutput("Climber/Supply Current", getAvgCurrentDraw());
   }
@@ -258,14 +276,11 @@ public class Climber extends SubsystemBase {
 
         // if (m_limitJoystickInput)
         // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
-        if (m_enforceLimits) {
-          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
-            percentOutput = Math.min(percentOutput, 0);
+        //        if (m_enforceLimits) {
+        //          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+        //            percentOutput = Math.min(percentOutput, 0);
 
-          if (getHeightMeters() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
-            percentOutput = Math.max(percentOutput, 0);
-        }
-
+        // TODO: Verify rotation to distance conversion before continuing
         setPercentOutput(percentOutput);
         break;
     }

@@ -26,6 +26,7 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -100,6 +101,11 @@ public class Arm extends SubsystemBase {
     config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
     config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
 
+    // Ramp rates for climbing
+    config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 2.0;
+    config.OpenLoopRamps.TorqueOpenLoopRampPeriod = 2.0;
+    config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 2.0;
+
     config.MotionMagic.MotionMagicAcceleration = ARM.kAccel;
     config.MotionMagic.MotionMagicCruiseVelocity = ARM.kCruiseVel;
     config.MotionMagic.MotionMagicJerk = ARM.kJerk;
@@ -111,7 +117,7 @@ public class Arm extends SubsystemBase {
     canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
-    m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
+    if (RobotBase.isReal()) m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
 
     SmartDashboard.putData(this);
   }
