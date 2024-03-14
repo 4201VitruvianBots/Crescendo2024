@@ -150,7 +150,6 @@ public class LEDSubsystem extends SubsystemBase {
         case UNREVED:
           setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
-
         case INTAKED:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
           break;
@@ -159,6 +158,9 @@ public class LEDSubsystem extends SubsystemBase {
           break;
         case ENABLED:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe); // Solid Green
+          break;
+        case CLIMBING:
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow);
           break;
         case SETUP_READY:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid);

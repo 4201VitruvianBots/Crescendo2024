@@ -32,12 +32,17 @@ public class ToggleClimbMode extends InstantCommand {
 
     switch (climberControlMode) {
       case OPEN_LOOP:
+        m_climber.setClimbState(true);
         m_climber.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-        // m_climber.resetMotionMagicState();
-        // m_climber.holdClimber();
+        m_climber.resetMotionMagicState();
+        m_climber.holdClimber();
+        m_arm.setControlMode(CONTROL_MODE.CLOSED_LOOP);
+        m_arm.resetMotionMagicState();
         break;
       default:
       case CLOSED_LOOP:
+        m_climber.setClimbState(false);
+        m_arm.setControlMode(CONTROL_MODE.OPEN_LOOP);
         m_climber.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
         break;
     }

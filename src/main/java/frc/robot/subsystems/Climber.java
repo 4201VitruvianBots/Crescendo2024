@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,8 +29,6 @@ public class Climber extends SubsystemBase {
   private final TalonFX[] elevatorClimbMotors = {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
-
-  // private final Follower follower = new Follower(0, false);
 
   private final StatusSignal<Double> m_positionSignal =
       elevatorClimbMotors[0].getPosition().clone();
@@ -105,6 +104,7 @@ public class Climber extends SubsystemBase {
 
     elevatorClimbMotors[0].setInverted(false);
     elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
+
     SmartDashboard.putData(this);
   }
 
@@ -124,20 +124,19 @@ public class Climber extends SubsystemBase {
     return elevatorClimbMotors[1].get();
   }
 
-  public void setPercentOutput(double output) {
+  private void setPercentOutput(double output) {
     setPercentOutput(output, false);
   }
 
   // sets the percent output of the elevator based on its position
-  public void setPercentOutput(double output, boolean enforceLimits) {
-    // if (enforceLimits) {
-    //   if (getHeightMetersMotor1() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
-    //     output = Math.min(output, 0);
+  private void setPercentOutput(double output, boolean enforceLimits) {
+    if (enforceLimits) {
+      if (getHeightMetersMotor1() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+        output = Math.min(output, 0);
 
-    //   if (getHeightMetersMotor1() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
-    //     output = Math.max(output, 0);
-
-    // }
+      if (getHeightMetersMotor1() <= getLowerLimitMeters() + Units.inchesToMeters(0.05))
+        output = Math.max(output, 0);
+    }
 
     elevatorClimbMotors[0].set(output);
     // elevatorClimbMotors[1].set(output);
@@ -175,11 +174,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void holdClimber() {
-    // setDesiredPositionMeters(getHeightMetersMotor1());
-  }
-
-  public void setDesiredSetpoint(double desiredSetpoint) {
-    // setDesiredPositionMeters(m_desiredSetpoint.getSetpointMeters());
+     setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   public double getDesiredSetpoint() {
@@ -187,8 +182,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void setDesiredPositionMeters(double setpoint) {
-    // m_desiredPositionMeters =
-    //     MathUtil.clamp(setpoint, CLIMBER.lowerLimitMeters, CLIMBER.upperLimitMeters);
+     m_desiredPositionMeters =
+         MathUtil.clamp(setpoint, CLIMBER.lowerLimitMeters, CLIMBER.upperLimitMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -197,8 +192,8 @@ public class Climber extends SubsystemBase {
 
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
   public void resetMotionMagicState() {
-    // m_desiredPositionMeters = getHeightMetersMotor1();
-    // elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+    m_desiredPositionMeters = getHeightMetersMotor1();
+    elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
   }
 
   public double getLowerLimitMeters() {
@@ -251,8 +246,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void teleopInit() {
-    // resetMotionMagicState();
-    // setDesiredPositionMeters(getHeightMetersMotor1());
+     resetMotionMagicState();
+     setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   private void updateLogger() {
@@ -272,13 +267,12 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
-        // case CLOSED_LOOP:
-        //   if (DriverStation.isEnabled())
-        //     elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
-        //   break;
+      case CLOSED_LOOP:
+        elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+        break;
       case OPEN_LOOP:
       default:
-        // double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
+        double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
 
         // if (m_limitJoystickInput)
         // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
@@ -287,7 +281,7 @@ public class Climber extends SubsystemBase {
         //            percentOutput = Math.min(percentOutput, 0);
 
         // TODO: Verify rotation to distance conversion before continuing
-        // setPercentOutput(percentOutput, false);
+        setPercentOutput(percentOutput);
         break;
     }
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
