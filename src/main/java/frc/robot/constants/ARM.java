@@ -4,6 +4,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class ARM {
+  public static final double canCoderOffset = 0.201171875;
   /* Static Feedforward Gain
   This is added to the closed loop output. The sign is determined by target velocity.
   The unit for this constant is dependent on the control mode,

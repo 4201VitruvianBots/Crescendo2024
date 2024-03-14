@@ -187,7 +187,7 @@ public class Vision extends SubsystemBase {
       }
 
       // SOTM stuff
-      double VelocityShoot = 11.1;
+      double VelocityShoot = 9.255586759; // Previously 11.1 m/s
       double PositionY = m_swerveDriveTrain.getState().Pose.getY();
       double PositionX = m_swerveDriveTrain.getState().Pose.getX();
       double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;

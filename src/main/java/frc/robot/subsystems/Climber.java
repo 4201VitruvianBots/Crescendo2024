@@ -55,6 +55,7 @@ public class Climber extends SubsystemBase {
   // Controlled by open loop
   private double m_joystickInput;
   private boolean m_limitJoystickInput;
+  private boolean m_enforceLimits;
   private boolean m_userSetpoint;
 
   private NeutralModeValue m_neutralMode = NeutralModeValue.Brake;
@@ -243,7 +244,7 @@ public class Climber extends SubsystemBase {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
-    elevatorClimbMotors[1].setNeutralMode(mode);
+    //    elevatorClimbMotors[1].setNeutralMode(mode);
   }
 
   public NeutralModeValue getNeutralMode() {
@@ -282,6 +283,9 @@ public class Climber extends SubsystemBase {
 
         // if (m_limitJoystickInput)
         // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
+        if (m_enforceLimits) {
+          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+            percentOutput = Math.min(percentOutput, 0);
 
         // TODO: Verify rotation to distance conversion before continuing
         // setPercentOutput(percentOutput, false);
@@ -295,28 +299,26 @@ public class Climber extends SubsystemBase {
     m_simState1.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_simState2.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    leftElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
-    rightElevatorSim.setInputVoltage(
-        MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
+    leftElevatorSim.setInputVoltage(MathUtil.clamp(m_simState1.getMotorVoltage(), -12, 12));
+    rightElevatorSim.setInputVoltage(MathUtil.clamp(m_simState2.getMotorVoltage(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());
 
-    m_simState1.setRotorVelocity(
-        leftElevatorSim.getVelocityMetersPerSecond()
-            * CLIMBER.gearRatio
-            * CLIMBER.sprocketRotationsToMeters);
     m_simState1.setRawRotorPosition(
         leftElevatorSim.getPositionMeters()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
-    m_simState2.setRotorVelocity(
-        rightElevatorSim.getVelocityMetersPerSecond()
+    m_simState1.setRotorVelocity(
+        leftElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
     m_simState2.setRawRotorPosition(
         rightElevatorSim.getPositionMeters()
+            * CLIMBER.gearRatio
+            * CLIMBER.sprocketRotationsToMeters);
+    m_simState2.setRotorVelocity(
+        rightElevatorSim.getVelocityMetersPerSecond()
             * CLIMBER.gearRatio
             * CLIMBER.sprocketRotationsToMeters);
   }
