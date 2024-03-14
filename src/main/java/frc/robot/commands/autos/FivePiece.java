@@ -64,5 +64,5 @@ public class FivePiece extends SequentialCommandGroup {
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
                 new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)));
-    }
+  }
 }

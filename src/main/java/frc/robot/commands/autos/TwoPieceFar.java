@@ -7,11 +7,7 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drive.AutoSetTrackingState;
-import frc.robot.commands.intake.AutoRunAmpTake;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
-import frc.robot.constants.AMPSHOOTER;
-import frc.robot.constants.INTAKE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
@@ -40,12 +36,22 @@ public class TwoPieceFar extends SequentialCommandGroup {
 
     addCommands(
         pathFactory.createAutoInit(),
-        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous, new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                flywheelCommandContinuous,
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
         shooterFactory.generateShootCommand().withTimeout(2.5),
-        pathFactory.getNextPathCommand().alongWith(intakeFactory.generateIntakeCommand(), new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NONE)),
-        pathFactory.getNextPathCommand().alongWith(new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NONE)),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
         shooterFactory.generateShootCommand().withTimeout(1.5),
-        pathFactory.getNextPathCommand()
-            .andThen(() -> swerveDrive.setControl(stopRequest)));
+        pathFactory.getNextPathCommand().andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }
