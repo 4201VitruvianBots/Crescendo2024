@@ -48,7 +48,8 @@ public class AutoShootNStrafe extends Command {
   private double allowableError = 300;
 
   private final PIDController m_turnController =
-      new PIDController(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta);
+      new PIDController(
+          SWERVE.DRIVE.kAutoP_Theta, SWERVE.DRIVE.kAutoI_Theta, SWERVE.DRIVE.kAutoD_Theta);
   private Translation2d m_target = new Translation2d();
 
   private double m_targetx;
@@ -126,7 +127,7 @@ public class AutoShootNStrafe extends Command {
     double AccelerationX = m_swerveDrive.getPigeon2().getAccelerationX().getValueAsDouble();
     double AccelerationY = m_swerveDrive.getPigeon2().getAccelerationY().getValueAsDouble();
 
-    double VelocityShoot = 11.1; // TODO: Change after testing
+    double VelocityShoot = 9.255586759; // Previously 11.1 m/s
 
     double virtualGoalX = m_target.getX() - VelocityShoot * (VelocityX + AccelerationX);
     double virtualGoalY = m_target.getY() - VelocityShoot * (VelocityY + AccelerationY);

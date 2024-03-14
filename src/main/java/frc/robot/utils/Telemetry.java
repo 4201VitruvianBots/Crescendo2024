@@ -66,7 +66,7 @@ public class Telemetry {
 
       Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
     } catch (Exception e) {
-      System.out.println("Advantagekit could not update Odometry");
+      System.out.println("AdvantageKit could not update Odometry");
     }
 
     if (m_fieldSim != null) {

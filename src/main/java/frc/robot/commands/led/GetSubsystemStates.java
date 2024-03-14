@@ -10,22 +10,22 @@ import frc.robot.constants.LED;
 import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
-
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LEDSubsystem m_led;
-
   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
   private final Vision m_vision;
   // private final Arm m_arm;
+
   private boolean isClimbing;
-  private boolean isShooting;
+  private boolean isUnreved;
+  private boolean isReved;
   private boolean isIntaking;
   private boolean isEnabled;
   private boolean isSetup;
   private boolean isLocalized;
   private boolean isDisabled;
+  private boolean isIntaked;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
@@ -52,8 +52,10 @@ public class GetSubsystemStates extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isClimbing = m_climber.getClimbState(); // TODO: Implement this in the climber command
-    isShooting = m_shooter.getShooterState(); // Done
+    isClimbing = m_climber.getClimbState();
+    isReved = m_shooter.getReved();
+    isUnreved = m_shooter.getUnreved(); // Done
+    isIntaked = m_intake.checkEitherIntakeSensorActive();
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
@@ -65,15 +67,19 @@ public class GetSubsystemStates extends Command {
     // the prioritized state to be expressed to the LEDs
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (isIntaking) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
-    } else if (isShooting) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SHOOTING);
-    } else if (isClimbing) {
+    if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
+    } else if (isReved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
+    } else if (isUnreved) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
+    } else if (isIntaked) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.INTAKED);
+    } else if (isIntaking) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
-    } else if (isDisabled) {
+    } else if (isSetup) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
     } else if (isLocalized) {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);

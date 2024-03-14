@@ -34,7 +34,7 @@ public class SuperStructureVisualizer implements AutoCloseable {
   private final double startPointY = 0.2;
 
   private final Mechanism2d m_mech2d =
-      new Mechanism2d(ROBOT.drivebaseLength * 2, ROBOT.drivebaseLength * 2);
+      new Mechanism2d(ROBOT.driveBaseLength * 2, ROBOT.driveBaseLength * 2);
 
   private final MechanismRoot2d m_drivebaseRoot2d =
       m_mech2d.getRoot("startRoot", startPointX, startPointY);
@@ -47,24 +47,29 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   private final MechanismLigament2d m_drivebase2d =
       m_drivebaseRoot2d.append(
-          new MechanismLigament2d("drivebase", INTAKE.intakeLength + ROBOT.drivebaseLength, 0));
+          new MechanismLigament2d("drivebase", INTAKE.intakeLength + ROBOT.driveBaseLength, 0));
   private final MechanismLigament2d m_limelightA2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
-              "LimelightA", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 90));
+              "LimelightA",
+              VISION.aprilTagLimelightCameraADistanceFromGroundZ - INTAKE.intakeLength,
+              90));
   private final MechanismLigament2d m_limelightB2d =
       m_drivebaseRoot2d.append(
           new MechanismLigament2d(
-              "LimelightB", VISION.aprilTagLimelightCameraADistanceFromGroundZ, 0));
+              "LimelightB",
+              VISION.aprilTagLimelightCameraADistanceFromGroundZ - INTAKE.intakeLength,
+              0));
   private final MechanismLigament2d m_intake2d =
       m_drivebaseRoot2d.append(new MechanismLigament2d("Intake", INTAKE.intakeLength, -90));
   private final ShooterVisualizer m_intakeVisualizer = new ShooterVisualizer("intake", m_intake2d);
 
-  private final MechanismLigament2d m_led2d =
-      m_superStructureRoot.append(new MechanismLigament2d("LED", LED.LEDstripLength, 70));
   private final MechanismLigament2d m_shooter2d =
       m_superStructureRoot.append(
           new MechanismLigament2d("superStructure", Units.inchesToMeters(20), 83.442));
+
+  private final MechanismLigament2d m_led2d =
+      m_shooter2d.append(new MechanismLigament2d("LED", LED.LEDstripLength, 186));
 
   private final ArmVisualizer m_armVisualizer = new ArmVisualizer("m_arm2d");
   private final MechanismLigament2d m_arm2d =
@@ -220,16 +225,18 @@ public class SuperStructureVisualizer implements AutoCloseable {
   }
 
   public void updateArm() {
-    m_armVisualizer.update(m_arm.getCurrentAngle() + 170, m_arm.getPercentOutput());
+    m_armVisualizer.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
     if (m_armVisualizer2 != null)
       m_armVisualizer2.update(m_arm.getCurrentAngle(), m_arm.getPercentOutput());
   }
 
   public void updateClimber() {
+    m_climberVisualizer.update(
+        m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
 
-    m_climberVisualizer.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
     if (m_climberVisualizer2 != null)
-      m_climberVisualizer2.update(m_climber.getHeightMeters(), m_climber.getPercentOutput());
+      m_climberVisualizer2.update(
+          m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
   }
 
   public void updateLimelights() {

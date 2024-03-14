@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,7 +34,10 @@ import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
+import frc.robot.commands.intake.AmpOuttake;
+import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
@@ -45,6 +47,7 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
+import frc.robot.utils.SysIdArmUtils;
 import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
@@ -62,7 +65,6 @@ public class RobotContainer {
   private final Telemetry m_telemetry = new Telemetry();
   private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
-  private final Pose2d m_pose2d = new Pose2d();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
@@ -90,9 +92,13 @@ public class RobotContainer {
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
-    m_controls.registerDriveTrain(m_swerveDrive);
-    m_controls.registerArm(m_arm);
+    m_swerveDrive.registerVisionSubsystem(m_vision);
+    m_ampShooter.registerIntake(m_intake);
     m_vision.registerSwerveDrive(m_swerveDrive);
+    m_controls.registerDriveTrain(m_swerveDrive);
+    m_controls.registerIntake(m_intake);
+    m_controls.registerArm(m_arm);
+    m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
@@ -121,24 +127,6 @@ public class RobotContainer {
                       leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
                       rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
-      //      m_swerveDrive.setDefaultCommand(
-      //          m_swerveDrive.applyRequest(
-      //              () ->
-      //                  drive
-      //                      .withVelocityX(
-      //                          leftJoystick.getRawAxis(1)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive forward with
-      //                      // negative Y (forward)
-      //                      .withVelocityY(
-      //                          leftJoystick.getRawAxis(0)
-      //                              * DRIVE.kMaxSpeedMetersPerSecond) // Drive left with negative
-      // X (left)
-      //                      .withRotationalRate(
-      //                          rightJoystick.getRawAxis(0)
-      //                              * DRIVE
-      //                                  .kMaxRotationRadiansPerSecond))); // Drive
-      // counterclockwise with
-      //      // negative X (left)
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -166,9 +154,11 @@ public class RobotContainer {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
 
-    xboxController
-        .povRight()
-        .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(
@@ -186,26 +176,24 @@ public class RobotContainer {
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
 
-    // var aimNoteButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    // aimNoteButton.whileTrue(
-    //     new DriveAndAimAtNote(
-    //         m_swerveDrive,
-    //         m_vision,
-    //         () -> -leftJoystick.getRawAxis(1),
-    //         () -> -leftJoystick.getRawAxis(0),
-    //         () -> rightJoystick.getRawAxis(0)));
-
     xboxController
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.SPEAKER.get(),
-                RPM_SETPOINT.SPEAKER.get())); // fast speaker
+                RPM_SETPOINT.MAX.get(),
+                RPM_SETPOINT.MAX.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
-    xboxController.x().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.STAGED));
+    xboxController
+        .x()
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter,
+                xboxController,
+                RPM_SETPOINT.SPEAKERBOTTOM.get(),
+                RPM_SETPOINT.SPEAKERBOTTOM.get()));
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     trigger.onTrue(new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber));
@@ -214,18 +202,6 @@ public class RobotContainer {
 
     // switch between open loop and close loop
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
-
-    // xboxController
-    //     .y()
-    //     .whileTrue(
-    //         new ShootNStrafe(
-    //             m_swerveDrive,
-    //             m_ampShooter,
-    //             m_shooter,
-    //             () -> -leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             () -> -rightJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-    //             SHOOTER.RPM_SETPOINT.SPEAKER.get()));
 
     xboxController
         .rightTrigger()
@@ -236,7 +212,7 @@ public class RobotContainer {
                 0.55,
                 0.75,
                 m_ampShooter,
-                0.75)); // Intake Note with Intake And Amp
+                AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
@@ -246,7 +222,7 @@ public class RobotContainer {
     xboxController
         .leftBumper()
         .whileTrue(
-            new frc.robot.commands.intake.AmpOuttake(
+            new AmpOuttake(
                 m_intake,
                 INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
                 INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
@@ -265,6 +241,7 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
+
     xboxController
         .povDown()
         .whileTrue(
@@ -293,7 +270,7 @@ public class RobotContainer {
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
     SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
     SmartDashboard.putData(
-        "ResetSetupCheck", new InstantCommand(Controls::resetInitState).ignoringDisable(true));
+        "ResetSetupCheck", new InstantCommand(m_controls::resetInitState).ignoringDisable(true));
 
     SmartDashboard.putData("AutoClimbSequence", new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber)); // put on SmartDashboard for testing purposes
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
@@ -309,17 +286,29 @@ public class RobotContainer {
         new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
         "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption(
-        "IntakeTestVison",
-        new IntakeTestVison(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
+    m_autoChooser.addOption(
+        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
 
+    // Test autos
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
-        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "IntakeTestVision",
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption(
+        "TestAutoShoot",
+        new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
+            .andThen(
+                new AutoRunAmpTakeTwo(
+                    m_intake,
+                    m_ampShooter,
+                    INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+                    INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+                    AMPSHOOTER.STATE.INTAKING.get(),
+                    m_shooter)));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
     //     new AutoScore(6
@@ -340,6 +329,7 @@ public class RobotContainer {
   private void initSysidChooser() {
     SignalLogger.setPath("/media/sda1/");
     var shooterSysId = SysIdShooterUtils.createShooterRoutines(m_shooter);
+    var armSysId = SysIdArmUtils.createArmRoutines(m_arm);
 
     SysIdUtils.createSwerveDriveRoutines(m_swerveDrive);
     SysIdUtils.createSwerveTurnRoutines(m_swerveDrive);
@@ -391,6 +381,18 @@ public class RobotContainer {
 
     m_sysidChooser.addOption(
         "ShooterQuasistaticReverse", shooterSysId.quasistatic(SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "ArmDynamicForward", armSysId.dynamic(SysIdRoutine.Direction.kForward));
+
+    m_sysidChooser.addOption(
+        "ArmDynamicReverse", armSysId.dynamic(SysIdRoutine.Direction.kReverse));
+
+    m_sysidChooser.addOption(
+        "ArmQuasistaticForward", armSysId.quasistatic(SysIdRoutine.Direction.kForward));
+
+    m_sysidChooser.addOption(
+        "ArmQuasistaticReverse", armSysId.quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command getAutonomousCommand() {
@@ -430,10 +432,12 @@ public class RobotContainer {
   }
 
   public void disabledInit() {
+    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
+    m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
     m_intake.setSpeed(0, 0);
     m_ampShooter.setPercentOutput(0);
     m_shooter.setRPMOutput(0);
     m_shooter.setPercentOutput(0);
-    m_swerveDrive.applyRequest(SwerveRequest.ApplyChassisSpeeds::new);
+    m_arm.resetMotionMagicState();
   }
 }

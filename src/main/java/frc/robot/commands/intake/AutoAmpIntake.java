@@ -7,61 +7,49 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 
-public class AutoRunAll extends Command {
-  Intake m_intake;
-  AmpShooter m_ampShooter;
-  Shooter m_shooter;
+public class AutoAmpIntake extends Command {
+  private final Intake m_intake;
+  private final AmpShooter m_ampShooter;
 
-  double m_speed;
-  double m_speed2;
-  double m_ampSpeed;
-  double m_rpm;
+  private final double m_speed;
+  private final double m_speed2;
+  private final double m_ampSpeed;
 
   /** Creates a new RunIntake. */
-  public AutoRunAll(
-      Intake intake,
-      Shooter shooter,
-      AmpShooter ampShooter,
-      double speed,
-      double speed2,
-      double ampSpeed,
-      double RPM) {
+  public AutoAmpIntake(
+      Intake intake, double speed, double speed2, AmpShooter ampShooter, double ampSpeed) {
     m_intake = intake;
     m_ampShooter = ampShooter;
-    m_shooter = shooter;
     m_speed = speed;
     m_speed2 = speed2;
     m_ampSpeed = ampSpeed;
-    m_rpm = RPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake, m_ampShooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if ((m_intake.checkEitherIntakeSensorActive())) {
+
+      m_intake.setSpeed(m_speed, m_speed2);
+      m_ampShooter.setAutoPercentOutput(m_ampSpeed);
+    } else m_intake.setSpeed(m_speed, m_speed2);
+    m_ampShooter.setAutoPercentOutput(0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_intake.setSpeed(m_speed, m_speed2);
-    m_ampShooter.setPercentOutput(m_ampSpeed);
-    m_shooter.setRPMOutput(m_rpm);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intake.setSpeed(m_speed, m_speed2);
-    m_ampShooter.setPercentOutput(m_ampSpeed);
-    m_shooter.setRPMOutput(m_rpm);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

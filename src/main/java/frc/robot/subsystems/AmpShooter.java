@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,8 +17,10 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
+  private Intake m_intake;
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
   private NeutralModeValue NeutralMode;
+  private double m_ampAutoPercentOutput;
 
   private final DCMotorSim m_ampMotorSim =
       new DCMotorSim(AMPSHOOTER.AmpGearbox, AMPSHOOTER.gearRatio, AMPSHOOTER.Inertia);
@@ -35,8 +38,17 @@ public class AmpShooter extends SubsystemBase {
     CtreUtils.configureTalonFx(ampMotor, config);
   }
 
+  public void registerIntake(Intake intake) {
+    m_intake = intake;
+  }
+
   public void setPercentOutput(double percentOutput) {
+    m_ampAutoPercentOutput = 0;
     ampMotor.set(percentOutput);
+  }
+
+  public void setAutoPercentOutput(double percentOutput) {
+    m_ampAutoPercentOutput = percentOutput;
   }
 
   public double getSpeed() {
@@ -56,6 +68,16 @@ public class AmpShooter extends SubsystemBase {
   @Override
   public void periodic() {
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+
+    if (m_intake != null) {
+      if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
+        if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
+          setPercentOutput(0);
+        } else {
+          setPercentOutput(m_ampAutoPercentOutput);
+        }
+      }
+    }
   }
 
   @Override

@@ -18,6 +18,7 @@ public final class SWERVE {
   public static final class DRIVE {
     //    public static double kTrackWidth = Units.inchesToMeters(26);
     //    public static final double kWheelBase = Units.inchesToMeters(24);
+    // Track Width and WheelBase measured from swerve wheels instead of chassis
     public static double kTrackWidth = Units.inchesToMeters(21);
     public static final double kWheelBase = Units.inchesToMeters(19);
     public static final double kDriveBaseRadius =
@@ -60,7 +61,7 @@ public final class SWERVE {
     public static final double kD_X = 0.0;
 
     // Rotation
-    public static final double kAutoP_Theta = 10.0;
+    public static final double kAutoP_Theta = 11.0;
     public static final double kAutoI_Theta = 0.0;
     public static final double kAutoD_Theta = 0;
 
@@ -98,30 +99,10 @@ public final class SWERVE {
         SwerveModule.ClosedLoopOutputType.Voltage;
     private static final SwerveModule.ClosedLoopOutputType driveClosedLoopOutput =
         SwerveModule.ClosedLoopOutputType.Voltage;
-
-    //    public static final double ksDriveVoltsRotation = 0.11286;
-    //    public static final double kvDriveVoltSecondsPerRotation = 0.10079;
-    //    public static final double kaDriveVoltSecondsSquaredPerRotation = 0.040151;
-
-    public static final double ksDriveVoltsRotation = 0.24085;
-    public static final double kvDriveVoltSecondsPerRotation = 2.4597;
-    public static final double kaDriveVoltSecondsSquaredPerRotation = 0.033818;
-
-    //    public static final double ksDriveVoltsRotation = (0.11286 / 12.0);
-    //    public static final double kvDriveVoltSecondsPerRotation = (0.10079 / 12.0);
-    //    public static final double kaDriveVoltSecondsSquaredPerRotation = (0.040151 / 12.0);
-
-    //    public static final double ksDriveVoltsRotation = (0.32 / 12);
-    //    public static final double kvDriveVoltSecondsPerRotation = (1.51 / 12);
-    //    public static final double kaDriveVoltSecondsSquaredPerRotation = (0.27 / 12);
-
-    public static final double ksTurnVoltsRotation = (0.24085 / 12.0);
-    public static final double kvTurnVoltSecondsPerRotation = (2.4597 / 12.0);
-    public static final double kaTurnVoltSecondsSquaredPerRotation = (0.033818 / 12.0);
   }
 
   public static final SwerveDrivetrainConstants DrivetrainConstants =
-      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.drivebaseCanbus);
+      new SwerveDrivetrainConstants().withPigeon2Id(CAN.pigeon).withCANbusName(CAN.driveBaseCanbus);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
       new SwerveModuleConstantsFactory()

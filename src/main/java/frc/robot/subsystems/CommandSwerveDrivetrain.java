@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.*;
@@ -15,9 +14,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.ROBOT;
@@ -38,13 +35,9 @@ import org.littletonrobotics.junction.Logger;
  * in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-  private static final double kSimLoopPeriod = 0.005; // 5 ms
-  private Notifier m_simNotifier = null;
-  private double m_lastSimTime;
-  private final SwerveModuleConstants[] m_constants = new SwerveModuleConstants[4];
-  // private double m_desiredHeadingRadians;
-  private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
   private Vision m_vision;
+  private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
+
   private final SwerveRequest.FieldCentric m_driveReqeustFieldCentric =
       new SwerveRequest.FieldCentric()
           .withDeadband(SWERVE.DRIVE.kMaxSpeedMetersPerSecond * 0.1)
@@ -76,6 +69,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Rotation2d m_angleToSpeaker = new Rotation2d();
   private Rotation2d m_angleToNote = new Rotation2d();
   private VISION.TRACKING_STATE m_trackingState = VISION.TRACKING_STATE.NONE;
+
+  private static final double kSimLoopPeriod = 0.005; // 5 ms
+  private Notifier m_simNotifier = null;
+  private double m_lastSimTime;
 
   public CommandSwerveDrivetrain(
       SwerveDrivetrainConstants driveTrainConstants,
@@ -111,45 +108,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public void registerVisionSubsystem(Vision vision) {
     m_vision = vision;
-  }
-
-  public void setTurnAngle(int moduleId, double angle) {
-    var newAngle =
-        getModule(moduleId).getCANcoder().getAbsolutePosition().getValue()
-            - Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset)
-            + angle;
-
-    StatusCode turnMotorStatus = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < (RobotBase.isReal() ? 5 : 1); i++) {
-      turnMotorStatus = getModule(moduleId).getSteerMotor().setPosition(newAngle / 360.0);
-      if (turnMotorStatus.isOK()) break;
-      if (RobotBase.isReal()) Timer.delay(0.02);
-    }
-
-    if (!turnMotorStatus.isOK()) {
-      var alert =
-          new Alert(
-              "Could not update Swerve Turn TalonFX Angle: "
-                  + getModule(moduleId).getSteerMotor().getDeviceID()
-                  + ". Error code: "
-                  + turnMotorStatus,
-              AlertType.ERROR);
-      alert.set(true);
-    } else {
-      System.out.printf(
-          """
-                       Updated Turn Motor %2d Angle:
-                       Desired Angle: %.2f
-                       Turn Motor Angle: %.2f
-                       CANCoder Absolute Angle: %.2f
-                       CANCoder Offset: %.2f
-                       """,
-          getModule(moduleId).getSteerMotor().getDeviceID(),
-          angle,
-          Units.rotationsToDegrees(getModule(moduleId).getSteerMotor().getPosition().getValue()),
-          getModule(moduleId).getCANcoder().getAbsolutePosition().getValue(),
-          Units.rotationsToDegrees(m_constants[moduleId].CANcoderOffset));
-    }
   }
 
   public ChassisSpeeds getChassisSpeed() {
@@ -302,15 +260,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private double calculateRotationToTarget() {
-    var turnRate =
-        m_pidController.calculate(
-            getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
-
-    return turnRate;
-    //    return MathUtil.clamp(
-    //        turnRate,
-    //        -SWERVE.DRIVE.kMaxRotationRadiansPerSecond,
-    //        SWERVE.DRIVE.kMaxRotationRadiansPerSecond);
+    return m_pidController.calculate(
+        getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
   }
 
   private void updateTargetAngle() {
@@ -386,28 +337,30 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
-    Logger.recordOutput(
-        "Swerve/FrontLeftEncoder",
-        Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/FrontRightEncoder",
-        Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/BackLeftEncoder",
-        Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/BackRightEncoder",
-        Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
-
     Logger.recordOutput("Swerve/TrackingState", m_trackingState);
     Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
+      Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
+      Logger.recordOutput(
+          "Swerve/FrontLeftEncoder",
+          Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/FrontRightEncoder",
+          Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/BackLeftEncoder",
+          Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/BackRightEncoder",
+          Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
+    }
   }
 
   @Override
   public void periodic() {
     updateTargetAngle();
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   private void startSimThread() {
