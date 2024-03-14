@@ -43,8 +43,8 @@ public class Arm extends SubsystemBase {
 
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
 
-  private final CANcoder m_armEncoder = new CANcoder(CAN.armCanCoder);
-  private final CANcoderSimState m_armEncoderSimState = m_armEncoder.getSimState();
+  private CANcoder m_armEncoder;
+  // private CANcoderSimState m_armEncoderSimState;
 
   private final StatusSignal<Double> m_positionSignal = m_armMotor.getPosition().clone();
   private final StatusSignal<Double> m_currentSignal = m_armMotor.getTorqueCurrent().clone();
@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
           Units.degreesToRadians(ARM.startingAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
-
+    
   // Test mode setup
   private DoubleSubscriber m_kS_subscriber,
       m_kV_subscriber,
@@ -89,9 +89,15 @@ public class Arm extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = m_neutralMode;
-    config.Feedback.RotorToSensorRatio = ARM.gearRatio;
-    config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    if (RobotBase.isReal()) {
+        m_armEncoder = new CANcoder(CAN.armCanCoder);
+        // m_armEncoderSimState = m_armEncoder.getSimState();
+        config.Feedback.RotorToSensorRatio = ARM.gearRatio;
+        config.Feedback.FeedbackRemoteSensorID = CAN.armCanCoder;
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    } else {
+        config.Feedback.SensorToMechanismRatio = ARM.gearRatio;
+    }
     config.Slot0.kS = ARM.kS;
     config.Slot0.kV = ARM.kV;
     config.Slot0.kP = ARM.kP;
@@ -111,13 +117,17 @@ public class Arm extends SubsystemBase {
     config.MotionMagic.MotionMagicJerk = ARM.kJerk;
     CtreUtils.configureTalonFx(m_armMotor, config);
 
-    CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
-    CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
+    if (RobotBase.isReal()) {
+        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
+        CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
-    if (RobotBase.isReal()) m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
+        m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
+    } else {
+        m_armMotor.setPosition(Units.degreesToRotations(ARM.startingAngleDegrees));
+    }
 
     SmartDashboard.putData(this);
   }
@@ -161,6 +171,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getCANcoderAngle() {
+    if (m_armEncoder == null) return 0;
     return m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360;
   }
 
@@ -221,7 +232,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", getPercentOutput());
-    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
+    if (RobotBase.isReal()) Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
   public void testInit() {
@@ -323,7 +334,7 @@ public class Arm extends SubsystemBase {
     m_simState.setRotorVelocity(
         Units.radiansToRotations(m_armSim.getVelocityRadPerSec()) * ARM.gearRatio);
 
-    m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
-    m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
+    // m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
+    // m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
   }
 }
