@@ -130,6 +130,10 @@ public class Arm extends SubsystemBase {
   public void setFocOutput(double output) {
     m_armMotor.setControl(m_torqueCurrentFOC.withOutput(output * 327.0));
   }
+  
+  public void setMaxFocPercentOutput(double percentOutput) {
+    m_torqueCurrentFOC.MaxAbsDutyCycle = percentOutput;
+  }
 
   public double getPercentOutput() {
     return m_armMotor.getMotorVoltage().getValue() / 12.0;

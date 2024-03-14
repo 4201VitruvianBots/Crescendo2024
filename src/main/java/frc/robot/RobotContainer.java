@@ -196,7 +196,7 @@ public class RobotContainer {
                 RPM_SETPOINT.SPEAKERBOTTOM.get()));
 
     // toggles the climb sequence when presses and cuts the command when pressed again
-    trigger.onTrue(new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    trigger.onTrue(new AutoClimbSequence(m_swerveDrive, m_climber, m_arm, m_ampShooter));
     
     xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
 
@@ -272,7 +272,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "ResetSetupCheck", new InstantCommand(m_controls::resetInitState).ignoringDisable(true));
 
-    SmartDashboard.putData("AutoClimbSequence", new AutoClimbSequence(m_ampShooter, m_swerveDrive, m_arm, m_climber)); // put on SmartDashboard for testing purposes
+    SmartDashboard.putData("AutoClimbSequence", new AutoClimbSequence(m_swerveDrive, m_climber, m_arm, m_ampShooter)); // put on SmartDashboard for testing purposes
     //    SmartDashboard.putData("toggleShooterTestMode", new ToggleShooterTestMode(m_shooter));
   }
 

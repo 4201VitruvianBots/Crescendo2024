@@ -48,7 +48,8 @@ public final class ARM {
     STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
     FORWARD(Units.degreesToRotations(140.0)),
-    TRAP(Units.degreesToRotations(130.0));
+    TRAP(Units.degreesToRotations(140.0)),
+    TRAP_LOWER(Units.degreesToRotations(125.0));
 
     private final double angle;
 
@@ -73,7 +74,7 @@ public final class ARM {
 
   public static final double mass = Units.lbsToKilograms(7.0);
 
-  // 166 degrees of motion
+  // 170 degrees of motion
 
   public static final double minAngleDegrees = -40;
 
@@ -86,6 +87,6 @@ public final class ARM {
   public static final double maxOutput = 0.6;
 
   public static final double joystickMultiplier = maxOutput;
-
+  
   public static final boolean limitOpenLoop = false;
 }

@@ -249,6 +249,12 @@ public class Climber extends SubsystemBase {
     resetMotionMagicState();
     setDesiredPositionMeters(getHeightMetersMotor1());
   }
+  
+  // Return true if the climber is within 1 inch of the setpoint
+  public boolean hasReachedSetpoint() {
+    return Units.metersToInches(Math.abs(getDesiredPositionMeters() - getHeightMetersMotor1()))
+        < 1;
+  }
 
   private void updateLogger() {
     Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());

@@ -19,7 +19,7 @@ import org.littletonrobotics.junction.Logger;
 public class AmpShooter extends SubsystemBase {
   private Intake m_intake;
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
-  private NeutralModeValue NeutralMode;
+  private NeutralModeValue NeutralMode = NeutralModeValue.Brake;
   private double m_ampAutoPercentOutput;
 
   private final DCMotorSim m_ampMotorSim =
@@ -33,7 +33,7 @@ public class AmpShooter extends SubsystemBase {
     config.Slot0.kI = AMPSHOOTER.kI;
     config.Slot0.kD = AMPSHOOTER.kD;
     config.Feedback.SensorToMechanismRatio = AMPSHOOTER.gearRatio;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralMode;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(ampMotor, config);
   }
@@ -58,11 +58,18 @@ public class AmpShooter extends SubsystemBase {
   public double getRpm() {
     return ampMotor.getVelocity().getValue() * 60.0;
   }
+  
+  public void setNeutralMode(NeutralModeValue mode) {
+    if (NeutralMode == mode) return;
+    NeutralMode = mode;
+    ampMotor.setNeutralMode(NeutralMode);
+  }
 
   private void updateLogger() {
     Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
     Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
     Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
+    Logger.recordOutput("AmpShooter/RPM", getRpm()); // Test value
   }
 
   @Override
