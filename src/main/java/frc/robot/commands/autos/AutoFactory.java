@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoAmpIntake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.constants.AMPSHOOTER;
@@ -86,7 +87,7 @@ public class AutoFactory {
 
         addCommands(
             plotAutoPath,
-            //            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
+            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
             new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
       }
