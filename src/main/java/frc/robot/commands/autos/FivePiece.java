@@ -9,6 +9,7 @@ import frc.robot.commands.drive.AutoSetTrackingState;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.VISION;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -39,36 +40,29 @@ public class FivePiece extends SequentialCommandGroup {
     // TODO: Need to think about how long to aim before shooting?
     addCommands(
         pathFactory.createAutoInit(),
-        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                flywheelCommandContinuous,
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
         shooterFactory.generateShootCommand().withTimeout(2.5),
+        pathFactory.getNextPathCommand().alongWith(intakeFactory.generateIntakeCommand()), // path2
+        shooterFactory.generateShootCommand().withTimeout(1.5),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, TRACKING_STATE.NONE)),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(new AutoSetTrackingState(swerveDrive, TRACKING_STATE.SPEAKER)), // path4
+        shooterFactory.generateShootCommand().withTimeout(1.5),
         pathFactory.getNextPathCommand().alongWith(intakeFactory.generateIntakeCommand()),
-        shooterFactory.generateShootCommand()
-        // pathFactory
-        //     .getNextPathCommand()
-        //     .alongWith(
-        //         intakeFactory.generateIntakeCommand(),
-        //         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        // pathFactory
-        //     .getNextPathCommand()
-        //     .alongWith(new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
-        // shooterFactory.generateShootCommand().withTimeout(1.5),
-        // pathFactory
-        //     .getNextPathCommand()
-        //     .alongWith(
-        //         intakeFactory.generateIntakeCommand(),
-        //         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        // new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        // shooterFactory.generateShootCommand().withTimeout(1.5),
-        // pathFactory
-        //     .getNextPathCommand()
-        //     .alongWith(
-        //         intakeFactory.generateIntakeCommand(),
-        //         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        // pathFactory
-        //     .getNextPathCommand()
-        //     .alongWith(new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
-        // shooterFactory.generateShootCommand().withTimeout(1.5)
-        );
+        shooterFactory.generateShootCommand().withTimeout(1.5),
+        pathFactory
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand(),
+                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)));
   }
 }

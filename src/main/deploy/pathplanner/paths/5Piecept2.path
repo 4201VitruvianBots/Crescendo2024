@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8,
-        "y": 7.7
+        "x": 3.3,
+        "y": 8.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.893642747013222,
-        "y": 7.73508612164115
+        "x": 3.393642747013222,
+        "y": 8.03508612164115
       },
       "isLocked": false,
       "linkedName": "ShootEnd"
@@ -51,7 +51,7 @@
       "minWaypointRelativePos": 1.0,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 3.0,
+        "maxVelocity": 2.0,
         "maxAcceleration": 10.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -60,14 +60,14 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.0,
+    "rotation": 27.0,
     "rotateFast": true
   },
   "reversed": false,

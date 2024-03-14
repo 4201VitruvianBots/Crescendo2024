@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.35,
-        "y": 7.6
+        "x": 8.5,
+        "y": 8.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.45,
-        "y": 7.6
+        "x": 8.6,
+        "y": 8.0
       },
       "isLocked": false,
       "linkedName": "FarEnd1"
     },
     {
       "anchor": {
-        "x": 3.2814401720101576,
+        "x": 3.5,
         "y": 6.358984244359359
       },
       "prevControl": {
-        "x": 3.1814401720101575,
+        "x": 3.4,
         "y": 6.358984244359359
       },
       "nextControl": null,
@@ -29,10 +29,22 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 10.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 10.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
