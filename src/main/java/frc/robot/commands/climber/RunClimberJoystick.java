@@ -43,20 +43,20 @@ public class RunClimberJoystick extends Command {
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
     if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      double joystickYDeadbandOutput =
-          MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
+      double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
       if (joystickYDeadbandOutput != 0.0) {
         // if (joystickYDeadbandOutput < 0)
         //   joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
         m_climber.setJoystickY(joystickYDeadbandOutput);
         m_climber.setClimbState(true);
+        m_climber.setPercentOutput(joystickYDeadbandOutput * CLIMBER.kPercentOutputMultiplier);
       }
       if (joystickYDeadbandOutput == 0) {
-        m_climber.holdClimber();
+        // m_climber.holdClimber();
         m_climber.setPercentOutput(0);
       }
-    } else {
+    } else if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.CLOSED_LOOP) {
       m_climber.holdClimber();
       m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     }
@@ -71,7 +71,7 @@ public class RunClimberJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.holdClimber();
+    // m_climber.holdClimber();
     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
     m_climber.setClimbState(false);
   }
