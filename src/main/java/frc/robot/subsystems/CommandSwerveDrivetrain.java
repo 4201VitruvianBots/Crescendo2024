@@ -337,6 +337,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
+    Logger.recordOutput("Swerve/TrackingState", m_trackingState);
+    Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+
+    if(ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
     Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
     Logger.recordOutput(
         "Swerve/FrontLeftEncoder",
@@ -350,15 +354,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     Logger.recordOutput(
         "Swerve/BackRightEncoder",
         Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
-
-    Logger.recordOutput("Swerve/TrackingState", m_trackingState);
-    Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+    }
   }
 
   @Override
   public void periodic() {
     updateTargetAngle();
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) updateLogger();
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   private void startSimThread() {

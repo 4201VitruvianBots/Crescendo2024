@@ -61,7 +61,7 @@ public final class SWERVE {
     public static final double kD_X = 0.0;
 
     // Rotation
-    public static final double kAutoP_Theta = 10.0;
+    public static final double kAutoP_Theta = 11.0;
     public static final double kAutoI_Theta = 0.0;
     public static final double kAutoD_Theta = 0;
 

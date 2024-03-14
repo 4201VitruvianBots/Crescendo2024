@@ -35,13 +35,21 @@ public class AutoFactory {
     public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames, FieldSim fieldSim) {
       m_swerveDrive = swerveDrive;
       m_fieldSim = fieldSim;
-      for (var filename : pathNames) {
-        var path = PathPlannerPath.fromPathFile(filename);
+      for (int i = 0; i < pathNames.length; i++) {
+        var path = PathPlannerPath.fromPathFile(pathNames[i]);
+        if(i == 0) {
         var command =
-            TrajectoryUtils.generatePPHolonomicCommand(
-                swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
-        pathList.add(path);
+            TrajectoryUtils.generateStartingPPHolonomicCommand(
+                swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps(), false);
         commandList.add(command);
+        } else {
+          var command =
+              TrajectoryUtils.generatePPHolonomicCommand(
+                  swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
+        commandList.add(command);
+
+        }
+        pathList.add(path);
       }
     }
 

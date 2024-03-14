@@ -158,6 +158,8 @@ public class RobotContainer {
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(
@@ -239,6 +241,7 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
+
     xboxController
         .povDown()
         .whileTrue(

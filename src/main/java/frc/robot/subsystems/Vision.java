@@ -15,6 +15,8 @@ import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
+
+import java.sql.Driver;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -183,7 +185,10 @@ public class Vision extends SubsystemBase {
   private void updateAngleToSpeaker() {
     if (m_swerveDriveTrain != null) {
       if (DriverStation.isDisabled()) {
-        m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
+        if(DriverStation.isAutonomous())
+          m_goal = Controls.isRedAlliance() ? FIELD.redAutoSpeaker : FIELD.blueAutoSpeaker;
+        else
+          m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
       }
 
       // SOTM stuff
@@ -200,6 +205,15 @@ public class Vision extends SubsystemBase {
       Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
       double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
 
+      if(DriverStation.isAutonomous()) {
+      m_swerveDriveTrain.setAngleToSpeaker(
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+              .getTranslation()
+              .minus(m_goal)
+              .getAngle());
+      } else {
       m_swerveDriveTrain.setAngleToSpeaker(
           m_swerveDriveTrain
               .getState()
@@ -211,13 +225,14 @@ public class Vision extends SubsystemBase {
                   Rotation2d.fromRadians(
                       Math.asin(
                           ((VelocityY * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
+      }
     }
   }
 
   private void updateAngleToNote() {
     if (m_swerveDriveTrain != null) {
       if (hasGamePieceTarget()) {
-        m_swerveDriveTrain.setAngleToNote(getRobotToGamePieceRotation());
+        m_swerveDriveTrain.setAngleToNote(m_swerveDriveTrain.getState().Pose.getRotation().minus(getRobotToGamePieceRotation()));
       }
     }
   }

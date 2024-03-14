@@ -31,8 +31,12 @@ public class AutoAmpIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setSpeed(m_speed, m_speed2);
-    m_ampShooter.setAutoPercentOutput(m_ampSpeed);
+    if ((m_intake.checkEitherIntakeSensorActive())) {
+
+      m_intake.setSpeed(m_speed, m_speed2);
+      m_ampShooter.setAutoPercentOutput(m_ampSpeed);
+    } else m_intake.setSpeed(m_speed, m_speed2);
+    m_ampShooter.setAutoPercentOutput(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

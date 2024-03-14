@@ -31,6 +31,9 @@ public final class FIELD {
   public static final Translation2d blueSpeaker =
       new Translation2d(-0.038099999999999995, 5.547867999999999);
 
+  public static final Translation2d redAutoSpeaker = redSpeaker.plus(new Translation2d(0, 0.0));
+  public static final Translation2d blueAutoSpeaker = blueSpeaker.plus(new Translation2d(0, 0.0));
+
   /**
    * Flips a translation to the correct side of the field based on the current alliance color. By
    * default, all translations and poses in {@link FIELD} are stored with the origin at the
