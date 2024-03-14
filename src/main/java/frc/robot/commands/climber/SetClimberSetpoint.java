@@ -34,7 +34,7 @@ public class SetClimberSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setDesiredSetpoint(CLIMBER.CLIMBER_SETPOINT.FULL_RETRACT.getSetpointMeters());
+    m_climber.setDesiredPositionMeters(CLIMBER.CLIMBER_SETPOINT.FULL_RETRACT.getSetpointMeters());
   }
 
   // Returns true when the command should end.

@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -60,7 +61,7 @@ public class Climber extends SubsystemBase {
 
   private boolean elevatorClimbSate;
 
-  public final ElevatorSim leftElevatorSim =
+  private final ElevatorSim leftElevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
@@ -70,7 +71,7 @@ public class Climber extends SubsystemBase {
           CLIMBER.upperLimitMeters,
           false,
           CLIMBER.lowerLimitMeters);
-  public final ElevatorSim rightElevatorSim =
+  private final ElevatorSim rightElevatorSim =
       new ElevatorSim(
           CLIMBER.gearbox,
           CLIMBER.gearRatio,
@@ -90,6 +91,7 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.SensorToMechanismRatio = CLIMBER.gearRatio;
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     config.Slot0.kP = CLIMBER.kP;
     config.Slot0.kI = CLIMBER.kI;
     config.Slot0.kD = CLIMBER.kD;
@@ -193,7 +195,6 @@ public class Climber extends SubsystemBase {
   // Sets the setpoint to our current height, effectively keeping the elevator in place.
   public void resetMotionMagicState() {
     m_desiredPositionMeters = getHeightMetersMotor1();
-    elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
   }
 
   public double getLowerLimitMeters() {
@@ -238,7 +239,7 @@ public class Climber extends SubsystemBase {
     if (mode == m_neutralMode) return;
     m_neutralMode = mode;
     elevatorClimbMotors[0].setNeutralMode(mode);
-    //    elevatorClimbMotors[1].setNeutralMode(mode);
+    elevatorClimbMotors[1].setNeutralMode(mode);
   }
 
   public NeutralModeValue getNeutralMode() {
@@ -294,6 +295,8 @@ public class Climber extends SubsystemBase {
 
     leftElevatorSim.setInputVoltage(MathUtil.clamp(m_simState1.getMotorVoltage(), -12, 12));
     rightElevatorSim.setInputVoltage(MathUtil.clamp(m_simState2.getMotorVoltage(), -12, 12));
+//    leftElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
+//    rightElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());

@@ -26,6 +26,7 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -116,7 +117,8 @@ public class Arm extends SubsystemBase {
     canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
-    m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
+    if(RobotBase.isReal())
+      m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
 
     SmartDashboard.putData(this);
   }

@@ -42,12 +42,12 @@ public class RunClimberJoystick extends Command {
     // Adds a Deadband so joystick Ys below 0.05 won't be registered
     // This function was causing a lot of overruns!!!
     // TODO: rewrite logic
-    if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
+    double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
+    if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
       if (joystickYDeadbandOutput != 0.0) {
-         if (joystickYDeadbandOutput < 0)
-           joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+//         if (joystickYDeadbandOutput < 0)
+//           joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
 
         m_climber.setJoystickY(joystickYDeadbandOutput);
       }
@@ -70,9 +70,9 @@ public class RunClimberJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-     m_climber.holdClimber();
-     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
-     m_climber.setClimbState(false);
+//     m_climber.holdClimber();
+//     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+//     m_climber.setClimbState(false);
   }
 
   // Returns true when the command should end.
