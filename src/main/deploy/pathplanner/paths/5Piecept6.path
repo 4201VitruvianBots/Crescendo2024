@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.840023577479395,
-        "y": 6.608963500380638
+        "x": 4.402920429053642,
+        "y": 6.8799487641027435
       },
       "isLocked": false,
       "linkedName": "ShootEnd4"
@@ -20,8 +20,8 @@
         "y": 5.796864090161846
       },
       "prevControl": {
-        "x": 7.673003876678222,
-        "y": 6.5463576290918635
+        "x": 8.277057910400895,
+        "y": 7.014681585341201
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,5 +48,5 @@
     "rotation": 7.91,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

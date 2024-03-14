@@ -158,6 +158,8 @@ public class RobotContainer {
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(2));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(
@@ -239,6 +241,7 @@ public class RobotContainer {
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
+
     xboxController
         .povDown()
         .whileTrue(
@@ -284,10 +287,10 @@ public class RobotContainer {
         "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
+        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    m_autoChooser.addOption(
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption(
-        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));

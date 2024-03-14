@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.drive.SetRobotPose;
 import frc.robot.commands.intake.AutoAmpIntake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.constants.AMPSHOOTER;
@@ -35,13 +36,20 @@ public class AutoFactory {
     public PathFactory(CommandSwerveDrivetrain swerveDrive, String[] pathNames, FieldSim fieldSim) {
       m_swerveDrive = swerveDrive;
       m_fieldSim = fieldSim;
-      for (var filename : pathNames) {
-        var path = PathPlannerPath.fromPathFile(filename);
-        var command =
-            TrajectoryUtils.generatePPHolonomicCommand(
-                swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
+      for (int i = 0; i < pathNames.length; i++) {
+        var path = PathPlannerPath.fromPathFile(pathNames[i]);
+        if (i == 0) {
+          var command =
+              TrajectoryUtils.generateStartingPPHolonomicCommand(
+                  swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps(), false);
+          commandList.add(command);
+        } else {
+          var command =
+              TrajectoryUtils.generatePPHolonomicCommand(
+                  swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
+          commandList.add(command);
+        }
         pathList.add(path);
-        commandList.add(command);
       }
     }
 
@@ -78,7 +86,7 @@ public class AutoFactory {
 
         addCommands(
             plotAutoPath,
-            //            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
+            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
             new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
       }
