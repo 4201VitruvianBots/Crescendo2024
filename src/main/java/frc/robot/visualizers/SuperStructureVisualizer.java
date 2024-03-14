@@ -232,9 +232,11 @@ public class SuperStructureVisualizer implements AutoCloseable {
 
   public void updateClimber() {
 
-    m_climberVisualizer.update(m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
+    m_climberVisualizer.update(
+        m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
     if (m_climberVisualizer2 != null)
-      m_climberVisualizer2.update(m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
+      m_climberVisualizer2.update(
+          m_climber.getHeightMetersMotor1(), m_climber.getPercentOutputMotor1());
   }
 
   public void updateLimelights() {

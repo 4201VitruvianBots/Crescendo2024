@@ -210,7 +210,8 @@ public class Vision extends SubsystemBase {
               .plus(
                   Rotation2d.fromRadians(
                       Math.asin(
-                          (((VelocityY*0.75) * PositionX + VelocityX * PositionY)) / (newDist * 5)))));
+                          (((VelocityY * 0.75) * PositionX + VelocityX * PositionY))
+                              / (newDist * 5)))));
     }
   }
 

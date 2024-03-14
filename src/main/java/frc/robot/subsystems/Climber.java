@@ -12,7 +12,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -273,19 +272,19 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     switch (m_controlMode) {
-      // case CLOSED_LOOP:
-      //   if (DriverStation.isEnabled())
-      //     elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
-      //   break;
+        // case CLOSED_LOOP:
+        //   if (DriverStation.isEnabled())
+        //     elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+        //   break;
       case OPEN_LOOP:
       default:
         // double percentOutput = m_joystickInput * CLIMBER.kPercentOutputMultiplier;
 
         // if (m_limitJoystickInput)
         // percentOutput = joystickYDeadband * CLIMBER.kLimitedPercentOutputMultiplier;
-        if (m_enforceLimits) {
-          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
-            percentOutput = Math.min(percentOutput, 0);
+        //        if (m_enforceLimits) {
+        //          if (getHeightMeters() >= getUpperLimitMeters() - Units.inchesToMeters(1.2))
+        //            percentOutput = Math.min(percentOutput, 0);
 
         // TODO: Verify rotation to distance conversion before continuing
         // setPercentOutput(percentOutput, false);
