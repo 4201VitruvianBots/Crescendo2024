@@ -4,13 +4,11 @@
 
 package frc.robot.commands.climber;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.CLIMBER;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
@@ -45,19 +43,16 @@ public class RunClimberJoystick extends Command {
     double joystickYDeadbandOutput = MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.1);
 
     if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.OPEN_LOOP) {
-      if (joystickYDeadbandOutput != 0.0) {
-//         if (joystickYDeadbandOutput < 0)
-//           joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+      //         if (joystickYDeadbandOutput < 0)
+      //           joystickYDeadbandOutput *= CLIMBER.kLimitedPercentOutputMultiplier;
+      m_climber.setJoystickY(joystickYDeadbandOutput);
 
-        m_climber.setJoystickY(joystickYDeadbandOutput);
-      }
-      if (joystickYDeadbandOutput == 0) {
-         m_climber.holdClimber();
-         m_climber.setJoystickY(0);
-      }
+      if (joystickYDeadbandOutput == 0) m_climber.holdClimber();
     } else if (m_climber.getClosedLoopControlMode() == CONTROL_MODE.CLOSED_LOOP) {
-       m_climber.holdClimber();
-       m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+      m_climber.setDesiredPositionMeters(
+          m_climber.getHeightMetersMotor1() + joystickYDeadbandOutput * 0.5);
+
+      if (joystickYDeadbandOutput == 0) m_climber.holdClimber();
     }
 
     if (m_climber.getAvgCurrentDraw() >= 30) {
@@ -70,9 +65,9 @@ public class RunClimberJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-//     m_climber.holdClimber();
-//     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
-//     m_climber.setClimbState(false);
+    //     m_climber.holdClimber();
+    //     m_climber.setClimberNeutralMode(NeutralModeValue.Brake);
+    //     m_climber.setClimbState(false);
   }
 
   // Returns true when the command should end.

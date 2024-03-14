@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -42,8 +41,7 @@ public class Climber extends SubsystemBase {
   private final StatusSignal<Double> m_rightCurrentSignal =
       elevatorClimbMotors[1].getTorqueCurrent().clone();
 
-  private final MotionMagicTorqueCurrentFOC m_request =
-      new MotionMagicTorqueCurrentFOC(getHeightMetersMotor1());
+  private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(0);
 
   private double m_desiredPositionMeters; // The height in meters our robot is trying to reach
   private final double m_upperLimitMeters = CLIMBER.upperLimitMeters;
@@ -91,15 +89,14 @@ public class Climber extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.SensorToMechanismRatio = CLIMBER.gearRatio;
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     config.Slot0.kP = CLIMBER.kP;
     config.Slot0.kI = CLIMBER.kI;
     config.Slot0.kD = CLIMBER.kD;
     config.Slot0.kA = CLIMBER.kA;
     config.Slot0.kV = CLIMBER.kV;
 
-    config.MotionMagic.MotionMagicAcceleration = CLIMBER.kMaxAccel;
-    config.MotionMagic.MotionMagicCruiseVelocity = CLIMBER.kMaxVel;
+    config.MotionMagic.MotionMagicCruiseVelocity = 100;
+    config.MotionMagic.MotionMagicAcceleration = 200;
 
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
@@ -159,10 +156,12 @@ public class Climber extends SubsystemBase {
 
   // gets the position of the climber in encoder counts
   public double getMotor1Rotations() {
+    m_positionSignal.refresh();
     return m_positionSignal.getValue();
   }
 
   public double getMotor2Rotations() {
+    m_positionSignal2.refresh();
     return m_positionSignal2.getValue();
   }
 
@@ -176,7 +175,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void holdClimber() {
-     setDesiredPositionMeters(getHeightMetersMotor1());
+    setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   public double getDesiredSetpoint() {
@@ -184,8 +183,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void setDesiredPositionMeters(double setpoint) {
-     m_desiredPositionMeters =
-         MathUtil.clamp(setpoint, CLIMBER.lowerLimitMeters, CLIMBER.upperLimitMeters);
+    m_desiredPositionMeters =
+        MathUtil.clamp(setpoint, CLIMBER.lowerLimitMeters, CLIMBER.upperLimitMeters);
   }
 
   public double getDesiredPositionMeters() {
@@ -247,13 +246,13 @@ public class Climber extends SubsystemBase {
   }
 
   public void teleopInit() {
-     resetMotionMagicState();
-     setDesiredPositionMeters(getHeightMetersMotor1());
+    resetMotionMagicState();
+    setDesiredPositionMeters(getHeightMetersMotor1());
   }
 
   private void updateLogger() {
     Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
-    Logger.recordOutput("Climber/Height MetersMotor2", getHeightMetersMotor1());
+    Logger.recordOutput("Climber/Height MetersMotor1", getHeightMetersMotor1());
     Logger.recordOutput("Climber/Motor1 Rotations", getMotor1Rotations());
     Logger.recordOutput("Climber/Height MetersMotor2", getHeightMetersMotor2());
     Logger.recordOutput("Climber/Motor2 Rotations", getMotor2Rotations());
@@ -295,8 +294,6 @@ public class Climber extends SubsystemBase {
 
     leftElevatorSim.setInputVoltage(MathUtil.clamp(m_simState1.getMotorVoltage(), -12, 12));
     rightElevatorSim.setInputVoltage(MathUtil.clamp(m_simState2.getMotorVoltage(), -12, 12));
-//    leftElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[0].getMotorVoltage().getValue(), -12, 12));
-//    rightElevatorSim.setInputVoltage(MathUtil.clamp(elevatorClimbMotors[1].getMotorVoltage().getValue(), -12, 12));
 
     leftElevatorSim.update(RobotTime.getTimeDelta());
     rightElevatorSim.update(RobotTime.getTimeDelta());

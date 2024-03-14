@@ -117,8 +117,7 @@ public class Arm extends SubsystemBase {
     canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
-    if(RobotBase.isReal())
-      m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
+    if (RobotBase.isReal()) m_armEncoder.setPosition(m_armEncoder.getPosition().getValue());
 
     SmartDashboard.putData(this);
   }
