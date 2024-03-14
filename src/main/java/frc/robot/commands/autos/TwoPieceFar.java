@@ -69,7 +69,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
         pathFactory.createAutoInit(),
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(0.75),
+        shooterFactory.generateShootCommand().withTimeout(1.5),
         pathFactory
             .getNextPathCommand()
             .alongWith(
@@ -77,7 +77,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
                 new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
         pathFactory.getNextPathCommand(),
         new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(0.75),
+        shooterFactory.generateShootCommand().withTimeout(1.5),
         pathFactory
             .getNextPathCommand()
             .alongWith(

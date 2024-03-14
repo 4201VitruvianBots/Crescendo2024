@@ -45,30 +45,24 @@ public class FourPieceNear extends SequentialCommandGroup {
     // TODO: Need to think about how long to aim before shooting?
     addCommands(
         pathFactory.createAutoInit(),
-        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(0.75),
+        pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous,  //path 1
+        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
+        shooterFactory.generateShootCommand().withTimeout(2.5),
+        pathFactory //path 2
+            .getNextPathCommand()
+            .alongWith(
+                intakeFactory.generateIntakeCommand()),
+        shooterFactory.generateShootCommand().withTimeout(1.5),
         pathFactory
             .getNextPathCommand()
             .alongWith(
-                intakeFactory.generateIntakeCommand(),
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(0.75),
+                intakeFactory.generateIntakeCommand()),
+        shooterFactory.generateShootCommand().withTimeout(1.5),
         pathFactory
             .getNextPathCommand()
             .alongWith(
-                intakeFactory.generateIntakeCommand(),
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand().withTimeout(1),
-        pathFactory
-            .getNextPathCommand()
-            .alongWith(
-                intakeFactory.generateIntakeCommand(),
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
-        shooterFactory.generateShootCommand());
+                intakeFactory.generateIntakeCommand()),
+        shooterFactory.generateShootCommand().withTimeout(1.5));
 
     // commandList.get(4).andThen(() -> swerveDrive.setControl(stopRequest));
   }

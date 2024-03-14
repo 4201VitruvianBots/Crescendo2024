@@ -57,22 +57,24 @@ public class TrajectoryUtils {
         swerveDrive);
   }
 
-    public static FollowPathHolonomic generateStartingPPHolonomicCommand(
+  public static FollowPathHolonomic generateStartingPPHolonomicCommand(
       CommandSwerveDrivetrain swerveDrive,
-      PathPlannerPath path, double maxSpeed, boolean manualFlip) {
-        return new FollowPathHolonomic(
-            path,
-            () -> swerveDrive.getState().Pose,
-            swerveDrive::getChassisSpeed,
-            swerveDrive::setChassisSpeedControlNormal,
-            new HolonomicPathFollowerConfig(
-                new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
-                new PIDConstants(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
-                maxSpeed,
-                //            0.898744,
-                SWERVE.DRIVE.kDriveBaseRadius,
-                new ReplanningConfig(true, false, 1.0, 0.25)),
-            () -> manualFlip || Controls.isRedAlliance(),
-            swerveDrive);
+      PathPlannerPath path,
+      double maxSpeed,
+      boolean manualFlip) {
+    return new FollowPathHolonomic(
+        path,
+        () -> swerveDrive.getState().Pose,
+        swerveDrive::getChassisSpeed,
+        swerveDrive::setChassisSpeedControlNormal,
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X),
+            new PIDConstants(DRIVE.kAutoP_Theta, DRIVE.kAutoI_Theta, DRIVE.kAutoD_Theta),
+            maxSpeed,
+            //            0.898744,
+            SWERVE.DRIVE.kDriveBaseRadius,
+            new ReplanningConfig(true, false, 1.0, 0.25)),
+        () -> manualFlip || Controls.isRedAlliance(),
+        swerveDrive);
   }
 }

@@ -37,17 +37,16 @@ public class AutoFactory {
       m_fieldSim = fieldSim;
       for (int i = 0; i < pathNames.length; i++) {
         var path = PathPlannerPath.fromPathFile(pathNames[i]);
-        if(i == 0) {
-        var command =
-            TrajectoryUtils.generateStartingPPHolonomicCommand(
-                swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps(), false);
-        commandList.add(command);
+        if (i == 0) {
+          var command =
+              TrajectoryUtils.generateStartingPPHolonomicCommand(
+                  swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps(), false);
+          commandList.add(command);
         } else {
           var command =
               TrajectoryUtils.generatePPHolonomicCommand(
                   swerveDrive, path, path.getGlobalConstraints().getMaxVelocityMps());
-        commandList.add(command);
-
+          commandList.add(command);
         }
         pathList.add(path);
       }

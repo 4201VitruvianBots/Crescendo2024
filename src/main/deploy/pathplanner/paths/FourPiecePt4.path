@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.34,
-        "y": 6.76
+        "x": 3.5,
+        "y": 7.3
       },
       "prevControl": {
-        "x": 3.2493692212963348,
-        "y": 6.717738173825929
+        "x": 3.409369221296335,
+        "y": 7.2577381738259295
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 25.79,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "4PieceAutoNearNew",

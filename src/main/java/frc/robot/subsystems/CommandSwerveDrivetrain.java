@@ -340,20 +340,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     Logger.recordOutput("Swerve/TrackingState", m_trackingState);
     Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
 
-    if(ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
-    Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
-    Logger.recordOutput(
-        "Swerve/FrontLeftEncoder",
-        Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/FrontRightEncoder",
-        Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/BackLeftEncoder",
-        Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
-    Logger.recordOutput(
-        "Swerve/BackRightEncoder",
-        Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
+    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
+      Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
+      Logger.recordOutput(
+          "Swerve/FrontLeftEncoder",
+          Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/FrontRightEncoder",
+          Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/BackLeftEncoder",
+          Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
+      Logger.recordOutput(
+          "Swerve/BackRightEncoder",
+          Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
     }
   }
 
