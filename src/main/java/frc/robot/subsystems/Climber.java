@@ -102,7 +102,8 @@ public class Climber extends SubsystemBase {
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
     elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
+    elevatorClimbMotors[1].setInverted(true);
+    // elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
 
     SmartDashboard.putData(this);
   }
@@ -138,7 +139,7 @@ public class Climber extends SubsystemBase {
     }
 
     elevatorClimbMotors[0].set(output);
-    // elevatorClimbMotors[1].set(output);
+    elevatorClimbMotors[1].set(output);
   }
 
   public double getAvgCurrentDraw() {
@@ -269,6 +270,7 @@ public class Climber extends SubsystemBase {
     switch (m_controlMode) {
       case CLOSED_LOOP:
         elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
+        elevatorClimbMotors[1].setControl(m_request.withPosition(m_desiredPositionMeters));
         break;
       case OPEN_LOOP:
       default:

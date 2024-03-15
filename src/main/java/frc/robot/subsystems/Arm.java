@@ -98,6 +98,11 @@ public class Arm extends SubsystemBase {
     config.ClosedLoopGeneral.ContinuousWrap = false;
     config.MotorOutput.PeakForwardDutyCycle = ARM.maxOutput;
     config.MotorOutput.PeakReverseDutyCycle = -ARM.maxOutput;
+    
+    // Ramp rates for climbing
+    config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 2.0;
+    config.OpenLoopRamps.TorqueOpenLoopRampPeriod = 2.0;
+    config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 2.0;
 
     config.MotionMagic.MotionMagicAcceleration = ARM.kAccel;
     config.MotionMagic.MotionMagicCruiseVelocity = ARM.kCruiseVel;
