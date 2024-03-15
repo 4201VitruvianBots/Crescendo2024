@@ -33,7 +33,7 @@ public class ArmJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double m_joystickDeadband = MathUtil.applyDeadband(Math.pow(m_output.getAsDouble(), 3), 0.05);
+    double m_joystickDeadband = MathUtil.applyDeadband(Math.pow(m_output.getAsDouble(), 3), 0.2);
 
     if (m_joystickDeadband != 0.0) {
       if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.CLOSED_LOOP) {
@@ -44,20 +44,20 @@ public class ArmJoystick extends Command {
                 Units.degreesToRotations(ARM.maxAngleDegrees));
         m_arm.setDesiredSetpointRotations(rotationSetpoint);
       } else if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP) {
-        //   // Upper limit
-        //   if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
-        //     m_joystickDeadband = Math.min(m_joystickDeadband, 0);
+        if (ARM.limitOpenLoop) {
+          // Upper limit
+          if (m_arm.getCurrentAngle() >= ARM.maxAngleDegrees - 1)
+            m_joystickDeadband = Math.min(m_joystickDeadband, 0);
 
-        //   // Lower limit
-        //   if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
-        //     m_joystickDeadband = Math.max(m_joystickDeadband, 0);
-        // }
-
+          // Lower limit
+          if (m_arm.getCurrentAngle() <= ARM.minAngleDegrees + 1)
+            m_joystickDeadband = Math.max(m_joystickDeadband, 0);
+        }
         m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
-        //        m_arm.setFocOutput(m_joystickDeadband * ARM.joystickMultiplier);
       }
     } else {
-      m_arm.setPercentOutput(0.0);
+      if (m_arm.getControlMode() == ROBOT.CONTROL_MODE.OPEN_LOOP)
+        m_arm.setPercentOutput(m_joystickDeadband * ARM.joystickMultiplier);
     }
   }
 
