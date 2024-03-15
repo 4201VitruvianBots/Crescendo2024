@@ -6,10 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
@@ -40,15 +38,15 @@ public class Climber extends SubsystemBase {
   private final StatusSignal<Double> m_velocitySignal =
       elevatorClimbMotors[0].getVelocity().clone();
   private final StatusSignal<Double> m_velocitySignal2 =
-          elevatorClimbMotors[1].getVelocity().clone();
+      elevatorClimbMotors[1].getVelocity().clone();
   private final StatusSignal<Double> m_leftCurrentSignal =
       elevatorClimbMotors[0].getTorqueCurrent().clone();
   private final StatusSignal<Double> m_rightCurrentSignal =
       elevatorClimbMotors[1].getTorqueCurrent().clone();
   private final StatusSignal<Double> m_leftVoltageSignal =
-          elevatorClimbMotors[0].getMotorVoltage().clone();
+      elevatorClimbMotors[0].getMotorVoltage().clone();
   private final StatusSignal<Double> m_rightVoltageSignal =
-          elevatorClimbMotors[1].getMotorVoltage().clone();
+      elevatorClimbMotors[1].getMotorVoltage().clone();
 
   private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(0);
 
@@ -112,12 +110,12 @@ public class Climber extends SubsystemBase {
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
-
     m_simState1 = elevatorClimbMotors[0].getSimState();
     m_simState2 = elevatorClimbMotors[1].getSimState();
     m_simState1.Orientation = ChassisReference.CounterClockwise_Positive;
     m_simState2.Orientation = ChassisReference.Clockwise_Positive;
-//     elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
+    //     elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(),
+    // true));
 
     SmartDashboard.putData(this);
   }
@@ -179,6 +177,7 @@ public class Climber extends SubsystemBase {
     m_positionSignal2.refresh();
     return m_positionSignal2.getValue();
   }
+
   public double getMotor1Voltage() {
     m_leftVoltageSignal.refresh();
     return m_leftVoltageSignal.getValue();
@@ -296,7 +295,8 @@ public class Climber extends SubsystemBase {
     switch (m_controlMode) {
       case CLOSED_LOOP:
         elevatorClimbMotors[0].setControl(m_request.withPosition(m_desiredPositionMeters));
-//        elevatorClimbMotors[1].setControl(m_request.withPosition(m_desiredPositionMeters));
+        //
+        // elevatorClimbMotors[1].setControl(m_request.withPosition(m_desiredPositionMeters));
         break;
       case OPEN_LOOP:
       default:
