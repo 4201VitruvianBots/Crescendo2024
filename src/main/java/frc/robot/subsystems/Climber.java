@@ -9,7 +9,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
@@ -36,10 +39,16 @@ public class Climber extends SubsystemBase {
       elevatorClimbMotors[1].getPosition().clone();
   private final StatusSignal<Double> m_velocitySignal =
       elevatorClimbMotors[0].getVelocity().clone();
+  private final StatusSignal<Double> m_velocitySignal2 =
+          elevatorClimbMotors[1].getVelocity().clone();
   private final StatusSignal<Double> m_leftCurrentSignal =
       elevatorClimbMotors[0].getTorqueCurrent().clone();
   private final StatusSignal<Double> m_rightCurrentSignal =
       elevatorClimbMotors[1].getTorqueCurrent().clone();
+  private final StatusSignal<Double> m_leftVoltageSignal =
+          elevatorClimbMotors[0].getMotorVoltage().clone();
+  private final StatusSignal<Double> m_rightVoltageSignal =
+          elevatorClimbMotors[1].getMotorVoltage().clone();
 
   private final MotionMagicTorqueCurrentFOC m_request = new MotionMagicTorqueCurrentFOC(0);
 
@@ -80,8 +89,8 @@ public class Climber extends SubsystemBase {
           false,
           CLIMBER.lowerLimitMeters);
 
-  private final TalonFXSimState m_simState1 = elevatorClimbMotors[0].getSimState();
-  private final TalonFXSimState m_simState2 = elevatorClimbMotors[1].getSimState();
+  private final TalonFXSimState m_simState1;
+  private final TalonFXSimState m_simState2;
 
   /** Creates a new climberMechanism. */
   public Climber() {
@@ -98,12 +107,17 @@ public class Climber extends SubsystemBase {
     config.MotionMagic.MotionMagicCruiseVelocity = 100;
     config.MotionMagic.MotionMagicAcceleration = 200;
 
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     CtreUtils.configureTalonFx(elevatorClimbMotors[0], config);
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     CtreUtils.configureTalonFx(elevatorClimbMotors[1], config);
 
-    elevatorClimbMotors[0].setInverted(false);
-//    elevatorClimbMotors[1].setInverted(true);
-     elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), false));
+
+    m_simState1 = elevatorClimbMotors[0].getSimState();
+    m_simState2 = elevatorClimbMotors[1].getSimState();
+    m_simState1.Orientation = ChassisReference.CounterClockwise_Positive;
+    m_simState2.Orientation = ChassisReference.Clockwise_Positive;
+//     elevatorClimbMotors[1].setControl(new Follower(elevatorClimbMotors[0].getDeviceID(), true));
 
     SmartDashboard.putData(this);
   }
@@ -139,7 +153,7 @@ public class Climber extends SubsystemBase {
     }
 
     elevatorClimbMotors[0].set(output);
-//    elevatorClimbMotors[1].set(output);
+    elevatorClimbMotors[1].set(output);
   }
 
   public double getAvgCurrentDraw() {
@@ -164,6 +178,15 @@ public class Climber extends SubsystemBase {
   public double getMotor2Rotations() {
     m_positionSignal2.refresh();
     return m_positionSignal2.getValue();
+  }
+  public double getMotor1Voltage() {
+    m_leftVoltageSignal.refresh();
+    return m_leftVoltageSignal.getValue();
+  }
+
+  public double getMotor2Voltage() {
+    m_rightVoltageSignal.refresh();
+    return m_rightVoltageSignal.getValue();
   }
 
   // sets position in meters
@@ -262,6 +285,9 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/Motor2 Output", getPercentOutputMotor2());
     Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
     Logger.recordOutput("Climber/Supply Current", getAvgCurrentDraw());
+
+    Logger.recordOutput("Climber/Motor 1 Voltage", getMotor1Voltage());
+    Logger.recordOutput("Climber/Motor 2 Voltage", getMotor2Voltage());
   }
 
   @Override
