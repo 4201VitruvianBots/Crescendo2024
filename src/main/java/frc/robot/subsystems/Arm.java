@@ -63,9 +63,9 @@ public class Arm extends SubsystemBase {
           SingleJointedArmSim.estimateMOI(ARM.armLength, ARM.mass),
           ARM.armLength,
           Units.degreesToRadians(ARM.minAngleDegrees),
-          Units.degreesToRadians(ARM.maxAngleDegrees - ARM.minAngleDegrees),
+          Units.degreesToRadians(ARM.maxAngleDegrees),
           false,
-          Units.degreesToRadians(ARM.startingAngleDegrees));
+          Units.degreesToRadians(ARM.minAngleDegrees));
 
   private ROBOT.CONTROL_MODE m_controlMode = ROBOT.CONTROL_MODE.CLOSED_LOOP;
 
@@ -115,7 +115,19 @@ public class Arm extends SubsystemBase {
     canCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
     CtreUtils.configureCANCoder(m_armEncoder, canCoderConfig);
 
-    if (RobotBase.isReal()) m_armEncoder.setPosition(m_armEncoder.getAbsolutePosition().getValue());
+    m_armEncoder.setPosition(m_armEncoder.getAbsolutePosition().getValue());
+
+    if (RobotBase.isSimulation()) {
+      m_armEncoder.setPosition(Units.degreesToRotations(180));
+      m_armMotor.setPosition(Units.degreesToRotations(180));
+      CANcoderConfiguration simCanCoderConfig = new CANcoderConfiguration();
+      simCanCoderConfig.MagnetSensor.AbsoluteSensorRange =
+          AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+      simCanCoderConfig.MagnetSensor.SensorDirection =
+          SensorDirectionValue.CounterClockwise_Positive;
+      simCanCoderConfig.MagnetSensor.MagnetOffset = ARM.canCoderOffset;
+      CtreUtils.configureCANCoder(m_armEncoder, simCanCoderConfig);
+    }
 
     SmartDashboard.putData(this);
   }
@@ -311,5 +323,7 @@ public class Arm extends SubsystemBase {
 
     m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
     m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
+
+    Logger.recordOutput("Arm/Model Angle", Units.radiansToDegrees(m_armSim.getAngleRads()));
   }
 }
