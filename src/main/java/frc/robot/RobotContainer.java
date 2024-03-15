@@ -151,7 +151,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(new RunKicker(m_intake, m_shooter, 0.5, 0.75, m_ampShooter,STATE.SHOOTING.get()));
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
@@ -196,10 +196,10 @@ public class RobotContainer {
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
+    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); //Left Button
 
     // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); //Right Button
 
     xboxController
         .rightTrigger()

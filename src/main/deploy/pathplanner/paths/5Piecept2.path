@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.3,
-        "y": 8.0
+        "y": 7.699999999999999
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.393642747013222,
-        "y": 8.03508612164115
+        "y": 7.7350861216411495
       },
       "isLocked": false,
       "linkedName": "ShootEnd"

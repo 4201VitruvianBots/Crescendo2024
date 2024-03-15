@@ -7,6 +7,7 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
@@ -26,6 +27,7 @@ public class GetSubsystemStates extends Command {
   private boolean isLocalized;
   private boolean isDisabled;
   private boolean isIntaked;
+  private boolean isLocked;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
@@ -53,6 +55,12 @@ public class GetSubsystemStates extends Command {
   @Override
   public void execute() {
     isClimbing = m_climber.getClimbState();
+    if (TRACKING_STATE.SPEAKER != null) {
+      isLocked = true;
+    } else {
+      isLocked = false;
+    }
+    isLocked = 
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
     isIntaked = m_intake.checkEitherIntakeSensorActive();
@@ -69,8 +77,8 @@ public class GetSubsystemStates extends Command {
     // highest priority
     if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
-    } else if (isReved) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
+    } else if (isLocked) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.LOCKED);
     } else if (isUnreved) {
       m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
     } else if (isIntaked) {
