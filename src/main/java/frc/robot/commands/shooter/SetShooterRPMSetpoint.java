@@ -16,7 +16,6 @@ public class SetShooterRPMSetpoint extends Command {
   private final Shooter m_shooter;
   private final double m_RPMOutputBottom;
   private final double m_RPMOutputTop;
-  private final double allowableError = RPM_SETPOINT.TOLERANCE.get(); // in RPM
   private final GenericHID m_hid;
 
   public SetShooterRPMSetpoint(
@@ -37,13 +36,13 @@ public class SetShooterRPMSetpoint extends Command {
     m_shooter.setNeutralMode(NeutralModeValue.Coast);
     m_shooter.setShootingState(true);
   }
-
+  
   @Override
   public void execute() {
     m_shooter.setRPMOutputFOC(m_RPMOutputBottom);
     // m_shooter.setRPMOutput(m_RPMOutputBottom, m_RPMOutputTop);
-    if ((m_shooter.getRpmMaster() >= (m_RPMOutputBottom - allowableError))
-        && (m_shooter.getRpmFollower() >= m_RPMOutputTop - allowableError)) {
+    if ((m_shooter.getRpmMaster() >= (7000))
+        && (m_shooter.getRpmFollower() >= 7000)) {
       m_hid.setRumble(RumbleType.kBothRumble, 0.4);
     } else {
       m_hid.setRumble(RumbleType.kBothRumble, 0);

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
@@ -47,8 +48,8 @@ public class Vision extends SubsystemBase {
           VISION.aprilTagFieldLayout,
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           aprilTagLimelightCameraB,
+          
           VISION.robotToAprilTagLimelightCameraB);
-
   private VisionSystemSim visionSim;
   // private PhotonCameraSim aprilTagLimelightCameraASim;
   private PhotonCameraSim aprilTagLimelightCameraBSim;
@@ -142,6 +143,8 @@ public class Vision extends SubsystemBase {
     return result.hasTargets();
   }
 
+
+
   public String getTargets(PhotonCamera camera) {
     var result = camera.getLatestResult();
     List<PhotonTrackedTarget> targets = result.getTargets();
@@ -216,7 +219,7 @@ public class Vision extends SubsystemBase {
                 .plus(
                     Rotation2d.fromRadians(
                         Math.asin(
-                            ((VelocityY * PositionX + (VelocityX * 0.2) * PositionY))
+                            (((VelocityY *0.85)* PositionX + (VelocityX * 0.2) * PositionY))
                                 / (newDist * 5)))));
       }
     }

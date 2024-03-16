@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.VISION;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
@@ -272,6 +273,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       case NOTE:
         m_targetAngle = m_angleToNote;
         break;
+    }
+  }
+
+    public boolean isTrackingState(){
+     if (m_trackingState == TRACKING_STATE.SPEAKER) {
+      return true;
+    } else {
+      return false;
     }
   }
 
