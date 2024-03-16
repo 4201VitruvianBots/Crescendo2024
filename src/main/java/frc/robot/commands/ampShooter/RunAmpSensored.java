@@ -5,18 +5,20 @@
 package frc.robot.commands.ampShooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AMPSHOOTER;
 import frc.robot.subsystems.AmpShooter;
+import frc.robot.subsystems.Intake;
 
-public class RunAmp extends Command {
+public class RunAmpSensored extends Command {
   private final AmpShooter m_ampShooter;
-  private final double m_state;
+  private final Intake m_intake;
+  private final double m_percentOutput;
 
-  public RunAmp(AmpShooter ampShooter, double state) {
+  public RunAmpSensored(AmpShooter ampShooter, Intake intake, double percentOutput) {
     m_ampShooter = ampShooter;
-    m_state = state;
+    m_intake = intake;
+    m_percentOutput = percentOutput;
 
-    addRequirements(m_ampShooter);
+    addRequirements(m_ampShooter, m_intake);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +27,11 @@ public class RunAmp extends Command {
 
   @Override
   public void execute() {
-    m_ampShooter.setPercentOutput(m_state);
+    if (m_intake.getIntakeState() && (m_intake.checkEitherIntakeSensorActive())) {
+      m_ampShooter.setPercentOutput(0);
+    } else {
+      m_ampShooter.setPercentOutput(m_percentOutput);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

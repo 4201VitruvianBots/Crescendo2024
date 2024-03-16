@@ -86,7 +86,7 @@ public class AutoFactory {
 
         addCommands(
             plotAutoPath,
-            // new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
+            new SetRobotPose(swerveDrive, pathFactory.getStartingPose()),
             new InstantCommand(
                 () -> swerveDrive.applyRequest(() -> swervePointRequest), swerveDrive));
       }

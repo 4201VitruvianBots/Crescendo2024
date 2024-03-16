@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
+import frc.robot.commands.ampShooter.RunAmpSensored;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ToggleArmControlMode;
@@ -152,9 +153,15 @@ public class RobotContainer {
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
     driveShootButton.whileTrue(new RunKicker(m_intake, m_shooter, 0.5, 0.75, m_ampShooter,STATE.SHOOTING.get()));
+       
+    var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
+        driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter,0.05));
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    
+    var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
+        driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter,-0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
@@ -229,7 +236,7 @@ public class RobotContainer {
     xboxController
         .rightBumper()
         .whileTrue(
-            new RunAmp(
+            new RunAmpSensored(
                 m_ampShooter,
                 m_intake,
                 AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
