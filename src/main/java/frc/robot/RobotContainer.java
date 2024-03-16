@@ -152,16 +152,17 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new RunKicker(m_intake, m_shooter, 0.5, 0.75, m_ampShooter,STATE.SHOOTING.get()));
-       
+    driveShootButton.whileTrue(
+        new RunKicker(m_intake, m_shooter, 0.5, 0.75, m_ampShooter, STATE.SHOOTING.get()));
+
     var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
-        driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter,0.05));
+    driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
-    
+
     var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
-        driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter,-0.05));
+    driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
@@ -203,10 +204,10 @@ public class RobotContainer {
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); //Left Button
+    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
 
     // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); //Right Button
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
 
     xboxController
         .rightTrigger()
@@ -222,7 +223,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new AmpIntake(
-                m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+                m_intake, 0.55, 0.80, m_ampShooter, 0.4)); // Outtake Note with Intake And Amp
 
     xboxController
         .leftBumper()

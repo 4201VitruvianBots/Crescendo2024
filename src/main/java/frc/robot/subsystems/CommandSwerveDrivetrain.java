@@ -10,6 +10,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.VISION;
@@ -276,12 +278,23 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-    public boolean isTrackingState(){
-     if (m_trackingState == TRACKING_STATE.SPEAKER) {
+  public boolean isTrackingState() {
+    if (m_trackingState == TRACKING_STATE.SPEAKER) {
       return true;
     } else {
       return false;
     }
+  }
+
+  public boolean getZoneState() {
+    Translation2d m_goal = Controls.isRedAlliance() ? FIELD.redSpeaker : FIELD.blueSpeaker;
+    Translation2d robotPose = getState().Pose.getTranslation();
+
+    double toGoalDistance = m_goal.minus(robotPose).getDistance(new Translation2d());
+
+    if ((toGoalDistance <= 3.5) && (toGoalDistance >= 1.5)) {
+      return true;
+    } else return false;
   }
 
   public Optional<Rotation2d> getRotationTargetOverride() {
@@ -348,6 +361,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private void updateLogger() {
     Logger.recordOutput("Swerve/TrackingState", m_trackingState);
     Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+    Logger.recordOutput("Swerve/isShootZone", getZoneState());
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
       Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());

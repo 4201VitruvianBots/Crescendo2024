@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3,
-        "y": 7.0
+        "x": 3.4,
+        "y": 6.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4,
-        "y": 7.0
+        "x": 3.5,
+        "y": 6.7
       },
       "isLocked": false,
       "linkedName": "ShootEnd2"
     },
     {
       "anchor": {
-        "x": 8.5,
+        "x": 8.75,
         "y": 8.0
       },
       "prevControl": {
-        "x": 8.4,
+        "x": 8.65,
         "y": 8.0
       },
       "nextControl": null,

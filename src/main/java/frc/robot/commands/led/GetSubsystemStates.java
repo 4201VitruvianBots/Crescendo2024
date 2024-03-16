@@ -7,7 +7,6 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
@@ -32,7 +31,12 @@ public class GetSubsystemStates extends Command {
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision, CommandSwerveDrivetrain swerveDrive) {
+      LEDSubsystem led,
+      Intake intake,
+      Climber climber,
+      Shooter shooter,
+      Vision vision,
+      CommandSwerveDrivetrain swerveDrive) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
@@ -58,8 +62,8 @@ public class GetSubsystemStates extends Command {
   public void execute() {
     isClimbing = m_climber.getClimbState();
 
-   isLocked = m_SwerveDrivetrain.isTrackingState();
-    
+    isLocked = m_SwerveDrivetrain.isTrackingState();
+
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
     isIntaked = m_intake.checkEitherIntakeSensorActive();
