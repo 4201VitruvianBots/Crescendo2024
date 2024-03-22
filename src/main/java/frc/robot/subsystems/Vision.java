@@ -200,7 +200,9 @@ public class Vision extends SubsystemBase {
       Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
       Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
       double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+      double realDist = m_goal.minus(currentPose).getDistance(new Translation2d());
 
+      double airtimeInverse = VelocityShoot / realDist;
       if (DriverStation.isAutonomous()) {
         m_swerveDriveTrain.setAngleToSpeaker(
             m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
@@ -215,7 +217,7 @@ public class Vision extends SubsystemBase {
                 .plus(
                     Rotation2d.fromRadians(
                         Math.asin(
-                            (((VelocityY * 0.85) * PositionX + (VelocityX * 0.2) * PositionY))
+                            (((VelocityY * 0.60) * PositionX + (VelocityX * 0.005) * PositionY))
                                 / (newDist * 5)))));
       }
     }

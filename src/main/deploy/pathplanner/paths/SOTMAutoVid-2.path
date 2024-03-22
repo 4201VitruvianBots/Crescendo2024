@@ -1,0 +1,84 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.29957545629377,
+        "y": 0.5130810261620535
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 9.299575456293764,
+        "y": 0.5130810261620535
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1101273631118698,
+        "y": 1.2900322943503038
+      },
+      "prevControl": {
+        "x": 4.238905620668384,
+        "y": 0.57171885772343
+      },
+      "nextControl": {
+        "x": 1.4252235206201946,
+        "y": 2.362243830481371
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.007511157879459,
+        "y": 5.981058819260496
+      },
+      "prevControl": {
+        "x": 1.590283673669764,
+        "y": 4.779106395943414
+      },
+      "nextControl": {
+        "x": 4.165608331216662,
+        "y": 6.9632424979135665
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.29957545629377,
+        "y": 6.992561413694256
+      },
+      "prevControl": {
+        "x": 6.27657026742625,
+        "y": 7.3443884030625215
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 10.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SOTMAutoVid",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

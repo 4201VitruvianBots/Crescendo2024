@@ -292,7 +292,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     double toGoalDistance = m_goal.minus(robotPose).getDistance(new Translation2d());
 
-    if ((toGoalDistance <= 3.5) && (toGoalDistance >= 1.5)) {
+    if ((toGoalDistance <= 3.75) && (toGoalDistance >= 1.5)) {
       return true;
     } else return false;
   }

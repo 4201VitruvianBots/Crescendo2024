@@ -18,9 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.ampShooter.RunAmpSensored;
-import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
@@ -29,7 +27,6 @@ import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.climber.ResetClimberHeight;
-import frc.robot.commands.climber.RunClimberJoystick;
 import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
@@ -124,9 +121,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
+                      -xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
+                      -xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -143,26 +140,26 @@ public class RobotContainer {
 
     // Default command to decelerate the flywheel if no other command is set
     //    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
-    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
-    m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
+    // m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    // m_climber.setDefaultCommand(
+    //     new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision, m_swerveDrive));
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(
-        new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // driveShootButton.whileTrue(
+    //     new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
-    driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
+    // var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
+    // driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
-    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
-    driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
+    // var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
+    // driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
@@ -191,6 +188,8 @@ public class RobotContainer {
                 xboxController,
                 RPM_SETPOINT.MAX.get(),
                 RPM_SETPOINT.MAX.get())); // fast speaker
+
+    xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController
@@ -298,8 +297,11 @@ public class RobotContainer {
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
+    m_autoChooser.addOption(
+        "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
+
     m_autoChooser.addOption(
         "IntakeTestVision",
         new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));

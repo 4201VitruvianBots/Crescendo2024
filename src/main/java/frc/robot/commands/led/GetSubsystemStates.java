@@ -62,7 +62,8 @@ public class GetSubsystemStates extends Command {
   public void execute() {
     isClimbing = m_climber.getClimbState();
 
-    isLocked = m_SwerveDrivetrain.isTrackingState();
+    // isLocked = m_SwerveDrivetrain.isTrackingState();
+    isLocked = m_SwerveDrivetrain.getZoneState();
 
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
@@ -90,10 +91,10 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
     } else if (isEnabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
-    } else if (isSetup) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
-    } else if (isLocalized) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
+      // } else if (isSetup) {
+      //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
+      // } else if (isLocalized) {
+      //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
     } else if (isDisabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
     }

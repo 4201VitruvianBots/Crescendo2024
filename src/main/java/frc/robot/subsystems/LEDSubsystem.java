@@ -157,7 +157,7 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
           break;
         case ENABLED:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe); // Solid Green
+          setPattern(LED.green, 0, 0.125, ANIMATION_TYPE.ColorFlowLong); // Solid Green
           break;
         case CLIMBING:
           setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow);

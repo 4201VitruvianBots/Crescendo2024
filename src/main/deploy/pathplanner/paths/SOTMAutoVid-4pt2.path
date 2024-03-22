@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.8494139845422553,
+        "y": 7.6082586450887195
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.849413984542255,
+        "y": 7.6082586450887195
+      },
+      "isLocked": false,
+      "linkedName": "Sheraz"
+    },
+    {
+      "anchor": {
+        "x": 8.387532203635836,
+        "y": 6.948583040023223
+      },
+      "prevControl": {
+        "x": 7.3875322036358355,
+        "y": 6.948583040023223
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 10.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SOTMAutoVid",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
