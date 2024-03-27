@@ -298,7 +298,11 @@ public class RobotContainer {
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
     m_autoChooser.addOption(
-        "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+        "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_intake, m_ampShooter, m_shooter));
+
+    // m_autoChooser.addOption(
+    //     "SOTMVid1", new SOTMAutoVidOne(m_swerveDrive, m_intake, m_ampShooter, m_shooter));
+
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
 

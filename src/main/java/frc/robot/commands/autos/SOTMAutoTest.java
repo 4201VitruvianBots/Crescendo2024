@@ -5,10 +5,12 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drive.AutoSetTrackingState;
+import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.AutoShootNStrafe;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
-import frc.robot.simulation.FieldSim;
+import frc.robot.constants.VISION;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -20,11 +22,7 @@ import frc.robot.subsystems.Shooter;
 public class SOTMAutoTest extends SequentialCommandGroup {
   /** Creates a new ThreePieceFar. */
   public SOTMAutoTest(
-      CommandSwerveDrivetrain swerveDrive,
-      FieldSim fieldSim,
-      Intake intake,
-      AmpShooter ampShooter,
-      Shooter shooter) {
+      CommandSwerveDrivetrain swerveDrive, Intake intake, AmpShooter ampShooter, Shooter shooter) {
     String[] pathFiles = {"SOTMTest"};
     var pathFactory = new AutoFactory.PathFactory(swerveDrive, pathFiles);
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
@@ -34,9 +32,12 @@ public class SOTMAutoTest extends SequentialCommandGroup {
     // TODO: Need to think about how long to aim before shooting?
     addCommands(
         pathFactory.createAutoInit(),
+        
         pathFactory
             .getNextPathCommand()
-            .alongWith(
-                flywheelCommandContinuous, new AutoShootNStrafe(swerveDrive, ampShooter, intake)));
+             .alongWith(
+        flywheelCommandContinuous,
+        new AutoSetTrackingState(swerveDrive, intake, VISION.TRACKING_STATE.NONE, true),
+        new AutoShootNStrafe(ampShooter, intake, shooter)));
   }
 }

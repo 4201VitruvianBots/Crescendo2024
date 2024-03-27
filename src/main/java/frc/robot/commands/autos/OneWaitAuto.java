@@ -38,12 +38,12 @@ public class OneWaitAuto extends SequentialCommandGroup {
         pathFactory.createAutoInit(),
         Wait,
         pathFactory.getNextPathCommand().alongWith(flywheelCommandContinuous),
-        new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER),
+        new AutoSetTrackingState(swerveDrive, intake, VISION.TRACKING_STATE.SPEAKER),
         shooterFactory.generateShootCommand().withTimeout(0.75),
         pathFactory
             .getNextPathCommand()
             .alongWith(
                 intakeFactory.generateIntakeCommand(),
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.NOTE)));
+                new AutoSetTrackingState(swerveDrive, intake, VISION.TRACKING_STATE.NOTE)));
   }
 }

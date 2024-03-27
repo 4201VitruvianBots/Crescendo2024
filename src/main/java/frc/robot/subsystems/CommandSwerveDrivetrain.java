@@ -175,6 +175,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 if (m_vision.hasGamePieceTarget()) {
                   rotationSpeed = calculateRotationToTarget();
                 }
+             
               }
             } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER) {
               rotationSpeed = calculateRotationToTarget();
@@ -255,7 +256,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_angleToNote = angle;
   }
 
-  public void setTrackingState(VISION.TRACKING_STATE state) {
+  public void setTrackingState(TRACKING_STATE state) {
+   
     if (m_trackingState != state) {
       m_pidController.reset();
       m_trackingState = state;

@@ -203,10 +203,10 @@ public class Vision extends SubsystemBase {
       double realDist = m_goal.minus(currentPose).getDistance(new Translation2d());
 
       double airtimeInverse = VelocityShoot / realDist;
-      if (DriverStation.isAutonomous()) {
-        m_swerveDriveTrain.setAngleToSpeaker(
-            m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
-      } else {
+      // if (DriverStation.isAutonomous()) {
+      //   m_swerveDriveTrain.setAngleToSpeaker(
+      //       m_swerveDriveTrain.getState().Pose.getTranslation().minus(m_goal).getAngle());
+      // } else {
         m_swerveDriveTrain.setAngleToSpeaker(
             m_swerveDriveTrain
                 .getState()
@@ -219,7 +219,7 @@ public class Vision extends SubsystemBase {
                         Math.asin(
                             (((VelocityY * 0.60) * PositionX + (VelocityX * 0.005) * PositionY))
                                 / (newDist * 5)))));
-      }
+      // }
     }
   }
 

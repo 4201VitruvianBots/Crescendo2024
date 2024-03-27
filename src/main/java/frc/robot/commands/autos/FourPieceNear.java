@@ -49,7 +49,7 @@ public class FourPieceNear extends SequentialCommandGroup {
             .getNextPathCommand()
             .alongWith(
                 flywheelCommandContinuous, // path 1
-                new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)),
+                new AutoSetTrackingState(swerveDrive, intake, VISION.TRACKING_STATE.SPEAKER)),
         shooterFactory.generateShootCommand().withTimeout(2.5),
         pathFactory // path 2
             .getNextPathCommand()
