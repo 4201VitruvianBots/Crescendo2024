@@ -4,6 +4,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.SHOOTER;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -21,7 +22,7 @@ public class AutoScore extends Command {
   private final double m_withTimeout;
   private final double reverseTimerThreshold = 0.25;
 
-  private final double minRPMThreshold = 300;
+  private final double minRPMThreshold = SHOOTER.RPM_SETPOINT.TOLERANCE.get();
 
   private final boolean funny = true;
 

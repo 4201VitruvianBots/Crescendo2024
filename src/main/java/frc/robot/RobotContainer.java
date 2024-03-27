@@ -34,6 +34,7 @@ import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.intake.AmpOuttake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.shooter.AutoScore;
 import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.RunKicker;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
@@ -121,9 +122,11 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      -xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
-                      -xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
-                      -xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
+                      (-xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond)*0.35,
+                      (-xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond)*0.35
+                      
+                      ,
+                      (-xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)*0.65)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -186,20 +189,32 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get())); // fast speaker
-
-    xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
-
-    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+                RPM_SETPOINT.SLOW.get(),
+                RPM_SETPOINT.SLOW.get())); // fast speaker
     xboxController
         .x()
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.SPEAKERBOTTOM.get(),
-                RPM_SETPOINT.SPEAKERBOTTOM.get()));
+                RPM_SETPOINT.SLOW2.get(),
+                RPM_SETPOINT.SLOW2.get())); // fast speaker
+
+        xboxController
+        .y()
+        .whileTrue(
+            new SetShooterRPMSetpoint(
+                m_shooter,
+                xboxController,
+                RPM_SETPOINT.SLOW3.get(),
+                RPM_SETPOINT.SLOW3.get())); // fast speaker
+
+    
+    
+    // xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+   
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
@@ -297,25 +312,25 @@ public class RobotContainer {
         "TwoPieceFar",
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
-    m_autoChooser.addOption(
-        "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    // m_autoChooser.addOption(
+    //     "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
 
-    m_autoChooser.addOption(
-        "IntakeTestVision",
-        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
-    m_autoChooser.addOption(
-        "TestAutoShoot",
-        new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
-            .andThen(
-                new AutoRunAmpTakeTwo(
-                    m_intake,
-                    m_ampShooter,
-                    INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
-                    INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
-                    AMPSHOOTER.STATE.INTAKING.get(),
-                    m_shooter)));
+    // m_autoChooser.addOption(
+    //     "IntakeTestVision",
+    //     new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    // m_autoChooser.addOption(
+    //     "TestAutoShoot",
+    //     new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
+    //         .andThen(
+    //             new AutoRunAmpTakeTwo(
+    //                 m_intake,
+    //                 m_ampShooter,
+    //                 INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
+    //                 INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
+    //                 AMPSHOOTER.STATE.INTAKING.get(),
+    //                 m_shooter)));
     // m_autoChooser.addOption(
     //     "AutoScoreTest",
     //     new AutoScore(6

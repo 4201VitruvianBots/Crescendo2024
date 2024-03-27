@@ -144,14 +144,14 @@ public class LEDSubsystem extends SubsystemBase {
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
-        case LOCKED:
+        case REVED:
           setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
           break;
         case UNREVED:
           setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
           break;
         case INTAKED:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Rainbow);
           break;
         case INTAKING:
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
@@ -160,7 +160,7 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.green, 0, 0.125, ANIMATION_TYPE.ColorFlowLong); // Solid Green
           break;
         case CLIMBING:
-          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow);
+          setPattern(LED.purple, 0, 0.5, ANIMATION_TYPE.Rainbow);
           break;
         case SETUP_READY:
           setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid);
