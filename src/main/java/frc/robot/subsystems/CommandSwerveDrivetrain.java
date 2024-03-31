@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.VISION;
+import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
@@ -257,6 +258,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       m_pidController.reset();
       m_trackingState = state;
     }
+  }
+
+  public TRACKING_STATE getTrackingState() {
+    return m_trackingState;
   }
 
   private double calculateRotationToTarget() {
