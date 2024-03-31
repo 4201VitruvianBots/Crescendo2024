@@ -50,6 +50,7 @@ public final class LED {
     REVED,
     UNREVED,
     ARMSCORING,
-    CLIMBING
+    CLIMBING,
+    LOCKED_IN
   }
 }

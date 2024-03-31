@@ -43,6 +43,8 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_white = 0;
   private double m_brightness = 0;
   private double m_speed = 0;
+  private int m_start; // where to start at led strip
+  private int m_end; // where to end at led strip
   private SUBSYSTEM_STATES currentRobotState = SUBSYSTEM_STATES.DISABLED;
   private boolean setSolid;
   private Animation m_toAnimate = null;
@@ -70,13 +72,15 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   // will create LED patterns
-  public void setPattern(Color8Bit color, int white, double speed, ANIMATION_TYPE toChange) {
+  public void setPattern(Color8Bit color, int white, double speed, ANIMATION_TYPE toChange, int start, int end) {
     m_color = color;
     m_red = color.red;
     m_green = color.green;
     m_blue = color.blue;
     m_white = white;
     m_speed = speed;
+    m_start = start;
+    m_end = end;
     switch (toChange) {
       case ColorFlow: // stripe of color flowing through the LED strip
         m_toAnimate =
@@ -145,31 +149,34 @@ public class LEDSubsystem extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case REVED:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
           break;
         case UNREVED:
-          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow);
+          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 0);
           break;
         case INTAKED:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
           break;
         case INTAKING:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe, 0, 0);
           break;
         case ENABLED:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe); // Solid Green
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe, 0, 0); // Solid Green
           break;
         case CLIMBING:
-          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow);
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow, 0, 0);
           break;
         case SETUP_READY:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid);
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
           break;
         case SETUP_LOCALIZED:
-          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Solid);
+          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
           break;
         case DISABLED:
-          setPattern(LED.red, 0, 0.125, ANIMATION_TYPE.ColorFlowLong); // Solid Red
+          setPattern(LED.red, 0, 0.125, ANIMATION_TYPE.ColorFlowLong, 0, 0); // Solid Red
+          break;
+        case LOCKED_IN:
+          setPattern(LED.turquoise, 0, 1, ANIMATION_TYPE.Larson, 0, 0);
           break;
         default:
           break;
@@ -199,7 +206,7 @@ public class LEDSubsystem extends SubsystemBase {
     // null indicates that the animation is "Solid"
     if (m_toAnimate == null && !setSolid) {
       setSolid = true;
-      m_candle.setLEDs(m_red, m_green, m_blue, 0, 0, LED.LEDcount); // setting all LEDs to color
+      m_candle.setLEDs(m_red, m_green, m_blue, m_white, m_start, m_end); // setting all LEDs to color
     } else {
       setSolid = false;
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
