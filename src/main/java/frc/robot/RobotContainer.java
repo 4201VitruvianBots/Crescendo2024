@@ -282,6 +282,7 @@ public class RobotContainer {
 
   private void initAutoChooser() {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addOption("DriveForward", new DriveStraightTest(m_swerveDrive,m_fieldSim));
     m_autoChooser.addOption(
         "OneWaitAuto",
         new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));

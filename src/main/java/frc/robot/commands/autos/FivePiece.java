@@ -36,7 +36,7 @@ public class FivePiece extends SequentialCommandGroup {
     var flywheelCommandContinuous = new AutoSetRPMSetpoint(shooter, RPM_SETPOINT.AUTO_RPM.get());
 
     // TODO: After testing vision, make shoot command check for angle to speaker with a tolerance
-    // value
+    // valuez
     // TODO: Need to think about how long to aim before shooting?
     addCommands(
         pathFactory.createAutoInit(),
