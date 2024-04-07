@@ -165,7 +165,7 @@ public class AutoShootNStrafe extends Command {
                 m_turnController.calculate(
                     m_swerveDrive.getState().Pose.getRotation().getRadians(),
                     targetDelta.getRadians() + getOffsetAngleDeg)));
-    if (m_shooter.getZoneState()
+    if (m_swerveDrive.getZoneState()
         && m_shooter.getRpmMaster() >= (m_RPMOutput - allowableError)
         && m_shooter.getRpmFollower() >= (m_RPMOutput - allowableError)) {
 

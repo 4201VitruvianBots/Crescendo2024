@@ -15,6 +15,7 @@ public class GetSubsystemStates extends Command {
   private final Intake m_intake;
   private final Shooter m_shooter;
   private final Vision m_vision;
+  private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   // private final Arm m_arm;
 
   private boolean isClimbing;
@@ -26,14 +27,21 @@ public class GetSubsystemStates extends Command {
   private boolean isLocalized;
   private boolean isDisabled;
   private boolean isIntaked;
+  private boolean isLocked;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision) {
+      LEDSubsystem led,
+      Intake intake,
+      Climber climber,
+      Shooter shooter,
+      Vision vision,
+      CommandSwerveDrivetrain swerveDrive) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
     // m_arm = arm;
+    m_SwerveDrivetrain = swerveDrive;
     m_shooter = shooter;
     m_vision = vision;
 
@@ -53,6 +61,9 @@ public class GetSubsystemStates extends Command {
   @Override
   public void execute() {
     isClimbing = m_climber.getClimbState();
+
+    isLocked = m_SwerveDrivetrain.isTrackingState();
+
     isReved = m_shooter.getReved();
     isUnreved = m_shooter.getUnreved(); // Done
     isIntaked = m_intake.checkEitherIntakeSensorActive();
@@ -69,8 +80,8 @@ public class GetSubsystemStates extends Command {
     // highest priority
     if (isClimbing) {
       m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
-    } else if (isReved) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.REVED);
+    } else if (isLocked) {
+      m_led.expressState(LED.SUBSYSTEM_STATES.LOCKED);
     } else if (isUnreved) {
       m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
     } else if (isIntaked) {

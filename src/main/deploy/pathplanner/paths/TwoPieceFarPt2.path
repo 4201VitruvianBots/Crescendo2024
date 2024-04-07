@@ -12,16 +12,16 @@
         "y": 2.4575984822657415
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2farshoot1"
     },
     {
       "anchor": {
-        "x": 8.24,
-        "y": 0.78
+        "x": 8.6,
+        "y": 0.48000000000000004
       },
       "prevControl": {
-        "x": 7.420007982873108,
-        "y": 0.703653978736529
+        "x": 7.780007982873108,
+        "y": 0.40365397873652903
       },
       "nextControl": null,
       "isLocked": false,

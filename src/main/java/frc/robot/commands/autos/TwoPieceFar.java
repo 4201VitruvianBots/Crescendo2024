@@ -51,7 +51,7 @@ public class TwoPieceFar extends SequentialCommandGroup {
             .getNextPathCommand()
             .alongWith(
                 new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
-        shooterFactory.generateShootCommand().withTimeout(1.5),
+        shooterFactory.generateShootCommand().withTimeout(2),
         pathFactory.getNextPathCommand().andThen(() -> swerveDrive.setControl(stopRequest)));
   }
 }

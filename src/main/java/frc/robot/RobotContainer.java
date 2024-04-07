@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmp;
+import frc.robot.commands.ampShooter.RunAmpSensored;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ToggleArmControlMode;
@@ -146,15 +147,21 @@ public class RobotContainer {
     m_climber.setDefaultCommand(
         new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision));
+        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision, m_swerveDrive));
   }
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new AmpIntake(m_intake, 0.55, 0.75, m_ampShooter, 0.75));
+    driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
+    driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
     var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
     targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
+    driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
@@ -196,10 +203,10 @@ public class RobotContainer {
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm));
+    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
 
     // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm));
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
 
     xboxController
         .rightTrigger()
@@ -215,7 +222,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new AmpIntake(
-                m_intake, 0.55, 0.80, m_ampShooter, 0.15)); // Outtake Note with Intake And Amp
+                m_intake, 0.55, 0.80, m_ampShooter, 0.4)); // Outtake Note with Intake And Amp
 
     xboxController
         .leftBumper()
@@ -229,7 +236,7 @@ public class RobotContainer {
     xboxController
         .rightBumper()
         .whileTrue(
-            new RunAmp(
+            new RunAmpSensored(
                 m_ampShooter,
                 m_intake,
                 AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake

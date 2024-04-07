@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.402920429053642,
-        "y": 6.8799487641027435
+        "x": 4.12162995754563,
+        "y": 7.153815450488045
       },
       "isLocked": false,
       "linkedName": "ShootEnd4"
@@ -39,8 +39,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": false
+    "rotation": -65.40085267213527,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "5PieceAutoNear",

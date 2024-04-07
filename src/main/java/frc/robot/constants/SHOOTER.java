@@ -51,7 +51,7 @@ public final class SHOOTER {
 
   public enum RPM_SETPOINT {
     REVERSE(-0.1),
-    TOLERANCE(300),
+    TOLERANCE(450),
     // TOLERANCE_AUTO(600),
 
     NONE(0),

@@ -4,7 +4,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class ARM {
-  public static final double canCoderOffset = 0.196533203125;
+  public static final double canCoderOffset = -0.1396484375;
   /* Static Feedforward Gain
   This is added to the closed loop output. The sign is determined by target velocity.
   The unit for this constant is dependent on the control mode,
@@ -47,7 +47,7 @@ public final class ARM {
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
-    FORWARD(Units.degreesToRotations(135.0)),
+    FORWARD(Units.degreesToRotations(129.0)),
     TRAP(Units.degreesToRotations(130.0));
 
     private final double angle;
@@ -77,7 +77,7 @@ public final class ARM {
 
   public static final double minAngleDegrees = -40;
 
-  public static final double maxAngleDegrees = 130;
+  public static final double maxAngleDegrees = 150;
 
   public static final double startingAngleDegrees = minAngleDegrees;
 

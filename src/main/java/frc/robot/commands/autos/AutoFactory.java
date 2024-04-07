@@ -130,7 +130,7 @@ public class AutoFactory {
           INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
           INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
           m_AmpShooter,
-          AMPSHOOTER.STATE.INTAKING.get());
+          AMPSHOOTER.STATE.AUTOINTAKING.get());
     }
   }
 }
