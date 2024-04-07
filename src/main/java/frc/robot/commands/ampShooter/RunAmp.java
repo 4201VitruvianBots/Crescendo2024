@@ -9,11 +9,11 @@ import frc.robot.subsystems.AmpShooter;
 
 public class RunAmp extends Command {
   private final AmpShooter m_ampShooter;
-  private final double m_state;
+  private final double m_percentOutput;
 
-  public RunAmp(AmpShooter ampShooter, double state) {
+  public RunAmp(AmpShooter ampShooter, double percentOutput) {
     m_ampShooter = ampShooter;
-    m_state = state;
+    m_percentOutput = percentOutput;
 
     addRequirements(m_ampShooter);
   }
@@ -24,7 +24,7 @@ public class RunAmp extends Command {
 
   @Override
   public void execute() {
-    m_ampShooter.setPercentOutput(m_state);
+    m_ampShooter.setPercentOutput(m_percentOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
