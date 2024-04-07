@@ -8,9 +8,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.constants.SWERVE;
 import frc.robot.simulation.FieldSim;
 import frc.robot.visualizers.SwerveModuleVisualizer;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class Telemetry {
+public class Telemetry implements Logged {
   private FieldSim m_fieldSim;
   private final double m_maxSpeed = SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 
@@ -52,19 +52,19 @@ public class Telemetry {
     Translation2d velocities = distanceDiff.div(diffTime);
 
     try {
-      Logger.recordOutput("Swerve/Pose", pose);
-      Logger.recordOutput("Swerve/Speed", velocities.getNorm());
-      Logger.recordOutput("Swerve/Velocity X", velocities.getX());
-      Logger.recordOutput("Swerve/Velocity Y", velocities.getY());
-      Logger.recordOutput("Swerve/Odometry Period", state.OdometryPeriod);
-      Logger.recordOutput("Swerve/Module Targets", state.ModuleTargets);
-      Logger.recordOutput("Swerve/Module States", state.ModuleStates);
+      log("Swerve/Pose", pose);
+      log("Swerve/Speed", velocities.getNorm());
+      log("Swerve/Velocity X", velocities.getX());
+      log("Swerve/Velocity Y", velocities.getY());
+      log("Swerve/Odometry Period", state.OdometryPeriod);
+      log("Swerve/Module Targets", state.ModuleTargets);
+      log("Swerve/Module States", state.ModuleStates);
       m_moduleAngles[0] = state.ModuleStates[0].angle.getDegrees();
       m_moduleAngles[1] = state.ModuleStates[1].angle.getDegrees();
       m_moduleAngles[2] = state.ModuleStates[2].angle.getDegrees();
       m_moduleAngles[3] = state.ModuleStates[3].angle.getDegrees();
 
-      Logger.recordOutput("Swerve/Module Angles", m_moduleAngles);
+      log("Swerve/Module Angles", m_moduleAngles);
     } catch (Exception e) {
       System.out.println("AdvantageKit could not update Odometry");
     }

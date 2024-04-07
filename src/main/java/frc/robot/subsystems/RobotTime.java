@@ -4,7 +4,6 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
 
 public class RobotTime extends SubsystemBase {
   private static double m_time;
@@ -55,7 +54,8 @@ public class RobotTime extends SubsystemBase {
         setTime(Utils.getCurrentTimeSeconds());
         break;
       case UNITTEST:
-        setTime(Logger.getRealTimestamp() * 1.0e-6);
+        // TODO: Review
+        setTime(Timer.getFPGATimestamp());
         break;
       case REAL_TIME:
       default:

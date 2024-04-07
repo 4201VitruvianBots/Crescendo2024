@@ -1,9 +1,6 @@
 package frc.robot.utils;
 
 import java.lang.reflect.Field;
-import org.littletonrobotics.conduit.ConduitApi;
-import org.littletonrobotics.junction.inputs.LoggedDriverStation;
-import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 public class TestUtils {
   public static void setPrivateField(Object instance, String fieldName, Object valueToSet) {
@@ -30,8 +27,8 @@ public class TestUtils {
   }
 
   public static void refreshAkitData() {
-    ConduitApi.getInstance().captureData();
-    LoggedDriverStation.periodic();
-    LoggedSystemStats.periodic();
+    //    ConduitApi.getInstance().captureData();
+    //    LoggedDriverStation.periodic();
+    //    LoggedSystemStats.periodic();
   }
 }

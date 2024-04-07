@@ -24,7 +24,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.littletonrobotics.junction.Logger;
 
 public class TestTalonFxMotorSim implements AutoCloseable {
   static final double DELTA = 0.2; // acceptable deviation range
@@ -63,7 +62,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
         MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
     m_turnMotorSim.setInputVoltage(MathUtil.clamp(m_turnMotorSimState.getMotorVoltage(), -12, 12));
 
-    m_currentTime = Logger.getRealTimestamp() * 1.0e-6;
+    m_currentTime = Timer.getFPGATimestamp();
     double dt = m_currentTime - m_lastTime;
     m_driveMotorSim.update(dt);
     m_turnMotorSim.update(dt);
@@ -87,7 +86,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
   public void constructDevices() {
     assert HAL.initialize(500, 0);
 
-    Logger.start();
+    //    Logger.start();
 
     /* create the TalonFX */
     m_driveMotor = new TalonFX(0);
@@ -151,7 +150,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     var currentPub = m_table.getDoubleTopic("current").publish();
     var testVelRps = 0.0;
     var testVelMps = 0.0;
-    m_lastTime = Logger.getRealTimestamp() * 1e-6;
+    m_lastTime = Timer.getFPGATimestamp();
     for (int i = 0; i < 25; i++) {
       simulateMotorModels();
       velocitySignal.refresh();
@@ -196,7 +195,7 @@ public class TestTalonFxMotorSim implements AutoCloseable {
     var currentPub = m_table.getDoubleTopic("current").publish();
     var positionRot = 0.0;
     var positionDeg = 0.0;
-    m_lastTime = Logger.getRealTimestamp() * 1e-6;
+    m_lastTime = Timer.getFPGATimestamp();
     for (int i = 0; i < 25; i++) {
       simulateMotorModels();
       positionSignal.refresh();

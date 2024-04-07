@@ -24,9 +24,9 @@ import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.ROBOT.CONTROL_MODE;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class Climber extends SubsystemBase {
+public class Climber extends SubsystemBase implements Logged {
   private final TalonFX[] elevatorClimbMotors = {
     new TalonFX(CAN.climbMotor1), new TalonFX(CAN.climbMotor2)
   };
@@ -274,19 +274,19 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Climber/Control Mode", getClosedLoopControlMode());
-    Logger.recordOutput("Climber/Height MetersMotor1", getHeightMetersMotor1());
-    Logger.recordOutput("Climber/Motor1 Rotations", getMotor1Rotations());
-    Logger.recordOutput("Climber/Height MetersMotor2", getHeightMetersMotor2());
-    Logger.recordOutput("Climber/Motor2 Rotations", getMotor2Rotations());
-    Logger.recordOutput("Climber/Climb State", getClimbState());
-    Logger.recordOutput("Climber/Motor1 Output", getPercentOutputMotor1());
-    Logger.recordOutput("Climber/Motor2 Output", getPercentOutputMotor2());
-    Logger.recordOutput("Climber/Setpoint", getDesiredSetpoint());
-    Logger.recordOutput("Climber/Supply Current", getAvgCurrentDraw());
+    log("Climber/Control Mode", getClosedLoopControlMode().toString());
+    log("Climber/Height MetersMotor1", getHeightMetersMotor1());
+    log("Climber/Motor1 Rotations", getMotor1Rotations());
+    log("Climber/Height MetersMotor2", getHeightMetersMotor2());
+    log("Climber/Motor2 Rotations", getMotor2Rotations());
+    log("Climber/Climb State", getClimbState());
+    log("Climber/Motor1 Output", getPercentOutputMotor1());
+    log("Climber/Motor2 Output", getPercentOutputMotor2());
+    log("Climber/Setpoint", getDesiredSetpoint());
+    log("Climber/Supply Current", getAvgCurrentDraw());
 
-    Logger.recordOutput("Climber/Motor 1 Voltage", getMotor1Voltage());
-    Logger.recordOutput("Climber/Motor 2 Voltage", getMotor2Voltage());
+    log("Climber/Motor 1 Voltage", getMotor1Voltage());
+    log("Climber/Motor 2 Voltage", getMotor2Voltage());
   }
 
   @Override

@@ -22,9 +22,9 @@ import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements Logged {
   private double m_topRpmSetpoint;
   private double m_bottomRpmSetpoint;
   private boolean m_testMode = false;
@@ -210,15 +210,13 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
 
   private void updateLogger() {
-    Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
-    Logger.recordOutput(
-        "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput(
-        "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
-    Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
-    Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
-    Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
+    log("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
+    log("Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
+    log("Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
+    log("Shooter/rpmSetpointTop", m_topRpmSetpoint);
+    log("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
+    log("Shooter/RPMMaster", getRpmMaster());
+    log("Shooter/RPMFollower", getRpmFollower());
   }
 
   @Override

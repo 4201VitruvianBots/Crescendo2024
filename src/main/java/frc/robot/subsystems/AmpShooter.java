@@ -14,9 +14,9 @@ import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class AmpShooter extends SubsystemBase {
+public class AmpShooter extends SubsystemBase implements Logged {
   private Intake m_intake;
   private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
   private NeutralModeValue NeutralMode;
@@ -60,9 +60,9 @@ public class AmpShooter extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
-    Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
+    log("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
+    log("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
+    log("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
   }
 
   @Override

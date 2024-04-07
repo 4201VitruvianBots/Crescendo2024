@@ -12,7 +12,6 @@ import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
-import org.littletonrobotics.junction.Logger;
 
 public final class CtreUtils {
   /**
@@ -22,7 +21,7 @@ public final class CtreUtils {
    */
   public static void initPhoenixServer() {
     var alert =
-        new Alert("Starting Phoenix Server at: " + Logger.getTimestamp() * 1.0e-6, AlertType.INFO);
+        new Alert("Starting Phoenix Server at: " + Timer.getFPGATimestamp(), AlertType.INFO);
     alert.set(true);
     if (RobotBase.isReal()) {
       TalonFX dummy = new TalonFX(0, CAN.driveBaseCanbus);
@@ -30,7 +29,7 @@ public final class CtreUtils {
       dummy.close();
       dummy = null;
     }
-    alert.setText("Phoenix Server finished Init at: " + Logger.getTimestamp() * 1.0e-6);
+    alert.setText("Phoenix Server finished Init at: " + Timer.getFPGATimestamp());
   }
 
   public static TalonFXConfiguration generateTurnMotorConfig() {

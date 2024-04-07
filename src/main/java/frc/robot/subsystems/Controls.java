@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ARM;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
+import monologue.Logged;
 import org.littletonrobotics.frc2023.util.Alert;
-import org.littletonrobotics.junction.Logger;
 
 @SuppressWarnings("RedundantThrows")
-public class Controls extends SubsystemBase implements AutoCloseable {
+public class Controls extends SubsystemBase implements AutoCloseable, Logged {
   private CommandSwerveDrivetrain m_swerveDrive;
   private Intake m_intake;
   private Arm m_arm;
@@ -36,7 +36,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     m_initState = false;
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get())
-      Logger.recordOutput("Controls/Robot Serial Number", RobotController.getSerialNumber());
+      log("Controls/Robot Serial Number", RobotController.getSerialNumber());
   }
 
   public void registerDriveTrain(CommandSwerveDrivetrain swerveDrive) {
@@ -165,7 +165,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
       var deltaRotation =
           m_startPose.getRotation().minus(m_swerveDrive.getState().Pose.getRotation());
 
-      Logger.recordOutput("Controls/startDeltaTranslation", deltaTranslation);
+      log("Controls/startDeltaTranslation", deltaTranslation);
       SmartDashboard.putNumber("Controls/robotPoseX", m_swerveDrive.getState().Pose.getX());
       SmartDashboard.putNumber("Controls/robotPoseY", m_swerveDrive.getState().Pose.getY());
       SmartDashboard.putNumber(
@@ -182,8 +182,8 @@ public class Controls extends SubsystemBase implements AutoCloseable {
   /** Sends values to SmartDashboard */
   private void updateLogger() {
     try {
-      Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
-      Logger.recordOutput("Controls/StartPose", getStartPose());
+      log("Controls/AllianceColor", getAllianceColor().toString());
+      log("Controls/StartPose", getStartPose());
     } catch (Exception e) {
       System.out.println("Controls failed to update AdvantageKit");
     }

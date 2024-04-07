@@ -34,9 +34,9 @@ import frc.robot.constants.ARM;
 import frc.robot.constants.CAN;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class Arm extends SubsystemBase {
+public class Arm extends SubsystemBase implements Logged {
   /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
@@ -213,12 +213,12 @@ public class Arm extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
-    Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
-    Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
-    Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
-    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
+    log("Arm/ControlMode", m_controlMode.toString());
+    log("Arm/CurrentAngle", getCurrentAngle());
+    log("Arm/CurrentOutput", m_currentSignal.getValue());
+    log("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
+    log("Arm/PercentOutput", m_armMotor.get());
+    log("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
   public void testInit() {
@@ -324,6 +324,6 @@ public class Arm extends SubsystemBase {
     m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
     m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
 
-    Logger.recordOutput("Arm/Model Angle", Units.radiansToDegrees(m_armSim.getAngleRads()));
+    log("Arm/Model Angle", Units.radiansToDegrees(m_armSim.getAngleRads()));
   }
 }

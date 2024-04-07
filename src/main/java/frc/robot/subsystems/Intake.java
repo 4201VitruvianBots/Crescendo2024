@@ -20,9 +20,9 @@ import frc.robot.constants.INTAKE;
 // import frc.robot.constants.INTAKE.STATE;
 import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Logged {
   /** Creates a new Intake. */
   private boolean m_isIntaking = false;
 
@@ -108,14 +108,14 @@ public class Intake extends SubsystemBase {
   public void updateSmartDashboard() {}
 
   public void updateLogger() {
-    Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
-    Logger.recordOutput("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
-    Logger.recordOutput("Intake/BeamBreak1 state", getSensorInput1());
-    Logger.recordOutput("Intake/BeamBreak2 state", getSensorInput2());
+    log("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
+    log("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
+    log("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+    log("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
+    log("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
+    log("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
+    log("Intake/BeamBreak1 state", getSensorInput1());
+    log("Intake/BeamBreak2 state", getSensorInput2());
   }
 
   @Override

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.littletonrobotics.junction.Logger;
 
 @Disabled
 public class TestArm {
@@ -61,7 +60,7 @@ public class TestArm {
   public void constructDevices() {
     assert HAL.initialize(500, 0);
 
-    Logger.start();
+    //    Logger.start();
 
     m_robotTime = new RobotTime();
 

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.simulation.SimHooks;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.littletonrobotics.junction.Logger;
 
 public class TestSwerveDrive {
   static final double DELTA = 0.2; // acceptable deviation range
@@ -30,7 +29,7 @@ public class TestSwerveDrive {
   public void constructDevices() {
     assert HAL.initialize(500, 0);
 
-    Logger.start();
+    //    Logger.start();
 
     m_robotTime = new RobotTime();
 

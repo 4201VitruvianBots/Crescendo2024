@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.utils.CtreUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.littletonrobotics.junction.Logger;
 
 public class TestRobotTime {
   static final double DELTA = 0.002; // acceptable deviation range
@@ -25,7 +24,7 @@ public class TestRobotTime {
   public void constructDevices() {
     assert HAL.initialize(500, 0);
 
-    Logger.start();
+    //    Logger.start();
 
     m_robotTime = new RobotTime();
 

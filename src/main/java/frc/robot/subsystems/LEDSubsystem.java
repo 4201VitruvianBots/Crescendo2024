@@ -30,9 +30,9 @@ import frc.robot.constants.CAN;
 import frc.robot.constants.LED;
 import frc.robot.constants.LED.*;
 import frc.robot.constants.ROBOT;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class LEDSubsystem extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase implements Logged {
   /** Creates a new LEDSubsystem */
   private final CANdle m_candle = new CANdle(CAN.CANdle);
 
@@ -183,14 +183,14 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("LEDSubsystem/LED Mode", currentRobotState.toString());
+    log("LEDSubsystem/LED Mode", currentRobotState.toString());
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
-      Logger.recordOutput("LEDSubsystem/LED RED", m_color.red);
-      Logger.recordOutput("LEDSubsystem/LED GREEN", m_color.green);
-      Logger.recordOutput("LEDSubsystem/LED BLUE", m_color.blue);
-      Logger.recordOutput("LEDSubsystem/LED WHITE", m_white);
-      Logger.recordOutput("LEDSubsystem/LED SPEED", m_speed);
+      log("LEDSubsystem/LED RED", m_color.red);
+      log("LEDSubsystem/LED GREEN", m_color.green);
+      log("LEDSubsystem/LED BLUE", m_color.blue);
+      log("LEDSubsystem/LED WHITE", m_white);
+      log("LEDSubsystem/LED SPEED", m_speed);
     }
   }
 

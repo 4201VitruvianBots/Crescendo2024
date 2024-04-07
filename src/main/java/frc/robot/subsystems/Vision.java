@@ -16,7 +16,7 @@ import frc.robot.constants.ROBOT;
 import frc.robot.constants.VISION;
 import frc.robot.simulation.FieldSim;
 import java.util.List;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -24,7 +24,7 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements Logged {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
 
   private FieldSim m_fieldSim;
@@ -236,33 +236,30 @@ public class Vision extends SubsystemBase {
 
   private void updateLog() {
     try {
-      Logger.recordOutput("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
-      Logger.recordOutput(
-          "vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
+      log("vision/NoteDetectionLimelight - isNoteDetected", hasGamePieceTarget());
+      log("vision/NoteDetectionLimelight - robotToGamePieceRotation", getRobotToGamePieceDegrees());
 
-      // Logger.recordOutput(
+      // log(
       //     "vision/LimelightA - isCameraConnected", isCameraConnected(aprilTagLimelightCameraA));
       // if (isCameraConnected(aprilTagLimelightCameraA)) {
-      //   Logger.recordOutput(
+      //   log(
       //       "vision/LimelightA - isAprilTagDetected",
       // isAprilTagDetected(aprilTagLimelightCameraA));
-      //   Logger.recordOutput("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
-      //   Logger.recordOutput("vision/limelightA - hasPose", cameraAHasPose);
-      //   Logger.recordOutput("vision/limelightA - EstimatedPose", cameraAEstimatedPose);
+      //   log("vision/limelightA - targets", getTargets(aprilTagLimelightCameraA));
+      //   log("vision/limelightA - hasPose", cameraAHasPose);
+      //   log("vision/limelightA - EstimatedPose", cameraAEstimatedPose);
       // }
 
-      Logger.recordOutput(
-          "vision/LimelightB - isCameraConnected", isCameraConnected(aprilTagLimelightCameraB));
+      log("vision/LimelightB - isCameraConnected", isCameraConnected(aprilTagLimelightCameraB));
       if (isCameraConnected(aprilTagLimelightCameraB)) {
-        Logger.recordOutput(
-            "vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
-        //        Logger.recordOutput("vision/limelightB - targets",
+        log("vision/LimelightB - isAprilTagDetected", isAprilTagDetected(aprilTagLimelightCameraB));
+        //        log("vision/limelightB - targets",
         // getTargets(aprilTagLimelightCameraB));
-        Logger.recordOutput("vision/limelightB - hasPose", cameraBHasPose);
-        Logger.recordOutput("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
+        log("vision/limelightB - hasPose", cameraBHasPose);
+        log("vision/limelightB - EstimatedPose", cameraBEstimatedPose);
       }
 
-      //      Logger.recordOutput("vision/poseAgreement", poseAgreement);
+      //      log("vision/poseAgreement", poseAgreement);
     } catch (Exception e) {
       System.out.println("AdvantageKit could not update Vision logs");
     }

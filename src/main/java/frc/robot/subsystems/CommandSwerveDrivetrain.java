@@ -29,15 +29,15 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import monologue.Logged;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem so it can be used
  * in command-based projects easily.
  */
-public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem, Logged {
   private Vision m_vision;
   private final Alert m_alert = new Alert("SwerveDrivetrain", AlertType.INFO);
 
@@ -90,7 +90,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    m_alert.setText("Swerve Init at: " + Logger.getRealTimestamp());
+    m_alert.setText("Swerve Init at: " + RobotTime.getTime());
     m_alert.set(true);
   }
 
@@ -105,7 +105,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (Utils.isSimulation()) {
       startSimThread();
     }
-    m_alert.setText("Swerve Init at: " + Logger.getTimestamp() * 1.0e-6);
+    m_alert.setText("Swerve Init at: " + RobotTime.getTime());
     m_alert.set(true);
   }
 
@@ -359,22 +359,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Swerve/TrackingState", m_trackingState);
-    Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
-    Logger.recordOutput("Swerve/isShootZone", getZoneState());
+    log("Swerve/TrackingState", m_trackingState.toString());
+    log("Swerve/TargetAngle", m_targetAngle.getDegrees());
+    log("Swerve/isShootZone", getZoneState());
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
-      Logger.recordOutput("Swerve/Gyro", getPigeon2().getYaw().getValue());
-      Logger.recordOutput(
+      log("Swerve/Gyro", getPigeon2().getYaw().getValue());
+      log(
           "Swerve/FrontLeftEncoder",
           Units.rotationsToDegrees(getModule(0).getCANcoder().getAbsolutePosition().getValue()));
-      Logger.recordOutput(
+      log(
           "Swerve/FrontRightEncoder",
           Units.rotationsToDegrees(getModule(1).getCANcoder().getAbsolutePosition().getValue()));
-      Logger.recordOutput(
+      log(
           "Swerve/BackLeftEncoder",
           Units.rotationsToDegrees(getModule(2).getCANcoder().getAbsolutePosition().getValue()));
-      Logger.recordOutput(
+      log(
           "Swerve/BackRightEncoder",
           Units.rotationsToDegrees(getModule(3).getCANcoder().getAbsolutePosition().getValue()));
     }

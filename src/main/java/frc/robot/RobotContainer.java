@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -52,7 +53,6 @@ import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
 import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   private final CommandSwerveDrivetrain m_swerveDrive =
@@ -76,10 +76,8 @@ public class RobotContainer {
   private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
-  private final LoggedDashboardChooser<Command> m_autoChooser =
-      new LoggedDashboardChooser<>("Auto Chooser");
-  private final LoggedDashboardChooser<Command> m_sysidChooser =
-      new LoggedDashboardChooser<>("SysID Chooser");
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> m_sysidChooser = new SendableChooser<>();
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
@@ -281,7 +279,7 @@ public class RobotContainer {
   }
 
   private void initAutoChooser() {
-    m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "OneWaitAuto",
         new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
@@ -328,6 +326,8 @@ public class RobotContainer {
 
     //    m_autoChooser.addOption(
     //        "ScoreSpeakerTesting", new ScoreSpeaker(m_shooter, m_ampShooter, m_intake));
+
+    SmartDashboard.putData("Auto Chooser", m_autoChooser);
   }
 
   private void initSysidChooser() {
@@ -397,18 +397,20 @@ public class RobotContainer {
 
     m_sysidChooser.addOption(
         "ArmQuasistaticReverse", armSysId.quasistatic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("SysID Chooser", m_sysidChooser);
   }
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    if (ROBOT.useSysID) return m_sysidChooser.get();
-    else return m_autoChooser.get();
+    if (ROBOT.useSysID) return m_sysidChooser.getSelected();
+    else return m_autoChooser.getSelected();
   }
 
   public void periodic() {
     try {
       if (DriverStation.isDisabled()) {
-        m_controls.updateStartPose(m_autoChooser.getSendableChooser().getSelected());
+        m_controls.updateStartPose(m_autoChooser.getSelected().getName());
       }
     } catch (Exception e) {
       System.out.println("Got the following Error:");

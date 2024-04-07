@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.littletonrobotics.junction.Logger;
+import monologue.Logged;
 
-public class FieldSim extends SubsystemBase implements AutoCloseable {
+public class FieldSim extends SubsystemBase implements AutoCloseable, Logged {
 
   private final Field2d m_field2d = new Field2d();
 
@@ -31,7 +31,8 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
 
   public void setTrajectory(Trajectory trajectory) {
     m_field2d.getObject("path").setTrajectory(trajectory);
-    Logger.recordOutput("Trajectory/Auto Trajectory", trajectory);
+    // TODO: Reimplement
+    //    log("Trajectory/Auto Trajectory", trajectory);
   }
 
   public void updateRobotPose(Pose2d pose) {

@@ -4,21 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ROBOT;
-import java.io.File;
+import monologue.Logged;
+import monologue.Monologue;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,61 +20,19 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
   public Robot() {
     LiveWindow.disableAllTelemetry();
-    Logger.recordMetadata("ProjectName", "Crescendo2024"); // Set a metadata value
 
-    if (isReal()) {
-      new PowerDistribution(
-          1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
-      try {
-        Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
-      } catch (Exception e) {
-        var alert = new Alert("\nAdvantageKit - Failed to log to USB Drive!", AlertType.WARNING);
-        alert.set(true);
-        e.printStackTrace();
+    boolean fileOnly = false;
+    boolean lazyLogging = false;
+    Monologue.setupMonologue(this, "Crescendo2024", fileOnly, lazyLogging);
 
-        var tempLogDir = new File("/home/lvuser/logs");
-        if (!tempLogDir.exists()) tempLogDir.mkdirs();
-        Logger.addDataReceiver(new WPILOGWriter(tempLogDir.getAbsolutePath()));
-      }
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-    } else {
-      if (ROBOT.useReplayLogs) {
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        Logger.setReplaySource(new WPILOGReader(logPath));
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_replay")));
-      } else {
-        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-
-        // Log simulation output
-        String os = System.getProperty("os.name").toLowerCase();
-        String logDirPath;
-        if (os.contains("win")) {
-          logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "\\logs";
-        } else {
-          logDirPath = Filesystem.getLaunchDirectory().getAbsoluteFile() + "/logs";
-        }
-        var logDir = new File(logDirPath);
-        if (!logDir.exists()) {
-          logDir.mkdir();
-        }
-        Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
-      }
-    }
-
-    // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the
-    // "Understanding Data Flow" page
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
-    // be added.
-
-    var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
+    var alert = new Alert("Logging Started!", AlertType.INFO);
     alert.set(true);
     // Update robot constants based off of robot used
     ROBOT.initConstants();
@@ -113,6 +65,7 @@ public class Robot extends LoggedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
+    Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
