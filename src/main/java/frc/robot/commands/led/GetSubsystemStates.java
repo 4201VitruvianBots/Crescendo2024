@@ -95,12 +95,12 @@ public class GetSubsystemStates extends Command {
     }
 
     //checking if robot is reving and locked onto speaker while there is a game piece in it
-    while(isIntaked) {
-      if (isUnreved) {
+    while(isUnreved) {
+      if (isIntaked) {
         m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 17);
         m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 17);
-      } 
-      else if (isUnreved && isLockedIn) {
+      }
+      else if (isIntaked && isLockedIn) {
         m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 18, 26);
         m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 17);
         m_led.setPattern(LED.turquoise, 0, 0, ANIMATION_TYPE.Larson, 27, 34);
@@ -108,8 +108,8 @@ public class GetSubsystemStates extends Command {
     }
 
     //checking if robot is locked onto speaker while it is reved
-    while (isReved) {
-        if (isLockedIn) {
+    while (isLockedIn) {
+        if (isReved) {
           m_led.setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 17);
           m_led.setPattern(LED.turquoise, 0, 1, ANIMATION_TYPE.Larson, 18, 34);
         }
