@@ -106,7 +106,7 @@ public class AutoFactory {
 
     public Command generateShootCommand() {
       return new AutoRunAmpTakeTwo(
-          m_Intake, 
+          m_Intake,
           m_AmpShooter,
           INTAKE.STATE.FRONT_ROLLER_INTAKING.get(),
           INTAKE.STATE.BACK_ROLLER_INTAKING.get(),

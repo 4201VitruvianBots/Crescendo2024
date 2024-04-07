@@ -152,8 +152,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(
-        new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
     driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
