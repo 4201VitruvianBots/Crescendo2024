@@ -98,7 +98,7 @@ public class GetSubsystemStates extends Command {
     while(isUnreved) {
       if (isIntaked) {
         m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 17);
-        m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 17);
+        m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 18, 34);
       }
       else if (isIntaked && isLockedIn) {
         m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 18, 26);

@@ -149,34 +149,34 @@ public class LEDSubsystem extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case REVED:
-          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 34);
           break;
         case UNREVED:
-          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 0);
+          setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 34);
           break;
         case INTAKED:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 34);
           break;
         case INTAKING:
-          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe, 0, 0);
+          setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe, 0, 34);
           break;
         case ENABLED:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe, 0, 0); // Solid Green
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe, 0, 34); // Solid Green
           break;
         case CLIMBING:
-          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow, 0, 0);
+          setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow, 0, 34);
           break;
         case SETUP_READY:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Solid, 0, 34);
           break;
         case SETUP_LOCALIZED:
-          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Solid, 0, 0);
+          setPattern(LED.white, 0, 0, ANIMATION_TYPE.Solid, 0, 34);
           break;
         case DISABLED:
-          setPattern(LED.red, 0, 0.125, ANIMATION_TYPE.ColorFlowLong, 0, 0); // Solid Red
+          setPattern(LED.red, 0, 0.125, ANIMATION_TYPE.ColorFlowLong, 0, 34); // Solid Red
           break;
         case LOCKED_IN:
-          setPattern(LED.turquoise, 0, 1, ANIMATION_TYPE.Larson, 0, 0);
+          setPattern(LED.turquoise, 0, 1, ANIMATION_TYPE.Larson, 0, 34);
           break;
         default:
           break;
