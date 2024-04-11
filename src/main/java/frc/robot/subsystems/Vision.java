@@ -48,7 +48,6 @@ public class Vision extends SubsystemBase {
           PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
           aprilTagLimelightCameraB,
           VISION.robotToAprilTagLimelightCameraB);
-
   private VisionSystemSim visionSim;
   // private PhotonCameraSim aprilTagLimelightCameraASim;
   private PhotonCameraSim aprilTagLimelightCameraBSim;
@@ -216,7 +215,7 @@ public class Vision extends SubsystemBase {
                 .plus(
                     Rotation2d.fromRadians(
                         Math.asin(
-                            ((VelocityY * PositionX + (VelocityX * 0.2) * PositionY))
+                            (((VelocityY * 0.85) * PositionX + (VelocityX * 0.2) * PositionY))
                                 / (newDist * 5)))));
       }
     }

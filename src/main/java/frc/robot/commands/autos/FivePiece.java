@@ -47,7 +47,7 @@ public class FivePiece extends SequentialCommandGroup {
                 new AutoSetTrackingState(swerveDrive, VISION.TRACKING_STATE.SPEAKER)), // path1
         shooterFactory.generateShootCommand().withTimeout(2.5),
         pathFactory.getNextPathCommand().alongWith(intakeFactory.generateIntakeCommand()), // path2
-        shooterFactory.generateShootCommand().withTimeout(1.5),
+        shooterFactory.generateShootCommand().withTimeout(2.25),
         pathFactory
             .getNextPathCommand()
             .alongWith(
@@ -56,9 +56,9 @@ public class FivePiece extends SequentialCommandGroup {
         pathFactory
             .getNextPathCommand()
             .alongWith(new AutoSetTrackingState(swerveDrive, TRACKING_STATE.SPEAKER)), // path4
-        shooterFactory.generateShootCommand().withTimeout(1.5),
+        shooterFactory.generateShootCommand().withTimeout(2.0),
         pathFactory.getNextPathCommand().alongWith(intakeFactory.generateIntakeCommand()),
-        shooterFactory.generateShootCommand().withTimeout(1.5),
+        shooterFactory.generateShootCommand().withTimeout(2.0),
         pathFactory
             .getNextPathCommand()
             .alongWith(

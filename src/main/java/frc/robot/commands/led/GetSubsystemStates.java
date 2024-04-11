@@ -38,6 +38,7 @@ public class GetSubsystemStates extends Command {
     m_intake = intake;
     m_climber = climber;
     // m_arm = arm;
+    m_SwerveDrivetrain = swerveDrive;
     m_shooter = shooter;
     m_vision = vision;
     m_swerveDrive = swerve;

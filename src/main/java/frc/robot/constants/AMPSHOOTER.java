@@ -33,7 +33,8 @@ public final class AMPSHOOTER {
     REVERSE_SLOW(-0.1),
     NONE(0),
     INTAKING_SLOW(0.1),
-    INTAKING(0.6),
+    INTAKING(0.5),
+    AUTOINTAKING(0.3),
     INTAKING1(0.85),
     SHOOTING(0.75);
     private final double value;
