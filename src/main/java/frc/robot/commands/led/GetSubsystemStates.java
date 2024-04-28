@@ -81,23 +81,23 @@ public class GetSubsystemStates extends Command {
     // highest priority
     // if (isClimbing) {
     //   m_led.expressState(LED.SUBSYSTEM_STATES.CLIMBING);
-   
+
     if (isDisabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
-    }
-       else if (isUnreved || isReved) {
+    } else if (isUnreved || isReved) {
       m_led.expressState(LED.SUBSYSTEM_STATES.UNREVED);
     } else if (isIntaked) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKED);
     } else if (isIntaking) {
       m_led.expressState(LED.SUBSYSTEM_STATES.INTAKING);
     } else if (isEnabled) {
-      m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);}
-      // } else if (isSetup) {
-      //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
-      // } else if (isLocalized) {
-      //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
-    
+      m_led.expressState(LED.SUBSYSTEM_STATES.ENABLED);
+    }
+    // } else if (isSetup) {
+    //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_READY);
+    // } else if (isLocalized) {
+    //   m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
+
   }
 
   // Called once the command ends or is interrupted.

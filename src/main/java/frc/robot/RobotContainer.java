@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ampShooter.RunAmpSensored;
-import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.commands.arm.ToggleArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
@@ -32,11 +31,9 @@ import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.intake.AmpOuttake;
-import frc.robot.commands.intake.AutoRunAmpTakeTwo;
 import frc.robot.commands.led.GetSubsystemStates;
-import frc.robot.commands.shooter.AutoScore;
-import frc.robot.commands.shooter.AutoSetRPMSetpoint;
 import frc.robot.commands.shooter.RunKicker;
+import frc.robot.commands.shooter.SetShooterRAB;
 import frc.robot.commands.shooter.SetShooterRPMSetpoint;
 import frc.robot.constants.*;
 import frc.robot.constants.AMPSHOOTER.STATE;
@@ -122,18 +119,16 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      (-xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond)*0.35,
-                      (-xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond)*0.35
-                      
-                      ,
-                      (-xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)*0.65)));
+                      /* (-xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond)*0.35 */ 0,
+                      /* (-xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond)*0.35 */ 0,
+                      (-xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond) * 0.65)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
+                      /* -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond */ 0,
+                      /* m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond */ 0,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
 
       m_testController
@@ -183,48 +178,43 @@ public class RobotContainer {
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
 
+    // xboxController
+    //     .b()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter,
+    //             xboxController,
+    //             RPM_SETPOINT.SLOW.get(),
+    //             RPM_SETPOINT.SLOW.get())); // fast speaker
+    // xboxController
+    //     .x()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter,
+    //             xboxController,
+    //             RPM_SETPOINT.SLOW2.get(),
+    //             RPM_SETPOINT.SLOW2.get())); // fast speaker
+
+    //     xboxController
+    //     .y()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter,
+    //             xboxController,
+    //             RPM_SETPOINT.SLOW3.get(),
+    //             RPM_SETPOINT.SLOW3.get())); // fast speaker
+
+    xboxController
+        .rightTrigger(0.05)
+        .whileTrue(
+            new SetShooterRAB(
+                m_shooter,
+                xboxController::getRightTriggerAxis,
+                RPM_SETPOINT.SLOW.get(),
+                () -> 0.8));
+
     xboxController
         .b()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter,
-                xboxController,
-                RPM_SETPOINT.SLOW.get(),
-                RPM_SETPOINT.SLOW.get())); // fast speaker
-    xboxController
-        .x()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter,
-                xboxController,
-                RPM_SETPOINT.SLOW2.get(),
-                RPM_SETPOINT.SLOW2.get())); // fast speaker
-
-        xboxController
-        .y()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter,
-                xboxController,
-                RPM_SETPOINT.SLOW3.get(),
-                RPM_SETPOINT.SLOW3.get())); // fast speaker
-
-    
-    
-    // xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
-
-    xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
-   
-
-    // toggles the climb sequence when presses and cuts the command when pressed again
-    //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
-
-    // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
-
-    xboxController
-        .rightTrigger()
         .whileTrue(
             new RunKicker(
                 m_intake,
@@ -233,6 +223,28 @@ public class RobotContainer {
                 0.75,
                 m_ampShooter,
                 AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
+
+    // xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
+    // xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
+
+    // toggles the climb sequence when presses and cuts the command when pressed again
+    //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
+    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
+
+    // switch between open loop and close loop
+    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
+
+    // xboxController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         new RunKicker(
+    //             m_intake,
+    //             m_shooter,
+    //             0.55,
+    //             0.75,
+    //             m_ampShooter,
+    //             AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
     xboxController
         .leftTrigger()
         .whileTrue(
@@ -313,7 +325,8 @@ public class RobotContainer {
         new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
     // m_autoChooser.addOption(
-    //     "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
+    //     "SOTMTest", new SOTMAutoTest(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter,
+    // m_shooter));
     // Test autos
     m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
 

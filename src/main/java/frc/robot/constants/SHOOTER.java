@@ -57,9 +57,9 @@ public final class SHOOTER {
     NONE(0),
 
     SLOW(3000),
-    
+
     SLOW2(1750),
-    
+
     SLOW3(4500),
 
     SPEAKERBOTTOM(8000),

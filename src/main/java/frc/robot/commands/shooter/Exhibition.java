@@ -1,10 +1,6 @@
 package frc.robot.commands.shooter;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.SHOOTER;
 import frc.robot.subsystems.AmpShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -17,7 +13,6 @@ public class Exhibition extends Command {
   private final double m_RPMOutput;
   private final double m_FrontIntakePercentOutput;
   private final double m_BackIntakeAmpPercentOutput;
-
 
   public Exhibition(
       Shooter shooter,
@@ -39,23 +34,16 @@ public class Exhibition extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
     m_shooter.setRPMOutput(m_RPMOutput);
-      m_ampShooter.setPercentOutput(m_AmpPercentOutput);
-        m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
-    
-  
+    m_ampShooter.setPercentOutput(m_AmpPercentOutput);
+    m_intake.setSpeed(m_FrontIntakePercentOutput, m_BackIntakeAmpPercentOutput);
 
+    // attempt shot even though RPM is low
 
-
-      // attempt shot even though RPM is low
-
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
