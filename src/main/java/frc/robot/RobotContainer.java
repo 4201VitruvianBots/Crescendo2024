@@ -210,7 +210,8 @@ public class RobotContainer {
             new SetShooterRAB(
                 m_shooter,
                 xboxController::getRightTriggerAxis,
-                RPM_SETPOINT.SLOW.get(),
+                RPM_SETPOINT.MIN_RAB.get(),
+                RPM_SETPOINT.MAX_RAB.get(),
                 () -> 0.8));
 
     xboxController

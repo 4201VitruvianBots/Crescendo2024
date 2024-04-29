@@ -62,6 +62,9 @@ public final class SHOOTER {
 
     SLOW3(4500),
 
+    MIN_RAB(1000),
+    MAX_RAB(3000),
+
     SPEAKERBOTTOM(8000),
     SPEAKERTOP(6000),
 
