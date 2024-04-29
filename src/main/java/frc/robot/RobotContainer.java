@@ -212,10 +212,10 @@ public class RobotContainer {
                 xboxController::getRightTriggerAxis,
                 RPM_SETPOINT.MIN_RAB.get(),
                 RPM_SETPOINT.MAX_RAB.get(),
-                () -> 0.8));
+                () -> 0.8)); // Rev up shooter
 
     xboxController
-        .b()
+        .leftTrigger()
         .whileTrue(
             new RunKicker(
                 m_intake,
@@ -223,7 +223,17 @@ public class RobotContainer {
                 0.55,
                 0.75,
                 m_ampShooter,
-                AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
+                AMPSHOOTER.STATE.SHOOTING.get())); // Shoot!
+    
+    xboxController
+        .b()
+        .whileTrue(
+            new AmpIntake(
+                m_intake,
+                INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
+                INTAKE.STATE.BACK_SLOW_INTAKING.get(),
+                m_ampShooter,
+                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Slowly intake note
 
     // xboxController.b().whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
@@ -231,10 +241,10 @@ public class RobotContainer {
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
+    // xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
 
     // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
+    // xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
 
     // xboxController
     //     .rightTrigger()
@@ -246,54 +256,44 @@ public class RobotContainer {
     //             0.75,
     //             m_ampShooter,
     //             AMPSHOOTER.STATE.SHOOTING.get())); // Intake Note with Intake And Amp
-    xboxController
-        .leftTrigger()
-        .whileTrue(
-            new AmpIntake(
-                m_intake, 0.55, 0.80, m_ampShooter, 0.4)); // Outtake Note with Intake And Amp
+    // xboxController
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new AmpIntake(
+    //             m_intake, 0.55, 0.80, m_ampShooter, 0.4)); // Outtake Note with Intake And Amp
 
-    xboxController
-        .leftBumper()
-        .whileTrue(
-            new AmpOuttake(
-                m_intake,
-                INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
-                INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
-                m_ampShooter,
-                AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
-    xboxController
-        .rightBumper()
-        .whileTrue(
-            new RunAmpSensored(
-                m_ampShooter,
-                m_intake,
-                AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
+    // xboxController
+    //     .leftBumper()
+    //     .whileTrue(
+    //         new AmpOuttake(
+    //             m_intake,
+    //             INTAKE.STATE.FRONT_ROLLER_REVERSE.get(),
+    //             INTAKE.STATE.BACK_ROLLER_REVERSE.get(),
+    //             m_ampShooter,
+    //             AMPSHOOTER.STATE.REVERSE.get())); // Intake Note with Only Intake
+    // xboxController
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new RunAmpSensored(
+    //             m_ampShooter,
+    //             m_intake,
+    //             AMPSHOOTER.STATE.REVERSE_SLOW.get())); // Intake Note with Only Intake
 
-    xboxController
-        .povLeft()
-        .whileTrue(
-            new SetShooterRPMSetpoint(
-                m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
+    // xboxController
+    //     .povLeft()
+    //     .whileTrue(
+    //         new SetShooterRPMSetpoint(
+    //             m_shooter, xboxController, RPM_SETPOINT.REVERSE.get(), RPM_SETPOINT.REVERSE.get()));
 
-    xboxController
-        .povDown()
-        .whileTrue(
-            new AmpIntake(
-                m_intake,
-                INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
-                INTAKE.STATE.BACK_SLOW_REVERSE.get(),
-                m_ampShooter,
-                STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
-
-    xboxController
-        .povUp()
-        .whileTrue(
-            new AmpIntake(
-                m_intake,
-                INTAKE.STATE.FRONT_SLOW_INTAKING.get(),
-                INTAKE.STATE.BACK_SLOW_INTAKING.get(),
-                m_ampShooter,
-                AMPSHOOTER.STATE.INTAKING_SLOW.get())); // Intake Note with Only Amp
+    // xboxController
+    //     .povDown()
+    //     .whileTrue(
+    //         new AmpIntake(
+    //             m_intake,
+    //             INTAKE.STATE.FRONT_SLOW_REVERSE.get(),
+    //             INTAKE.STATE.BACK_SLOW_REVERSE.get(),
+    //             m_ampShooter,
+    //             STATE.REVERSE_SLOW.get())); // Intake Note with Only Amp
   }
 
   private void initSmartDashboard() {
