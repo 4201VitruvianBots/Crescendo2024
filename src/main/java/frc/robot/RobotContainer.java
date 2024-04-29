@@ -121,7 +121,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       /* (-xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond)*0.35 */ 0,
                       /* (-xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond)*0.35 */ 0,
-                      (-xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond) * 0.65)));
+                      (-xboxController.getLeftX() * DRIVE.kMaxRotationRadiansPerSecond) * 0.65)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -129,7 +129,7 @@ public class RobotContainer {
                   new ChassisSpeeds(
                       /* -m_testController.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond */ 0,
                       /* m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond */ 0,
-                      -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      -m_testController.getRawAxis(1) * DRIVE.kMaxRotationRadiansPerSecond)));
 
       m_testController
           .cross()
