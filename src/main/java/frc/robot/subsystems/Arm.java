@@ -131,8 +131,7 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putData(this);
   }
-
-  // Get the percent output of the arm motor.
+  
   public void setPercentOutput(double speed) {
     m_armMotor.set(speed);
   }
@@ -162,7 +161,7 @@ public class Arm extends SubsystemBase {
     return Units.rotationsToDegrees(getCurrentRotation());
   }
 
-  public double getCANcoderAngle() {
+  private double getCANcoderAngle() {
     return m_armEncoder.getAbsolutePosition().getValueAsDouble() * 360;
   }
 
@@ -182,7 +181,7 @@ public class Arm extends SubsystemBase {
     return m_controlMode;
   }
 
-  public void resetSensorPositionHome() {
+  public void resetSensorPosition() {
     resetSensorPosition(ARM.startingAngleDegrees);
   }
 
@@ -200,25 +199,14 @@ public class Arm extends SubsystemBase {
     return m_armMotor;
   }
 
-  public SingleJointedArmSim getSim() {
-    return m_armSim;
-  }
-
-  public double getInputVoltage() {
-    return m_armMotor.getMotorVoltage().getValue();
-  }
-
-  public double getRotationalVelocity() {
-    return m_armMotor.getVelocity().getValue();
-  }
-
   private void updateLogger() {
+    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
     Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
     Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
     Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
     Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
     Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
-    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
+    if (RobotBase.isSimulation()) Logger.recordOutput("Arm/ModelAngle", Units.radiansToDegrees(m_armSim.getAngleRads()));
   }
 
   public void testInit() {
@@ -288,27 +276,26 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     switch (m_controlMode) {
       case CLOSED_LOOP:
-        // This method will be called once per scheduler run
-        // periodic, update the profile setpoint for 20 ms loop time
+        /* This method will be called once per scheduler run
+           periodic, update the profile setpoint for 20 ms loop time */
         if (DriverStation.isEnabled())
           m_armMotor.setControl(m_request.withPosition(m_desiredRotations));
         break;
       default:
       case OPEN_LOOP:
-        if (DriverStation.isDisabled()) {
+        if (DriverStation.isDisabled()) 
           setPercentOutput(0.0);
-        }
         break;
     }
-
+    
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override
   public void simulationPeriodic() {
-    //    // Set supply voltage of flipper motor
     m_simState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     m_armSim.setInputVoltage(MathUtil.clamp(m_simState.getMotorVoltage(), -12, 12));
@@ -323,7 +310,5 @@ public class Arm extends SubsystemBase {
 
     m_armEncoderSimState.setRawPosition(Units.radiansToRotations(m_armSim.getAngleRads()));
     m_armEncoderSimState.setVelocity(Units.radiansToRotations(m_armSim.getVelocityRadPerSec()));
-
-    Logger.recordOutput("Arm/Model Angle", Units.radiansToDegrees(m_armSim.getAngleRads()));
   }
 }

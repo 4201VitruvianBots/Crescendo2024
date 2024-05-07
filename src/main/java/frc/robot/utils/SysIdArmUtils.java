@@ -39,10 +39,10 @@ public class SysIdArmUtils {
             },
             log -> {
               log.motor("armMotor")
-                  .voltage(m_appliedVoltage.mut_replace(arm.getInputVoltage(), Volts))
+                  .voltage(m_appliedVoltage.mut_replace(arm.getMotor().getMotorVoltage().getValue(), Volts))
                   .angularPosition(m_angle.mut_replace(arm.getCurrentRotation(), Rotations))
                   .angularVelocity(
-                      m_velocity.mut_replace(arm.getRotationalVelocity(), RotationsPerSecond));
+                      m_velocity.mut_replace(arm.getMotor().getVelocity().getValue(), RotationsPerSecond));
             },
             arm));
   }
