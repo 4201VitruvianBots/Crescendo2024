@@ -7,7 +7,6 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LED;
-import frc.robot.constants.LED.ANIMATION_TYPE;
 import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.subsystems.*;
 
@@ -33,12 +32,16 @@ public class GetSubsystemStates extends Command {
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(
-      LEDSubsystem led, Intake intake, Climber climber, Shooter shooter, Vision vision, CommandSwerveDrivetrain swerve) {
+      LEDSubsystem led,
+      Intake intake,
+      Climber climber,
+      Shooter shooter,
+      Vision vision,
+      CommandSwerveDrivetrain swerve) {
     m_led = led;
     m_intake = intake;
     m_climber = climber;
     // m_arm = arm;
-    m_SwerveDrivetrain = swerveDrive;
     m_shooter = shooter;
     m_vision = vision;
     m_swerveDrive = swerve;
@@ -68,7 +71,6 @@ public class GetSubsystemStates extends Command {
     isSetup = Controls.getInitState();
     isLocalized = m_vision.getInitialLocalization();
     isDisabled = DriverStation.isDisabled();
-    
 
     // the prioritized state to be expressed to the LEDs
     // set in order of priority to be expressed from the least priority to the
@@ -93,27 +95,6 @@ public class GetSubsystemStates extends Command {
       m_led.expressState(LED.SUBSYSTEM_STATES.SETUP_LOCALIZED);
     } else if (isDisabled) {
       m_led.expressState(LED.SUBSYSTEM_STATES.DISABLED);
-    }
-
-    //checking if robot is reving and locked onto speaker while there is a game piece in it
-    while(isUnreved) {
-      if (isIntaked) {
-        m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 0, 17);
-        m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 18, 34);
-      }
-      else if (isIntaked && isLockedIn) {
-        m_led.setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Solid, 18, 26);
-        m_led.setPattern(LED.white, 125, 0.5, ANIMATION_TYPE.ColorFlow, 0, 17);
-        m_led.setPattern(LED.turquoise, 0, 0, ANIMATION_TYPE.Larson, 27, 34);
-      }
-    }
-
-    //checking if robot is locked onto speaker while it is reved
-    while (isLockedIn) {
-        if (isReved) {
-          m_led.setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 17);
-          m_led.setPattern(LED.turquoise, 0, 1, ANIMATION_TYPE.Larson, 18, 34);
-        }
     }
   }
 
