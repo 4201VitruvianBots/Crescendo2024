@@ -73,14 +73,15 @@ public class LEDSubsystem extends SubsystemBase {
 
   /**
    * The method to create a singular or multiple LED patterns on the CANdle
-   * 
-   * @param color what color to set on the LEDs (to add or check the list of available colors, see LED constants)
+   *
+   * @param color what color to set on the LEDs (to add or check the list of available colors, see
+   *     LED constants)
    * @param white how much white to set on the LEDs
    * @param speed the animation speed of the LEDs
    * @param toChange what animation to set on the LEDs
    * @param start where to start on the LED strip
    * @param end where to end on the LED strip
-  */
+   */
   public void setPattern(
       Color8Bit color, int white, double speed, ANIMATION_TYPE toChange, int start, int end) {
     m_color = color;
@@ -153,16 +154,17 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
-  /** Will set LEDs a coordinated color for an action and a simpler way to define the states' 
-   * patterns. To add more than one pattern, another declaration of the setPattern() method is needed.
-   * 
-   * <p> NOTICE: The candle can only play one animation at a time. It will refer to the last
-   * instance of setPattern() and default to the animation set in the call; the rest of the
-   * defined patterns will be set to the solid animation.
-   * 
-   * 
+  /**
+   * Will set LEDs a coordinated color for an action and a simpler way to define the states'
+   * patterns. To add more than one pattern, another declaration of the setPattern() method is
+   * needed.
+   *
+   * <p>NOTICE: The candle can only play one animation at a time. It will refer to the last instance
+   * of setPattern() and default to the animation set in the call; the rest of the defined patterns
+   * will be set to the solid animation.
+   *
    * @param state the current robot state (to add or check check listed states, go to LED constants)
-  */
+   */
   public void expressState(SUBSYSTEM_STATES state) {
     if (state != currentRobotState) {
       switch (state) {
@@ -179,7 +181,8 @@ public class LEDSubsystem extends SubsystemBase {
           setPattern(LED.orange, 0, 0, ANIMATION_TYPE.Strobe, 0, 34);
           break;
         case ENABLED:
-          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe, 0, 34); // Solid Green
+          setPattern(LED.blue, 0, 0, ANIMATION_TYPE.Solid, 0, 16); // Solid Green
+          setPattern(LED.green, 0, 0, ANIMATION_TYPE.Strobe, 17, 34); // Solid Green
           break;
         case CLIMBING:
           setPattern(LED.purple, 0, 0, ANIMATION_TYPE.Rainbow, 0, 34);
