@@ -8,7 +8,6 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.ampShooter.RunAmpSensored;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
@@ -81,8 +79,10 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> m_sysidChooser =
       new LoggedDashboardChooser<>("SysID Chooser");
 
-  private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
-  private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
+  //   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
+  //   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
+  private final CommandXboxController driveController =
+      new CommandXboxController(USB.driveController);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final CommandPS4Controller m_testController =
@@ -124,9 +124,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      leftJoystick.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
-                      leftJoystick.getRawAxis(0) * DRIVE.kMaxSpeedMetersPerSecond,
-                      rightJoystick.getRawAxis(0) * DRIVE.kMaxRotationRadiansPerSecond)));
+                      driveController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
+                      driveController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
+                      driveController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -151,17 +151,17 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
-    driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
+    // var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
+    // driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
-    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
-    driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
+    // var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
+    // driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
@@ -181,6 +181,10 @@ public class RobotContainer {
     //            INTAKE.STATE.BACK_ROLLER_INTAKING.get(),
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
+
+    driveController
+        .rightTrigger()
+        .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     xboxController
         .b()
