@@ -3,7 +3,7 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.arm.AutoArmSetpoints;
+import frc.robot.commands.arm.ArmSetpoint;
 import frc.robot.constants.ARM;
 import frc.robot.constants.CLIMBER.CLIMBER_SETPOINT;
 import frc.robot.subsystems.AmpShooter;
@@ -22,7 +22,7 @@ public class AutoClimbSequence extends SequentialCommandGroup {
         // to make room for climber to climb and extend the climber
         new ParallelCommandGroup(
             // new DriveEndgame(swerveDrive).withTimeout(2),
-            new AutoArmSetpoints(arm, ARM.ARM_SETPOINT.FORWARD),
+            new ArmSetpoint(arm, ARM.ARM_SETPOINT.FORWARD, true),
             new WaitCommand(1),
             new SetClimberSetpoint(climber, CLIMBER_SETPOINT.EXTEND)));
 

@@ -15,14 +15,12 @@ import java.util.function.DoubleSupplier;
 public class ArmJoystick extends Command {
   /** Creates a new ArmForward. */
   private final Arm m_arm;
-
   private final DoubleSupplier m_output;
 
   public ArmJoystick(Arm arm, DoubleSupplier output) {
     m_arm = arm;
     m_output = output;
-
-    // Use addRequirements() here to declare subsystem dependencies.
+    
     addRequirements(m_arm);
   }
 

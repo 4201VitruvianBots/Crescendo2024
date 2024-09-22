@@ -11,21 +11,26 @@ import frc.robot.subsystems.Arm;
 
 public class ArmSetpoint extends Command {
   private final Arm m_arm;
-  private final ARM.ARM_SETPOINT m_setpoint;
+  private final ARM_SETPOINT m_setpoint;
+  private boolean m_auto;
 
-  /** Creates a new ArmForward. */
-  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint) {
+  /** Creates a new ArmSetpoint. */
+  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint, boolean auto) {
     m_arm = arm;
     m_setpoint = setpoint;
-
-    // Use addRequirements() here to declare subsystem dependencies.
+    m_auto = auto;
+    
     addRequirements(m_arm);
+  }
+  
+  /** Creates a new ArmSetpoint in teleop. */
+  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint) {
+    this(arm, setpoint, false);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_arm.setArmState(true);
     m_arm.setDesiredSetpointRotations(m_setpoint.get());
   }
 
@@ -36,13 +41,12 @@ public class ArmSetpoint extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
-    // m_arm.setArmState(false);
+    if (!m_auto) m_arm.setDesiredSetpointRotations(ARM.ARM_SETPOINT.STOWED.get());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_auto;
   }
 }

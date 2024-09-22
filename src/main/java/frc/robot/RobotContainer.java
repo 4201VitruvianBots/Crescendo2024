@@ -22,7 +22,7 @@ import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.ampShooter.RunAmpSensored;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
-import frc.robot.commands.arm.ToggleArmControlMode;
+import frc.robot.commands.arm.ArmControlMode;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
@@ -206,7 +206,7 @@ public class RobotContainer {
     xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
 
     // switch between open loop and close loop
-    xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
+    xboxController.start().onTrue(new ArmControlMode(m_arm)); // Right Button
 
     xboxController
         .rightTrigger()
