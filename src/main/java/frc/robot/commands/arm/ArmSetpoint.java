@@ -4,6 +4,7 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ARM;
 import frc.robot.constants.ARM.ARM_SETPOINT;
@@ -15,17 +16,12 @@ public class ArmSetpoint extends Command {
   private boolean m_auto;
 
   /** Creates a new ArmSetpoint. */
-  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint, boolean auto) {
+  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint) {
     m_arm = arm;
     m_setpoint = setpoint;
-    m_auto = auto;
+    m_auto = DriverStation.isAutonomous();
     
     addRequirements(m_arm);
-  }
-  
-  /** Creates a new ArmSetpoint in teleop. */
-  public ArmSetpoint(Arm arm, ARM_SETPOINT setpoint) {
-    this(arm, setpoint, false);
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +32,9 @@ public class ArmSetpoint extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_auto = DriverStation.isAutonomous();
+  }
 
   // Called once the command ends or is interrupted.
   @Override

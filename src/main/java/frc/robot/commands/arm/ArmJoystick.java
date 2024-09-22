@@ -13,10 +13,10 @@ import frc.robot.subsystems.Arm;
 import java.util.function.DoubleSupplier;
 
 public class ArmJoystick extends Command {
-  /** Creates a new ArmForward. */
   private final Arm m_arm;
   private final DoubleSupplier m_output;
 
+  /** Creates a new ArmJoystick. */
   public ArmJoystick(Arm arm, DoubleSupplier output) {
     m_arm = arm;
     m_output = output;

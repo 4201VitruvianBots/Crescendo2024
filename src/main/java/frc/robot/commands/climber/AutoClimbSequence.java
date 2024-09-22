@@ -22,7 +22,7 @@ public class AutoClimbSequence extends SequentialCommandGroup {
         // to make room for climber to climb and extend the climber
         new ParallelCommandGroup(
             // new DriveEndgame(swerveDrive).withTimeout(2),
-            new ArmSetpoint(arm, ARM.ARM_SETPOINT.FORWARD, true),
+            new ArmSetpoint(arm, ARM.ARM_SETPOINT.FORWARD),
             new WaitCommand(1),
             new SetClimberSetpoint(climber, CLIMBER_SETPOINT.EXTEND)));
 

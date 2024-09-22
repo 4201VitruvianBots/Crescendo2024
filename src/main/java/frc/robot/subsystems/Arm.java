@@ -37,7 +37,6 @@ import frc.robot.utils.CtreUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-  /** Creates a new Arm. */
   private final TalonFX m_armMotor = new TalonFX(CAN.armMotor);
 
   private final TalonFXSimState m_simState = m_armMotor.getSimState();
@@ -83,6 +82,7 @@ public class Arm extends SubsystemBase {
   private final NetworkTable armTab =
       NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Arm");
 
+  /** Creates a new Arm. */
   public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -276,7 +276,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
     switch (m_controlMode) {
       case CLOSED_LOOP:
         /* This method will be called once per scheduler run
