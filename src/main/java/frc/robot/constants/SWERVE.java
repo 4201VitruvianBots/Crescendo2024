@@ -43,8 +43,13 @@ public final class SWERVE {
     public static double kFrontLeftEncoderOffset = 0.219970703125;
     public static double kFrontRightEncoderOffset = 0.265380859375;
     public static double kBackLeftEncoderOffset = -0.046875;
-    public static double kBackRightEncoderOffset = 0.328125;
-
+    public static double kBackRightEncoderOffset = 0.315286;
+    // testing offsets
+    // public static double kFrontLeftEncoderOffset = -0.27001953125;
+    // public static double kFrontRightEncoderOffset = 0.456787109375;
+    // public static double kBackLeftEncoderOffset = 0.456787109375;
+    // public static double kBackRightEncoderOffset = -0.175048828125;
+    
     public static final boolean[] kTurnInversions = {true, false, false, false};
     public static final boolean[] kDriveInversions = {false, false, false, true};
 

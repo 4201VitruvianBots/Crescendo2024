@@ -11,10 +11,10 @@ import frc.robot.subsystems.*;
 
 public class GetSubsystemStates extends Command {
   private final LEDSubsystem m_led;
-  private final Climber m_climber;
+//   private final Climber m_climber;
   private final Intake m_intake;
   private final Shooter m_shooter;
-  private final Vision m_vision;
+//   private final Vision m_vision;
   private final CommandSwerveDrivetrain m_SwerveDrivetrain;
   // private final Arm m_arm;
 
@@ -39,11 +39,11 @@ public class GetSubsystemStates extends Command {
       CommandSwerveDrivetrain swerveDrive) {
     m_led = led;
     m_intake = intake;
-    m_climber = climber;
+    //m_climber = climber;
     // m_arm = arm;
     m_SwerveDrivetrain = swerveDrive;
     m_shooter = shooter;
-    m_vision = vision;
+    //m_vision = vision;
 
     addRequirements(m_led);
   }
@@ -60,7 +60,7 @@ public class GetSubsystemStates extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    isClimbing = m_climber.getClimbState();
+    //isClimbing = m_climber.getClimbState();
 
     isLocked = m_SwerveDrivetrain.isTrackingState();
 
@@ -70,7 +70,7 @@ public class GetSubsystemStates extends Command {
     isIntaking = m_intake.getIntakeState(); // Done
     isEnabled = DriverStation.isEnabled();
     isSetup = Controls.getInitState();
-    isLocalized = m_vision.getInitialLocalization();
+    //isLocalized = m_vision.getInitialLocalization();
     isDisabled = DriverStation.isDisabled(); // Done
     // after it's done.
     // isArmScoring = m_arm.getArmState(); // Done
