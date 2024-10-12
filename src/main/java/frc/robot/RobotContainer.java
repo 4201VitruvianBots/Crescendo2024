@@ -78,8 +78,8 @@ public class RobotContainer {
 
   //   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   //   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
-  private final CommandXboxController driveController =
-      new CommandXboxController(USB.driveController);
+//   private final CommandXboxController driveController =
+//       new CommandXboxController(USB.driveController);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final CommandPS4Controller m_testController =
@@ -121,9 +121,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      driveController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
-                      driveController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
-                      driveController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
+                      xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
+                      xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
+                      xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -140,7 +140,7 @@ public class RobotContainer {
 
     // Default command to decelerate the flywheel if no other command is set
     //    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
-    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    // m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     // m_climber.setDefaultCommand(
     //     new RunClimberJoystick(null, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
