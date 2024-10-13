@@ -58,7 +58,7 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
 //   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+  //private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
@@ -78,8 +78,8 @@ public class RobotContainer {
 
   //   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   //   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
-//   private final CommandXboxController driveController =
-//       new CommandXboxController(USB.driveController);
+  private final CommandXboxController driveController =
+      new CommandXboxController(USB.driveController);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final CommandPS4Controller m_testController =
@@ -89,13 +89,13 @@ public class RobotContainer {
 
   public RobotContainer() {
     // m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
-    m_swerveDrive.registerVisionSubsystem(m_vision);
+    //m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    // m_vision.registerSwerveDrive(m_swerveDrive);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
-    m_controls.registerVision(m_vision);
+    //m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
@@ -110,7 +110,7 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       // m_visualizer.registerClimber(m_climber);
-      m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerVision(m_vision);
       m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -121,9 +121,9 @@ public class RobotContainer {
           m_swerveDrive.applyChassisSpeeds(
               () ->
                   new ChassisSpeeds(
-                      xboxController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
-                      xboxController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
-                      -xboxController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
+                      driveController.getLeftY() * DRIVE.kMaxSpeedMetersPerSecond,
+                      driveController.getLeftX() * DRIVE.kMaxSpeedMetersPerSecond,
+                      -driveController.getRightX() * DRIVE.kMaxRotationRadiansPerSecond)));
     } else {
       m_swerveDrive.setDefaultCommand(
           m_swerveDrive.applyChassisSpeeds(
@@ -140,11 +140,11 @@ public class RobotContainer {
 
     // Default command to decelerate the flywheel if no other command is set
     //    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
-    // m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
+    m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
     // m_climber.setDefaultCommand(
     //     new RunClimberJoystick(null, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, null, m_shooter, m_vision, m_swerveDrive));
+        new GetSubsystemStates(m_led, m_intake, null, m_shooter, null, m_swerveDrive));
   }
 
   private void configureBindings() {
@@ -179,9 +179,9 @@ public class RobotContainer {
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
 
-    // xboxController
-    //     .rightTrigger()
-    //     .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    driveController
+        .rightTrigger()
+        .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
     xboxController
         .b()

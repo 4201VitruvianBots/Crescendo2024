@@ -70,13 +70,13 @@ public class AmpShooter extends SubsystemBase {
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
 
     if (m_intake != null) {
-      if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
+      //if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
         if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
           setPercentOutput(0);
         } else {
           setPercentOutput(m_ampAutoPercentOutput);
         }
-      }
+      //}
     }
   }
 
