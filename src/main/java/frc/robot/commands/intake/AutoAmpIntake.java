@@ -34,9 +34,9 @@ public class AutoAmpIntake extends Command {
     if ((m_intake.checkEitherIntakeSensorActive())) {
 
       m_intake.setSpeed(m_speed, m_speed2);
-      m_ampShooter.setAutoPercentOutput(m_ampSpeed);
+      m_ampShooter.setPercentOutput(m_ampSpeed);
     } else m_intake.setSpeed(m_speed, m_speed2);
-    m_ampShooter.setAutoPercentOutput(0);
+    m_ampShooter.setPercentOutput(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

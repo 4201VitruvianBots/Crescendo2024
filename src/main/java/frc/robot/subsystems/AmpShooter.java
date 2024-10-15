@@ -18,14 +18,13 @@ import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
   private Intake m_intake;
-  private final TalonFX ampMotor = new TalonFX(CAN.ampShooter);
-  private NeutralModeValue NeutralMode;
+  private final TalonFX m_ampMotor = new TalonFX(CAN.ampShooter);
   private double m_ampAutoPercentOutput;
 
   private final DCMotorSim m_ampMotorSim =
       new DCMotorSim(AMPSHOOTER.AmpGearbox, AMPSHOOTER.gearRatio, AMPSHOOTER.Inertia);
 
-  private final TalonFXSimState m_ampMotorSimState = ampMotor.getSimState();
+  private final TalonFXSimState m_ampMotorSimState = m_ampMotor.getSimState();
 
   public AmpShooter() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -35,7 +34,7 @@ public class AmpShooter extends SubsystemBase {
     config.Feedback.SensorToMechanismRatio = AMPSHOOTER.gearRatio;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    CtreUtils.configureTalonFx(ampMotor, config);
+    CtreUtils.configureTalonFx(m_ampMotor, config);
   }
 
   public void registerIntake(Intake intake) {
@@ -43,26 +42,26 @@ public class AmpShooter extends SubsystemBase {
   }
 
   public void setPercentOutput(double percentOutput) {
-    m_ampAutoPercentOutput = 0;
-    ampMotor.set(percentOutput);
+    if (DriverStation.isAutonomous()) {
+        m_ampAutoPercentOutput = percentOutput;
+    } else {
+        m_ampAutoPercentOutput = 0;
+        m_ampMotor.set(percentOutput);
+    }
   }
-
-  public void setAutoPercentOutput(double percentOutput) {
-    m_ampAutoPercentOutput = percentOutput;
-  }
-
+  
   public double getSpeed() {
-    return ampMotor.get();
+    return m_ampMotor.get();
   }
 
   public double getRpm() {
-    return ampMotor.getVelocity().getValue() * 60.0;
+    return m_ampMotor.getVelocity().getValue() * 60.0;
   }
 
   private void updateLogger() {
-    Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
-    Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
+    Logger.recordOutput("AmpShooter/Velocity", m_ampMotor.getVelocity().getValue());
+    Logger.recordOutput("AmpShooter/Percentage", m_ampMotor.getMotorVoltage().getValue() / 12.0);
+    Logger.recordOutput("AmpShooter/Current", m_ampMotor.getTorqueCurrent().getValue());
   }
 
   @Override
