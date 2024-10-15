@@ -33,6 +33,9 @@ public final class FIELD {
 
   public static final Translation2d redAutoSpeaker = redSpeaker.plus(new Translation2d(0, 0.0));
   public static final Translation2d blueAutoSpeaker = blueSpeaker.plus(new Translation2d(0, 0.0));
+  
+  public static final Translation2d redPassingZone = redSpeaker.plus(new Translation2d(-2.0, 2.0));
+  public static final Translation2d bluePassingZone = blueSpeaker.plus(new Translation2d(2.0, 2.0));
 
   /**
    * Flips a translation to the correct side of the field based on the current alliance color. By

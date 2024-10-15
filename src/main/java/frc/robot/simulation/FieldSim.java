@@ -5,11 +5,19 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.FIELD;
+import frc.robot.constants.SHOOTER;
+
 import org.littletonrobotics.junction.Logger;
 
 public class FieldSim extends SubsystemBase implements AutoCloseable {
@@ -20,7 +28,7 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
   private Pose2d[] m_swervePoses = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
   private Pose2d m_visionAPose = new Pose2d();
   private Pose2d m_visionBPose = new Pose2d();
-
+  
   public FieldSim() {
     initSim();
   }
@@ -58,6 +66,8 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isSimulation()) {
       m_field2d.getObject("Swerve Modules").setPoses(m_swervePoses);
     }
+    m_field2d.getObject("Blue Passing Zone").setPose(new Pose2d(FIELD.bluePassingZone, new Rotation2d(Units.degreesToRadians(-45.0))));
+    m_field2d.getObject("Red Passing Zone").setPose(new Pose2d(FIELD.redPassingZone, new Rotation2d(Units.degreesToRadians(-135.0))));
   }
 
   @Override
