@@ -157,12 +157,14 @@ public class RobotContainer {
     // var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
     // driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
-    // var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    // targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
+    var targetPassingButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    targetPassingButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING));
     // var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
     // driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
-
+    
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
 

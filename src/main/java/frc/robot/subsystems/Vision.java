@@ -55,8 +55,10 @@ public class Vision extends SubsystemBase {
   // private Pose2d cameraAEstimatedPose = new Pose2d();
   private Pose2d cameraBEstimatedPose = new Pose2d();
   private double /*cameraATimestamp,*/ cameraBTimestamp;
-  private boolean cameraAHasPose, cameraBHasPose, poseAgreement;
+  private boolean /*cameraAHasPose,*/ cameraBHasPose/* , poseAgreement*/;
   private boolean m_localized;
+  
+  private VISION.TRACKING_STATE trackingState = VISION.TRACKING_STATE.NONE;
 
   public Vision() {
 
@@ -93,7 +95,7 @@ public class Vision extends SubsystemBase {
       aprilTagLimelightCameraBSim.enableDrawWireframe(false);
     }
   }
-
+ 
   public void registerSwerveDrive(CommandSwerveDrivetrain swerveDriveTrain) {
     m_swerveDriveTrain = swerveDriveTrain;
   }
@@ -130,6 +132,10 @@ public class Vision extends SubsystemBase {
     }
 
     return true;
+  }
+  
+  public void setTrackingState(VISION.TRACKING_STATE state) {
+    trackingState = state;
   }
 
   public boolean isCameraConnected(PhotonCamera camera) {
@@ -188,15 +194,14 @@ public class Vision extends SubsystemBase {
       }
 
       // SOTM stuff
-      double VelocityShoot = 9.255586759; // Previously 11.1 m/s
       double PositionY = m_swerveDriveTrain.getState().Pose.getY();
       double PositionX = m_swerveDriveTrain.getState().Pose.getX();
       double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
       double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
       double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
       double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
-      double virtualGoalX = m_goal.getX() - VelocityShoot * (VelocityX + AccelerationX);
-      double virtualGoalY = m_goal.getY() - VelocityShoot * (VelocityY + AccelerationY);
+      double virtualGoalX = m_goal.getX() - VISION.velocityShoot * (VelocityX + AccelerationX);
+      double virtualGoalY = m_goal.getY() - VISION.velocityShoot * (VelocityY + AccelerationY);
       Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
       Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
       double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
@@ -226,6 +231,40 @@ public class Vision extends SubsystemBase {
       if (hasGamePieceTarget()) {
         m_swerveDriveTrain.setAngleToNote(
             m_swerveDriveTrain.getState().Pose.getRotation().minus(getRobotToGamePieceRotation()));
+      }
+    }
+  }
+  
+  private void updateAngleToPassing() {
+    if (m_swerveDriveTrain != null) {
+      if (DriverStation.isTeleop()) {
+        m_goal = Controls.isRedAlliance() ? FIELD.redPassingZone : FIELD.bluePassingZone;
+        
+        // SOTM stuff
+        double PositionY = m_swerveDriveTrain.getState().Pose.getY();
+        double PositionX = m_swerveDriveTrain.getState().Pose.getX();
+        double VelocityY = m_swerveDriveTrain.getChassisSpeed().vyMetersPerSecond;
+        double VelocityX = m_swerveDriveTrain.getChassisSpeed().vxMetersPerSecond;
+        double AccelerationX = m_swerveDriveTrain.getPigeon2().getAccelerationX().getValueAsDouble();
+        double AccelerationY = m_swerveDriveTrain.getPigeon2().getAccelerationY().getValueAsDouble();
+        double virtualGoalX = m_goal.getX() - VISION.velocityShoot * (VelocityX + AccelerationX);
+        double virtualGoalY = m_goal.getY() - VISION.velocityShoot * (VelocityY + AccelerationY);
+        Translation2d movingGoalLocation = new Translation2d(virtualGoalX, virtualGoalY);
+        Translation2d currentPose = m_swerveDriveTrain.getState().Pose.getTranslation();
+        double newDist = movingGoalLocation.minus(currentPose).getDistance(new Translation2d());
+      
+        m_swerveDriveTrain.setAngleToPassing(
+            m_swerveDriveTrain
+                .getState()
+                .Pose
+                .getTranslation()
+                .minus(m_goal)
+                .getAngle()
+                .plus(
+                    Rotation2d.fromRadians(
+                        Math.asin(
+                            (((VelocityY * 0.85) * PositionX + (VelocityX * 0.2) * PositionY))
+                                / (newDist * 5)))));
       }
     }
   }
@@ -320,8 +359,21 @@ public class Vision extends SubsystemBase {
       // }
     }
 
-    updateAngleToSpeaker();
-    updateAngleToNote();
+    switch (trackingState) {
+        case SPEAKER:
+          updateAngleToSpeaker();
+          break;
+        case NOTE:
+          updateAngleToNote();
+          break;
+        case PASSING:
+          updateAngleToPassing();
+          break;
+        default:
+        case NONE:
+          break;
+    }
+    
     // This method will be called once per scheduler run
     updateSmartDashboard();
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLog();

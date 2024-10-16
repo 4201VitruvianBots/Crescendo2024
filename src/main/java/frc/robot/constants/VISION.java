@@ -70,7 +70,7 @@ public final class VISION {
               aprilTagLimelightCameraAOffsetInRadiansPitch,
               aprilTagLimelightCameraAOffsetInRadiansYaw));
 
-  // Camera offset from robot center. Camera A is on the left side of the robot from front view.
+  // Camera offset from robot center. Camera B is on the right side of the robot from front view.
   public static final Transform3d robotToAprilTagLimelightCameraB =
       new Transform3d(
           new Translation3d(
@@ -127,6 +127,9 @@ public final class VISION {
   public enum TRACKING_STATE {
     NONE,
     SPEAKER,
-    NOTE
+    NOTE,
+    PASSING
   }
+  
+  public static final double velocityShoot = 9.255586759; // Previously 11.1 m/s
 }

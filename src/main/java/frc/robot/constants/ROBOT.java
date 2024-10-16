@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Robot;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
 
@@ -107,8 +108,19 @@ public class ROBOT {
     } else if (RobotController.getSerialNumber().equals(ROBOT_ID.BOBOT.getSerial())) {
       alert.setText("Setting Robot Constants for Bobot");
       initBobot();
-    } else if (RobotController.getSerialNumber().equals(ROBOT_ID.SIM.getSerial())) {
+    } else if (RobotController.getSerialNumber().equals(ROBOT_ID.SIM.getSerial())
+        && Robot.isSimulation()) {
       alert.setText("Setting Robot Constants for Sim");
+      System.out.println(
+          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      System.out.println(
+          "!!! WARNING: This will put logging in debug mode                     !!!");
+      System.out.println(
+          "!!!          and almost certainly crash the real robot!              !!!");
+      System.out.println(
+          "!!! IF YOU ARE SEEING THIS IN THE DS CONSOLE, YOUR ROBOT WILL CRASH! !!!");
+      System.out.println(
+          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       initSim();
     } else {
       alert =

@@ -71,6 +71,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Rotation2d m_targetAngle = new Rotation2d();
   private Rotation2d m_angleToSpeaker = new Rotation2d();
   private Rotation2d m_angleToNote = new Rotation2d();
+  private Rotation2d m_angleToPassing = new Rotation2d();
   private VISION.TRACKING_STATE m_trackingState = VISION.TRACKING_STATE.NONE;
 
   private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -254,6 +255,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void setAngleToNote(Rotation2d angle) {
     m_angleToNote = angle;
   }
+  
+  public void setAngleToPassing(Rotation2d angle) {
+    m_angleToPassing = angle;
+  }
 
   public void setTrackingState(VISION.TRACKING_STATE state) {
     if (m_trackingState != state) {
@@ -271,9 +276,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     switch (m_trackingState) {
       case SPEAKER:
         m_targetAngle = m_angleToSpeaker;
+        if (m_vision != null) m_vision.setTrackingState(m_trackingState);
         break;
       case NOTE:
         m_targetAngle = m_angleToNote;
+        if (m_vision != null) m_vision.setTrackingState(m_trackingState);
+        break;
+      case PASSING:
+        m_targetAngle = m_angleToPassing;
+        if (m_vision != null) m_vision.setTrackingState(m_trackingState);
+        break;
+      default:
+      case NONE:
         break;
     }
   }
