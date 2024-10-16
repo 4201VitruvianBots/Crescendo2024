@@ -43,10 +43,12 @@ import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
+import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdArmUtils;
 import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
+import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -58,18 +60,18 @@ public class RobotContainer {
           SWERVE.FrontRightConstants,
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
-//   private final Telemetry m_telemetry = new Telemetry();
-  //private final Vision m_vision = new Vision();
+  private final Telemetry m_telemetry = new Telemetry();
+  private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
 //   private final Climber m_climber = new Climber();
-//   private final RobotTime m_robotTime = new RobotTime();
+  private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
 
-//   private final FieldSim m_fieldSim = new FieldSim();
+  private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
   private final LoggedDashboardChooser<Command> m_autoChooser =
@@ -89,21 +91,21 @@ public class RobotContainer {
 //       new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
-    // m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
-    //m_swerveDrive.registerVisionSubsystem(m_vision);
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
-    // m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerSwerveDrive(m_swerveDrive);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
-    //m_controls.registerVision(m_vision);
+    m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
 
     if (RobotBase.isSimulation()) {
-      // m_telemetry.registerFieldSim(m_fieldSim);
-      // m_vision.registerFieldSim(m_fieldSim);
+      m_telemetry.registerFieldSim(m_fieldSim);
+      m_vision.registerFieldSim(m_fieldSim);
 
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
@@ -111,7 +113,7 @@ public class RobotContainer {
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
       // m_visualizer.registerClimber(m_climber);
-      // m_visualizer.registerVision(m_vision);
+      m_visualizer.registerVision(m_vision);
       m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -145,7 +147,7 @@ public class RobotContainer {
     // m_climber.setDefaultCommand(
     //     new RunClimberJoystick(null, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, null, m_shooter, null, m_swerveDrive));
+        new GetSubsystemStates(m_led, m_intake, null, m_shooter, m_vision, m_swerveDrive));
   }
 
   private void configureBindings() {
@@ -286,24 +288,24 @@ public class RobotContainer {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "OneWaitAuto",
-        new OneWaitAuto(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
-        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, null));
+        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
-        "FivePiece", new FivePiece(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
-        "TwoPieceAuto", new TwoPiece(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TwoPieceFar",
-        new TwoPieceFar(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
     // Test autos
-    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, null));
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "IntakeTestVision",
-        new IntakeTestVision(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TestAutoShoot",
         new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
