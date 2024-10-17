@@ -81,7 +81,7 @@ public class ROBOT {
   }
 
   public static void initSim() {
-    logMode = LOG_MODE.DEBUG;
+    // logMode = LOG_MODE.DEBUG;
 
     SWERVE.DRIVE.kFrontLeftEncoderOffset = 0;
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
@@ -122,7 +122,8 @@ public class ROBOT {
 
   public enum LOG_MODE {
     DEBUG(0),
-    NORMAL(1);
+    NORMAL(1),
+    MINIMAL(2);
 
     private final double log_level;
 

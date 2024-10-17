@@ -213,12 +213,12 @@ public class Arm extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
-    Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
-    Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
-    Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
-    Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
-    Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
+    // Logger.recordOutput("Arm/ControlMode", m_controlMode.toString());
+    // Logger.recordOutput("Arm/CurrentAngle", getCurrentAngle());
+    // Logger.recordOutput("Arm/CurrentOutput", m_currentSignal.getValue());
+    // Logger.recordOutput("Arm/DesiredAngle", Units.rotationsToDegrees(m_desiredRotations));
+    // Logger.recordOutput("Arm/PercentOutput", m_armMotor.get());
+    // Logger.recordOutput("Arm/CanCoderAbsolutePos360", getCANcoderAngle());
   }
 
   public void testInit() {

@@ -60,14 +60,14 @@ public class AmpShooter extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
-    Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
+    // Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
+    // Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
   }
 
   @Override
   public void periodic() {
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+    // if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
 
     if (m_intake != null) {
       //if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {

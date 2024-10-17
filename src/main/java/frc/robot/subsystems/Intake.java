@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -40,6 +41,14 @@ public class Intake extends SubsystemBase {
       new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
   private final DCMotorSim m_intakeMotor2Sim =
       new DCMotorSim(INTAKE.intake2Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
+  
+  private final StatusSignal<Double> m_velocitySignal1 = intakeMotor1.getVelocity().clone();
+  private final StatusSignal<Double> m_voltageSignal1 = intakeMotor1.getMotorVoltage().clone();
+  private final StatusSignal<Double> m_currentSignal1 = intakeMotor1.getTorqueCurrent().clone();
+  private final StatusSignal<Double> m_velocitySignal2 = intakeMotor2.getVelocity().clone();
+  private final StatusSignal<Double> m_voltageSignal2 = intakeMotor2.getMotorVoltage().clone();
+  private final StatusSignal<Double> m_currentSignal2 = intakeMotor2.getTorqueCurrent().clone();
+    
 
   public Intake() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -111,24 +120,21 @@ public class Intake extends SubsystemBase {
     return !getSensorInput1() && !getSensorInput2();
   }
 
-  public void updateSmartDashboard() {}
-
   public void updateLogger() {
-    Logger.recordOutput("Intake/Motor1 Velocity", intakeMotor1.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor2 Velocity", intakeMotor2.getVelocity().getValue());
-    Logger.recordOutput("Intake/Motor1 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Intake/Motor2 Output", intakeMotor2.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Intake/Motor1 Current", intakeMotor2.getTorqueCurrent().getValue());
-    Logger.recordOutput("Intake/Motor2 Current", intakeMotor2.getTorqueCurrent().getValue());
-    Logger.recordOutput("Intake/BeamBreak1 state", getSensorInput1());
-    Logger.recordOutput("Intake/BeamBreak2 state", getSensorInput2());
+    // Logger.recordOutput("Intake/Motor1 Velocity", m_velocitySignal1.getValue());
+    // Logger.recordOutput("Intake/Motor2 Velocity", m_velocitySignal2.getValue());
+    // Logger.recordOutput("Intake/Motor1 Output", m_voltageSignal1.getValue() / 12.0);
+    // Logger.recordOutput("Intake/Motor2 Output", m_voltageSignal2.getValue() / 12.0);
+    // Logger.recordOutput("Intake/Motor1 Current", m_currentSignal1.getValue());
+    // Logger.recordOutput("Intake/Motor2 Current", m_currentSignal2.getValue());
+    // Logger.recordOutput("Intake/BeamBreak1 state", getSensorInput1());
+    // Logger.recordOutput("Intake/BeamBreak2 state", getSensorInput2());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateSmartDashboard();
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+    // if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override

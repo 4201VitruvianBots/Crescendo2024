@@ -156,6 +156,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
+  // Warning: This function takes 60 ms to run!!! Only run it very periodically!!!
   public void setNeutralMode(NeutralModeValue mode) {
     m_shooterMotors[0].setNeutralMode(mode);
     m_shooterMotors[1].setNeutralMode(mode);
@@ -210,21 +211,21 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
 
   private void updateLogger() {
-    Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
-    Logger.recordOutput(
-        "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput(
-        "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
-    Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
-    Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
-    Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
+    // Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
+    // Logger.recordOutput(
+    //     "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput(
+    //     "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
+    // Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
+    // Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
+    // Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }
 
   @Override
   public void periodic() {
-    updateShuffleboard();
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+    // updateShuffleboard();
+    // if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
   }
 
   @Override
