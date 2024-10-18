@@ -27,8 +27,6 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
-import frc.robot.commands.climber.ResetClimberHeight;
-import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
@@ -43,10 +41,12 @@ import frc.robot.constants.AMPSHOOTER.STATE;
 import frc.robot.constants.SHOOTER.RPM_SETPOINT;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
+import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.robot.utils.SysIdArmUtils;
 import frc.robot.utils.SysIdShooterUtils;
 import frc.robot.utils.SysIdUtils;
+import frc.robot.utils.Telemetry;
 import frc.robot.visualizers.SuperStructureVisualizer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -58,7 +58,7 @@ public class RobotContainer {
           SWERVE.FrontRightConstants,
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
-//   private final Telemetry m_telemetry = new Telemetry();
+  private final Telemetry m_telemetry = new Telemetry();
   //private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
@@ -69,7 +69,7 @@ public class RobotContainer {
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
 
-//   private final FieldSim m_fieldSim = new FieldSim();
+  private final FieldSim m_fieldSim = new FieldSim();
   private SuperStructureVisualizer m_visualizer;
 
   private final LoggedDashboardChooser<Command> m_autoChooser =
@@ -89,7 +89,7 @@ public class RobotContainer {
 //       new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
-    // m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
     //m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
     // m_vision.registerSwerveDrive(m_swerveDrive);
@@ -102,7 +102,7 @@ public class RobotContainer {
     initSmartDashboard();
 
     if (RobotBase.isSimulation()) {
-      // m_telemetry.registerFieldSim(m_fieldSim);
+      m_telemetry.registerFieldSim(m_fieldSim);
       // m_vision.registerFieldSim(m_fieldSim);
 
       m_visualizer = new SuperStructureVisualizer();
@@ -137,6 +137,7 @@ public class RobotContainer {
       m_testController
           .cross()
           .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+      m_testController.button(1).whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING));
     }
 
     // Default command to decelerate the flywheel if no other command is set
@@ -163,6 +164,9 @@ public class RobotContainer {
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
+    
+    var targetPassingButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    targetPassingButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(

@@ -5,6 +5,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -73,6 +75,8 @@ public final class SWERVE {
     public static final double kTeleP_Theta = 10;
     public static final double kTeleI_Theta = 0.0;
     public static final double kTeleD_Theta = 0.0;
+    
+    public static final Rotation2d kPassingAngle = Rotation2d.fromDegrees(-30);
   }
 
   public static class MODULE {

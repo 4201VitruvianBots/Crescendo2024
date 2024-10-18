@@ -16,12 +16,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
 import frc.robot.constants.VISION;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
@@ -176,7 +178,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                   rotationSpeed = calculateRotationToTarget();
                 }
               }
-            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER) {
+            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER || m_trackingState == VISION.TRACKING_STATE.PASSING) {
               rotationSpeed = calculateRotationToTarget();
             }
           }
@@ -275,6 +277,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       case NOTE:
         m_targetAngle = m_angleToNote;
         break;
+      case PASSING:
+        m_targetAngle = DRIVE.kPassingAngle;
+        break;
     }
   }
 
@@ -359,6 +364,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
+    SmartDashboard.putNumber("CurrentAngle", getState().Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("TargetAngle", m_targetAngle.getDegrees());
+    
     Logger.recordOutput("Swerve/TrackingState", m_trackingState);
     Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
     Logger.recordOutput("Swerve/isShootZone", getZoneState());
