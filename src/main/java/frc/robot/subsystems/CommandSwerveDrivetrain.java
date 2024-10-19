@@ -290,7 +290,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
                 m_targetAngle = DRIVE.kPassingNearAngle; // Blue alliance
             } else {
-                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingNearAngle.getDegrees() + 180); // Red alliance
+                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingNearAngle.getDegrees() - 180); // Red alliance
             }
         }
         catch (NoSuchElementException e) {
@@ -302,7 +302,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
                 m_targetAngle = DRIVE.kPassingMidAngle; // Blue alliance
             } else {
-                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingMidAngle.getDegrees() + 180); // Red alliance
+                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingMidAngle.getDegrees() - 180); // Red alliance
             }
         }
         catch (NoSuchElementException e) {
