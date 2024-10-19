@@ -59,7 +59,7 @@ public final class SHOOTER {
     SLOW(600),
 
     SPEAKERBOTTOM(8000),
-    SPEAKERTOP(5500), // changed from 6000
+    SPEAKERTOP(5750), // changed from 6000
 
     SPEAKER(7000),
     AUTO_RPM(7600),
