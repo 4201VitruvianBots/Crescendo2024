@@ -29,6 +29,7 @@ import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
+import frc.robot.commands.drive.ToggleTrackingState;
 import frc.robot.commands.intake.AmpIntake;
 import frc.robot.commands.intake.AmpOuttake;
 import frc.robot.commands.intake.AutoRunAmpTakeTwo;
@@ -136,8 +137,9 @@ public class RobotContainer {
 
       m_testController
           .cross()
-          .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
-      m_testController.button(1).whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING));
+          .onTrue(new ToggleTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+      m_testController.button(1).whileTrue(new ToggleTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_NEAR));
+      m_testController.button(2).whileTrue(new ToggleTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_MID));
     }
 
     // Default command to decelerate the flywheel if no other command is set
@@ -165,8 +167,11 @@ public class RobotContainer {
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
     
-    var targetPassingButton = new Trigger(() -> rightJoystick.getRawButton(2));
-    targetPassingButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING));
+    var targetPassingMidButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    targetPassingMidButton.onTrue(new ToggleTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_MID));
+    
+    var targetPassingNearButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    targetPassingNearButton.onTrue(new ToggleTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_NEAR));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(

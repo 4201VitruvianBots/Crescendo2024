@@ -128,6 +128,7 @@ public final class VISION {
     NONE,
     SPEAKER,
     NOTE,
-    PASSING
+    PASSING_NEAR,
+    PASSING_MID
   }
 }

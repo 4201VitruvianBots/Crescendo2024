@@ -14,8 +14,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -28,6 +30,7 @@ import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
 import java.io.File;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -178,7 +181,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                   rotationSpeed = calculateRotationToTarget();
                 }
               }
-            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER || m_trackingState == VISION.TRACKING_STATE.PASSING) {
+            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER ||
+                m_trackingState == VISION.TRACKING_STATE.PASSING_MID || m_trackingState == VISION.TRACKING_STATE.PASSING_NEAR) {
               rotationSpeed = calculateRotationToTarget();
             }
           }
@@ -263,6 +267,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       m_trackingState = state;
     }
   }
+  
+  public VISION.TRACKING_STATE getTrackingState() {
+    return m_trackingState;
+  }
 
   private double calculateRotationToTarget() {
     return m_pidController.calculate(
@@ -277,8 +285,32 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       case NOTE:
         m_targetAngle = m_angleToNote;
         break;
-      case PASSING:
-        m_targetAngle = DRIVE.kPassingAngle;
+      case PASSING_NEAR:
+        try {
+            if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
+                m_targetAngle = DRIVE.kPassingNearAngle; // Blue alliance
+            } else {
+                m_targetAngle = new Rotation2d(-180 - (DRIVE.kPassingNearAngle.getDegrees())); // Red alliance
+            }
+        }
+        catch (NoSuchElementException e) {
+            m_targetAngle = DRIVE.kPassingNearAngle; // Neither alliance
+        }
+        break;
+      case PASSING_MID:
+        try {
+            if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
+                m_targetAngle = DRIVE.kPassingMidAngle; // Blue alliance
+            } else {
+                m_targetAngle = new Rotation2d(-180 - (DRIVE.kPassingMidAngle.getDegrees())); // Red alliance
+            }
+        }
+        catch (NoSuchElementException e) {
+            m_targetAngle = DRIVE.kPassingMidAngle; // Neither alliance
+        }
+        break;
+      default:
+      case NONE:
         break;
     }
   }
