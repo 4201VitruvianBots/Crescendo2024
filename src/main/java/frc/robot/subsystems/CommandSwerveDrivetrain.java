@@ -175,16 +175,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
           var rotationSpeed = chassisSpeeds.get().omegaRadiansPerSecond;
           if (m_trackingState != VISION.TRACKING_STATE.NONE) {
-            if (m_trackingState == VISION.TRACKING_STATE.NOTE) {
-              if (m_vision != null) {
-                if (m_vision.hasGamePieceTarget()) {
-                  rotationSpeed = calculateRotationToTarget();
-                }
-              }
-            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER ||
-                m_trackingState == VISION.TRACKING_STATE.PASSING_MID || m_trackingState == VISION.TRACKING_STATE.PASSING_NEAR) {
+            // if (m_trackingState == VISION.TRACKING_STATE.NOTE) {
+            //   if (m_vision != null) {
+            //     if (m_vision.hasGamePieceTarget()) {
+            //       rotationSpeed = calculateRotationToTarget();
+            //     }
+            //   }
+            // } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER ||
+            //     m_trackingState == VISION.TRACKING_STATE.PASSING_MID || m_trackingState == VISION.TRACKING_STATE.PASSING_NEAR) {
               rotationSpeed = calculateRotationToTarget();
-            }
+            //}
           }
 
           m_newChassisSpeeds =
@@ -279,34 +279,34 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private void updateTargetAngle() {
     switch (m_trackingState) {
-      case SPEAKER:
-        m_targetAngle = m_angleToSpeaker;
-        break;
-      case NOTE:
-        m_targetAngle = m_angleToNote;
-        break;
-      case PASSING_NEAR:
+      // case SPEAKER:
+      //   m_targetAngle = m_angleToSpeaker;
+      //   break;
+      // case NOTE:
+      //   m_targetAngle = m_angleToNote;
+      //   break;
+      case PASSING_NEAR:  
         try {
             if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
-                m_targetAngle = DRIVE.kPassingNearAngle; // Blue alliance
+                m_targetAngle = DRIVE.kPassingNearAngleBlue; // Blue alliance
             } else {
-                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingNearAngle.getDegrees() - 180); // Red alliance
+                m_targetAngle = DRIVE.kPassingNearAngleRed; // Red alliance
             }
         }
         catch (NoSuchElementException e) {
-            m_targetAngle = DRIVE.kPassingNearAngle; // Neither alliance
+            break;
         }
         break;
       case PASSING_MID:
         try {
             if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
-                m_targetAngle = DRIVE.kPassingMidAngle; // Blue alliance
+                m_targetAngle = DRIVE.kPassingMidAngleBlue; // Blue alliance
             } else {
-                m_targetAngle = Rotation2d.fromDegrees(DRIVE.kPassingMidAngle.getDegrees() - 180); // Red alliance
+                m_targetAngle = DRIVE.kPassingMidAngleRed; // Red alliance
             }
         }
         catch (NoSuchElementException e) {
-            m_targetAngle = DRIVE.kPassingMidAngle; // Neither alliance
+            break;
         }
         break;
       default:

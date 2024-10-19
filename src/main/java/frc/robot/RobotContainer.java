@@ -294,24 +294,24 @@ public class RobotContainer {
     m_autoChooser.addDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption(
         "OneWaitAuto",
-        new OneWaitAuto(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new OneWaitAuto(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "FourPieceNear",
-        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, null));
+        new FourPieceNear(m_swerveDrive, m_shooter, m_ampShooter, m_intake, m_fieldSim));
     m_autoChooser.addOption(
-        "FivePiece", new FivePiece(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        "FivePiece", new FivePiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     // m_autoChooser.addOption("ThreePieceFar", new ThreePieceFar(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
-        "TwoPieceAuto", new TwoPiece(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        "TwoPieceAuto", new TwoPiece(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TwoPieceFar",
-        new TwoPieceFar(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new TwoPieceFar(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
 
     // Test autos
-    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, null));
+    m_autoChooser.addOption("DriveTest", new DriveStraight(m_swerveDrive, m_fieldSim));
     m_autoChooser.addOption(
         "IntakeTestVision",
-        new IntakeTestVision(m_swerveDrive, null, m_intake, m_ampShooter, m_shooter));
+        new IntakeTestVision(m_swerveDrive, m_fieldSim, m_intake, m_ampShooter, m_shooter));
     m_autoChooser.addOption(
         "TestAutoShoot",
         new AutoSetRPMSetpoint(m_shooter, SHOOTER.RPM_SETPOINT.AUTO_RPM.get())
