@@ -199,8 +199,8 @@ public class RobotContainer {
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get())); // fast speaker
+                RPM_SETPOINT.SPEAKERTOP.get(),
+                RPM_SETPOINT.SPEAKERTOP.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController
