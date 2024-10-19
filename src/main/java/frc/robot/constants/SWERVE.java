@@ -76,6 +76,7 @@ public final class SWERVE {
     public static final double kTeleI_Theta = 0.0;
     public static final double kTeleD_Theta = 0.0;
     
+    /* CHANGE THESE VALUES */
     public static final Rotation2d kPassingNearAngleBlue = Rotation2d.fromDegrees(-30);
     public static final Rotation2d kPassingMidAngleBlue = Rotation2d.fromDegrees(-10);
 
