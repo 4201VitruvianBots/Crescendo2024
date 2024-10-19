@@ -77,11 +77,11 @@ public final class SWERVE {
     public static final double kTeleD_Theta = 0.0;
     
     /* CHANGE THESE VALUES */
-    public static final Rotation2d kPassingNearAngleBlue = Rotation2d.fromDegrees(-30);
-    public static final Rotation2d kPassingMidAngleBlue = Rotation2d.fromDegrees(-10);
+    public static final Rotation2d kPassingNearAngleBlue = Rotation2d.fromDegrees(-30); // (old non-working value is -150)
+    public static final Rotation2d kPassingMidAngleBlue = Rotation2d.fromDegrees(-10); // (old non-working value is -170)
 
-    public static final Rotation2d kPassingNearAngleRed = Rotation2d.fromDegrees(-170);
-    public static final Rotation2d kPassingMidAngleRed = Rotation2d.fromDegrees(-150);
+    public static final Rotation2d kPassingNearAngleRed = Rotation2d.fromDegrees(-150); // good
+    public static final Rotation2d kPassingMidAngleRed = Rotation2d.fromDegrees(-170); // good
   }
 
   public static class MODULE {

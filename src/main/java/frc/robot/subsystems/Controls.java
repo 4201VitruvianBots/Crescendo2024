@@ -181,6 +181,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
 
   /** Sends values to SmartDashboard */
   private void updateLogger() {
+    SmartDashboard.putString("AllianceColor", getAllianceColor().name());
     try {
       Logger.recordOutput("Controls/AllianceColor", getAllianceColor());
       Logger.recordOutput("Controls/StartPose", getStartPose());

@@ -134,9 +134,9 @@ public class RobotContainer {
                       m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
 
-      m_testController
-          .cross()
-          .onTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    //   m_testController
+    //       .cross()
+    //       .onTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
       m_testController.button(1).whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_NEAR));
       m_testController.button(2).whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_MID));
     }

@@ -285,28 +285,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       // case NOTE:
       //   m_targetAngle = m_angleToNote;
       //   break;
-      case PASSING_NEAR:  
-        try {
-            if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
-                m_targetAngle = DRIVE.kPassingNearAngleBlue; // Blue alliance
-            } else {
-                m_targetAngle = DRIVE.kPassingNearAngleRed; // Red alliance
-            }
-        }
-        catch (NoSuchElementException e) {
-            break;
+      case PASSING_NEAR:
+        if (Controls.isBlueAlliance()) {
+            m_targetAngle = DRIVE.kPassingNearAngleBlue; // Blue alliance
+        } else {
+            m_targetAngle = DRIVE.kPassingNearAngleRed; // Red alliance
         }
         break;
       case PASSING_MID:
-        try {
-            if (DriverStation.getAlliance().orElseThrow() == Alliance.Blue) {
-                m_targetAngle = DRIVE.kPassingMidAngleBlue; // Blue alliance
-            } else {
-                m_targetAngle = DRIVE.kPassingMidAngleRed; // Red alliance
-            }
-        }
-        catch (NoSuchElementException e) {
-            break;
+        if (Controls.isBlueAlliance()) {
+            m_targetAngle = DRIVE.kPassingMidAngleBlue; // Blue alliance
+        } else {
+            m_targetAngle = DRIVE.kPassingMidAngleRed; // Red alliance
         }
         break;
       default:
@@ -396,11 +386,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
+    Logger.recordOutput("Swerve/Alliance", Controls.getAllianceColor().name());
     SmartDashboard.putNumber("CurrentAngle", getState().Pose.getRotation().getDegrees());
-    SmartDashboard.putNumber("TargetAngle", m_targetAngle.getDegrees());
     
-    Logger.recordOutput("Swerve/TrackingState", m_trackingState);
-    Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+    Logger.recordOutput("Swerve/TrackingState", m_trackingState.name());
+    SmartDashboard.putNumber("TargetAngle", m_targetAngle.getDegrees());
     Logger.recordOutput("Swerve/isShootZone", getZoneState());
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
