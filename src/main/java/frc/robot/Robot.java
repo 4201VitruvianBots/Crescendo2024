@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ROBOT;
-
 import java.io.File;
 import org.littletonrobotics.frc2023.util.Alert;
 import org.littletonrobotics.frc2023.util.Alert.AlertType;
@@ -74,18 +73,18 @@ public class Robot extends LoggedRobot {
         }
         Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
       }
-    
 
-    // Logger.disableDeterministicTimestamps(); // See "Deterministic Timestamps" in the
-    // "Understanding Data Flow" page
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
-    // be added.
+      // Logger.disableDeterministicTimestamps(); // See "Deterministic Timestamps" in the
+      // "Understanding Data Flow" page
+      Logger
+          .start(); // Start logging! No more data receivers, replay sources, or metadata values may
+      // be added.
 
-    var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
-    alert.set(true);
-    // Update robot constants based off of robot used
-    ROBOT.initConstants();
-    // CtreUtils.initPhoenixServer();
+      var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
+      alert.set(true);
+      // Update robot constants based off of robot used
+      ROBOT.initConstants();
+      // CtreUtils.initPhoenixServer();
     }
   }
 

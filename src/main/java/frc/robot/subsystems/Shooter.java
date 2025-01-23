@@ -20,10 +20,8 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private double m_topRpmSetpoint;

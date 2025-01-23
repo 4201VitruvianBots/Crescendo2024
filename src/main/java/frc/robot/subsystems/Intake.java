@@ -19,9 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.INTAKE;
 // import frc.robot.constants.INTAKE.STATE;
-import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -41,14 +39,13 @@ public class Intake extends SubsystemBase {
       new DCMotorSim(INTAKE.intake1Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
   private final DCMotorSim m_intakeMotor2Sim =
       new DCMotorSim(INTAKE.intake2Gearbox, INTAKE.gearRatio, INTAKE.Inertia);
-  
+
   private final StatusSignal<Double> m_velocitySignal1 = intakeMotor1.getVelocity().clone();
   private final StatusSignal<Double> m_voltageSignal1 = intakeMotor1.getMotorVoltage().clone();
   private final StatusSignal<Double> m_currentSignal1 = intakeMotor1.getTorqueCurrent().clone();
   private final StatusSignal<Double> m_velocitySignal2 = intakeMotor2.getVelocity().clone();
   private final StatusSignal<Double> m_voltageSignal2 = intakeMotor2.getMotorVoltage().clone();
   private final StatusSignal<Double> m_currentSignal2 = intakeMotor2.getTorqueCurrent().clone();
-    
 
   public Intake() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -73,13 +70,12 @@ public class Intake extends SubsystemBase {
 
   public void setSpeed(double speed1, double speed2) {
     if ((getSensorInput1() || getSensorInput2()) && (speed1 > 0 || speed2 > 0)) {
-        intakeMotor1.set(0);
-        intakeMotor2.set(0);
-      } else {
-        intakeMotor1.set(speed1);
-        intakeMotor2.set(speed2);
-      }
-    
+      intakeMotor1.set(0);
+      intakeMotor2.set(0);
+    } else {
+      intakeMotor1.set(speed1);
+      intakeMotor2.set(speed2);
+    }
   }
 
   public double getSpeed() {

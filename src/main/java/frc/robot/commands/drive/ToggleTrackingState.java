@@ -27,13 +27,12 @@ public class ToggleTrackingState extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_swerveDrive.getTrackingState() == TRACKING_STATE.NONE) { 
-        m_swerveDrive.setTrackingState(m_state);
+    if (m_swerveDrive.getTrackingState() == TRACKING_STATE.NONE) {
+      m_swerveDrive.setTrackingState(m_state);
     } else if (m_swerveDrive.getTrackingState() != m_state) {
-        m_swerveDrive.setTrackingState(m_state);
+      m_swerveDrive.setTrackingState(m_state);
     } else {
-        m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
+      m_swerveDrive.setTrackingState(TRACKING_STATE.NONE);
     }
   }
-  
 }

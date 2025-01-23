@@ -4,11 +4,11 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class SHOOTER {
-  public static final double kPBottom = 8; //changed from 7
+  public static final double kPBottom = 8; // changed from 7
   public static final double kIBottom = 0;
   public static final double kDBottom = 0;
 
-  public static final double kPTop = 8;  //changed from 7
+  public static final double kPTop = 8; // changed from 7
   public static final double kITop = 0;
   public static final double kDTop = 0;
 
