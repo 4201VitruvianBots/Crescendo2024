@@ -65,10 +65,10 @@ public class ROBOT {
   public static void initAlphaBot() {}
 
   public static void initGridlock() {
-    SWERVE.DRIVE.kFrontLeftEncoderOffset = -0.035888671875;
-    SWERVE.DRIVE.kFrontRightEncoderOffset = 0.04296875;
-    SWERVE.DRIVE.kBackLeftEncoderOffset = 0.483642578125;
-    SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
+    // SWERVE.DRIVE.kFrontLeftEncoderOffset = -0.035888671875;
+    // SWERVE.DRIVE.kFrontRightEncoderOffset = 0.04296875;
+    // SWERVE.DRIVE.kBackLeftEncoderOffset = 0.483642578125;
+    // SWERVE.DRIVE.kBackRightEncoderOffset = 0.414306640625;
 
     SWERVE.DRIVE.kTrackWidth = Units.inchesToMeters(24);
     CAN.driveBaseCanbus = CAN.rioCanbus;
@@ -82,7 +82,7 @@ public class ROBOT {
   }
 
   public static void initSim() {
-    logMode = LOG_MODE.DEBUG;
+    // logMode = LOG_MODE.DEBUG;
 
     SWERVE.DRIVE.kFrontLeftEncoderOffset = 0;
     SWERVE.DRIVE.kFrontRightEncoderOffset = 0;
@@ -90,7 +90,7 @@ public class ROBOT {
     SWERVE.DRIVE.kBackRightEncoderOffset = 0;
 
     // Different gear ratios seem to break SimpleJointedArmSim
-    //    ARM.gearRatio = 1.0;
+    // ARM.gearRatio = 1.0;
   }
 
   public static void initConstants() {
@@ -134,7 +134,8 @@ public class ROBOT {
 
   public enum LOG_MODE {
     DEBUG(0),
-    NORMAL(1);
+    NORMAL(1),
+    MINIMAL(2);
 
     private final double log_level;
 

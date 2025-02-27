@@ -5,6 +5,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -43,7 +44,12 @@ public final class SWERVE {
     public static double kFrontLeftEncoderOffset = 0.219970703125;
     public static double kFrontRightEncoderOffset = 0.265380859375;
     public static double kBackLeftEncoderOffset = -0.046875;
-    public static double kBackRightEncoderOffset = 0.328125;
+    public static double kBackRightEncoderOffset = 0.315286;
+    // testing offsets
+    // public static double kFrontLeftEncoderOffset = -0.27001953125;
+    // public static double kFrontRightEncoderOffset = 0.456787109375;
+    // public static double kBackLeftEncoderOffset = 0.456787109375;
+    // public static double kBackRightEncoderOffset = -0.175048828125;
 
     public static final boolean[] kTurnInversions = {true, false, false, false};
     public static final boolean[] kDriveInversions = {false, false, false, true};
@@ -68,6 +74,15 @@ public final class SWERVE {
     public static final double kTeleP_Theta = 10;
     public static final double kTeleI_Theta = 0.0;
     public static final double kTeleD_Theta = 0.0;
+
+    /* CHANGE THESE VALUES */
+    public static final Rotation2d kPassingNearAngleBlue =
+        Rotation2d.fromDegrees(-30); // (old non-working value is -150)
+    public static final Rotation2d kPassingMidAngleBlue =
+        Rotation2d.fromDegrees(-10); // (old non-working value is -170)
+
+    public static final Rotation2d kPassingNearAngleRed = Rotation2d.fromDegrees(-150); // good
+    public static final Rotation2d kPassingMidAngleRed = Rotation2d.fromDegrees(-170); // good
   }
 
   public static class MODULE {

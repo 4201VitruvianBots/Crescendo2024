@@ -17,12 +17,11 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.ROBOT;
 import frc.robot.constants.SHOOTER;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private double m_topRpmSetpoint;
@@ -156,6 +155,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotors[1].setControl(m_velocityRequest.withVelocity(rpsTop).withFeedForward(0));
   }
 
+  // Warning: This function takes 60 ms to run!!! Only run it very periodically!!!
   public void setNeutralMode(NeutralModeValue mode) {
     m_shooterMotors[0].setNeutralMode(mode);
     m_shooterMotors[1].setNeutralMode(mode);
@@ -210,21 +210,26 @@ public class Shooter extends SubsystemBase {
   // values that we are pulling
 
   private void updateLogger() {
-    Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
-    Logger.recordOutput(
-        "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput(
-        "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
-    Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
-    Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
-    Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
+    // Logger.recordOutput("Shooter/DesiredPercentOutput", m_desiredPercentOutput);
+    // Logger.recordOutput(
+    //     "Shooter/MasterPercentOutput", m_shooterMotors[0].getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput(
+    //     "Shooter/FollowerPercentOutput", m_shooterMotors[1].getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput("Shooter/rpmSetpointTop", m_topRpmSetpoint);
+    // Logger.recordOutput("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
+    // Logger.recordOutput("Shooter/RPMMaster", getRpmMaster());
+    // Logger.recordOutput("Shooter/RPMFollower", getRpmFollower());
   }
 
   @Override
   public void periodic() {
     updateShuffleboard();
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+    // if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+
+    SmartDashboard.putNumber("Shooter/rpmSetpointTop)", m_topRpmSetpoint);
+    SmartDashboard.putNumber("Shooter/rpmSetpointBottom", m_bottomRpmSetpoint);
+    SmartDashboard.putNumber("Shooter/RPMMaster", getRpmMaster());
+    SmartDashboard.putNumber("Shooter/RPMFollower", getRpmFollower());
   }
 
   @Override

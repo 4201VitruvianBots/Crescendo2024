@@ -47,7 +47,7 @@ public final class ARM {
   public enum ARM_SETPOINT {
     STOWED(Units.degreesToRotations(-40.0)),
     STAGED(Units.degreesToRotations(75.0)),
-    FORWARD(Units.degreesToRotations(129.0)),
+    FORWARD(Units.degreesToRotations(133.0)),
     TRAP(Units.degreesToRotations(130.0));
 
     private final double angle;

@@ -6,15 +6,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AMPSHOOTER;
 import frc.robot.constants.CAN;
-import frc.robot.constants.ROBOT;
 import frc.robot.utils.CtreUtils;
-import org.littletonrobotics.junction.Logger;
 
 public class AmpShooter extends SubsystemBase {
   private Intake m_intake;
@@ -60,23 +57,23 @@ public class AmpShooter extends SubsystemBase {
   }
 
   private void updateLogger() {
-    Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
-    Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
-    Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
+    // Logger.recordOutput("AmpShooter/Velocity", ampMotor.getVelocity().getValue());
+    // Logger.recordOutput("AmpShooter/Percentage", ampMotor.getMotorVoltage().getValue() / 12.0);
+    // Logger.recordOutput("AmpShooter/Current", ampMotor.getTorqueCurrent().getValue());
   }
 
   @Override
   public void periodic() {
-    if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
+    // if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.NORMAL.get()) updateLogger();
 
     if (m_intake != null) {
-      if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
-        if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
-          setPercentOutput(0);
-        } else {
-          setPercentOutput(m_ampAutoPercentOutput);
-        }
+      // if (DriverStation.isAutonomous() && m_ampAutoPercentOutput != 0) {
+      if (m_intake.getSensorInput1() || m_intake.getSensorInput2()) {
+        setPercentOutput(0);
+      } else {
+        setPercentOutput(m_ampAutoPercentOutput);
       }
+      // }
     }
   }
 

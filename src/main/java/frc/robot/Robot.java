@@ -73,18 +73,19 @@ public class Robot extends LoggedRobot {
         }
         Logger.addDataReceiver(new WPILOGWriter(logDir.getAbsolutePath()));
       }
+
+      // Logger.disableDeterministicTimestamps(); // See "Deterministic Timestamps" in the
+      // "Understanding Data Flow" page
+      Logger
+          .start(); // Start logging! No more data receivers, replay sources, or metadata values may
+      // be added.
+
+      var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
+      alert.set(true);
+      // Update robot constants based off of robot used
+      ROBOT.initConstants();
+      // CtreUtils.initPhoenixServer();
     }
-
-    // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the
-    // "Understanding Data Flow" page
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
-    // be added.
-
-    var alert = new Alert("AdvantageKit Logging Started!", AlertType.INFO);
-    alert.set(true);
-    // Update robot constants based off of robot used
-    ROBOT.initConstants();
-    // CtreUtils.initPhoenixServer();
   }
 
   /**

@@ -127,6 +127,8 @@ public final class VISION {
   public enum TRACKING_STATE {
     NONE,
     SPEAKER,
-    NOTE
+    NOTE,
+    PASSING_NEAR,
+    PASSING_MID
   }
 }

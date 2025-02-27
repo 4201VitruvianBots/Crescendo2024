@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ampShooter.RunAmp;
 import frc.robot.commands.ampShooter.RunAmpSensored;
 import frc.robot.commands.arm.ArmJoystick;
 import frc.robot.commands.arm.ArmSetpoint;
@@ -28,9 +27,6 @@ import frc.robot.commands.characterization.SwerveDriveDynamic;
 import frc.robot.commands.characterization.SwerveDriveQuasistatic;
 import frc.robot.commands.characterization.SwerveTurnDynamic;
 import frc.robot.commands.characterization.SwerveTurnQuasistatic;
-import frc.robot.commands.climber.ResetClimberHeight;
-import frc.robot.commands.climber.RunClimberJoystick;
-import frc.robot.commands.climber.ToggleClimbMode;
 import frc.robot.commands.drive.ResetGyro;
 import frc.robot.commands.drive.SetTrackingState;
 import frc.robot.commands.intake.AmpIntake;
@@ -63,13 +59,13 @@ public class RobotContainer {
           SWERVE.BackLeftConstants,
           SWERVE.BackRightConstants);
   private final Telemetry m_telemetry = new Telemetry();
-  private final Vision m_vision = new Vision();
+  // private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Arm m_arm = new Arm();
   private final AmpShooter m_ampShooter = new AmpShooter();
-  private final Climber m_climber = new Climber();
-  private final RobotTime m_robotTime = new RobotTime();
+  //   private final Climber m_climber = new Climber();
+  //   private final RobotTime m_robotTime = new RobotTime();
   private final Controls m_controls = new Controls();
   private final LEDSubsystem m_led = new LEDSubsystem();
 
@@ -83,37 +79,40 @@ public class RobotContainer {
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
+  //   private final CommandXboxController driveController =
+  //       new CommandXboxController(USB.driveController);
   private final CommandXboxController xboxController =
       new CommandXboxController(USB.xBoxController);
   private final CommandPS4Controller m_testController =
       new CommandPS4Controller(USB.testController);
-  private final Trigger trigger =
-      new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
+
+  //   private final Trigger trigger =
+  //       new Trigger(xboxController.leftStick().and(xboxController.rightStick()));
 
   public RobotContainer() {
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
-    m_swerveDrive.registerVisionSubsystem(m_vision);
+    // m_swerveDrive.registerVisionSubsystem(m_vision);
     m_ampShooter.registerIntake(m_intake);
-    m_vision.registerSwerveDrive(m_swerveDrive);
+    // m_vision.registerSwerveDrive(m_swerveDrive);
     m_controls.registerDriveTrain(m_swerveDrive);
     m_controls.registerIntake(m_intake);
     m_controls.registerArm(m_arm);
-    m_controls.registerVision(m_vision);
+    // m_controls.registerVision(m_vision);
     initializeSubsystems();
     configureBindings();
     initSmartDashboard();
 
     if (RobotBase.isSimulation()) {
       m_telemetry.registerFieldSim(m_fieldSim);
-      m_vision.registerFieldSim(m_fieldSim);
+      // m_vision.registerFieldSim(m_fieldSim);
 
       m_visualizer = new SuperStructureVisualizer();
       m_visualizer.registerIntake(m_intake);
       m_visualizer.registerShooter(m_shooter);
       m_visualizer.registerAmpShooter(m_ampShooter);
       m_visualizer.registerArm(m_arm);
-      m_visualizer.registerClimber(m_climber);
-      m_visualizer.registerVision(m_vision);
+      // m_visualizer.registerClimber(m_climber);
+      // m_visualizer.registerVision(m_vision);
       m_visualizer.registerLedSubsystem(m_led);
     }
   }
@@ -136,35 +135,49 @@ public class RobotContainer {
                       m_testController.getRawAxis(1) * DRIVE.kMaxSpeedMetersPerSecond,
                       -m_testController.getRawAxis(2) * DRIVE.kMaxRotationRadiansPerSecond)));
 
+      //   m_testController
+      //       .cross()
+      //       .onTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
       m_testController
-          .cross()
-          .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+          .button(1)
+          .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_NEAR));
+      m_testController
+          .button(2)
+          .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_MID));
     }
 
     // Default command to decelerate the flywheel if no other command is set
     //    m_shooter.setDefaultCommand(new DefaultFlywheel(m_shooter));
     m_arm.setDefaultCommand(new ArmJoystick(m_arm, () -> -xboxController.getLeftY()));
-    m_climber.setDefaultCommand(
-        new RunClimberJoystick(m_climber, () -> -xboxController.getRightY(), xboxController));
+    // m_climber.setDefaultCommand(
+    //     new RunClimberJoystick(null, () -> -xboxController.getRightY(), xboxController));
     m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, m_climber, m_shooter, m_vision, m_swerveDrive));
+        new GetSubsystemStates(m_led, m_intake, null, m_shooter, null, m_swerveDrive));
   }
 
   private void configureBindings() {
-    var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
-    driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var driveShootButton = new Trigger(() -> leftJoystick.getRawButton(1));
+    // driveShootButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
-    driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
+    // var driveAdjustButtonBack = new Trigger(() -> leftJoystick.getRawButton(2));
+    // driveAdjustButtonBack.whileTrue(new RunAmp(m_ampShooter, 0.05));
 
-    var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
-    targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+    // var targetSpeakerButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    // targetSpeakerButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
 
-    var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
-    driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
+    // var driveAdjustButtonFront = new Trigger(() -> rightJoystick.getRawButton(2));
+    // driveAdjustButtonFront.whileTrue(new RunAmp(m_ampShooter, -0.05));
 
     // var targetNoteButton = new Trigger(() -> rightJoystick.getRawButton(2));
     // targetNoteButton.whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.NOTE));
+
+    var targetPassingMidButton = new Trigger(() -> rightJoystick.getRawButton(1));
+    targetPassingMidButton.whileTrue(
+        new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_MID));
+
+    var targetPassingNearButton = new Trigger(() -> rightJoystick.getRawButton(2));
+    targetPassingNearButton.whileTrue(
+        new SetTrackingState(m_swerveDrive, TRACKING_STATE.PASSING_NEAR));
 
     //    var SASButton = new Trigger(() -> rightJoystick.getRawButton(2));
     //    SASButton.whileTrue(
@@ -182,14 +195,18 @@ public class RobotContainer {
     //            STATE.INTAKING.get(),
     //            RPM_SETPOINT.MAX.get()));
 
+    // driveController
+    //     .rightTrigger()
+    //     .whileTrue(new SetTrackingState(m_swerveDrive, TRACKING_STATE.SPEAKER));
+
     xboxController
         .b()
         .whileTrue(
             new SetShooterRPMSetpoint(
                 m_shooter,
                 xboxController,
-                RPM_SETPOINT.MAX.get(),
-                RPM_SETPOINT.MAX.get())); // fast speaker
+                RPM_SETPOINT.SPEAKERTOP.get(),
+                RPM_SETPOINT.SPEAKERTOP.get())); // fast speaker
 
     xboxController.a().whileTrue(new ArmSetpoint(m_arm, ARM.ARM_SETPOINT.FORWARD));
     xboxController
@@ -203,7 +220,7 @@ public class RobotContainer {
 
     // toggles the climb sequence when presses and cuts the command when pressed again
     //    trigger.onTrue(new ClimbFinal(m_ampShooter, m_swerveDrive, m_arm, m_climber));
-    xboxController.back().onTrue(new ToggleClimbMode(m_climber, m_arm)); // Left Button
+    // xboxController.back().onTrue(new ToggleClimbMode(null, m_arm)); // Left Button
 
     // switch between open loop and close loop
     xboxController.start().onTrue(new ToggleArmControlMode(m_arm)); // Right Button
@@ -273,7 +290,7 @@ public class RobotContainer {
     else initAutoChooser();
 
     SmartDashboard.putData("ResetGyro", new ResetGyro(m_swerveDrive));
-    SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(m_climber, 0));
+    // SmartDashboard.putData("ResetClimberHeight", new ResetClimberHeight(null, 0));
     SmartDashboard.putData(
         "ResetSetupCheck", new InstantCommand(m_controls::resetInitState).ignoringDisable(true));
 
@@ -428,7 +445,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_arm.teleopInit();
-    m_climber.teleopInit();
+    // m_climber.teleopInit();
   }
 
   public void autonomousInit() {

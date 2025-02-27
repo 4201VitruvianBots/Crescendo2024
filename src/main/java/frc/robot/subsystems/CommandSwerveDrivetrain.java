@@ -16,11 +16,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.SWERVE;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.constants.VISION;
 import frc.robot.constants.VISION.TRACKING_STATE;
 import frc.robot.utils.CtreUtils;
@@ -170,15 +172,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
           var rotationSpeed = chassisSpeeds.get().omegaRadiansPerSecond;
           if (m_trackingState != VISION.TRACKING_STATE.NONE) {
-            if (m_trackingState == VISION.TRACKING_STATE.NOTE) {
-              if (m_vision != null) {
-                if (m_vision.hasGamePieceTarget()) {
-                  rotationSpeed = calculateRotationToTarget();
-                }
-              }
-            } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER) {
-              rotationSpeed = calculateRotationToTarget();
-            }
+            // if (m_trackingState == VISION.TRACKING_STATE.NOTE) {
+            //   if (m_vision != null) {
+            //     if (m_vision.hasGamePieceTarget()) {
+            //       rotationSpeed = calculateRotationToTarget();
+            //     }
+            //   }
+            // } else if (m_trackingState == VISION.TRACKING_STATE.SPEAKER ||
+            //     m_trackingState == VISION.TRACKING_STATE.PASSING_MID || m_trackingState ==
+            // VISION.TRACKING_STATE.PASSING_NEAR) {
+            rotationSpeed = calculateRotationToTarget();
+            // }
           }
 
           m_newChassisSpeeds =
@@ -262,6 +266,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
+  public VISION.TRACKING_STATE getTrackingState() {
+    return m_trackingState;
+  }
+
   private double calculateRotationToTarget() {
     return m_pidController.calculate(
         getState().Pose.getRotation().getRadians(), m_targetAngle.getRadians());
@@ -269,11 +277,28 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private void updateTargetAngle() {
     switch (m_trackingState) {
-      case SPEAKER:
-        m_targetAngle = m_angleToSpeaker;
+        // case SPEAKER:
+        //   m_targetAngle = m_angleToSpeaker;
+        //   break;
+        // case NOTE:
+        //   m_targetAngle = m_angleToNote;
+        //   break;
+      case PASSING_NEAR:
+        if (Controls.isBlueAlliance()) {
+          m_targetAngle = DRIVE.kPassingNearAngleBlue; // Blue alliance
+        } else {
+          m_targetAngle = DRIVE.kPassingNearAngleRed; // Red alliance
+        }
         break;
-      case NOTE:
-        m_targetAngle = m_angleToNote;
+      case PASSING_MID:
+        if (Controls.isBlueAlliance()) {
+          m_targetAngle = DRIVE.kPassingMidAngleBlue; // Blue alliance
+        } else {
+          m_targetAngle = DRIVE.kPassingMidAngleRed; // Red alliance
+        }
+        break;
+      default:
+      case NONE:
         break;
     }
   }
@@ -359,8 +384,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void updateLogger() {
-    Logger.recordOutput("Swerve/TrackingState", m_trackingState);
-    Logger.recordOutput("Swerve/TargetAngle", m_targetAngle.getDegrees());
+    Logger.recordOutput("Swerve/Alliance", Controls.getAllianceColor().name());
+    SmartDashboard.putNumber("CurrentAngle", getState().Pose.getRotation().getDegrees());
+
+    Logger.recordOutput("Swerve/TrackingState", m_trackingState.name());
+    SmartDashboard.putNumber("TargetAngle", m_targetAngle.getDegrees());
     Logger.recordOutput("Swerve/isShootZone", getZoneState());
 
     if (ROBOT.logMode.get() <= ROBOT.LOG_MODE.DEBUG.get()) {
